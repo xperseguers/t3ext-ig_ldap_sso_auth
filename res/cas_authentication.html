@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<title>Template ig_ldap_sso_auth</title>
+</head>
+
+<body>
+
+<hr />
+
+<!----------------------------------------------------------------------------->
+
+<h2>Login</h2>
+
+<!-- ###CAS_AUTHENTICATION_LOGIN### begin -->
+
+<div class="login">
+
+	<form action="###LOGIN_FORM_ACTION###" method="post">
+		<input type="hidden" name="logintype" value="login" />
+		<input type="submit" name="submit_logintype" value="###LOGIN_SUBMIT_VALUE###" />
+		<input type="hidden" name="pid" value="148" />
+	</form>
+
+</div>
+
+<!-- ###CAS_AUTHENTICATION_LOGIN### end -->
+
+<!----------------------------------------------------------------------------->
+
+<hr />
+
+<!----------------------------------------------------------------------------->
+
+<h2>Logout</h2>
+
+<!-- ###CAS_AUTHENTICATION_LOGOUT### begin -->
+
+<div class="logout">
+
+	<form action="###LOGOUT_FORM_ACTION###" method="post">
+		<input type="hidden" name="logintype" value="logout" />
+		<input type="submit" name="submit_logintype" value="###LOGOUT_SUBMIT_VALUE###" />
+	</form>
+
+</div>
+
+<!-- ###CAS_AUTHENTICATION_LOGOUT### end -->
+
+<!----------------------------------------------------------------------------->
+
+<hr />
+
+<!----------------------------------------------------------------------------->
+
+<h2>Disable</h2>
+
+<!-- ###CAS_AUTHENTICATION_DISABLE### begin -->
+
+<div class="disable">
+
+	<p>###DISABLE###</p>
+
+</div>
+
+<!-- ###CAS_AUTHENTICATION_DISABLE### end -->
+
+<!----------------------------------------------------------------------------->
+
+<hr />
+
+</body>
+</html>

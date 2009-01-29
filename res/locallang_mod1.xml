@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for module &quot;tools_txigldapssoauthM1&quot;</description>
+	</meta>
+	<data type="array">
+
+		<languageKey index="default" type="array">
+
+			<label index="mlang_tabs_tab">LDAP / SSO</label>
+			<label index="mlang_labels_tabdescr">LDAP configuration module.</label>
+			<label index="mlang_labels_tablabel">LDAP configuration</label>
+
+			<label index="title">LDAP / SSO service configuration</label>
+
+			<label index="view_configuration">Status</label>
+			<label index="wizard_search">Search wizard</label>
+			<label index="import_groups">Import LDAP groups</label>
+			<label index="wizard_authentication">Authentication wizard</label>
+
+			<label index="view_configuration_title">View configuration</label>
+			<label index="view_configuration_ldap">LDAP</label>
+			<label index="view_configuration_ldap_disable">No host name specified.</label>
+			<label index="view_configuration_ldap_connexion_status">Connexion status</label>
+			<label index="view_configuration_cas">CAS</label>
+			<label index="view_configuration_cas_disable">CAS authentication disable.</label>
+			<label index="view_configuration_backend_authentication">Backend authentication</label>
+			<label index="view_configuration_backend_authentication_disable">Backend authentication disable.</label>
+			<label index="view_configuration_frontend_authentication">Frontend authentication</label>
+			<label index="view_configuration_frontend_authentication_disable">Frontend authentication disable.</label>
+
+			<label index="wizard_search_title">Search wizard</label>
+			<label index="wizard_search_radio_be_users">be_users</label>
+			<label index="wizard_search_radio_fe_users">fe_users</label>
+			<label index="wizard_search_radio_be_groups">be_groups</label>
+			<label index="wizard_search_radio_fe_groups">fe_groups</label>
+			<label index="wizard_search_checkbox_first_entry">First entry only</label>
+			<label index="wizard_search_checkbox_see_status">See status</label>
+			<label index="wizard_search_ldap_status">LDAP search status</label>
+			<label index="wizard_search_input_base_dn">Base DN :</label>
+			<label index="wizard_search_input_filter">Filter :</label>
+			<label index="wizard_search_input_attributes">Attributes :</label>
+			<label index="wizard_search_submit_search">search</label>
+			<label index="wizard_search_result">Result</label>
+			<label index="wizard_search_no_result">No result</label>
+
+			<label index="import_groups_title">Import LDAP groups</label>
+			<label index="import_groups_be_title">Import backend groups</label>
+			<label index="import_groups_be_no_groups_found">No backend groups found.</label>
+			<label index="import_groups_fe_title">Import frontend groups</label>
+			<label index="import_groups_fe_no_groups_found">No frontend groups found.</label>
+			<label index="import_groups_table_th_uid">uid</label>
+			<label index="import_groups_table_th_pid">pid</label>
+			<label index="import_groups_table_th_title">title</label>
+			<label index="import_groups_table_th_dn">tx_igldapssoauth_dn</label>
+			<label index="import_groups_table_th_import">import</label>
+			<label index="import_groups_form_submit_value">Import groups</label>
+
+		</languageKey>
+
+		<languageKey index="fr" type="array">
+
+			<label index="mlang_tabs_tab">LDAP / SSO</label>
+			<label index="mlang_labels_tabdescr">Module de configuration LDAP.</label>
+			<label index="mlang_labels_tablabel">Configuration LDAP</label>
+
+			<label index="title">LDAP / SSO service configuration</label>
+
+			<label index="view_configuration">Status</label>
+			<label index="wizard_search">Search wizard</label>
+			<label index="import_groups">Import LDAP groups</label>
+			<label index="wizard_authentication">Authentication wizard</label>
+
+			<label index="view_configuration_title">View configuration</label>
+			<label index="view_configuration_ldap">LDAP</label>
+			<label index="view_configuration_ldap_disable">No host name specified.</label>
+			<label index="view_configuration_ldap_connexion_status">Connexion status</label>
+			<label index="view_configuration_cas">CAS</label>
+			<label index="view_configuration_cas_disable">CAS authentication disable.</label>
+			<label index="view_configuration_backend_authentication">Backend authentication</label>
+			<label index="view_configuration_backend_authentication_disable">Backend authentication disable.</label>
+			<label index="view_configuration_frontend_authentication">Frontend authentication</label>
+			<label index="view_configuration_frontend_authentication_disable">Frontend authentication disable.</label>
+
+			<label index="wizard_search_title">Search wizard</label>
+			<label index="wizard_search_radio_be_users">be_users</label>
+			<label index="wizard_search_radio_fe_users">fe_users</label>
+			<label index="wizard_search_radio_be_groups">be_groups</label>
+			<label index="wizard_search_radio_fe_groups">fe_groups</label>
+			<label index="wizard_search_checkbox_first_entry">First entry only</label>
+			<label index="wizard_search_checkbox_see_status">See status</label>
+			<label index="wizard_search_ldap_status">LDAP search status</label>
+			<label index="wizard_search_input_base_dn">Base DN :</label>
+			<label index="wizard_search_input_filter">Filter :</label>
+			<label index="wizard_search_input_attributes">Attributes :</label>
+			<label index="wizard_search_submit_search">search</label>
+			<label index="wizard_search_result">Result</label>
+			<label index="wizard_search_no_result">No result</label>
+
+			<label index="import_groups_title">Import LDAP groups</label>
+			<label index="import_groups_be_title">Import backend groups</label>
+			<label index="import_groups_be_no_groups_found">No backend groups found.</label>
+			<label index="import_groups_fe_title">Import frontend groups</label>
+			<label index="import_groups_fe_no_groups_found">No frontend groups found.</label>
+			<label index="import_groups_table_th_uid">uid</label>
+			<label index="import_groups_table_th_pid">pid</label>
+			<label index="import_groups_table_th_title">title</label>
+			<label index="import_groups_table_th_dn">tx_igldapssoauth_dn</label>
+			<label index="import_groups_table_th_import">import</label>
+			<label index="import_groups_form_submit_value">Import groups</label>
+
+		</languageKey>
+
+	</data>
+</T3locallang>

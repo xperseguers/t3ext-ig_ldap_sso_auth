@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<description>Help LDAP configuration</description>
+		<type>CSH</type>
+		<csh_table>tx_igldapssoauth_config</csh_table>
+		<fileId>ig_ldap_sso_auth/locallang_csh_db.xml</fileId>
+		<labelContext type="array">
+		</labelContext>
+	</meta>
+	<data type="array">
+
+		<languageKey index="default" type="array">
+
+			<label index="name.description">Nom utilisé afin de distinguer chaque configuration.</label>
+
+			<label index="cas_host.description">Adresse ou URL du serveur CAS.</label>
+			<label index="cas_port.description">Port utilisé par le serveur CAS.</label>
+
+			<label index="cas_logout_url.description">URL de retour après la déconnexion de l'usager.</label>
+
+			<label index="ldap_server.description">Type de serveur LDAP utilisé pour l'authentification (OpenLDAP, eDirectory). </label>
+
+			<label index="ldap_protocol.description">Version du protocol utilisé par le serveur LDAP.</label>
+
+			<label index="ldap_charset.description">Jeux de caractère utilisé par le serveur LDAP. Par défaut : utf-8.</label>
+
+			<label index="ldap_host.description">Adresse du serveur LDAP.</label>
+
+			<label index="ldap_port.description">Port utilisé par le serveur LDAP. Par défaut : 389.</label>
+
+			<label index="ldap_binddn.description">DN (Distinguished Name) utilisé pour la connexion au serveur.</label>
+			<label index="ldap_binddn.syntax">Ex.: cn=admin,dc=infoglobe,dc=ca</label>
+
+			<label index="ldap_password.description">Mot de passe utilisé pour la connexion au serveur.</label>
+
+			<label index="be_users_basedn.description">DN (Distinguished Name) de base pour la recherche des usagers BE sur le serveur LDAP (Voir le manuel de l'extension).</label>
+			<label index="be_users_basedn.syntax">Ex.: ou=USERS,dc=infoglobe,dc=ca</label>
+
+			<label index="be_users_filter.description">Filtre de recherche des usagers BE sur le serveur LDAP (Voir le manuel de l'extension).</label>
+			<label index="be_users_filter.syntax">Exemple d'un filtre simple utilisé pour l'authentification : (cn={USERNAME})</label>
+
+			<label index="be_users_mapping.description">Assigner la valeur d'un attribut LDAP à un champ de la table de l'usager (Voir le manuel de l'extension).</label>
+
+			<label index="be_groups_basedn.description">DN (Distinguished Name) de base pour la recherche des groupes BE sur le serveur LDAP (Voir le manuel de l'extension).</label>
+			<label index="be_groups_basedn.syntax">Ex.: ou=GROUPS,dc=infoglobe,dc=ca</label>
+
+			<label index="be_groups_filter.description">Filtre de recherche des groupes BE sur le serveur LDAP (Voir le manuel de l'extension).</label>
+			<label index="be_groups_filter.syntax">Exemple si l'option evaluateGroupsFromMembership n'est pas activé : (memberuid={USERDN})</label>
+
+			<label index="be_groups_mapping.description">Assigner la valeur d'un attribut LDAP à un champ de la table de l'usager (Voir le manuel de l'extension).</label>
+
+			<label index="fe_users_basedn.description">DN (Distinguished Name) de base pour la recherche des usagers FE sur le serveur LDAP (Voir le manuel de l'extension).</label>
+			<label index="fe_users_basedn.syntax">Ex.: ou=USERS,dc=infoglobe,dc=ca</label>
+
+			<label index="fe_users_filter.description">Filtre de recherche des usagers FE sur le serveur LDAP (Voir le manuel de l'extension).</label>
+			<label index="fe_users_filter.syntax">Exemple d'un filtre simple utilisé pour l'authentification : (cn={USERNAME})</label>
+
+			<label index="fe_users_mapping.description">Assigner la valeur d'un attribut LDAP à un champ de la table de l'usager (Voir le manuel de l'extension).</label>
+
+			<label index="fe_groups_basedn.description">DN (Distinguished Name) de base pour la recherche des groupes BE sur le serveur LDAP (Voir le manuel de l'extension).</label>
+			<label index="fe_groups_basedn.syntax">Ex.: ou=GROUPS,dc=infoglobe,dc=ca</label>
+
+			<label index="fe_groups_filter.description">Filtre de recherche des groupes BE sur le serveur LDAP (Voir le manuel de l'extension).</label>
+			<label index="fe_groups_filter.syntax">Exemple si l'option evaluateGroupsFromMembership n'est pas activé : (memberuid={USERDN})</label>
+
+			<label index="fe_groups_mapping.description">Assigner la valeur d'un attribut LDAP à un champ de la table de l'usager (Voir le manuel de l'extension).</label>
+
+		</languageKey>
+
+		<languageKey index="fr" type="array">
+
+			<label index="name.description">Nom utilisé afin de distinguer chaque configuration.</label>
+
+			<label index="cas_host.description">Adresse ou URL du serveur CAS.</label>
+			<label index="cas_port.description">Port utilisé par le serveur CAS.</label>
+
+			<label index="cas_logout_url.description">URL de retour après la déconnexion de l'usager.</label>
+
+			<label index="ldap_server.description">Type de serveur LDAP utilisé pour l'authentification (OpenLDAP, eDirectory). </label>
+
+			<label index="ldap_protocol.description">Version du protocol utilisé par le serveur LDAP.</label>
+
+			<label index="ldap_charset.description">Jeux de caractère utilisé par le serveur LDAP. Par défaut : utf-8.</label>
+
+			<label index="ldap_host.description">Adresse du serveur LDAP.</label>
+
+			<label index="ldap_port.description">Port utilisé par le serveur LDAP. Par défaut : 389.</label>
+
+			<label index="ldap_binddn.description">DN (Distinguished Name) utilisé pour la connexion au serveur.</label>
+			<label index="ldap_binddn.syntax">Ex.: cn=admin,dc=infoglobe,dc=ca</label>
+
+			<label index="ldap_password.description">Mot de passe utilisé pour la connexion au serveur.</label>
+
+			<label index="be_users_basedn.description">DN (Distinguished Name) de base pour la recherche des usagers BE sur le serveur LDAP.</label>
+			<label index="be_users_basedn.syntax">Ex.: ou=USERS,dc=infoglobe,dc=ca</label>
+
+			<label index="be_users_filter.description">Filtre de recherche des usagers BE sur le serveur LDAP.</label>
+			<label index="be_users_filter.syntax">Exemple d'un filtre simple utilisé pour l'authentification : (cn={USERNAME})</label>
+
+			<label index="be_users_mapping.description">Assigner la valeur d'un attribut LDAP à un champ de la table de l'usager (Voir le manuel de l'extension).</label>
+
+			<label index="be_groups_basedn.description">DN (Distinguished Name) de base pour la recherche des groupes BE sur le serveur LDAP.</label>
+			<label index="be_groups_basedn.syntax">Ex.: ou=GROUPS,dc=infoglobe,dc=ca</label>
+
+			<label index="be_groups_filter.description">Filtre de recherche des groupes BE sur le serveur LDAP (Voir le manuel de l'extension).</label>
+			<label index="be_groups_filter.syntax">Exemple si l'option evaluateGroupsFromMembership n'est pas activé : (memberuid={USERDN})</label>
+
+			<label index="be_groups_mapping.description">Assigner la valeur d'un attribut LDAP à un champ de la table de l'usager (Voir le manuel de l'extension).</label>
+
+			<label index="fe_users_basedn.description">DN (Distinguished Name) de base pour la recherche des usagers FE sur le serveur LDAP.</label>
+			<label index="fe_users_basedn.syntax">Ex.: ou=USERS,dc=infoglobe,dc=ca</label>
+
+			<label index="fe_users_filter.description">Filtre de recherche des usagers FE sur le serveur LDAP.</label>
+			<label index="fe_users_filter.syntax">Exemple d'un filtre simple utilisé pour l'authentification : (cn={USERNAME})</label>
+
+			<label index="fe_users_mapping.description">Assigner la valeur d'un attribut LDAP à un champ de la table de l'usager (Voir le manuel de l'extension).</label>
+
+			<label index="fe_groups_basedn.description">DN (Distinguished Name) de base pour la recherche des groupes BE sur le serveur LDAP.</label>
+			<label index="fe_groups_basedn.syntax">Ex.: ou=GROUPS,dc=infoglobe,dc=ca</label>
+
+			<label index="fe_groups_filter.description">Filtre de recherche des groupes BE sur le serveur LDAP (Voir le manuel de l'extension).</label>
+			<label index="fe_groups_filter.syntax">Exemple si l'option evaluateGroupsFromMembership n'est pas activé : (memberuid={USERDN})</label>
+
+			<label index="fe_groups_mapping.description">Assigner la valeur d'un attribut LDAP à un champ de la table de l'usager (Voir le manuel de l'extension).</label>
+
+		</languageKey>
+
+	</data>
+
+</T3locallang>

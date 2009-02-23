@@ -10,6 +10,7 @@
 # "version" and "dependencies" must not be touched!
 ########################################################################
 
+
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'LDAP / SSO Authentication',
 	'description' => 'Enable LDAP/SSO authentication service.',

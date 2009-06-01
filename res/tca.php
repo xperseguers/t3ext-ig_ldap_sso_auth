@@ -219,6 +219,16 @@ $TCA["tx_igldapssoauth_config"] = array (
 				"eval" => "trim",
 			)
 		),
+		"cas_uri" => Array (
+			"exclude" => 1,
+			"label" => "LLL:EXT:ig_ldap_sso_auth/res/locallang_db.xml:tx_igldapssoauth_config.cas_uri",
+			"config" => Array (
+				"type" => "input",
+				"size" => "30",
+				"max" => "255",
+				"eval" => "trim",
+			)
+		),
 		"cas_port" => Array (
 			"exclude" => 1,
 			"label" => "LLL:EXT:ig_ldap_sso_auth/res/locallang_db.xml:tx_igldapssoauth_config.cas_port",
@@ -241,7 +251,7 @@ $TCA["tx_igldapssoauth_config"] = array (
 		),
 	),
 	"types" => array (
-		"0" => array("showitem" => "--div--;GENERAL,name, --div--;LDAP, ldap_server, ldap_protocol, ldap_charset, ldap_host, ldap_port, ldap_binddn, ldap_password,--div--;BE_USERS, be_users_basedn, be_users_filter, be_users_mapping, --div--;BE_GROUPS, be_groups_basedn, be_groups_filter, be_groups_mapping, --div--;FE_USERS,fe_users_basedn, fe_users_filter, fe_users_mapping, --div--;FE_GROUPS,fe_groups_basedn, fe_groups_filter, fe_groups_mapping, --div--;CAS, cas_host, cas_port,cas_logout_url")
+		"0" => array("showitem" => "--div--;GENERAL,name, --div--;LDAP, ldap_server, ldap_protocol, ldap_charset, ldap_host, ldap_port, ldap_binddn, ldap_password,--div--;BE_USERS, be_users_basedn, be_users_filter, be_users_mapping, --div--;BE_GROUPS, be_groups_basedn, be_groups_filter, be_groups_mapping, --div--;FE_USERS,fe_users_basedn, fe_users_filter, fe_users_mapping, --div--;FE_GROUPS,fe_groups_basedn, fe_groups_filter, fe_groups_mapping, --div--;CAS, cas_host,cas_uri, cas_port,cas_logout_url")
 
 	),
 	"palettes" => array (

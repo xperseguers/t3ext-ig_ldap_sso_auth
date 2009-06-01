@@ -94,9 +94,10 @@ class tx_igldapssoauth_config {
 		$this->cas['host'] = $EXT_CONFIG['cas_host'];
 		$this->cas['port'] = $EXT_CONFIG['cas_port'];
 		$this->cas['logout_url'] = $EXT_CONFIG['cas_logout_url'];
+		$this->cas['uri'] = $EXT_CONFIG['cas_uri'];
 
 		$this->ldap['server'] = $EXT_CONFIG['ldap_server'];
-		$this->ldap['host'] = $EXT_CONFIG['ldap_host'];
+		$this->ldap['host'] = $EXT_CONFIG['ldap_host'];		
 		$this->ldap['port'] = $EXT_CONFIG['ldap_port'];
 		$this->ldap['protocol'] = $EXT_CONFIG['ldap_protocol'];
 		$this->ldap['charset'] = $EXT_CONFIG['ldap_charset'] ? $EXT_CONFIG['ldap_charset'] : 'utf-8';
@@ -274,7 +275,6 @@ class tx_igldapssoauth_config {
 		);
 
 		$config = iglib_db::select($query);
-
 		return $config[0];
 
 	}

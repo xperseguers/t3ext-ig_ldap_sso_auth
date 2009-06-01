@@ -74,11 +74,9 @@ class tx_igldapssoauth_pi1 extends tslib_pibase {
 		if (tx_igldapssoauth_config::is_enable('CASAuthentication') && tx_igldapssoauth_config::is_enable('LDAPAuthentication')) {
 
 			$cas_config = tx_igldapssoauth_config::get_values('cas');
-
 			//iglib_debug::print_this($cas_config, 'CAS config');
 
-			phpCAS::client(CAS_VERSION_2_0, (string)$cas_config['host'], (integer)$cas_config['port'], '');
-
+			phpCAS::client(CAS_VERSION_2_0, (string)$cas_config['host'], (integer)$cas_config['port'], (string)$cas_config['uri']);
 			if (phpCAS::isAuthenticated()) {
 
 				$tmpl_cas_auth = $this->cObj->getSubpart($this->template,'###CAS_AUTHENTICATION_LOGOUT###');

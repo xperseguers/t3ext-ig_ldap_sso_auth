@@ -26,7 +26,7 @@ $TCA["tx_igldapssoauth_config"] = array (
 	),
 
 	"feInterface" => array (
-		"fe_admin_fieldList" => "hidden, name, cas_host, cas_port, ldap_server, ldap_protocol, ldap_host, ldap_port, ldap_basedn, ldap_password, be_users_basedn, be_users_filter, be_users_mapping, be_groups_basedn, be_groups_filter, be_groups_mapping, fe_users_basedn, fe_users_filter, fe_users_mapping, fe_groups_basedn, fe_groups_filter, fe_groups_mapping",
+		"fe_admin_fieldList" => "hidden, name, cas_host,cas_uri, cas_port, ldap_server, ldap_protocol, ldap_host, ldap_port, ldap_basedn, ldap_password, be_users_basedn, be_users_filter, be_users_mapping, be_groups_basedn, be_groups_filter, be_groups_mapping, fe_users_basedn, fe_users_filter, fe_users_mapping, fe_groups_basedn, fe_groups_filter, fe_groups_mapping",
 	)
 
 );

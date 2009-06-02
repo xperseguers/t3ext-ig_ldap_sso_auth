@@ -1,3 +1,8 @@
+2009-06-02  Xavier Perseguers
+
+	* Took TCA default configuration into account when creating users
+	* Set a default random password for new users
+
 2009-06-01  Michael Miousse
 
 	* Added feature: possiblility to add uri at the end of an url for the cas server. We can now create url like localhost:8080/cas

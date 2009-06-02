@@ -63,8 +63,24 @@ class tx_igldapssoauth_auth {
 				// User not exist in TYPO3.
 				} elseif (!$typo3_user[0]['uid']) {
 
-					// Insert new user.
-					$typo3_user = tx_igldapssoauth_typo3_user::insert($this->authInfo['db_user']['table'], $typo3_user[0]);
+					// Insert new user: use TCA configuration to override default values
+					$table = $this->authInfo['db_user']['table'];
+					foreach ($GLOBALS['TCA'][$table]['columns'] as $column => $columnConfig) {
+						if (isset($columnConfig['config']['default'])) {
+							$defaultValue = $columnConfig['config']['default'];
+							$typo3_user[0][$column] = $defaultValue;
+						}
+					}
+
+					// Set random password
+					$charSet = 'abdeghjmnpqrstuvxyzABDEGHJLMNPQRSTVWXYZ23456789@#$%';
+					$password = '';
+					for ($i = 0; $i < 12; $i++) {
+						$password .= $charSet[(rand() % strlen($charSet))];
+					}
+					$typo3_user[0]['password'] = $password;
+
+					$typo3_user = tx_igldapssoauth_typo3_user::insert($table, $typo3_user[0]);
 
 				}
 
@@ -193,7 +209,7 @@ class tx_igldapssoauth_auth {
 		}
 
 		if (phpCAS::isAuthenticated()) {
-			t3lib_div::debug(phpCAS::getUser());exit;
+
 			$typo3_user = tx_igldapssoauth_auth::ldap_auth(phpCAS::getUser());
 
 			if ($typo3_user) {

@@ -35,19 +35,23 @@ if ($EXT_CONFIG['enableFECASAuthentication']) {
 
 // Service configuration
 //$TYPO3_CONF_VARS['SVCONF']['auth']['tx_igldapssoauth_sv1']['Test'] = 'ALLO';
-
-if ($EXT_CONFIG['enableFELDAPAuthentication'] && !$EXT_CONFIG['enableBELDAPAuthentication']) {
-	$subTypes = 'getUserFE,authUserFE,getGroupsFE';
+if($EXT_CONFIG['enableFELDAPAuthentication']){
+	$subTypesArr[] = 'getUserFE';
+	$subTypesArr[] ='authUserFE';
+	$subTypesArr[] ='getGroupsFE';
 }
-
-if (!$EXT_CONFIG['enableFELDAPAuthentication'] && $EXT_CONFIG['enableBELDAPAuthentication']) {
-	$subTypes = 'getUserBE,authUserBE';
+if($EXT_CONFIG['enableFELDAPAuthentication']){
+	$subTypesArr[] = 'getUserBE';
+	$subTypesArr[] = 'authUserBE';
 	$TYPO3_CONF_VARS['BE']['loginSecurityLevel'] = 'normal';
 }
-
-if ($EXT_CONFIG['enableFELDAPAuthentication'] && $EXT_CONFIG['enableBELDAPAuthentication']) {
-	$subTypes = 'getUserFE,authUserFE,getGroupsFE,getUserBE,authUserBE';
-	$TYPO3_CONF_VARS['BE']['loginSecurityLevel'] = 'normal';
+if($EXT_CONFIG['enableFECASAuthentication']){
+	$subTypesArr[] = 'getUserFE';
+	$subTypesArr[] ='authUserFE';
+}
+if(is_array($subTypesArr)){
+	$subTypesArr =array_unique($subTypesArr);
+	$subTypes = implode(',',$subTypesArr);
 }
 
 t3lib_extMgm::addService($_EXTKEY,  'auth' /* sv type */,  'tx_igldapssoauth_sv1' /* sv key */,

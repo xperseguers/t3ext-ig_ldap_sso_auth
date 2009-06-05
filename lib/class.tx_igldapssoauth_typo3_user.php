@@ -76,7 +76,7 @@ class tx_igldapssoauth_typo3_user {
 			);
 
 			// If no user found with DN and username, search with username and pid only.
-			if (!iglib_db::select($QUERY)) {
+			if (!iglib_db::select($QUERY) && $pid) {
 
 				$QUERY = array (
 					"SELECT" => "*",
@@ -88,6 +88,16 @@ class tx_igldapssoauth_typo3_user {
 					"UID_INDEX_FIELD" => "" ,
 				);
 
+			}elseif(!iglib_db::select($QUERY)){
+				$QUERY = array (
+					"SELECT" => "*",
+					"FROM" => $table,
+					"WHERE" => "username='".$username."'",
+					"GROUP_BY" => "",
+					"ORDER_BY" => "",
+					"LIMIT" => "",
+					"UID_INDEX_FIELD" => "" ,
+				);
 			}
 
 		}

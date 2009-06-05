@@ -183,7 +183,6 @@ class tx_igldapssoauth_auth {
 	function cas_auth () {
 
 		$cas = tx_igldapssoauth_config::get_values('cas');
-
 		phpCAS::client(CAS_VERSION_2_0, (string)$cas['host'], (integer)$cas['port'], (string)$cas['uri']);
 
 		switch ($this->login['status']) {
@@ -209,9 +208,12 @@ class tx_igldapssoauth_auth {
 		}
 
 		if (phpCAS::isAuthenticated()) {
-
-			$typo3_user = tx_igldapssoauth_auth::ldap_auth(phpCAS::getUser());
-
+			if(tx_igldapssoauth_config::is_enable('LDAPAuthentication')){
+				$typo3_user = tx_igldapssoauth_auth::ldap_auth(phpCAS::getUser());
+			}
+			else{
+				$typo3_user = tx_igldapssoauth_typo3_user::select($this->authInfo['db_user']['table'], 0, 0, phpCAS::getUser());
+			}
 			if ($typo3_user) {
 
 				return $typo3_user;

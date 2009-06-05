@@ -1,3 +1,5 @@
+2009-06-05 Michael Miousse
+	* Feature #3539: Enabeling CAS authentification as a stand alone feature
 2009-06-02  Xavier Perseguers
 
 	* Took TCA default configuration into account when creating users

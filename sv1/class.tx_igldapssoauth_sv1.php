@@ -74,7 +74,6 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 //		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('assignGroups'), 'Assign these groups');
 
 		$user = false;
-
 		// CAS authentication
 		if (tx_igldapssoauth_config::is_enable('CASAuthentication')) {
 

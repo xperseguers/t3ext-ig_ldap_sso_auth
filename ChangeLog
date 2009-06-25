@@ -1,3 +1,7 @@
+2009-06-25 Patrice Caron
+	* Feature #3764: Configuration for the service Url for cas
+2009-06-25 Michael Miousse
+	* Feature #3763: Add a new configuration denying import of users which do not have TYPO3 group
 2009-06-05 Michael Miousse
 	* Feature #3539: Enabeling CAS authentification as a stand alone feature
 2009-06-02  Xavier Perseguers

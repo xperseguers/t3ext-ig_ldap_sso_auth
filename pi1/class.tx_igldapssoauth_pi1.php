@@ -77,6 +77,9 @@ class tx_igldapssoauth_pi1 extends tslib_pibase {
 			//iglib_debug::print_this($cas_config, 'CAS config');
 
 			phpCAS::client(CAS_VERSION_2_0, (string)$cas_config['host'], (integer)$cas_config['port'], (string)$cas_config['uri']);
+			if (!empty($cas_config['service_url']))
+        		phpCAS::setFixedServiceURL((string)$cas_config['service_url']);
+        		
 			if (phpCAS::isAuthenticated()) {
 
 				$tmpl_cas_auth = $this->cObj->getSubpart($this->template,'###CAS_AUTHENTICATION_LOGOUT###');

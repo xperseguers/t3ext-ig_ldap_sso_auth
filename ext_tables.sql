@@ -13,6 +13,7 @@ CREATE TABLE tx_igldapssoauth_config (
 	cas_host varchar(255) DEFAULT '' NOT NULL,
 	cas_port int(11) DEFAULT '0' NOT NULL,
 	cas_logout_url varchar(255) DEFAULT '' NOT NULL,
+	cas_service_url	varchar(255) NOT NULL,
 	ldap_server int(11) DEFAULT '0' NOT NULL,
 	ldap_charset varchar(255) DEFAULT '' NOT NULL,
 	ldap_protocol int(11) DEFAULT '0' NOT NULL,

@@ -25,6 +25,9 @@ enableFELDAPAuthentication = 0
 # cat=basic/enable; type=boolean; label=Delete frontend user : Delete frontend user if no LDAP groups found.
 TYPO3FEDeleteUserIfNoLDAPGroups = 0
 
+# cat=basic/enable; type=boolean; label=Delete frontend user : dont import frontend user if no Typo3 groups found.
+TYPO3FEDeleteUserIfNoTYPO3Groups = 1
+
 # cat=basic/enable; type=boolean; label=If frontend group exist locally : If no groups found in the table fe_groups then the user may not log on.
 TYPO3FEGroupExist = 0
 

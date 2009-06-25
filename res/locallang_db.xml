@@ -15,6 +15,7 @@
 			<label index="tx_igldapssoauth_config.cas_uri">Uri :</label>
 			<label index="tx_igldapssoauth_config.cas_port">Port :</label>
 			<label index="tx_igldapssoauth_config.cas_logout_url">Back URL :</label>
+			<label index="tx_igldapssoauth_config.cas_service_url">Service URL :</label>
 
 			<label index="tx_igldapssoauth_config.ldap_server">Server :</label>
 			<label index="tx_igldapssoauth_config.ldap_server.I.0">OpenLDAP</label>
@@ -57,7 +58,9 @@
 
 			<label index="tx_igldapssoauth_config.cas_host">Host :</label>
 			<label index="tx_igldapssoauth_config.cas_port">Port :</label>
+			<label index="tx_igldapssoauth_config.cas_uri">Uri :</label>
 			<label index="tx_igldapssoauth_config.cas_logout_url">Back URL :</label>
+			<label index="tx_igldapssoauth_config.cas_service_url">Service URL :</label>
 
 			<label index="tx_igldapssoauth_config.ldap_server">Server :</label>
 			<label index="tx_igldapssoauth_config.ldap_server.I.0">OpenLDAP</label>

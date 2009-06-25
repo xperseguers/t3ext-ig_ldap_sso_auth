@@ -65,6 +65,7 @@ class tx_igldapssoauth_config {
 		$this->be['IfUserExist'] = $EXT_CONFIG['TYPO3BEUserExist'];
 		$this->be['IfGroupExist'] = 0;
 		$this->be['DeleteUserIfNoLDAPGroups'] = 0;
+		$this->be['DeleteUserIfNoTYPO3Groups'] = 0;
 		$this->be['GroupsNotSynchronize'] = $EXT_CONFIG['TYPO3BEGroupsNotSynchronize'];
 		$this->be['assignGroups'] = $EXT_CONFIG['assignBEGroups'] ? $EXT_CONFIG['assignBEGroups'] : 0;
 		$this->be['keepTYPO3Groups'] = $EXT_CONFIG['keepBEGroups'];
@@ -80,6 +81,8 @@ class tx_igldapssoauth_config {
 		$this->fe['evaluateGroupsFromMembership'] = $EXT_CONFIG['evaluateGroupsFromMembership'];
 		$this->fe['IfUserExist'] = 0;
 		$this->fe['IfGroupExist'] = $EXT_CONFIG['TYPO3FEGroupExist'];
+		
+		$this->fe['DeleteUserIfNoTYPO3Groups'] = $EXT_CONFIG['TYPO3FEDeleteUserIfNoTYPO3Groups'];
 		$this->fe['DeleteUserIfNoLDAPGroups'] = $EXT_CONFIG['TYPO3FEDeleteUserIfNoLDAPGroups'];
 		$this->fe['GroupsNotSynchronize'] = $EXT_CONFIG['TYPO3FEGroupsNotSynchronize'];
 		$this->fe['assignGroups'] = $EXT_CONFIG['assignFEGroups'] ? $EXT_CONFIG['assignFEGroups'] : 0;
@@ -95,6 +98,7 @@ class tx_igldapssoauth_config {
 		$this->cas['port'] = $EXT_CONFIG['cas_port'];
 		$this->cas['logout_url'] = $EXT_CONFIG['cas_logout_url'];
 		$this->cas['uri'] = $EXT_CONFIG['cas_uri'];
+		$this->cas['service_url'] = $EXT_CONFIG['cas_service_url'];
 
 		$this->ldap['server'] = $EXT_CONFIG['ldap_server'];
 		$this->ldap['host'] = $EXT_CONFIG['ldap_host'];		

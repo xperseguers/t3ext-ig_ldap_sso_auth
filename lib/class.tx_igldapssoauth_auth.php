@@ -56,46 +56,11 @@ class tx_igldapssoauth_auth {
 				$typo3_user = tx_igldapssoauth_auth::get_typo3_user($username, $userdn, $typo3_users_pid);
 
 				// User is valid only if exist in TYPO3.
-				if (tx_igldapssoauth_config::is_enable('IfUserExist') && !$typo3_user[0]['uid']) {
-
-					return false;
-
-				// User not exist in TYPO3.
-				} elseif (!$typo3_user[0]['uid']) {
-
-					// Insert new user: use TCA configuration to override default values
-					$table = $this->authInfo['db_user']['table'];
-					foreach ($GLOBALS['TCA'][$table]['columns'] as $column => $columnConfig) {
-						if (isset($columnConfig['config']['default'])) {
-							$defaultValue = $columnConfig['config']['default'];
-							$typo3_user[0][$column] = $defaultValue;
-						}
-					}
-
-					// Set random password
-					$charSet = 'abdeghjmnpqrstuvxyzABDEGHJLMNPQRSTVWXYZ23456789@#$%';
-					$password = '';
-					for ($i = 0; $i < 12; $i++) {
-						$password .= $charSet[(rand() % strlen($charSet))];
-					}
-					$typo3_user[0]['password'] = $password;
-
-					$typo3_user = tx_igldapssoauth_typo3_user::insert($table, $typo3_user[0]);
-
-				}
-
+				
 				// Get LDAP groups from LDAP user.
 				$ldap_groups = tx_igldapssoauth_auth::get_ldap_groups($ldap_user);
 
-				$typo3_user[0]['deleted'] = 0;
-
-				// Delete user if no LDAP groups found.
-				if (tx_igldapssoauth_config::is_enable('DeleteUserIfNoLDAPGroups') && !$ldap_groups) {
-
-					$typo3_user[0]['deleted'] = 1;
-
-				// If LDAP groups found.
-				} elseif ($ldap_groups) {
+				if ($ldap_groups) {
 
 					// Get pid from group mapping.
 					$typo3_group_pid = tx_igldapssoauth_config::get_pid($this->config['groups']['mapping']);
@@ -152,17 +117,60 @@ class tx_igldapssoauth_auth {
 
 				}
 
-				// Set groups to user.
-				$typo3_user = tx_igldapssoauth_typo3_user::set_usergroup($typo3_groups, $typo3_user);
+				if (tx_igldapssoauth_config::is_enable('IfUserExist') && !$typo3_user[0]['uid']) {
 
-				// Merge LDAP user with TYPO3 user from mapping.
-				$typo3_user = tx_igldapssoauth_auth::merge($ldap_user[0], $typo3_user[0], $this->config['users']['mapping']);
+					return false;
 
-				// Update TYPO3 user.
-				$typo3_user_updated = tx_igldapssoauth_typo3_user::update($this->authInfo['db_user']['table'], $typo3_user);
+				// User not exist in TYPO3.
+				} elseif (!$typo3_user[0]['uid'] && (!empty($typo3_groups) || !tx_igldapssoauth_config::is_enable('DeleteUserIfNoTYPO3Groups'))) {
 
-				$typo3_user['tx_igldapssoauth_from'] = 'LDAP';
+					// Insert new user: use TCA configuration to override default values
+					$table = $this->authInfo['db_user']['table'];
+					if(is_array($GLOBALS['TCA'][$table]['columns'])){
+						foreach ($GLOBALS['TCA'][$table]['columns'] as $column => $columnConfig) {
+							if (isset($columnConfig['config']['default'])) {
+								$defaultValue = $columnConfig['config']['default'];
+								$typo3_user[0][$column] = $defaultValue;
+							}
+						}
+					}
+					// Set random password
+					$charSet = 'abdeghjmnpqrstuvxyzABDEGHJLMNPQRSTVWXYZ23456789@#$%';
+					$password = '';
+					for ($i = 0; $i < 12; $i++) {
+						$password .= $charSet[(rand() % strlen($charSet))];
+					}
+					$typo3_user[0]['password'] = $password;
 
+					$typo3_user = tx_igldapssoauth_typo3_user::insert($table, $typo3_user[0]);
+
+				}
+				if(!empty($typo3_user[0]['uid'])){
+					$typo3_user[0]['deleted'] = 0;
+					if((empty($typo3_groups) && tx_igldapssoauth_config::is_enable('DeleteUserIfNoTYPO3Groups'))){
+						$typo3_user[0]['deleted'] = 1;
+					}
+					// Delete user if no LDAP groups found.
+					if (tx_igldapssoauth_config::is_enable('DeleteUserIfNoLDAPGroups') && !$ldap_groups) {
+	
+						$typo3_user[0]['deleted'] = 1;
+	
+					// If LDAP groups found.
+					} 
+					// Set groups to user.
+					$typo3_user = tx_igldapssoauth_typo3_user::set_usergroup($typo3_groups, $typo3_user);
+	
+					// Merge LDAP user with TYPO3 user from mapping.
+					$typo3_user = tx_igldapssoauth_auth::merge($ldap_user[0], $typo3_user[0], $this->config['users']['mapping']);
+	
+					// Update TYPO3 user.
+					$typo3_user_updated = tx_igldapssoauth_typo3_user::update($this->authInfo['db_user']['table'], $typo3_user);
+	
+					$typo3_user['tx_igldapssoauth_from'] = 'LDAP';
+				}
+				else{
+					$typo3_user=false;
+				}
 				//iglib_debug::print_this($typo3_user, 'TYPO3 USER MERGED');
 				return $typo3_user;
 
@@ -184,7 +192,10 @@ class tx_igldapssoauth_auth {
 
 		$cas = tx_igldapssoauth_config::get_values('cas');
 		phpCAS::client(CAS_VERSION_2_0, (string)$cas['host'], (integer)$cas['port'], (string)$cas['uri']);
+		if (!empty($cas_config['service_url']))
+			phpCAS::setFixedServiceURL((string)$cas_config['service_url']);
 
+		
 		switch ($this->login['status']) {
 
 			case 'login' :

@@ -1,9 +1,7 @@
-includeLibs.tx_igldapssoauth_pi1 = EXT:ig_ldap_sso_auth/pi1/class.tx_igldapssoauth_pi1.php
-
-plugin.tx_igldapssoauth_pi1 = USER
-
-plugin.tx_igldapssoauth_pi1 {
-
+plugin.tx_igldapssoauth_pi1 = USER_INT
+plugin.tx_igldapssoauth_pi1{
+	autoLogin = 0
+	autoLogout = 0 
 	userFunc = tx_igldapssoauth_pi1->main
 
 	templateFile = {$plugin.tx_igldapssoauth_pi1.templateFile}
@@ -25,13 +23,4 @@ plugin.tx_igldapssoauth_pi1 {
 		}
 
 	)
-
-	# Alter locallang.
-
-	#_LOCAL_LANG.fr {
-	#	login = CAS login
-	#	logout = CAS logout
-	#	disable = Plugin non actif.
-	#}
-
 }

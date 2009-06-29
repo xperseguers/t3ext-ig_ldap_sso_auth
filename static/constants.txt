@@ -1,0 +1,5 @@
+plugin.tx_igldapssoauth_pi1 {
+
+    templateFile = EXT:ig_ldap_sso_auth/res/cas_authentication.html
+
+}

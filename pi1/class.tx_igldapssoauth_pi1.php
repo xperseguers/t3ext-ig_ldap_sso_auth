@@ -81,13 +81,23 @@ class tx_igldapssoauth_pi1 extends tslib_pibase {
         		phpCAS::setFixedServiceURL((string)$cas_config['service_url']);
         		
 			if (phpCAS::isAuthenticated()) {
-
-				$tmpl_cas_auth = $this->cObj->getSubpart($this->template,'###CAS_AUTHENTICATION_LOGOUT###');
+				if ($conf['autoLogout'])
+				{
+					Header('Location: ' . $marker['###LOGOUT_FORM_ACTION###'] . '&logintype=logout');
+					exit;
+				} else {
+					$tmpl_cas_auth = $this->cObj->getSubpart($this->template,'###CAS_AUTHENTICATION_LOGOUT###');
+				}
 
 			} else {
 
-				$tmpl_cas_auth = $this->cObj->getSubpart($this->template,'###CAS_AUTHENTICATION_LOGIN###');
-
+				if ($conf['autoLogin'])
+				{
+					phpCAS::forceAuthentication();
+					exit;
+				} else {
+					$tmpl_cas_auth = $this->cObj->getSubpart($this->template,'###CAS_AUTHENTICATION_LOGIN###');
+				}
 			}
 
 		} else {

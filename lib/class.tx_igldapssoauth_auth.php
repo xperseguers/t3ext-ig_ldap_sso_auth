@@ -159,14 +159,15 @@ class tx_igldapssoauth_auth {
 					} 
 					// Set groups to user.
 					$typo3_user = tx_igldapssoauth_typo3_user::set_usergroup($typo3_groups, $typo3_user);
-	
 					// Merge LDAP user with TYPO3 user from mapping.
-					$typo3_user = tx_igldapssoauth_auth::merge($ldap_user[0], $typo3_user[0], $this->config['users']['mapping']);
-	
-					// Update TYPO3 user.
-					$typo3_user_updated = tx_igldapssoauth_typo3_user::update($this->authInfo['db_user']['table'], $typo3_user);
-	
-					$typo3_user['tx_igldapssoauth_from'] = 'LDAP';
+					if($typo3_user){
+						$typo3_user = tx_igldapssoauth_auth::merge($ldap_user[0], $typo3_user[0], $this->config['users']['mapping']);
+		
+						// Update TYPO3 user.
+						$typo3_user_updated = tx_igldapssoauth_typo3_user::update($this->authInfo['db_user']['table'], $typo3_user);
+		
+						$typo3_user['tx_igldapssoauth_from'] = 'LDAP';
+					}
 				}
 				else{
 					$typo3_user=false;
@@ -194,7 +195,7 @@ class tx_igldapssoauth_auth {
 		phpCAS::client(CAS_VERSION_2_0, (string)$cas['host'], (integer)$cas['port'], (string)$cas['uri']);
 		if (!empty($cas_config['service_url']))
 			phpCAS::setFixedServiceURL((string)$cas_config['service_url']);
-
+		
 		
 		switch ($this->login['status']) {
 

@@ -67,6 +67,8 @@ class tx_igldapssoauth_config {
 		$this->be['DeleteUserIfNoLDAPGroups'] = 0;
 		$this->be['DeleteUserIfNoTYPO3Groups'] = 0;
 		$this->be['GroupsNotSynchronize'] = $EXT_CONFIG['TYPO3BEGroupsNotSynchronize'];
+		$this->be['requiredLDAPGroups'] = $EXT_CONFIG['requiredLDAPBEGroups'] ? $EXT_CONFIG['requiredLDAPBEGroups'] : 0;
+	    $this->be['updateAdminAttribForGroups'] = $EXT_CONFIG['updateAdminAttribForGroups'] ? $EXT_CONFIG['updateAdminAttribForGroups'] : 0;
 		$this->be['assignGroups'] = $EXT_CONFIG['assignBEGroups'] ? $EXT_CONFIG['assignBEGroups'] : 0;
 		$this->be['keepTYPO3Groups'] = $EXT_CONFIG['keepBEGroups'];
 		$this->be['users']['basedn'] = $EXT_CONFIG['be_users_basedn'];
@@ -81,12 +83,13 @@ class tx_igldapssoauth_config {
 		$this->fe['evaluateGroupsFromMembership'] = $EXT_CONFIG['evaluateGroupsFromMembership'];
 		$this->fe['IfUserExist'] = 0;
 		$this->fe['IfGroupExist'] = $EXT_CONFIG['TYPO3FEGroupExist'];
-		
+		$this->fe['updateAdminAttribForGroups']=0;
 		$this->fe['DeleteUserIfNoTYPO3Groups'] = $EXT_CONFIG['TYPO3FEDeleteUserIfNoTYPO3Groups'];
 		$this->fe['DeleteUserIfNoLDAPGroups'] = $EXT_CONFIG['TYPO3FEDeleteUserIfNoLDAPGroups'];
 		$this->fe['GroupsNotSynchronize'] = $EXT_CONFIG['TYPO3FEGroupsNotSynchronize'];
 		$this->fe['assignGroups'] = $EXT_CONFIG['assignFEGroups'] ? $EXT_CONFIG['assignFEGroups'] : 0;
 		$this->fe['keepTYPO3Groups'] = $EXT_CONFIG['keepFEGroups'];
+		$this->fe['requiredLDAPGroups'] = $EXT_CONFIG['requiredLDAPFEGroups'] ? $EXT_CONFIG['requiredLDAPFEGroups'] : 0;
 		$this->fe['users']['basedn'] = $EXT_CONFIG['fe_users_basedn'];
 		$this->fe['users']['filter'] = $EXT_CONFIG['fe_users_filter'];
 		$this->fe['users']['mapping'] = tx_igldapssoauth_config::make_user_mapping($EXT_CONFIG['fe_users_mapping'], $EXT_CONFIG['fe_users_filter']);

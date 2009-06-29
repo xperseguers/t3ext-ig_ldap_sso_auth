@@ -19,6 +19,12 @@ assignBEGroups = 0
 # cat=basic/enable; type=boolean; label=Keep BE groups : Keep the groups assigned to user in TYPO3.
 keepBEGroups = 0
 
+# cat=basic/enable; type=string; label=LDAP Groups to update admin : Comma-separated list of BE groups uid automatically assign to admin BE users flag.
+updateAdminAttribForGroups = 0
+
+# cat=basic/enable; type=string; label=Required ldap groups : Comma-separated list of BE groups uid require to accept login.
+requiredLDAPBEGroups = 0
+
 # cat=basic/enable; type=boolean; label=Frontend LDAP authentication : Enable LDAP authentication for the frontend.
 enableFELDAPAuthentication = 0
 
@@ -26,10 +32,13 @@ enableFELDAPAuthentication = 0
 TYPO3FEDeleteUserIfNoLDAPGroups = 0
 
 # cat=basic/enable; type=boolean; label=Delete frontend user : dont import frontend user if no Typo3 groups found.
-TYPO3FEDeleteUserIfNoTYPO3Groups = 1
+TYPO3FEDeleteUserIfNoTYPO3Groups = 0
 
 # cat=basic/enable; type=boolean; label=If frontend group exist locally : If no groups found in the table fe_groups then the user may not log on.
 TYPO3FEGroupExist = 0
+
+# cat=basic/enable; type=string; label=Required ldap groups : Comma-separated list of FE groups uid require to accept login.
+requiredLDAPFEGroups = 0
 
 # cat=basic/enable; type=boolean; label=Not synchronize the FE groups  : If checked, frontend groups not import in TYPO3.
 TYPO3FEGroupsNotSynchronize = 0

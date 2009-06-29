@@ -1,9 +1,25 @@
+2009-06-29 Partice Caron 
+
+	* Feature #3775: Lock users to a certain list of ldap group
+	* Feature #3774: Set imported user to Admin (Backend)
+
+2009-06-29 Partice Caron & Michael Miousse 
+
+	* Feature #3773 : Autologin or logout option for the cas plugin 
+	* Replace the ext_typoscript_setup.txt and ext_typoscript_constant.txt by a static folder
+
 2009-06-25 Patrice Caron
+
 	* Feature #3764: Configuration for the service Url for cas
+
 2009-06-25 Michael Miousse
+
 	* Feature #3763: Add a new configuration denying import of users which do not have TYPO3 group
+	
 2009-06-05 Michael Miousse
+	
 	* Feature #3539: Enabeling CAS authentification as a stand alone feature
+
 2009-06-02  Xavier Perseguers
 
 	* Took TCA default configuration into account when creating users

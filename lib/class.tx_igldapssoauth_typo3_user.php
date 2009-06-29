@@ -147,7 +147,7 @@ class tx_igldapssoauth_typo3_user {
 
 
 	function set_usergroup ($typo3_groups = array(), $typo3_user = array()) {
-
+		$required=true;
 		$group_uid = array();
 
 		if ($typo3_groups) {
@@ -193,10 +193,33 @@ class tx_igldapssoauth_typo3_user {
 			}
 
 		}
+		
+	 	if ($requiredLDAPGroups = tx_igldapssoauth_config::is_enable('requiredLDAPGroups')) {
+               	$requiredLDAPGroups = explode(',', $requiredLDAPGroups);
+				$required = false;
+            	foreach ($requiredLDAPGroups as $uid) {
+                	if (in_array($uid, $group_uid)) {
+						$required = true;
+					}
+            	}
+        }
+        
+        if ($updateAdminAttribForGroups = tx_igldapssoauth_config::is_enable('updateAdminAttribForGroups')) {
+				$updateAdminAttribForGroups = explode(',', $updateAdminAttribForGroups);
+            	$typo3_user[0]['admin'] = 0;
+            	foreach ($updateAdminAttribForGroups as $uid) {
+                	if (in_array($uid, $group_uid)) {
+                    	$typo3_user[0]['admin'] = 1;
+                	}
+            	}
+        }
 
 		$typo3_user[0]['usergroup'] = (string)implode(',', $group_uid);
 
-		return $typo3_user;
+		if ($required)
+            	return $typo3_user;
+        else
+            	return false;
 
 	}
 

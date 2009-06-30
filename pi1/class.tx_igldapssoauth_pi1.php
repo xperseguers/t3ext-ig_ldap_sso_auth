@@ -83,7 +83,8 @@ class tx_igldapssoauth_pi1 extends tslib_pibase {
 			if (phpCAS::isAuthenticated()) {
 				if ($conf['autoLogout'])
 				{
-					Header('Location: ' . $marker['###LOGOUT_FORM_ACTION###'] . '&logintype=logout');
+					
+					Header('Location: ' . $this->pi_getPageLink($GLOBALS['TSFE']->id,'',array('logintype'=>'logout')));
 					exit;
 				} else {
 					$tmpl_cas_auth = $this->cObj->getSubpart($this->template,'###CAS_AUTHENTICATION_LOGOUT###');

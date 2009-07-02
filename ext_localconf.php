@@ -40,7 +40,7 @@ if($EXT_CONFIG['enableFELDAPAuthentication']){
 	$subTypesArr[] ='authUserFE';
 	$subTypesArr[] ='getGroupsFE';
 }
-if($EXT_CONFIG['enableFELDAPAuthentication']){
+if($EXT_CONFIG['enableBELDAPAuthentication']){
 	$subTypesArr[] = 'getUserBE';
 	$subTypesArr[] = 'authUserBE';
 	$TYPO3_CONF_VARS['BE']['loginSecurityLevel'] = 'normal';

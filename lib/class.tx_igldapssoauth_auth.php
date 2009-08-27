@@ -35,7 +35,11 @@ class tx_igldapssoauth_auth {
 	var $config;
 
 	function ldap_auth ($username = null, $password = null) {
-
+		if ($username && tx_igldapssoauth_config::is_enable('forceLowerCaseUsername')) {
+			// Possible enhancement: use t3lib_cs::conv_case instead
+			$username = strtolower($username);
+		}
+		
 		// Valid user only if username and connect to LDAP server.
 		if ($username && tx_igldapssoauth_ldap::connect(tx_igldapssoauth_config::get_values('ldap'))) {
 
@@ -141,6 +145,11 @@ class tx_igldapssoauth_auth {
 						$password .= $charSet[(rand() % strlen($charSet))];
 					}
 					$typo3_user[0]['password'] = $password;
+					
+					if (tx_igldapssoauth_config::is_enable('forceLowerCaseUsername')) {
+						// Possible enhancement: use t3lib_cs::conv_case instead
+						$typo3_user[0]['username'] = strtolower($typo3_user[0]['username']);
+					}
 
 					$typo3_user = tx_igldapssoauth_typo3_user::insert($table, $typo3_user[0]);
 
@@ -162,6 +171,11 @@ class tx_igldapssoauth_auth {
 					// Merge LDAP user with TYPO3 user from mapping.
 					if($typo3_user){
 						$typo3_user = tx_igldapssoauth_auth::merge($ldap_user[0], $typo3_user[0], $this->config['users']['mapping']);
+		
+						if (tx_igldapssoauth_config::is_enable('forceLowerCaseUsername')) {
+							// Possible enhancement: use t3lib_cs::conv_case instead
+							$typo3_user['username'] = strtolower($typo3_user['username']);
+						}
 		
 						// Update TYPO3 user.
 						$typo3_user_updated = tx_igldapssoauth_typo3_user::update($this->authInfo['db_user']['table'], $typo3_user);

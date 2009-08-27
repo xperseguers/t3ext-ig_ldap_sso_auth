@@ -1,5 +1,11 @@
+2009-08-27 Xavier Perseguers
+
+	* Feature #4354: Add option to force username as lowercase
+
 2009-06-30 Michael Miousse
-	*bug : modification of the autologout URL for realurl
+
+	* Bug : modification of the autologout URL for realurl
+
 2009-06-29 Partice Caron 
 
 	* Feature #3775: Lock users to a certain list of ldap group

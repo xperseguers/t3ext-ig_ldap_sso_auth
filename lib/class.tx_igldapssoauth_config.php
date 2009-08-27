@@ -61,6 +61,7 @@ class tx_igldapssoauth_config {
 
 		$this->be['LDAPAuthentication'] = $EXT_CONFIG['enableBELDAPAuthentication'];
 		$this->be['CASAuthentication'] = 0;
+		$this->be['forceLowerCaseUsername'] = $EXT_CONFIG['forceLowerCaseUsername'] ? $EXT_CONFIG['forceLowerCaseUsername'] : 0;
 		$this->be['evaluateGroupsFromMembership'] = $EXT_CONFIG['evaluateGroupsFromMembership'];
 		$this->be['IfUserExist'] = $EXT_CONFIG['TYPO3BEUserExist'];
 		$this->be['IfGroupExist'] = 0;
@@ -80,6 +81,7 @@ class tx_igldapssoauth_config {
 
 		$this->fe['LDAPAuthentication'] = $EXT_CONFIG['enableFELDAPAuthentication'];
 		$this->fe['CASAuthentication'] = $EXT_CONFIG['enableFECASAuthentication'];
+		$this->fe['forceLowerCaseUsername'] = $EXT_CONFIG['forceLowerCaseUsername'] ? $EXT_CONFIG['forceLowerCaseUsername'] : 0;
 		$this->fe['evaluateGroupsFromMembership'] = $EXT_CONFIG['evaluateGroupsFromMembership'];
 		$this->fe['IfUserExist'] = 0;
 		$this->fe['IfGroupExist'] = $EXT_CONFIG['TYPO3FEGroupExist'];

@@ -420,21 +420,29 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 					$this->content[] = '<caption><h2>'.$this->lang->getLL('import_groups_'.$typo3_mode.'_title').'</h2></caption>';
 
 					$typo3_group_pid = tx_igldapssoauth_config::get_pid($this->config[$typo3_mode]['groups']['mapping']);
-
 					$typo3_groups = tx_igldapssoauth_auth::get_typo3_groups($ldap_groups, $this->config[$typo3_mode]['groups']['mapping'], $typo3_mode.'_groups', $typo3_group_pid);
 
 					unset($ldap_groups['count']);
 
 					foreach ($ldap_groups as $index => $ldap_group) {
-
-						$typo3_group = tx_igldapssoauth_auth::merge($ldap_group, $typo3_groups[$index], $this->config[$typo3_mode]['groups']['mapping']);
+					$typo3_group = tx_igldapssoauth_auth::merge($ldap_group, $typo3_groups[$index], $this->config[$typo3_mode]['groups']['mapping']);
 						//iglib_debug::print_this($typo3_group);
-
 						if (isset($import_groups[$typo3_mode]) && in_array($typo3_group['tx_igldapssoauth_dn'], $import_groups[$typo3_mode])) {
-
+							unset($typo3_group['parentGroup']);
 							$typo3_group = tx_igldapssoauth_typo3_group::insert($typo3_mode.'_groups', $typo3_group);
-
 							$typo3_group = $typo3_group[0];
+							
+							$fieldParent = $this->config[$typo3_mode]['groups']['mapping']['parentGroup'];
+							preg_match("`<([^$]*)>`", $fieldParent, $attribute);
+							$fieldParent = $attribute[1];
+
+							if(is_array($ldap_group[$fieldParent])){
+								unset($ldap_group[$fieldParent]['count']);
+								if(is_array($ldap_group[$fieldParent])){
+									$this->setParentGroup($ldap_group[$fieldParent],$fieldParent,$typo3_group['uid'],$typo3_group_pid,$typo3_mode);
+								}
+							}
+
 
 							//iglib_debug::print_this($typo3_group, 'INSERTED');
 
@@ -475,7 +483,50 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 		}
 
 	}
+	function setParentGroup($parentsLDAPGroups,$feildParent,$childUid,$typo3_group_pid,$typo3_mode){
+		foreach($parentsLDAPGroups as $parentDn){
+		    $typo3ParentGroup=tx_igldapssoauth_typo3_group::select ($typo3_mode.'_groups',  false, $typo3_group_pid, '', $parentDn);
 
+		    if(is_array($typo3ParentGroup[0])){
+		    	if(!empty($typo3ParentGroup[0]['subgroup'])){
+		    		$subGroupList = t3lib_div::trimExplode(',',$typo3ParentGroup[0]['subgroup']);
+		    	}
+		    	//if(!is_array($subGroupList)||!in_array($childUid,$subGroupList)){
+		    		$subGroupList[]=$childUid;
+		    		$subGroupList = array_unique($subGroupList);
+		    		$typo3ParentGroup[0]['subgroup'] = implode(',',$subGroupList);
+		    		tx_igldapssoauth_typo3_group::update($typo3_mode.'_groups',$typo3ParentGroup[0]);
+		    	//}
+		    }else{
+		    	
+		    	if ($ldap_groups = tx_igldapssoauth_ldap::search($this->config[$typo3_mode]['groups']['basedn'],'(&'.tx_igldapssoauth_config::replace_filter_markers($this->config[$typo3_mode]['groups']['filter']).'&(distinguishedName='.$parentDn.'))', tx_igldapssoauth_config::get_ldap_attributes($this->config[$typo3_mode]['groups']['mapping']))) {
+		    		if(is_array($ldap_groups)){
+		    			$typo3_group_pid = tx_igldapssoauth_config::get_pid($this->config[$typo3_mode]['groups']['mapping']);
+
+						$typo3_groups = tx_igldapssoauth_auth::get_typo3_groups($ldap_groups, $this->config[$typo3_mode]['groups']['mapping'], $typo3_mode.'_groups', $typo3_group_pid);
+	
+						unset($ldap_groups['count']);
+
+						foreach ($ldap_groups as $index => $ldap_group) {
+							$typo3_group = tx_igldapssoauth_auth::merge($ldap_group, $typo3_groups[$index], $this->config[$typo3_mode]['groups']['mapping']);
+							unset($typo3_group['parentGroup']);
+							$typo3_group['subgroup'] = $childUid;
+							$typo3_group = tx_igldapssoauth_typo3_group::insert($typo3_mode.'_groups', $typo3_group);
+							$typo3_group = $typo3_group[0];
+	
+							if(is_array($ldap_group[$feildParent])){
+								unset($ldap_group[$feildParent]['count']);
+								if(is_array($ldap_group[$feildParent])){
+									$this->setParentGroup($ldap_group[$feildParent],$feildParent,$typo3_group['uid'],$typo3_group_pid,$typo3_mode);
+								}
+
+							}
+						}
+		    		}
+		    	}
+		    }
+		}
+	}
 	/**
 	 * Prints out the module HTML
 	 *

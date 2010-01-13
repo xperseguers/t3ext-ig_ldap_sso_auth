@@ -207,54 +207,39 @@ class tx_igldapssoauth_auth {
 
 		$cas = tx_igldapssoauth_config::get_values('cas');
 		phpCAS::client(CAS_VERSION_2_0, (string)$cas['host'], (integer)$cas['port'], (string)$cas['uri']);
-		if (!empty($cas_config['service_url']))
-			phpCAS::setFixedServiceURL((string)$cas_config['service_url']);
-		
+		if (!empty($cas['service_url'])) {
+			phpCAS::setFixedServiceURL((string)$cas['service_url']);
+		}
 		
 		switch ($this->login['status']) {
-
 			case 'login' :
-
 				if (phpCAS::isAuthenticated()) {
-
 					phpCAS::logout($cas['logout_url']);
 				}
-
 				phpCAS::forceAuthentication();
-
 				break;
 
 			case 'logout' :
-
 				phpCAS::logout($cas['logout_url']);
 				return false;
-
 				break;
-
 		}
 
 		if (phpCAS::isAuthenticated()) {
-			if(tx_igldapssoauth_config::is_enable('LDAPAuthentication')){
+			if (tx_igldapssoauth_config::is_enable('LDAPAuthentication')) {
 				$typo3_user = tx_igldapssoauth_auth::ldap_auth(phpCAS::getUser());
-			}
-			else{
+			} else {
 				$typo3_user = tx_igldapssoauth_typo3_user::select($this->authInfo['db_user']['table'], 0, 0, phpCAS::getUser());
 			}
 			if ($typo3_user) {
-
 				return $typo3_user;
-
 			} else {
-
 				phpCAS::logout($cas['logout_url']);
 				return false;
-
 			}
-
 		}
 
 		return false;
-
 	}
 
 	function get_ldap_user ($userdn = null) {

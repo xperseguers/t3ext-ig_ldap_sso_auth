@@ -1,3 +1,7 @@
+2010-01-13  Xavier Perseguers  <typo3@perseguers.ch>
+
+	* Fixed bug #6015: Bad CAS config variable name (thanks to Patrice Caron)
+
 2009-08-27 Xavier Perseguers
 
 	* Feature #4354: Add option to force username as lowercase

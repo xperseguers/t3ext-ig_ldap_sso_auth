@@ -34,121 +34,100 @@
  */
 class tx_igldapssoauth_typo3_group {
 
-	function init ($table = null) {
-
+	function init($table = null) {
 		// Get users table structure.
 		$typo3_group_default = iglib_db::get_columns_from($table);
 
 		foreach ($typo3_group_default as $field => $value) {
-
 			$typo3_group[$field] = null;
-
 		}
 
 		return $typo3_group;
-
 	}
 
-	function select ($table = null, $uid = 0, $pid = null, $title = null, $dn = null) {
+	function select($table = null, $uid = 0, $pid = null, $title = null, $dn = null) {
 
 		// Search with uid and pid.
 		if ($uid) {
-
-			$QUERY = array (
-				"SELECT" => "*",
-				"FROM" => $table,
-				"WHERE" => "uid=".$uid,
-				"GROUP_BY" => "",
-				"ORDER_BY" => "",
-				"LIMIT" => "",
-				"UID_INDEX_FIELD" => "" ,
+			$QUERY = array(
+				'SELECT' => '*',
+				'FROM' => $table,
+				'WHERE' => 'uid=' . intval($uid),
+				'GROUP_BY' => '',
+				'ORDER_BY' => '',
+				'LIMIT' => '',
+				'UID_INDEX_FIELD' => '',
 			);
 
 		// Search with DN, title and pid.
 		} else {
-
-			$QUERY = array (
-				"SELECT" => "*",
-				"FROM" => $table,
-				"WHERE" => "tx_igldapssoauth_dn='".$dn."' AND pid IN (".$pid.")",
-				"GROUP_BY" => "",
-				"ORDER_BY" => "",
-				"LIMIT" => "",
-				"UID_INDEX_FIELD" => "" ,
+			$QUERY = array(
+				'SELECT' => '*',
+				'FROM' => $table,
+				'WHERE' => 'tx_igldapssoauth_dn=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($dn, $table) . ' AND pid IN (' . $pid . ')',
+				'GROUP_BY' => '',
+				'ORDER_BY' => '',
+				'LIMIT' => '',
+				'UID_INDEX_FIELD' => '',
 			);
-
 		}
 
 		// Return TYPO3 group.
 		return iglib_db::select($QUERY);
-
 	}
 
-	function insert ($table = null, $typo3_group = array()) {
-
-		$QUERY = array (
-			"TABLE" => $table,
-			"FIELDS_VALUES" => $typo3_group,
-			"NO_QUOTE_FIELDS" => false,
+	function insert($table = null, $typo3_group = array()) {
+		$QUERY = array(
+			'TABLE' => $table,
+			'FIELDS_VALUES' => $typo3_group,
+			'NO_QUOTE_FIELDS' => FALSE,
 		);
 
 		$uid = iglib_db::insert($QUERY);
 
-		$QUERY = array (
-			"SELECT" => "*",
-			"FROM" => $table,
-			"WHERE" => "uid=".$uid,
-			"GROUP_BY" => "",
-			"ORDER_BY" => "",
-			"LIMIT" => "",
-			"UID_INDEX_FIELD" => "",
+		$QUERY = array(
+			'SELECT' => '*',
+			'FROM' => $table,
+			'WHERE' => 'uid=' . intval($uid),
+			'GROUP_BY' => '',
+			'ORDER_BY' => '',
+			'LIMIT' => '',
+			'UID_INDEX_FIELD' => '',
 		);
 
 		return iglib_db::select($QUERY);
-
 	}
 
-
-	function update ($table = null, $typo3_group = array()) {
-
-		$QUERY = array (
-			"TABLE" => $table,
-			"WHERE" => "uid=".$typo3_group['uid'],
-			"FIELDS_VALUES" => $typo3_group,
-			"NO_QUOTE_FIELDS" => false,
+	function update($table = null, $typo3_group = array()) {
+		$QUERY = array(
+			'TABLE' => $table,
+			'WHERE' => 'uid=' . intval($typo3_group['uid']),
+			'FIELDS_VALUES' => $typo3_group,
+			'NO_QUOTE_FIELDS' => FALSE,
 		);
 
 		return iglib_db::update($QUERY);
-
 	}
 
-	function get_title ($ldap_user = array(), $mapping = array()) {
+	function get_title($ldap_user = array(), $mapping = array()) {
+		if (!$mapping) {
+			return null;
+		}
 
-		if (!$mapping) { return null; }
-
-		if (array_key_exists('title', $mapping) && preg_match("`<([^$]*)>`", $mapping['title'], $attribute)) {
-
-			if ($attribute[1] == 'dn') {
-
+		if (array_key_exists('title', $mapping) && preg_match('`<([^$]*)>`', $mapping['title'], $attribute)) {
+			if ($attribute[1] === 'dn') {
 				return $ldap_user[$attribute[1]];
-
 			}
 
 			return $ldap_user[$attribute[1]][0];
-
 		}
 
 		return null;
-
 	}
-
-
 }
-
 
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/lib/class.tx_igldapssoauth_typo3_group.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/lib/class.tx_igldapssoauth_typo3_group.php']);
 }
-
 ?>

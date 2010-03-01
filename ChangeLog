@@ -1,3 +1,8 @@
+2010-03-01  Xavier Perseguers  <typo3@perseguers.ch>
+
+	* Applied CGL
+	* Added missing SVN properties
+
 2010-01-13  Xavier Perseguers  <typo3@perseguers.ch>
 
 	* Fixed bug #6015: Bad CAS config variable name (thanks to Patrice Caron)

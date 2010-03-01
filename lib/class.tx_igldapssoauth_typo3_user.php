@@ -38,189 +38,159 @@ class tx_igldapssoauth_typo3_user {
 		$typo3_user_default = iglib_db::get_columns_from($table);
 
 		foreach ($typo3_user_default as $field => $value) {
-
 			$typo3_user[0][$field] = null;
-
 		}
 
 		return $typo3_user;
-
 	}
 
 	function select ($table = null, $uid = 0, $pid = 0, $username = null, $dn = null) {
 
 		// Search with uid and pid.
 		if ($uid) {
-
-			$QUERY = array (
-				"SELECT" => "*",
-				"FROM" => $table,
-				"WHERE" => "uid=".$uid,
-				"GROUP_BY" => "",
-				"ORDER_BY" => "",
-				"LIMIT" => "",
-				"UID_INDEX_FIELD" => "" ,
+			$QUERY = array(
+				'SELECT' => '*',
+				'FROM' => $table,
+				'WHERE' => 'uid=' . $uid,
+				'GROUP_BY' => '',
+				'ORDER_BY' => '',
+				'LIMIT' => '',
+				'UID_INDEX_FIELD' => '',
 			);
 
 		// Search with DN, username and pid.
 		} else {
-
-			$QUERY = array (
-				"SELECT" => "*",
-				"FROM" => $table,
-				"WHERE" => "tx_igldapssoauth_dn='".$dn."' AND username='".$username."'".' AND pid IN ('.$pid.')',
-				"GROUP_BY" => "",
-				"ORDER_BY" => "",
-				"LIMIT" => "",
-				"UID_INDEX_FIELD" => "" ,
+			$QUERY = array(
+				'SELECT' => '*',
+				'FROM' => $table,
+				'WHERE' => 'tx_igldapssoauth_dn=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($dn, $table)
+					. ' AND username=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($username, $table)
+					. ' AND pid IN (' . $pid . ')',
+				'GROUP_BY' => '',
+				'ORDER_BY' => '',
+				'LIMIT' => '',
+				'UID_INDEX_FIELD' => '',
 			);
 
 			// If no user found with DN and username, search with username and pid only.
 			if (!iglib_db::select($QUERY) && $pid) {
-
-				$QUERY = array (
-					"SELECT" => "*",
-					"FROM" => $table,
-					"WHERE" => "username='".$username."'".' AND pid IN ('.$pid.')',
-					"GROUP_BY" => "",
-					"ORDER_BY" => "",
-					"LIMIT" => "",
-					"UID_INDEX_FIELD" => "" ,
+				$QUERY = array(
+					'SELECT' => '*',
+					'FROM' => $table,
+					'WHERE' => 'username=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($username, $table) . ' AND pid IN (' . $pid . ')',
+					'GROUP_BY' => '',
+					'ORDER_BY' => '',
+					'LIMIT' => '',
+					'UID_INDEX_FIELD' => '',
 				);
 
-			}elseif(!iglib_db::select($QUERY)){
-				$QUERY = array (
-					"SELECT" => "*",
-					"FROM" => $table,
-					"WHERE" => "username='".$username."'",
-					"GROUP_BY" => "",
-					"ORDER_BY" => "",
-					"LIMIT" => "",
-					"UID_INDEX_FIELD" => "" ,
+			} elseif (!iglib_db::select($QUERY)) {
+				$QUERY = array(
+					'SELECT' => '*',
+					'FROM' => $table,
+					'WHERE' => 'username=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($username, $table),
+					'GROUP_BY' => '',
+					'ORDER_BY' => '',
+					'LIMIT' => '',
+					'UID_INDEX_FIELD' => '',
 				);
 			}
-
 		}
 
 		// Return TYPO3 user.
 		return iglib_db::select($QUERY);
-
 	}
 
-
 	function insert ($table = null, $typo3_user = array()) {
-
-		$QUERY = array (
-			"TABLE" => $table,
-			"FIELDS_VALUES" => $typo3_user,
-			"NO_QUOTE_FIELDS" => FALSE,
+		$QUERY = array(
+			'TABLE' => $table,
+			'FIELDS_VALUES' => $typo3_user,
+			'NO_QUOTE_FIELDS' => FALSE,
 		);
 
 		$uid = iglib_db::insert($QUERY);
 
-		$QUERY = array (
-			"SELECT" => "*",
-			"FROM" => $table,
-			"WHERE" => "uid=".$uid,
-			"GROUP_BY" => "",
-			"ORDER_BY" => "",
-			"LIMIT" => "",
-			"UID_INDEX_FIELD" => "" ,
+		$QUERY = array(
+			'SELECT' => '*',
+			'FROM' => $table,
+			'WHERE' => 'uid=' . intval($uid),
+			'GROUP_BY' => '',
+			'ORDER_BY' => '',
+			'LIMIT' => '',
+			'UID_INDEX_FIELD' => '',
 		);
 
 		return iglib_db::select($QUERY);
-
 	}
 
 	function update ($table = null, $typo3_user = array()) {
-
 		$QUERY = array (
-			"TABLE" => $table,
-			"WHERE" => "uid=".$typo3_user['uid'],
-			"FIELDS_VALUES" => $typo3_user,
-			"NO_QUOTE_FIELDS" => FALSE,
+			'TABLE' => $table,
+			'WHERE' => 'uid=' . intval($typo3_user['uid']),
+			'FIELDS_VALUES' => $typo3_user,
+			'NO_QUOTE_FIELDS' => FALSE,
 		);
 
 		return iglib_db::update($QUERY);
-
 	}
 
-
-	function set_usergroup ($typo3_groups = array(), $typo3_user = array()) {
-		$required=true;
+	function set_usergroup($typo3_groups = array(), $typo3_user = array()) {
+		$required = TRUE;
 		$group_uid = array();
 
 		if ($typo3_groups) {
-
 			foreach ($typo3_groups as $typo3_group) {
-
 				if ($typo3_group['uid']) {
-
 					$group_uid[] = $typo3_group['uid'];
-
 				}
-
 			}
-
 		}
 
-		if ($assignGroups = explode(',', tx_igldapssoauth_config::is_enable('assignGroups'))) {
-
+		if ($assignGroups = t3lib_div::trimExplode(',', tx_igldapssoauth_config::is_enable('assignGroups'))) {
 			foreach ($assignGroups as $uid) {
-
 				if (tx_igldapssoauth_typo3_group::select($this->authInfo['db_groups']['table'], $uid) && !in_array($uid, $group_uid)) {
-
 					$group_uid[] = $uid;
-
 				}
-
 			}
-
 		}
 
 		if (tx_igldapssoauth_config::is_enable('keepTYPO3Groups') && $typo3_user[0]['usergroup']) {
-
-			$usergroup = explode(',', $typo3_user[0]['usergroup']);
+			$usergroup = t3lib_div::trimExplode(',', $typo3_user[0]['usergroup']);
 
 			foreach ($usergroup as $uid) {
-
 				if (!in_array($uid, $group_uid)) {
-
 					$group_uid[] = $uid;
-
 				}
-
 			}
-
 		}
 		
 	 	if ($requiredLDAPGroups = tx_igldapssoauth_config::is_enable('requiredLDAPGroups')) {
-               	$requiredLDAPGroups = explode(',', $requiredLDAPGroups);
-				$required = false;
-            	foreach ($requiredLDAPGroups as $uid) {
-                	if (in_array($uid, $group_uid)) {
-						$required = true;
-					}
-            	}
-        }
-        
-        if ($updateAdminAttribForGroups = tx_igldapssoauth_config::is_enable('updateAdminAttribForGroups')) {
-				$updateAdminAttribForGroups = explode(',', $updateAdminAttribForGroups);
-            	$typo3_user[0]['admin'] = 0;
-            	foreach ($updateAdminAttribForGroups as $uid) {
-                	if (in_array($uid, $group_uid)) {
-                    	$typo3_user[0]['admin'] = 1;
-                	}
-            	}
-        }
+			$requiredLDAPGroups = t3lib_div::trimExplode(',', $requiredLDAPGroups);
+			$required = FALSE;
+			foreach ($requiredLDAPGroups as $uid) {
+				if (in_array($uid, $group_uid)) {
+					$required = TRUE;
+				}
+			}
+		}
+
+		if ($updateAdminAttribForGroups = tx_igldapssoauth_config::is_enable('updateAdminAttribForGroups')) {
+			$updateAdminAttribForGroups = t3lib_div::trimExplode(',', $updateAdminAttribForGroups);
+			$typo3_user[0]['admin'] = 0;
+			foreach ($updateAdminAttribForGroups as $uid) {
+				if (in_array($uid, $group_uid)) {
+					$typo3_user[0]['admin'] = 1;
+				}
+			}
+		}
 
 		$typo3_user[0]['usergroup'] = (string)implode(',', $group_uid);
 
-		if ($required)
-            	return $typo3_user;
-        else
-            	return false;
-
+		if ($required) {
+			return $typo3_user;
+		} else {
+			return FALSE;
+		}
 	}
 
 }

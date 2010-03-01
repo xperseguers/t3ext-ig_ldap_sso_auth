@@ -46,6 +46,8 @@ $BE_USER->modAccess($MCONF,1);
  * @author	Michael Gagnon <mgagnon@infoglobe.ca>
  * @package	TYPO3
  * @subpackage	tx_igldapssoauth
+ *
+ * $Id$
  */
 class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 

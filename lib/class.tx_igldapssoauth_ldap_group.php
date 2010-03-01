@@ -30,6 +30,7 @@
  * @package	TYPO3
  * @subpackage	tx_igldapssoauth_ldap_group
  *
+ * $Id$
  */
 class tx_igldapssoauth_ldap_group {
 

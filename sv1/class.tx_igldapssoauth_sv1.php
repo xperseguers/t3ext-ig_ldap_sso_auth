@@ -30,6 +30,8 @@ require_once(t3lib_extMgm::extPath('sv').'class.tx_sv_auth.php');
  * @author	Michael Gagnon <mgagnon@infoglobe.ca>
  * @package	TYPO3
  * @subpackage	ig_ldap_sso_auth
+ *
+ * $Id$
  */
 
 class tx_igldapssoauth_sv1 extends tx_sv_auth {

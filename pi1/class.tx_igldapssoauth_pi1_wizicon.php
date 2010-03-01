@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2007 Micha�l Gagnon <mgagnon@infoglobe.ca>
+*  (c) 2007 Michael Gagnon <mgagnon@infoglobe.ca>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -22,15 +22,14 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 
-
-
-
 /**
  * Class that adds the wizard icon.
  *
- * @author	Micha�l Gagnon <mgagnon@infoglobe.ca>
+ * @author	Michael Gagnon <mgagnon@infoglobe.ca>
  * @package	TYPO3
  * @subpackage	tx_igldapssoauth
+ *
+ * $Id$
  */
 class tx_igldapssoauth_pi1_wizicon {
 

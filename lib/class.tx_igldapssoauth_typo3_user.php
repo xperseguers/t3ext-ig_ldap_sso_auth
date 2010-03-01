@@ -29,6 +29,8 @@
  * @author	Michael Gagnon <mgagnon@infoglobe.ca>
  * @package	TYPO3
  * @subpackage	tx_igldapssoauth_typo3_user
+ *
+ * $Id$
  */
 class tx_igldapssoauth_typo3_user {
 

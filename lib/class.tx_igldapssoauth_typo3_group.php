@@ -106,7 +106,20 @@ class tx_igldapssoauth_typo3_group {
 			'NO_QUOTE_FIELDS' => FALSE,
 		);
 
-		return iglib_db::update($QUERY);
+		$ret = iglib_db::update($QUERY);
+
+			// Hook for post-processing the group
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['processUpdateGroup'])) {
+			$params = array(
+				'table' => $table,
+				'typo3_group' => $typo3_group,
+			);
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['processUpdateGroup'] as $funcRef) {
+				t3lib_div::callUserFunction($funcRef, $params, $this);
+			}
+		}
+
+		return $ret;
 	}
 
 	function get_title($ldap_user = array(), $mapping = array()) {

@@ -1,5 +1,6 @@
 2010-03-01  Xavier Perseguers  <typo3@perseguers.ch>
 
+	* Added feature #5120: Add hook to postprocess creation of be/fe users and groups
 	* Applied CGL
 	* Added missing SVN properties
 

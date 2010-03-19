@@ -1,3 +1,7 @@
+2010-03-19  Xavier Perseguers  <typo3@perseguers.ch>
+
+	* Fixed bug #6918: Mapping field is too small
+
 2010-03-06  Xavier Perseguers  <typo3@perseguers.ch>
 
 	* Removed naming annoyances in EM for modified tables

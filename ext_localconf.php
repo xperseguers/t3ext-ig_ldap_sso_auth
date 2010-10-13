@@ -63,8 +63,8 @@ t3lib_extMgm::addService($_EXTKEY,  'auth' /* sv type */,  'tx_igldapssoauth_sv1
 			'subtype' => $subTypes,
 
 			'available' => TRUE,
-			'priority' => 50,
-			'quality' => 50,
+			'priority' => 60,
+			'quality' => 60,
 
 			'os' => '',
 			'exec' => '',

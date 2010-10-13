@@ -338,7 +338,7 @@ class tx_igldapssoauth_auth {
 			if (array_key_exists($field, $typo3) && $field != 'usergroup') {
 
 				// Constant.
-				if (preg_match("`{([^$]*)}`", $value)) {
+				if (preg_match("`{([^$]*)}`", $value,$match)) {
 
 					switch ($value) {
 
@@ -351,6 +351,23 @@ class tx_igldapssoauth_auth {
 
 							$typo3[$field] = rand();
 							break;
+						DEFAULT :
+							$params = explode(';',$match[1]);
+
+							foreach($params as $param){
+							 	$paramTemps = explode('|',$param);
+							 	$passParams[$paramTemps[0]] = $paramTemps[1];
+							}
+							$newVal = $passParams['hookName'];
+							$ldapAttr = tx_igldapssoauth_config::get_ldap_attributes(array($value));
+							// hook for processing user information once inserted or updated in the database
+							if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField']) && 
+								!empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'][$newVal])) {
+									
+									$_procObj = & t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'][$newVal]);
+									$typo3[$field] = $_procObj->extraMerge($field, $typo3, $ldap, $ldapAttr, $passParams);
+							}
+						break;
 
 					}
 
@@ -374,6 +391,7 @@ class tx_igldapssoauth_auth {
 				}
 
 			}
+			
 
 		}
 

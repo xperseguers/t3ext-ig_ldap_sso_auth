@@ -4,6 +4,7 @@
 2010-10-13 Michael Miousse
 	*Feature #10244: add hook for maping field
 	*Bug #10243: priority error with TYPO3 4.4.x
+	*Bug #10259: Default value from TCA
 
 2010-03-19  Xavier Perseguers  <typo3@perseguers.ch>
 

@@ -128,7 +128,7 @@ class tx_igldapssoauth_auth {
 
 				// User not exist in TYPO3.
 				} elseif (!$typo3_user[0]['uid'] && (!empty($typo3_groups) || !tx_igldapssoauth_config::is_enable('DeleteUserIfNoTYPO3Groups'))) {
-
+					$GLOBALS['TSFE']->includeTCA();
 					// Insert new user: use TCA configuration to override default values
 					$table = $this->authInfo['db_user']['table'];
 					if(is_array($GLOBALS['TCA'][$table]['columns'])){

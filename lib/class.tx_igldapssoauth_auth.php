@@ -220,10 +220,21 @@ class tx_igldapssoauth_auth {
 				phpCAS::forceAuthentication();
 				break;
 
-			case 'logout' :
-				phpCAS::logout($cas['logout_url']);
-				return false;
-				break;
+		case 'logout' :
+			if (tx_igldapssoauth_config::is_enable('DeleteCookieLogout')) {
+				if (isset($_SERVER['HTTP_COOKIE'])) {
+					$cookies = explode(';', $_SERVER['HTTP_COOKIE']);
+					foreach($cookies as $cookie) {
+						$parts = explode('=', $cookie);
+						$name = trim($parts0);
+						setcookie($name, '', time()-1000);
+						setcookie($name, '', time()-1000, '/');
+					}
+				}
+			}
+			phpCAS::logout($cas['logout_url']);
+			return false;
+			break;
 		}
 
 		if (phpCAS::isAuthenticated()) {

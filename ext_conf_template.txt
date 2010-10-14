@@ -54,3 +54,6 @@ keepFEGroups = 0
 
 # cat=basic/enable; type=boolean; label=Frontend CAS authentication : If checked, enable the Single Sign On feature with CAS server.
 enableFECASAuthentication = 0
+
+# cat=basic/enable; type=boolean; label=Delete cookie domain : If checked,Clean all cookie domain on CAS logout.
+DeleteCookieLogout = 0

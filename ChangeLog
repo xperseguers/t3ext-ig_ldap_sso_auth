@@ -1,3 +1,10 @@
+2010-10-14 Patrice Caron
+	*Feature #6565: Clean all cookie domain on logout
+
+2010-10-13 Michael Miousse
+	*Feature #10244: add hook for maping field
+	*Bug #10243: priority error with TYPO3 4.4.x
+
 2010-03-19  Xavier Perseguers  <typo3@perseguers.ch>
 
 	* Fixed bug #6918: Mapping field is too small

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+    <meta type="array">
+        <description>Labels for linkvalidator mod1</description>
+        <type>module</type>
+        <csh_table></csh_table>
+        <labelContext type="array">
+        </labelContext>
+    </meta>
+    <data type="array">
+        <languageKey index="default" type="array">
+            <label index="synchro.name">Users synchronisation</label>
+            <label index="synchro.description">import/update all users information who can connect to the site.</label>
+        </languageKey>
+    </data>
+</T3locallang>

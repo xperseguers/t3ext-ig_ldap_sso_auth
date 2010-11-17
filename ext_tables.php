@@ -103,7 +103,6 @@ t3lib_extMgm::addToAllTCAtypes("fe_groups", "tx_igldapssoauth_dn");
 
 $EXT_CONFIG['enableBELDAPAuthentication'] ? $TCA['be_users']['columns']['password']['config']['eval'] = 'md5,password' : null;
 $EXT_CONFIG['enableFELDAPAuthentication'] ? $TCA['fe_users']['columns']['password']['config']['eval'] = 'password': null;
-
 // Load TCA.
 
 t3lib_div::loadTCA('tt_content');

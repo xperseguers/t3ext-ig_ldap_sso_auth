@@ -60,6 +60,9 @@ class tx_igldapssoauth_ldap {
 					return iglib_ldap::get_dn();
 
 				}
+				else{
+					return TRUE;
+				}
 
 			// If enable, SSO authentication without password.
 			} elseif (!$password && tx_igldapssoauth_config::is_enable('CASAuthentication')) {
@@ -69,13 +72,13 @@ class tx_igldapssoauth_ldap {
 			} else {
 
 				// User invalid. Authentication failed.
-				return false;
+				return FALSE;
 
 			}
 
 		}
 
-		return false;
+		return FALSE;
 
 	}
 

@@ -43,6 +43,7 @@ if($EXT_CONFIG['enableFELDAPAuthentication']){
 if($EXT_CONFIG['enableBELDAPAuthentication']){
 	$subTypesArr[] = 'getUserBE';
 	$subTypesArr[] = 'authUserBE';
+	$TYPO3_CONF_VARS['BE']['loginSecurityLevelOld'] = $TYPO3_CONF_VARS['BE']['loginSecurityLevel'];
 	$TYPO3_CONF_VARS['BE']['loginSecurityLevel'] = 'normal';
 }
 if($EXT_CONFIG['enableFECASAuthentication']){
@@ -54,6 +55,14 @@ if(is_array($subTypesArr)){
 	$subTypes = implode(',',$subTypesArr);
 }
 
+
+
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_igldapssoauth_scheduler_synchroniseusers'] = array(
+    'extension'        => $_EXTKEY,
+    'title'            => 'LLL:EXT:' . $_EXTKEY . '/locallang.xml:synchro.name',
+    'description'      => 'LLL:EXT:' . $_EXTKEY . '/locallang.xml:synchro.description'
+);
+
 t3lib_extMgm::addService($_EXTKEY,  'auth' /* sv type */,  'tx_igldapssoauth_sv1' /* sv key */,
 		array(
 
@@ -63,8 +72,8 @@ t3lib_extMgm::addService($_EXTKEY,  'auth' /* sv type */,  'tx_igldapssoauth_sv1
 			'subtype' => $subTypes,
 
 			'available' => TRUE,
-			'priority' => 60,
-			'quality' => 60,
+			'priority' => 100,
+			'quality' => 100,
 
 			'os' => '',
 			'exec' => '',

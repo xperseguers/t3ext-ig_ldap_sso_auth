@@ -322,7 +322,9 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 		$this->content[] = '<hr />';
 
 		if (tx_igldapssoauth_ldap::connect($this->config['ldap'])) {
-
+			if(is_array($search['basedn'])) {
+				$search['basedn'] = implode('||',$search['basedn']);
+			}
 			$first_entry = $search['first_entry'] ? 'checked="checked"' : "";
 			$see_status = $search['see_status'] ? 'checked="checked"' : "";
 			$be_users = ($search['table'] == 'be_users') ? 'checked="checked"' : "";
@@ -364,7 +366,7 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 				$attributes = explode(',', $search['attributes']);
 
 			}
-
+			$search['basedn'] = explode('||', $search['basedn']);
 			if ($result = tx_igldapssoauth_ldap::search($search['basedn'], $search['filter'], $attributes, $search['first_entry'])) {
 
 				$this->content[] = $search['see_status'] ? '<h2>'.$this->lang->getLL('wizard_search_ldap_status').'</h2><hr />'.t3lib_div::view_array(tx_igldapssoauth_ldap::get_status()) : null;

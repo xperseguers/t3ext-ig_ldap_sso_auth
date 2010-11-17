@@ -13,6 +13,9 @@ enableBELDAPAuthentication = 0
 # cat=basic/enable; type=boolean; label=If backend user exist locally : If checked, user not found in the table be_users may not log on.
 TYPO3BEUserExist = 0
 
+# cat=basic/enable; type=boolean; label= backend user failsafe : If checked, backend users found in the database can log on only if the username does not exist in the LDAP.
+BEfailsafe = 0
+
 # cat=basic/enable; type=boolean; label=Not synchronize the BE groups : If checked, TYPO3 backend groups will not update.
 TYPO3BEGroupsNotSynchronize = 0
 

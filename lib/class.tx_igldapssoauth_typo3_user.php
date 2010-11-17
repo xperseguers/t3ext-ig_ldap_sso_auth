@@ -65,8 +65,7 @@ class tx_igldapssoauth_typo3_user {
 			$QUERY = array(
 				'SELECT' => '*',
 				'FROM' => $table,
-				'WHERE' => 'tx_igldapssoauth_dn=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($dn, $table)
-					. ' AND username=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($username, $table)
+				'WHERE' => 'tx_igldapssoauth_dn=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($dn, $table)					
 					. ' AND pid IN (' . $pid . ')',
 				'GROUP_BY' => '',
 				'ORDER_BY' => '',
@@ -179,15 +178,7 @@ class tx_igldapssoauth_typo3_user {
 			}
 		}
 		
-	 	if ($requiredLDAPGroups = tx_igldapssoauth_config::is_enable('requiredLDAPGroups')) {
-			$requiredLDAPGroups = t3lib_div::trimExplode(',', $requiredLDAPGroups);
-			$required = FALSE;
-			foreach ($requiredLDAPGroups as $uid) {
-				if (in_array($uid, $group_uid)) {
-					$required = TRUE;
-				}
-			}
-		}
+
 
 		if ($updateAdminAttribForGroups = tx_igldapssoauth_config::is_enable('updateAdminAttribForGroups')) {
 			$updateAdminAttribForGroups = t3lib_div::trimExplode(',', $updateAdminAttribForGroups);

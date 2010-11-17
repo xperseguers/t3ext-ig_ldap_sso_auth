@@ -1,3 +1,9 @@
+2010-11-17 Michael Miousse
+	*Bug #10805: Backend Ldap authentification
+	*Feature #10399: Users synchronisation
+	*Feature #5251: Allow multiple LDAP servers to be defined
+	*Feature #3542: Standard TYPO3 authentication as fail-over
+
 2010-10-14 Patrice Caron
 	*Feature #6565: Clean all cookie domain on logout
 

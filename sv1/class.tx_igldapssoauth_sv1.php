@@ -85,7 +85,6 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 		} elseif ($this->login['status']=='login' && $this->login['uident']) {
 
 			$user = tx_igldapssoauth_auth::ldap_auth($this->login['uname'], $this->login['uident_text']);
-
 			if (!$user) {
 
 				$user = $this->fetchUserRecord($this->login['uname']);
@@ -107,7 +106,6 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 			if ($this->writeDevLog)	t3lib_div::devLog('User found: '.t3lib_div::arrayToLogString($user, array($this->db_user['userid_column'],$this->db_user['username_column'])), 'tx_igldapssoauth_sv1');
 
 		}
-
 		return $user;
 	}
 
@@ -116,10 +114,18 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 		$OK = 100;
 
 		if (($this->login['uident'] && $this->login['uname']) || (tx_igldapssoauth_config::is_enable('CASAuthentication') && $user))	{
-
+			$uidentComp = FALSE;
+			global $TYPO3_CONF_VARS;
 			// Checking password match for user:
-			$OK = isset($user['tx_igldapssoauth_from']) ? 200 : $this->compareUident($user, $this->login);
-
+			if( tx_igldapssoauth_config::is_enable('BEfailsafe')) {
+				$oldSecurity = trim($TYPO3_CONF_VARS[TYPO3_MODE]['loginSecurityLevelOld']);
+				$this->pObj->security_level = !empty($oldSecurity) ? $oldSecurity : 'superchallenged';
+				$this->loginSec = $this->pObj->getLoginFormData();
+				$this->pObj->challengeStoredInCookie = 0;
+				$uidentComp = $this->compareUident($user, $this->loginSec, $this->pObj->security_level);
+			}	
+			
+			$OK = isset($user['tx_igldapssoauth_from']) ? 200 : $uidentComp;
 			if (!$OK) {
 					// Failed login attempt (wrong password) - write that to the log!
 
@@ -130,6 +136,9 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 				}
 
 				if ($this->writeDevLog) t3lib_div::devLog('Password not accepted: '.$this->login['uident'], 'tx_igldapssoauth_sv1', 2);
+			}
+			else {
+				$OK = 200;
 			}
 
 				// Checking the domain (lockToDomain)
@@ -144,7 +153,6 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 				$OK = false;
 			}
 		}
-
 		return $OK;
 
 	}

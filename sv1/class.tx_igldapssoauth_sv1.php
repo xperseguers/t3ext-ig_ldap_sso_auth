@@ -50,7 +50,7 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 	 * @param	array		Configuration array
 	 * @return	boolean
 	 */
-	function getUser()	{
+function getUser()	{
 
 		//$this->logoff;
 		//$this->login['uname']
@@ -61,38 +61,50 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 
 		//iglib_debug::var_dump_this($this);
 		//iglib_debug::print_this(tx_igldapssoauth_auth::is_enable());
-
-		tx_igldapssoauth_config::init(TYPO3_MODE, 0);
-
-		// Enable feature
-
-//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('LDAPAuthentication'), 'Enable LDAP Authentication');
-//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('CASAuthentication'), 'CAS authentication');
-//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('evaluateGroupsFromMembership'), 'Evaluate groups from membership');
-//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('IfUserExist'), 'If user exist');
-//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('IfGroupExist'), 'If group exist');
-//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('DeleteUserIfNoLDAPGroups'), 'Delete user if no LDAP groups found');
-//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('GroupsNotSynchronize'), 'Groups not synchronize');
-//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('assignGroups'), 'Assign these groups');
-
 		$user = false;
-		// CAS authentication
-		if (tx_igldapssoauth_config::is_enable('CASAuthentication')) {
-
-			$user = tx_igldapssoauth_auth::cas_auth();
-
-		// Authenticate user from LDAP
-		} elseif ($this->login['status']=='login' && $this->login['uident']) {
-
-			$user = tx_igldapssoauth_auth::ldap_auth($this->login['uname'], $this->login['uident_text']);
-			if (!$user) {
-
-				$user = $this->fetchUserRecord($this->login['uname']);
-
+		
+		global $EXT_CONFIG;
+		$uidConf = $EXT_CONFIG['uidConfiguration'];
+		$uidArray = t3lib_div::trimExplode(',', $uidConf);
+		if(is_array($uidArray)) {
+			foreach($uidArray as $uid) {
+				tx_igldapssoauth_config::init(TYPO3_MODE, $uid);
+	
+				// Enable feature
+		
+		//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('LDAPAuthentication'), 'Enable LDAP Authentication');
+		//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('CASAuthentication'), 'CAS authentication');
+		//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('evaluateGroupsFromMembership'), 'Evaluate groups from membership');
+		//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('IfUserExist'), 'If user exist');
+		//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('IfGroupExist'), 'If group exist');
+		//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('DeleteUserIfNoLDAPGroups'), 'Delete user if no LDAP groups found');
+		//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('GroupsNotSynchronize'), 'Groups not synchronize');
+		//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('assignGroups'), 'Assign these groups');
+				$userTemp = false;
+				
+				// CAS authentication
+				if (tx_igldapssoauth_config::is_enable('CASAuthentication')) {
+		
+					$userTemp = tx_igldapssoauth_auth::cas_auth();
+		
+				// Authenticate user from LDAP
+				} elseif ($this->login['status']=='login' && $this->login['uident']) {
+		
+					$userTemp = tx_igldapssoauth_auth::ldap_auth($this->login['uname'], $this->login['uident_text']);
+					//
+		
+				}
+				if($userTemp) {
+					$user = $userTemp;
+					break;
+				}				
 			}
-
 		}
-
+		if (!$user) {
+		
+			$user = $this->fetchUserRecord($this->login['uname']);
+		
+		}
 		// Failed login attempt (no username found)
 		if (!is_array($user)) {
 

@@ -1,4 +1,4 @@
-# cat=basic; type=int; label=Use configuration : Uid of configuration record in table tx_igldapssoauth_config.
+# cat=basic; type=string; label=Use configuration : Uid of configuration record in table tx_igldapssoauth_config.
 uidConfiguration = 1
 
 # cat=basic; type=boolean; label=Force lowercase username : If checked, usernames will be always be stored lowercased. Usefull for case-sensitive databases.

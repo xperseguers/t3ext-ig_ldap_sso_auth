@@ -149,29 +149,40 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 			$this->content[] = $this->doc->funcMenu('',t3lib_BEfunc::getFuncMenu($this->id,'SET[function]',$this->MOD_SETTINGS['function'],$this->MOD_MENU['function']));
 
 			#CONTENT
-
-			switch((string)$this->MOD_SETTINGS['function'])	{
-
-				case 1:
-
-					$this->view_configuration();
-					break;
-
-				case 2:
-
-					$this->wizard_search(t3lib_div::_GP('search'));
-					break;
-
-				case 3:
-
-					//$this->wizard_authentication(t3lib_div::_GP('authentication'));
-					break;
-
-				case 4:
-
-					$this->import_groups();
-					break;
-
+			global $EXT_CONFIG;
+			$uidConf = $EXT_CONFIG['uidConfiguration'];
+			$uidArray = t3lib_div::trimExplode(',', $uidConf);
+			if(is_array($uidArray)) {
+				foreach($uidArray as $uid) {
+					tx_igldapssoauth_config::init(TYPO3_MODE, $uid);
+					$this->config = tx_igldapssoauth_config::get_values();
+					$this->content[] = '<h2>'.$this->lang->getLL('view_configuration_title').'&nbsp;'.$this->config['name'].'&nbsp;('.$this->config['uid'].')</h2>';
+					$this->content[] = '<hr />';
+					
+					switch((string)$this->MOD_SETTINGS['function'])	{
+		
+						case 1:
+		
+							$this->view_configuration();
+							break;
+		
+						case 2:
+		
+							$this->wizard_search(t3lib_div::_GP('search'));
+							break;
+		
+						case 3:
+		
+							//$this->wizard_authentication(t3lib_div::_GP('authentication'));
+							break;
+		
+						case 4:
+		
+							$this->import_groups();
+							break;
+	
+					}
+				}
 			}
 
 			#SHORTCUT
@@ -205,6 +216,7 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 		}
 
 	}
+	
 
 	function view_configuration () {
 

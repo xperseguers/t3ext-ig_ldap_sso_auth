@@ -1,3 +1,6 @@
+2011-02-16 Michael Miousse
+	*Feature #13103: Allow multiple configuration records
+
 2010-11-17 Michael Miousse
 	*Bug #10805: Backend Ldap authentification
 	*Feature #10399: Users synchronisation

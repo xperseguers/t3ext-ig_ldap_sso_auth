@@ -57,8 +57,11 @@ class tx_igldapssoauth_pi1 extends tslib_pibase {
 
 		//tx_igldapssoauth_config::get_values('ldap');
 
-		tx_igldapssoauth_config::init(TYPO3_MODE, 0);
-
+		global $EXT_CONFIG;
+		$uidConf = $EXT_CONFIG['uidConfiguration'];
+		$uidArray = t3lib_div::trimExplode(',', $uidConf);
+		tx_igldapssoauth_config::init(TYPO3_MODE, $uidArray[0]);
+		
 		$this->conf = $conf;
 
 		$this->pi_setPiVarDefaults();

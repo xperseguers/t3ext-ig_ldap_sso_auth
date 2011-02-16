@@ -220,11 +220,6 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 
 	function view_configuration () {
 
-		//iglib_debug::print_this($this->config['be']['LDAPAuthentication']);
-
-		$this->content[] = '<h2>'.$this->lang->getLL('view_configuration_title').'&nbsp;'.$this->config['name'].'&nbsp;('.$this->config['uid'].')</h2>';
-		$this->content[] = '<hr />';
-
 		// LDAP
 		$this->content[] = '<h3>'.$this->lang->getLL('view_configuration_ldap').'</h3>';
 		$this->content[] = '<hr />';

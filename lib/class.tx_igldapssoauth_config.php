@@ -57,7 +57,7 @@ class tx_igldapssoauth_config {
 
 		$config = tx_igldapssoauth_config::select($this->uid);
 
-		$EXT_CONFIG = array_merge($config ? $config : array(), is_array($EXT_CONFIG) ? $EXT_CONFIG : array());
+		$EXT_CONFIG = array_merge( is_array($EXT_CONFIG) ? $EXT_CONFIG : array(), $config ? $config : array());
 
 		$this->name = $EXT_CONFIG['name'];
 

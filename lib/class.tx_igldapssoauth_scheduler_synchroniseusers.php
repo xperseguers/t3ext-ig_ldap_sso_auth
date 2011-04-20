@@ -63,33 +63,40 @@ class tx_igldapssoauth_scheduler_synchroniseusers extends tx_scheduler_Task {
 		$this->setCliArguments();
 		$auth = t3lib_div::makeInstance('tx_igldapssoauth_auth');
 		$this->table = 'fe_users';
+		$confArr = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']);
 		
-		tx_igldapssoauth_config::init('fe', 0);
-		//$this->fe['requiredLDAPGroups'] = ;
-		// Valid user only if username and connect to LDAP server.
-		if (tx_igldapssoauth_ldap::connect(tx_igldapssoauth_config::get_values('ldap'))) {
-			$this->config = tx_igldapssoauth_config::get_values('fe');
-
-			
-			$search = iglib_ldap::search($this->config['users']['basedn'], str_replace('{USERNAME}', '*', $this->config['users']['filter']), array('dn'));
-			global $TYPO3_CONF_VARS;
-			$userList = iglib_ldap::get_entries();
-
-			$this->authInfo['db_user']['table'] = $this->table;
-			$this->authInfo['db_groups']['table'] = 'fe_groups';
-			$nbres = $userList['count'];
-			unset($userList['count']);
-			
-			if(is_array($userList)) {
-				foreach($userList as $userInfo) {		
-					if(!empty($userInfo['dn'])){				
-					$user = tx_igldapssoauth_auth::synchroniseUser($userInfo['dn']);
+		$uidConf = $confArr['uidConfiguration'];
+		$uidArray = t3lib_div::trimExplode(',', $uidConf);
+		if(is_array($uidArray)) {
+			foreach($uidArray as $uid) {
+				tx_igldapssoauth_config::init('fe', $uid);
+				//$this->fe['requiredLDAPGroups'] = ;
+				// Valid user only if username and connect to LDAP server.
+				if (tx_igldapssoauth_ldap::connect(tx_igldapssoauth_config::get_values('ldap'))) {
+					$this->config = tx_igldapssoauth_config::get_values('fe');
+		
+					
+					$search = iglib_ldap::search($this->config['users']['basedn'], str_replace('{USERNAME}', '*', $this->config['users']['filter']), array('dn'));
+					global $TYPO3_CONF_VARS;
+					$userList = iglib_ldap::get_entries();
+		
+					$this->authInfo['db_user']['table'] = $this->table;
+					$this->authInfo['db_groups']['table'] = 'fe_groups';
+					$nbres = $userList['count'];
+					unset($userList['count']);
+					
+					if(is_array($userList)) {
+						foreach($userList as $userInfo) {		
+							if(!empty($userInfo['dn'])){				
+							$user = tx_igldapssoauth_auth::synchroniseUser($userInfo['dn']);
+							}
+							$typoActivUsersList[] = $user['uid'];
+						}
 					}
-					$typoActivUsersList[] = $user['uid'];
+					if(is_array($typoActivUsersList)) {
+						$GLOBALS['TYPO3_DB']->exec_UPDATEquery($this->table,'disable=0 and uid not in (\'' . implode("','",$typoActivUsersList) . '\') and tx_igldapssoauth_dn  IS NOT NULL  and tx_igldapssoauth_dn not like \'\'',array('disable'=>1));
+					}
 				}
-			}
-			if(is_array($typoActivUsersList)) {
-				$GLOBALS['TYPO3_DB']->exec_UPDATEquery($this->table,'disable=0 and uid not in (\'' . implode("','",$typoActivUsersList) . '\') and tx_igldapssoauth_dn  IS NOT NULL  and tx_igldapssoauth_dn not like \'\'',array('disable'=>1));
 			}
 		}
 		return TRUE;

@@ -94,7 +94,7 @@ function getUser()	{
 					//
 		
 				}
-				if($userTemp) {
+				if (is_array($userTemp)) {
 					$user = $userTemp;
 					break;
 				}				

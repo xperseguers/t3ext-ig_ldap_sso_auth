@@ -229,7 +229,7 @@ class tx_igldapssoauth_auth {
 				else{
 					$typo3_user=false;
 				}
-				///iglib_debug::print_this($typo3_user, 'TYPO3 USER MERGED');
+				///Tx_IgLdapSsoAuth_Utiliy_Debug::print_this($typo3_user, 'TYPO3 USER MERGED');
 				return $typo3_user;
 	}
 

@@ -33,7 +33,6 @@ require_once(PATH_t3lib.'class.t3lib_scbase.php');
 
 // Load locallang
 $LANG->includeLLFile('EXT:ig_ldap_sso_auth/res/locallang_mod1.xml');
-//$LANG->includeLLFile('EXT:iglib/locallang_calendar.xml');
 
 // This checks permissions and exits if the users has no permission for entry.
 $BE_USER->modAccess($MCONF,1);
@@ -291,7 +290,7 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 
 	function wizard_search ($search = array()) {
 
-//		iglib_debug::print_this($search['attributes'], 'TYPO3 USER MERGED');
+//		Tx_IgLdapSsoAuth_Utiliy_Debug::print_this($search['attributes'], 'TYPO3 USER MERGED');
 
 		switch ($search['action']) {
 
@@ -437,7 +436,7 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 
 					foreach ($ldap_groups as $index => $ldap_group) {
 					$typo3_group = tx_igldapssoauth_auth::merge($ldap_group, $typo3_groups[$index], $this->config[$typo3_mode]['groups']['mapping']);
-						//iglib_debug::print_this($typo3_group);
+						//Tx_IgLdapSsoAuth_Utiliy_Debug::print_this($typo3_group);
 						if (isset($import_groups[$typo3_mode]) && in_array($typo3_group['tx_igldapssoauth_dn'], $import_groups[$typo3_mode])) {
 							unset($typo3_group['parentGroup']);
 							$typo3_group = tx_igldapssoauth_typo3_group::insert($typo3_mode.'_groups', $typo3_group);
@@ -455,7 +454,7 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 							}
 
 
-							//iglib_debug::print_this($typo3_group, 'INSERTED');
+							//Tx_IgLdapSsoAuth_Utiliy_Debug::print_this($typo3_group, 'INSERTED');
 
 
 						}

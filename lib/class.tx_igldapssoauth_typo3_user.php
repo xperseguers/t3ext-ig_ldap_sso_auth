@@ -37,7 +37,7 @@ class tx_igldapssoauth_typo3_user {
 	function init ($table = null) {
 
 		// Get users table structure.
-		$typo3_user_default = iglib_db::get_columns_from($table);
+		$typo3_user_default = Tx_IgLdapSsoAuth_Utiliy_Db::get_columns_from($table);
 
 		foreach ($typo3_user_default as $field => $value) {
 			$typo3_user[0][$field] = null;
@@ -74,7 +74,7 @@ class tx_igldapssoauth_typo3_user {
 			);
 
 			// If no user found with DN and username, search with username and pid only.
-			if (!iglib_db::select($QUERY) && $pid) {
+			if (!Tx_IgLdapSsoAuth_Utiliy_Db::select($QUERY) && $pid) {
 				$QUERY = array(
 					'SELECT' => '*',
 					'FROM' => $table,
@@ -85,7 +85,7 @@ class tx_igldapssoauth_typo3_user {
 					'UID_INDEX_FIELD' => '',
 				);
 
-			} elseif (!iglib_db::select($QUERY)) {
+			} elseif (!Tx_IgLdapSsoAuth_Utiliy_Db::select($QUERY)) {
 				$QUERY = array(
 					'SELECT' => '*',
 					'FROM' => $table,
@@ -99,7 +99,7 @@ class tx_igldapssoauth_typo3_user {
 		}
 
 		// Return TYPO3 user.
-		return iglib_db::select($QUERY);
+		return Tx_IgLdapSsoAuth_Utiliy_Db::select($QUERY);
 	}
 
 	function insert($table = null, $typo3_user = array()) {
@@ -109,7 +109,7 @@ class tx_igldapssoauth_typo3_user {
 			'NO_QUOTE_FIELDS' => FALSE,
 		);
 
-		$uid = iglib_db::insert($QUERY);
+		$uid = Tx_IgLdapSsoAuth_Utiliy_Db::insert($QUERY);
 
 		$QUERY = array(
 			'SELECT' => '*',
@@ -121,7 +121,7 @@ class tx_igldapssoauth_typo3_user {
 			'UID_INDEX_FIELD' => '',
 		);
 
-		return iglib_db::select($QUERY);
+		return Tx_IgLdapSsoAuth_Utiliy_Db::select($QUERY);
 	}
 
 	function update($table = null, $typo3_user = array()) {
@@ -132,7 +132,7 @@ class tx_igldapssoauth_typo3_user {
 			'NO_QUOTE_FIELDS' => FALSE,
 		);
 
-		$ret = iglib_db::update($QUERY);
+		$ret = Tx_IgLdapSsoAuth_Utiliy_Db::update($QUERY);
 
 			// Hook for post-processing the user
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['processUpdateUser'])) {

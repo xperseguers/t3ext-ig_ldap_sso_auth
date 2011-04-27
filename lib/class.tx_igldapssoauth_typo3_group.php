@@ -36,7 +36,7 @@ class tx_igldapssoauth_typo3_group {
 
 	function init($table = null) {
 		// Get users table structure.
-		$typo3_group_default = iglib_db::get_columns_from($table);
+		$typo3_group_default = Tx_IgLdapSsoAuth_Utiliy_Db::get_columns_from($table);
 
 		foreach ($typo3_group_default as $field => $value) {
 			$typo3_group[$field] = null;
@@ -73,7 +73,7 @@ class tx_igldapssoauth_typo3_group {
 		}
 
 		// Return TYPO3 group.
-		return iglib_db::select($QUERY);
+		return Tx_IgLdapSsoAuth_Utiliy_Db::select($QUERY);
 	}
 
 	function insert($table = null, $typo3_group = array()) {
@@ -83,7 +83,7 @@ class tx_igldapssoauth_typo3_group {
 			'NO_QUOTE_FIELDS' => FALSE,
 		);
 
-		$uid = iglib_db::insert($QUERY);
+		$uid = Tx_IgLdapSsoAuth_Utiliy_Db::insert($QUERY);
 
 		$QUERY = array(
 			'SELECT' => '*',
@@ -95,7 +95,7 @@ class tx_igldapssoauth_typo3_group {
 			'UID_INDEX_FIELD' => '',
 		);
 
-		return iglib_db::select($QUERY);
+		return Tx_IgLdapSsoAuth_Utiliy_Db::select($QUERY);
 	}
 
 	function update($table = null, $typo3_group = array()) {
@@ -106,7 +106,7 @@ class tx_igldapssoauth_typo3_group {
 			'NO_QUOTE_FIELDS' => FALSE,
 		);
 
-		$ret = iglib_db::update($QUERY);
+		$ret = Tx_IgLdapSsoAuth_Utiliy_Db::update($QUERY);
 
 			// Hook for post-processing the group
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['processUpdateGroup'])) {

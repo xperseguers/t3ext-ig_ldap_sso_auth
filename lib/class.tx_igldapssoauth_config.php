@@ -46,7 +46,7 @@ class tx_igldapssoauth_config {
 
 		global $EXT_CONFIG,$BE_USER,$LANG,$BACK_PATH,$TCA_DESCR,$TCA,$CLIENT,$TYPO3_CONF_VARS;
 
-		//iglib_debug::print_this($TYPO3_CONF_VARS['SVCONF']);
+		//Tx_IgLdapSsoAuth_Utiliy_Debug::print_this($TYPO3_CONF_VARS['SVCONF']);
 
 		$this->uid = $uid ? $uid : $EXT_CONFIG['uidConfiguration'];
 
@@ -289,7 +289,7 @@ class tx_igldapssoauth_config {
 			'UID_INDEX_FIELD' => ''
 		);
 
-		$config = iglib_db::select($query);
+		$config = Tx_IgLdapSsoAuth_Utiliy_Db::select($query);
 		return $config[0];
 
 	}
@@ -303,7 +303,7 @@ class tx_igldapssoauth_config {
 			'NO_QUOTE' => false,
 		);
 
-		iglib_db::update($query);
+		Tx_IgLdapSsoAuth_Utiliy_Db::update($query);
 
 		tx_igldapssoauth_config::init(tx_igldapssoauth_config::select($config['uid']));
 

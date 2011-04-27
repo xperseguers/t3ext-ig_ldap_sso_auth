@@ -53,7 +53,7 @@ class tx_igldapssoauth_pi1 extends tslib_pibase {
 
 	//	$test = t3lib_div::_GP('tx_igldapssoauth_pi1');
 
-		//iglib_debug::print_this($test);
+		//Tx_IgLdapSsoAuth_Utiliy_Debug::print_this($test);
 
 		//tx_igldapssoauth_config::get_values('ldap');
 
@@ -79,7 +79,7 @@ class tx_igldapssoauth_pi1 extends tslib_pibase {
 		if (tx_igldapssoauth_config::is_enable('CASAuthentication')) {
 
 			$cas_config = tx_igldapssoauth_config::get_values('cas');
-			//iglib_debug::print_this($cas_config, 'CAS config');
+			//Tx_IgLdapSsoAuth_Utiliy_Debug::print_this($cas_config, 'CAS config');
 
 			phpCAS::client(CAS_VERSION_2_0, (string)$cas_config['host'], (integer)$cas_config['port'], (string)$cas_config['uri']);
 			if (!empty($cas_config['service_url']))
@@ -114,7 +114,7 @@ class tx_igldapssoauth_pi1 extends tslib_pibase {
 
 		$tmpl_cas_auth = $this->cObj->substituteMarkerArrayCached($tmpl_cas_auth, $marker);
 
-		//iglib_debug::print_this($tmpl_cas_auth);
+		//Tx_IgLdapSsoAuth_Utiliy_Debug::print_this($tmpl_cas_auth);
 
 		return $this->pi_wrapInBaseClass($tmpl_cas_auth);
 	}

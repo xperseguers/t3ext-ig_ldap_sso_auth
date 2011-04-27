@@ -2,19 +2,8 @@
 
 if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 
-//$TYPO3_CONF_VARS['SVCONF']['auth'];
-
 // iglib class require
-require_once(t3lib_extMgm::extPath($_EXTKEY).'lib/class.tx_igldapssoauth_auth.php');
-require_once(t3lib_extMgm::extPath($_EXTKEY).'lib/class.tx_igldapssoauth_config.php');
-require_once(t3lib_extMgm::extPath($_EXTKEY).'lib/class.tx_igldapssoauth_ldap_group.php');
-require_once(t3lib_extMgm::extPath($_EXTKEY).'lib/class.tx_igldapssoauth_ldap_user.php');
-require_once(t3lib_extMgm::extPath($_EXTKEY).'lib/class.tx_igldapssoauth_ldap.php');
-require_once(t3lib_extMgm::extPath($_EXTKEY).'lib/class.tx_igldapssoauth_typo3_group.php');
-require_once(t3lib_extMgm::extPath($_EXTKEY).'lib/class.tx_igldapssoauth_typo3_user.php');
-require_once(PATH_iglib.'class.iglib_ldap.php');
-require_once(PATH_iglib.'class.iglib_db.php');
-require_once(PATH_iglib.'CAS/CAS.php');
+require_once(t3lib_extMgm::extPath($_EXTKEY) . 'Framework/CAS/CAS.php');
 
 // Configuration of authentication service.
 $EXT_CONFIG = unserialize($TYPO3_CONF_VARS['EXT']['extConf']['ig_ldap_sso_auth']);
@@ -78,7 +67,7 @@ t3lib_extMgm::addService($_EXTKEY,  'auth' /* sv type */,  'tx_igldapssoauth_sv1
 			'os' => '',
 			'exec' => '',
 
-			'classFile' => t3lib_extMgm::extPath($_EXTKEY).'sv1/class.tx_igldapssoauth_sv1.php',
+			'classFile' => t3lib_extMgm::extPath($_EXTKEY) . 'sv1/class.tx_igldapssoauth_sv1.php',
 			'className' => 'tx_igldapssoauth_sv1',
 		)
 	);

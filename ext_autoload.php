@@ -6,5 +6,14 @@ $extensionPath = t3lib_extMgm::extPath('ig_ldap_sso_auth');
 return array(
 	'tx_igldapssoauth_scheduler_synchroniseusers'  => $extensionPath . 'lib/class.tx_igldapssoauth_scheduler_synchroniseusers.php',
 	'tx_igldapssoauth_auth'	=>	$extensionPath . 'lib/class.tx_igldapssoauth_auth.php',
+	'tx_igldapssoauth_config'	=>	$extensionPath . 'lib/class.tx_igldapssoauth_config.php',
+	'tx_igldapssoauth_ldap_group'	=>	$extensionPath . 'lib/class.tx_igldapssoauth_ldap_group.php',
+	'tx_igldapssoauth_ldap_user'	=>	$extensionPath . 'lib/class.tx_igldapssoauth_ldap_user.php',
+	'tx_igldapssoauth_ldap'	=>	$extensionPath . 'lib/class.tx_igldapssoauth_ldap.php',
+	'tx_igldapssoauth_typo3_group'	=>	$extensionPath . 'lib/class.tx_igldapssoauth_typo3_group.php',
+	'tx_igldapssoauth_typo3_user'	=>	$extensionPath . 'lib/class.tx_igldapssoauth_typo3_user.php',
+	'tx_igldapssoauth_utiliy_db'	=>	$extensionPath . 'Classes/Utility/Db.php',
+	'tx_igldapssoauth_utiliy_debug'	=>	$extensionPath . 'Classes/Utility/Debug.php',
+	'tx_igldapssoauth_utiliy_ldap'	=>	$extensionPath . 'Classes/Utility/Ldap.php',
 );
 ?>

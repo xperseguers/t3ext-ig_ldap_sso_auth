@@ -51,11 +51,11 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 		//$this->logoff;
 		//$this->login['uname']
 		//$this->login['uident_text']
-		//iglib_debug::print_this($GLOBALS['TSFE']->cObj);
-		//iglib_debug::print_this($this);
-		//iglib_debug::print_this(TYPO3_MODE);
-		//iglib_debug::var_dump_this($this);
-		//iglib_debug::print_this(tx_igldapssoauth_auth::is_enable());
+		//Tx_IgLdapSsoAuth_Utiliy_Debug::print_this($GLOBALS['TSFE']->cObj);
+		//Tx_IgLdapSsoAuth_Utiliy_Debug::print_this($this);
+		//Tx_IgLdapSsoAuth_Utiliy_Debug::print_this(TYPO3_MODE);
+		//Tx_IgLdapSsoAuth_Utiliy_Debug::var_dump_this($this);
+		//Tx_IgLdapSsoAuth_Utiliy_Debug::print_this(tx_igldapssoauth_auth::is_enable());
 		$user = false;
 
 		global $EXT_CONFIG;
@@ -66,14 +66,14 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 				tx_igldapssoauth_config::init(TYPO3_MODE, $uid);
 
 				// Enable feature
-				//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('LDAPAuthentication'), 'Enable LDAP Authentication');
-				//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('CASAuthentication'), 'CAS authentication');
-				//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('evaluateGroupsFromMembership'), 'Evaluate groups from membership');
-				//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('IfUserExist'), 'If user exist');
-				//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('IfGroupExist'), 'If group exist');
-				//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('DeleteUserIfNoLDAPGroups'), 'Delete user if no LDAP groups found');
-				//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('GroupsNotSynchronize'), 'Groups not synchronize');
-				//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('assignGroups'), 'Assign these groups');
+				//		Tx_IgLdapSsoAuth_Utiliy_Debug::print_this(tx_igldapssoauth_config::is_enable('LDAPAuthentication'), 'Enable LDAP Authentication');
+				//		Tx_IgLdapSsoAuth_Utiliy_Debug::print_this(tx_igldapssoauth_config::is_enable('CASAuthentication'), 'CAS authentication');
+				//		Tx_IgLdapSsoAuth_Utiliy_Debug::print_this(tx_igldapssoauth_config::is_enable('evaluateGroupsFromMembership'), 'Evaluate groups from membership');
+				//		Tx_IgLdapSsoAuth_Utiliy_Debug::print_this(tx_igldapssoauth_config::is_enable('IfUserExist'), 'If user exist');
+				//		Tx_IgLdapSsoAuth_Utiliy_Debug::print_this(tx_igldapssoauth_config::is_enable('IfGroupExist'), 'If group exist');
+				//		Tx_IgLdapSsoAuth_Utiliy_Debug::print_this(tx_igldapssoauth_config::is_enable('DeleteUserIfNoLDAPGroups'), 'Delete user if no LDAP groups found');
+				//		Tx_IgLdapSsoAuth_Utiliy_Debug::print_this(tx_igldapssoauth_config::is_enable('GroupsNotSynchronize'), 'Groups not synchronize');
+				//		Tx_IgLdapSsoAuth_Utiliy_Debug::print_this(tx_igldapssoauth_config::is_enable('assignGroups'), 'Assign these groups');
 				$userTemp = false;
 
 				// CAS authentication

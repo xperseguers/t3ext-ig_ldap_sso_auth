@@ -76,9 +76,9 @@ class tx_igldapssoauth_scheduler_synchroniseusers extends tx_scheduler_Task {
 					$this->config = tx_igldapssoauth_config::get_values('fe');
 		
 					
-					$search = iglib_ldap::search($this->config['users']['basedn'], str_replace('{USERNAME}', '*', $this->config['users']['filter']), array('dn'));
+					$search = tx_igldapssoauth_utility_Ldap::search($this->config['users']['basedn'], str_replace('{USERNAME}', '*', $this->config['users']['filter']), array('dn'));
 					global $TYPO3_CONF_VARS;
-					$userList = iglib_ldap::get_entries();
+					$userList = tx_igldapssoauth_utility_Ldap::get_entries();
 		
 					$this->authInfo['db_user']['table'] = $this->table;
 					$this->authInfo['db_groups']['table'] = 'fe_groups';

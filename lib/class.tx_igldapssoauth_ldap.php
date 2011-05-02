@@ -37,10 +37,10 @@ class tx_igldapssoauth_ldap {
 	function connect ($config = array()) {
 
 		// Connect to ldap server.
-		if (!iglib_ldap::connect($config['host'], $config['port'], $config['protocol'], $config['charset'], $config['server'])) { return false; }
+		if (!tx_igldapssoauth_utility_Ldap::connect($config['host'], $config['port'], $config['protocol'], $config['charset'], $config['server'])) { return false; }
 
 		// Bind to ldap server.
-		if (!iglib_ldap::bind($config['binddn'], $config['password'])) { tx_igldapssoauth_ldap::disconnect(); return false; }
+		if (!tx_igldapssoauth_utility_Ldap::bind($config['binddn'], $config['password'])) { tx_igldapssoauth_ldap::disconnect(); return false; }
 
 		return true;
 
@@ -49,15 +49,15 @@ class tx_igldapssoauth_ldap {
 	function valid_user ($username = null, $password = null, $basedn = null, $filter = null) {
 
 		// If user found on ldap server.
-		if (iglib_ldap::search($basedn, str_replace('{USERNAME}', $username, $filter), array('dn'))) {
+		if (tx_igldapssoauth_utility_Ldap::search($basedn, str_replace('{USERNAME}', $username, $filter), array('dn'))) {
 
 			// Validate with password.
 			if ($password) {
 
 				// Bind DN of user with password.
-				if (iglib_ldap::bind(iglib_ldap::get_dn(), $password)) {
+				if (tx_igldapssoauth_utility_Ldap::bind(tx_igldapssoauth_utility_Ldap::get_dn(), $password)) {
 
-					return iglib_ldap::get_dn();
+					return tx_igldapssoauth_utility_Ldap::get_dn();
 
 				}
 				else{
@@ -67,7 +67,7 @@ class tx_igldapssoauth_ldap {
 			// If enable, SSO authentication without password.
 			} elseif (!$password && tx_igldapssoauth_config::is_enable('CASAuthentication')) {
 
-				return iglib_ldap::get_dn();
+				return tx_igldapssoauth_utility_Ldap::get_dn();
 
 			} else {
 
@@ -86,17 +86,17 @@ class tx_igldapssoauth_ldap {
 
 		$result = array();
 
-		if (iglib_ldap::search($basedn, $filter, $attributes)) {
+		if (tx_igldapssoauth_utility_Ldap::search($basedn, $filter, $attributes)) {
 
 			if ($first_entry) {
 
-				$result = iglib_ldap::get_first_entry();
-				$result['dn'] = iglib_ldap::get_dn();
+				$result = tx_igldapssoauth_utility_Ldap::get_first_entry();
+				$result['dn'] = tx_igldapssoauth_utility_Ldap::get_dn();
 				unset($result['count']);
 
 			} else {
 
-				$result = iglib_ldap::get_entries();
+				$result = tx_igldapssoauth_utility_Ldap::get_entries();
 
 			}
 
@@ -108,13 +108,13 @@ class tx_igldapssoauth_ldap {
 
 	function get_status () {
 
-		return iglib_ldap::get_status();
+		return tx_igldapssoauth_utility_Ldap::get_status();
 
 	}
 
 	function disconnect () {
 
-		iglib_ldap::disconnect();
+		tx_igldapssoauth_utility_Ldap::disconnect();
 
 	}
 

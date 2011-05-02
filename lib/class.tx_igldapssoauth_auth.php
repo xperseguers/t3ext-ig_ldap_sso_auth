@@ -69,7 +69,7 @@ class tx_igldapssoauth_auth {
 	}
 	
 	function synchroniseUser($userdn, $username = null ){
-			// User is valid. Get it from DN.
+		// User is valid. Get it from DN.
 				$ldap_user = tx_igldapssoauth_auth::get_ldap_user($userdn);
 
 				// Get user pid from user mapping.
@@ -229,7 +229,6 @@ class tx_igldapssoauth_auth {
 				else{
 					$typo3_user=false;
 				}
-				///iglib_debug::print_this($typo3_user, 'TYPO3 USER MERGED');
 				return $typo3_user;
 	}
 

@@ -1,3 +1,9 @@
+# cat=basic; type=user[EXT:ig_ldap_sso_auth/class.tx_igldapssoauth_emconfhelper.php:tx_igldapssoauth_emconfhelper->checkConfiguration]; label=Configuration check
+checkConfiguration=0
+
+# cat=basic; type=boolean; label=Throw Exception if missconfigured : Recommanded for new installation - LDAP authentification is not compatible with loginSecurityLevel set to "challenged" or "superchallenged" since the real password can never be sent against the LDAP repository. Instead of failing silently, the extension with throw an Exception when login. If the method appear to be brutal it will save a log of headaches. Value of loginSecurityLevel should be handled manually to "normal" or even better "rsa" in the Install Tool.
+throwExceptionAtLogin = 1
+
 # cat=basic; type=string; label=Use configuration : Uid of configuration record in table tx_igldapssoauth_config.
 uidConfiguration = 1
 

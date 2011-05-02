@@ -1,7 +1,21 @@
-2011-02-16 Michael Miousse
+2011-04-27	Michael Miousse	  <mmiousse@infoglobe.ca>
+	Refactoring of classes names and files names to respect TYPO3 format, add a checkup of $GLOBALS['TYPO3_CONF_VARS']['BE']['loginSecurityLevel'] to catch the 
+	case were it is empty (empty mean supechallenged by default), removing of debugs comments
+	
+2011-04-27	Fabien Udriot <fabien.udriot@ecodev.ch>
+	*Bug #25891: Don't set the loginSecurityLevel, references 
+	*Feature #3542: Standard TYPO3 authentication as fail-over, references 
+	*Task #25915: Merge iglib into ig_ldap_sso_auth, references 
+	*Task #26332: Code clean up, references 
+	*Bug #25917: Fail when ig_ldap_sso_auth is chained with openid, resolves 
+	
+2011-04-20	Michael Miousse	  <mmiousse@infoglobe.ca>
+	*Bug #26149: Synchronisation script do not support multi-ldap
+
+2011-02-16 Michael Miousse  <mmiousse@infoglobe.ca>
 	*Feature #13103: Allow multiple configuration records
 
-2010-11-17 Michael Miousse
+2010-11-17 Michael Miousse  <mmiousse@infoglobe.ca>
 	*Bug #10805: Backend Ldap authentification
 	*Feature #10399: Users synchronisation
 	*Feature #5251: Allow multiple LDAP servers to be defined
@@ -10,7 +24,7 @@
 2010-10-14 Patrice Caron
 	*Feature #6565: Clean all cookie domain on logout
 
-2010-10-13 Michael Miousse
+2010-10-13 Michael Miousse  <mmiousse@infoglobe.ca>
 	*Feature #10244: add hook for maping field
 	*Bug #10243: priority error with TYPO3 4.4.x
 	*Bug #10259: Default value from TCA
@@ -33,11 +47,11 @@
 
 	* Fixed bug #6015: Bad CAS config variable name (thanks to Patrice Caron)
 
-2009-08-27 Xavier Perseguers
+2009-08-27 Xavier Perseguers <typo3@perseguers.ch>
 
 	* Feature #4354: Add option to force username as lowercase
 
-2009-06-30 Michael Miousse
+2009-06-30 Michael Miousse  <mmiousse@infoglobe.ca>
 
 	* Bug : modification of the autologout URL for realurl
 
@@ -46,7 +60,7 @@
 	* Feature #3775: Lock users to a certain list of ldap group
 	* Feature #3774: Set imported user to Admin (Backend)
 
-2009-06-29 Partice Caron & Michael Miousse 
+2009-06-29 Partice Caron & Michael Miousse  <mmiousse@infoglobe.ca>
 
 	* Feature #3773 : Autologin or logout option for the cas plugin 
 	* Replace the ext_typoscript_setup.txt and ext_typoscript_constant.txt by a static folder
@@ -55,27 +69,27 @@
 
 	* Feature #3764: Configuration for the service Url for cas
 
-2009-06-25 Michael Miousse
+2009-06-25 Michael Miousse <mmiousse@infoglobe.ca>
 
 	* Feature #3763: Add a new configuration denying import of users which do not have TYPO3 group
 	
-2009-06-05 Michael Miousse
+2009-06-05 Michael Miousse <mmiousse@infoglobe.ca>
 	
 	* Feature #3539: Enabeling CAS authentification as a stand alone feature
 
-2009-06-02  Xavier Perseguers
+2009-06-02  Xavier Perseguers <typo3@perseguers.ch>
 
 	* Took TCA default configuration into account when creating users
 	* Set a default random password for new users
 
-2009-06-01  Michael Miousse
+2009-06-01  Michael Miousse <mmiousse@infoglobe.ca>
 
 	* Added feature: possiblility to add uri at the end of an url for the cas server. We can now create url like localhost:8080/cas
 
-2009-02-23  Michael Miousse
+2009-02-23  Michael Miousse <mmiousse@infoglobe.ca>
 
 	* Fixed bug #2532: Missing dependency of iglib extension
 
-2009-01-29  Michael Miousse
+2009-01-29  Michael Miousse <mmiousse@infoglobe.ca>
 
 	* Initial Commit

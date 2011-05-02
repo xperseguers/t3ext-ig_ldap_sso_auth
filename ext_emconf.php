@@ -16,7 +16,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'category' => 'services',
 	'shy' => 0,
 	'version' => '1.0.10',
-	'dependencies' => 'iglib',
+	'dependencies' => '',
 	'conflicts' => '',
 	'priority' => '',
 	'loadOrder' => '',
@@ -34,7 +34,6 @@ $EM_CONF[$_EXTKEY] = array(
 	'CGLcompliance_note' => '',
 	'constraints' => array(
 		'depends' => array(
-			'iglib' => '',
 		),
 		'conflicts' => array(
 		),

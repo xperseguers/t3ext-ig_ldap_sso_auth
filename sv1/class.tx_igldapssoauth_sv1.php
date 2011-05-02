@@ -24,6 +24,8 @@
  * ************************************************************* */
 
 require_once(t3lib_extMgm::extPath('sv') . 'class.tx_sv_auth.php');
+//require_once(t3lib_extMgm::extPath('rsaauth') . 'sv1/backends/class.tx_rsaauth_backendfactory.php');
+//require_once(t3lib_extMgm::extPath('rsaauth') . 'sv1/storage/class.tx_rsaauth_storagefactory.php');
 
 /**
  * LDAP / SSO authentication service.
@@ -48,14 +50,6 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 	 */
 	function getUser() {
 
-		//$this->logoff;
-		//$this->login['uname']
-		//$this->login['uident_text']
-		//iglib_debug::print_this($GLOBALS['TSFE']->cObj);
-		//iglib_debug::print_this($this);
-		//iglib_debug::print_this(TYPO3_MODE);
-		//iglib_debug::var_dump_this($this);
-		//iglib_debug::print_this(tx_igldapssoauth_auth::is_enable());
 		$user = false;
 
 		global $EXT_CONFIG;
@@ -66,14 +60,6 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 				tx_igldapssoauth_config::init(TYPO3_MODE, $uid);
 
 				// Enable feature
-				//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('LDAPAuthentication'), 'Enable LDAP Authentication');
-				//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('CASAuthentication'), 'CAS authentication');
-				//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('evaluateGroupsFromMembership'), 'Evaluate groups from membership');
-				//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('IfUserExist'), 'If user exist');
-				//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('IfGroupExist'), 'If group exist');
-				//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('DeleteUserIfNoLDAPGroups'), 'Delete user if no LDAP groups found');
-				//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('GroupsNotSynchronize'), 'Groups not synchronize');
-				//		iglib_debug::print_this(tx_igldapssoauth_config::is_enable('assignGroups'), 'Assign these groups');
 				$userTemp = false;
 
 				// CAS authentication
@@ -84,8 +70,37 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 					// Authenticate user from LDAP
 				} elseif ($this->login['status'] == 'login' && $this->login['uident']) {
 
-					$userTemp = tx_igldapssoauth_auth::ldap_auth($this->login['uname'], $this->login['uident_text']);
-					//
+
+					// Configuration of authentication service.
+					$loginSecurityLevel = $GLOBALS['TYPO3_CONF_VARS']['BE']['loginSecurityLevel'];
+
+					// Check if $loginSecurityLevel is set to "challenged" or "superchallenged" and throw an error if the configuration allows it
+					// By default, it will not throw an Exception
+					$throwExceptionAtLogin = 0;
+					if (isset($EXT_CONFIG['throwExceptionAtLogin']) && $EXT_CONFIG['throwExceptionAtLogin'] == 1) {
+						if ($loginSecurityLevel == 'challenged' || $loginSecurityLevel == 'superchallenged') {
+							$message = "ig_ldap_sso_auth error: current login security level '" . $loginSecurityLevel . "' is not supported.";
+							$message .= " Try to use 'normal' or 'rsa' (recommanded but would need more settings): ";
+							$message .= "\$TYPO3_CONF_VARS['BE']['loginSecurityLevel'] = 'normal';";
+							throw new Exception($message);
+						}
+					}
+
+					// normal case
+					$password = $this->login['uident'];
+
+					if ($loginSecurityLevel == 'rsa') {
+						/* @var $storage tx_rsaauth_abstract_storage */
+						$storage = tx_rsaauth_storagefactory::getStorage();
+
+						// Preprocess the password
+						$key = $storage->get();
+
+						$this->backend = tx_rsaauth_backendfactory::getBackend();
+						$password = $this->backend->decrypt($key, substr($password, 4));
+					}
+
+					$userTemp = tx_igldapssoauth_auth::ldap_auth($this->login['uname'], $password);
 				}
 				if (is_array($userTemp)) {
 					$user = $userTemp;
@@ -120,6 +135,8 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 	 */
 	function authUser($user) {
 
+		// 100 -> login failed
+		// 200 -> login success
 		$OK = 100;
 
 		if (($this->login['uident'] && $this->login['uname']) || (tx_igldapssoauth_config::is_enable('CASAuthentication') && $user)) {
@@ -162,6 +179,11 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 				}
 				$OK = false;
 			}
+		}
+
+		// Make sure $OK returns the right value which must either 100 (login KO) or 200 (login OK)
+		if ($OK === FALSE) {
+			$OK = 100;
 		}
 		return $OK;
 	}

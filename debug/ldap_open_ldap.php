@@ -1,10 +1,9 @@
 <?php
 
-$basedn = ''; 
-$password = ''; 
-$server = "ldap://...";
+// remove security stop
+exit();
 
-$username = 'username';  // Username to be search in the LDAP directory
+$server = "ldap://...";
 
 //using ldap bind anonymously // connect to ldap server 
 $ds = ldap_connect($server)
@@ -24,9 +23,13 @@ if ($ds) {
 	}
 }
 
+
+$basedn = ''; 
+$username = 'username';  // Username to be search in the LDAP directory
+$password = ''; 
+
 // search in the directory
 $r = ldap_search( $ds, $basedn, 'uid=' . $username);
-
 
 if ($r) {
 	$result = ldap_get_entries( $ds, $r);
@@ -38,6 +41,5 @@ if ($r) {
 		}
 	}
 }
-
 
 ?>

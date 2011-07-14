@@ -79,7 +79,11 @@ class tx_igldapssoauth_auth {
 	function synchroniseUser($userdn, $username = null) {
 		// User is valid. Get it from DN.
 		$ldap_user = tx_igldapssoauth_auth::get_ldap_user($userdn);
-
+				
+				if(!$username){
+					$userAttribute = tx_igldapssoauth_config::get_username_attribute($this->config['users']['filter']);
+					$username = $ldap_user[0][$userAttribute][0];
+				}
 		// Get user pid from user mapping.
 		$typo3_users_pid = tx_igldapssoauth_config::get_pid($this->config['users']['mapping']);
 		//$typo3_users_pid = tx_igldapssoauth_config::get_pid($this->config['users']['mapping']) ? tx_igldapssoauth_config::get_pid($this->config['users']['mapping']) : $this->authInfo['db_user']['checkPidList'];

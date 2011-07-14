@@ -1,6 +1,11 @@
+2011-07-14	Michael Miousse	  <mmiousse@infoglobe.ca>
+	*Fixed #28212   Bug	New	Should have	Synchronisation script mapping error due to empty username Bug	New	Should have	Synchronisation script mapping error due to empty username
+	*Fixed #28211	Bug	New	Should have	ldaps and TLS does not work
+	*Task Fixed #26332 (Resolved): Code clean up
+	
 2011-04-27	Michael Miousse	  <mmiousse@infoglobe.ca>
-	Refactoring of classes names and files names to respect TYPO3 format, add a checkup of $GLOBALS['TYPO3_CONF_VARS']['BE']['loginSecurityLevel'] to catch the 
-	case were it is empty (empty mean supechallenged by default), removing of debugs comments
+	*Refactoring of classes names and files names to respect TYPO3 format, add a checkup of $GLOBALS['TYPO3_CONF_VARS']['BE']['loginSecurityLevel'] to catch the 
+	*case were it is empty (empty mean supechallenged by default), removing of debugs comments
 	
 2011-04-27	Fabien Udriot <fabien.udriot@ecodev.ch>
 	*Bug #25891: Don't set the loginSecurityLevel, references 

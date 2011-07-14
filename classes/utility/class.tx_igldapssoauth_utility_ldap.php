@@ -101,7 +101,7 @@ class tx_igldapssoauth_utility_Ldap {
 		// Active Directory (User@Domain) configuration.
 		if ($type == 1) @ldap_set_option($this->cid, LDAP_OPT_REFERRALS, 0);
 
-		if (substr(strtolower($this->host), 0, 8) == 'ldaps://') {
+		if (substr(strtolower($host), 0, 8) == 'ldaps://') {
 
 			if (!@ldap_start_tls($this->cid)) {
 

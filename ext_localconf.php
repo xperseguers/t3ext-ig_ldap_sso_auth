@@ -2,8 +2,6 @@
 
 if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 
-// iglib class require
-require_once(t3lib_extMgm::extPath($_EXTKEY) . 'framework/CAS/CAS.php');
 
 // Configuration of authentication service.
 $EXT_CONFIG = unserialize($TYPO3_CONF_VARS['EXT']['extConf']['ig_ldap_sso_auth']);
@@ -12,6 +10,9 @@ $EXT_CONFIG = unserialize($TYPO3_CONF_VARS['EXT']['extConf']['ig_ldap_sso_auth']
 
 //extend tslib_feUserAuth
 if ($EXT_CONFIG['enableFECASAuthentication']) {
+	// iglib class require
+	require_once(t3lib_extMgm::extPath($_EXTKEY) . 'framework/CAS/CAS.php');
+	
     //$TYPO3_CONF_VARS['FE']['XCLASS']['tslib/class.tslib_feuserauth.php'] = t3lib_extMgm::extPath($_EXTKEY)."sv1/class.ux_tslib_feuserauth.php";
    $TYPO3_CONF_VARS['SVCONF']['auth']['setup']['FE_alwaysFetchUser'] = 1;
 }

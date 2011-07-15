@@ -1,4 +1,5 @@
 2011-07-14	Michael Miousse	  <mmiousse@infoglobe.ca>
+	*Fixed #3554 Integrate Xavier's documentation
 	*Fixed #27231	Task	New	Should have	Release the extension -> TER
 	*Fixed #28212   Bug	New	Should have	Synchronisation script mapping error due to empty username Bug	New	Should have	Synchronisation script mapping error due to empty username
 	*Fixed #28211	Bug	New	Should have	ldaps and TLS does not work

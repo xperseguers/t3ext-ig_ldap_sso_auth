@@ -1,3 +1,6 @@
+2011-08-12	Michael Miousse	  <mmiousse@infoglobe.ca>
+	*Fixed Feature #28938	Should have	Fetch user only by session with CAS
+
 2011-07-14	Michael Miousse	  <mmiousse@infoglobe.ca>
 	*Fixed #3554 Integrate Xavier's documentation
 	*Fixed #27231	Task	New	Should have	Release the extension -> TER

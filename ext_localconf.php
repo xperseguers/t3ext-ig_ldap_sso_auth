@@ -13,8 +13,12 @@ if ($EXT_CONFIG['enableFECASAuthentication']) {
 	// iglib class require
 	require_once(t3lib_extMgm::extPath($_EXTKEY) . 'framework/CAS/CAS.php');
 	
-    //$TYPO3_CONF_VARS['FE']['XCLASS']['tslib/class.tslib_feuserauth.php'] = t3lib_extMgm::extPath($_EXTKEY)."sv1/class.ux_tslib_feuserauth.php";
-   $TYPO3_CONF_VARS['SVCONF']['auth']['setup']['FE_alwaysFetchUser'] = 1;
+	if($EXT_CONFIG['enableFetchUserIfNoSession']){
+   		$TYPO3_CONF_VARS['SVCONF']['auth']['setup']['FE_fetchUserIfNoSession'] = 1;
+	}
+	else{
+		$TYPO3_CONF_VARS['SVCONF']['auth']['setup']['FE_alwaysFetchUser'] = 1;
+	}
 }
 
 //extend t3lib_beUserAuth

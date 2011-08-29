@@ -1,3 +1,6 @@
+2011-08-29	Michael Miousse	  <mmiousse@infoglobe.ca>
+	*Fixed #28450 Bug 	$TYPO3_CONF_VARS['FE']['loginSecurityLevel'] is ignored
+
 2011-08-12	Michael Miousse	  <mmiousse@infoglobe.ca>
 	*Fixed Feature #28938	Should have	Fetch user only by session with CAS
 

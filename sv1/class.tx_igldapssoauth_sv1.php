@@ -70,7 +70,7 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 
 
 					// Configuration of authentication service.
-					$loginSecurityLevel = $GLOBALS['TYPO3_CONF_VARS']['BE']['loginSecurityLevel'];
+					$loginSecurityLevel = $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['loginSecurityLevel'];
 
 					// Check if $loginSecurityLevel is set to "challenged" or "superchallenged" and throw an error if the configuration allows it
 					// By default, it will not throw an Exception

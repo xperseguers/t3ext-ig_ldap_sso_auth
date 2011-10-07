@@ -1,3 +1,6 @@
+2011-10-07	Michael Miousse	  <mmiousse@infoglobe.ca>
+	*Fixed Bug #30520 Authentication failure with TYPO3 4.5.6
+
 2011-08-29	Michael Miousse	  <mmiousse@infoglobe.ca>
 	*Fixed #28450 Bug 	$TYPO3_CONF_VARS['FE']['loginSecurityLevel'] is ignored
 

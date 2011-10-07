@@ -71,7 +71,7 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 
 					// Configuration of authentication service.
 					$loginSecurityLevel = $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['loginSecurityLevel'];
-
+					// normal case
 					// Check if $loginSecurityLevel is set to "challenged" or "superchallenged" and throw an error if the configuration allows it
 					// By default, it will not throw an Exception
 					$throwExceptionAtLogin = 0;
@@ -85,9 +85,9 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 					}
 
 					// normal case
-					$password = $this->login['uident'];
-
+					$password = $this->login['uident_text'];
 					if ($loginSecurityLevel == 'rsa') {
+						$password = $this->login['uident'];
 						/* @var $storage tx_rsaauth_abstract_storage */
 						$storage = tx_rsaauth_storagefactory::getStorage();
 
@@ -96,6 +96,7 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 
 						$this->backend = tx_rsaauth_backendfactory::getBackend();
 						$password = $this->backend->decrypt($key, substr($password, 4));
+						
 					}
 
 					$userTemp = tx_igldapssoauth_auth::ldap_auth($this->login['uname'], $password);

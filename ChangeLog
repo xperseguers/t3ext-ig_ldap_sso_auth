@@ -1,3 +1,7 @@
+2011-12-12  Xavier Perseguers  <xavier@typo3.org>
+
+	* [TASK][!!!] Code cleanup using PhpStorm
+
 2011-10-07	Michael Miousse	  <mmiousse@infoglobe.ca>
 	*Fixed Bug #30520 Authentication failure with TYPO3 4.5.6
 

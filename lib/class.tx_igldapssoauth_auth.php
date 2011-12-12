@@ -79,11 +79,11 @@ class tx_igldapssoauth_auth {
 	function synchroniseUser($userdn, $username = null) {
 		// User is valid. Get it from DN.
 		$ldap_user = tx_igldapssoauth_auth::get_ldap_user($userdn);
-				
-				if(!$username){
-					$userAttribute = tx_igldapssoauth_config::get_username_attribute($this->config['users']['filter']);
-					$username = $ldap_user[0][$userAttribute][0];
-				}
+
+		if (!$username) {
+			$userAttribute = tx_igldapssoauth_config::get_username_attribute($this->config['users']['filter']);
+			$username = $ldap_user[0][$userAttribute][0];
+		}
 		// Get user pid from user mapping.
 		$typo3_users_pid = tx_igldapssoauth_config::get_pid($this->config['users']['mapping']);
 		//$typo3_users_pid = tx_igldapssoauth_config::get_pid($this->config['users']['mapping']) ? tx_igldapssoauth_config::get_pid($this->config['users']['mapping']) : $this->authInfo['db_user']['checkPidList'];
@@ -199,7 +199,7 @@ class tx_igldapssoauth_auth {
 
 			$typo3_user = tx_igldapssoauth_typo3_user::insert($table, $typo3_user[0]);
 		}
-		
+
 		if (!empty($typo3_user[0]['uid'])) {
 			$typo3_user[0]['deleted'] = 0;
 			if ((empty($typo3_groups) && tx_igldapssoauth_config::is_enable('DeleteUserIfNoTYPO3Groups'))) {
@@ -242,9 +242,9 @@ class tx_igldapssoauth_auth {
 	function cas_auth() {
 
 		$cas = tx_igldapssoauth_config::get_values('cas');
-		phpCAS::client(CAS_VERSION_2_0, (string) $cas['host'], (integer) $cas['port'], (string) $cas['uri']);
+		phpCAS::client(CAS_VERSION_2_0, (string)$cas['host'], (integer)$cas['port'], (string)$cas['uri']);
 		if (!empty($cas['service_url'])) {
-			phpCAS::setFixedServiceURL((string) $cas['service_url']);
+			phpCAS::setFixedServiceURL((string)$cas['service_url']);
 		}
 
 		switch ($this->login['status']) {
@@ -288,7 +288,6 @@ class tx_igldapssoauth_auth {
 
 		return false;
 	}
-
 
 	/**
 	 * ...
@@ -423,7 +422,8 @@ class tx_igldapssoauth_auth {
 							$ldapAttr = tx_igldapssoauth_config::get_ldap_attributes(array($value));
 							// hook for processing user information once inserted or updated in the database
 							if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField']) &&
-									!empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'][$newVal])) {
+								!empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'][$newVal])
+							) {
 
 								$_procObj = & t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'][$newVal]);
 								$typo3[$field] = $_procObj->extraMerge($field, $typo3, $ldap, $ldapAttr, $passParams);

@@ -30,7 +30,7 @@
  * @access public
  * @package TYPO3
  * @subpackage iglib
- * @author       Michael Gagnon <mgagnon@infoglobe.ca>
+ * @author	   Michael Gagnon <mgagnon@infoglobe.ca>
  * @copyright Copyright (c) Infoglobe 2007
  * @version $Id: tx_igldapssoauth_utility_Debug
  *

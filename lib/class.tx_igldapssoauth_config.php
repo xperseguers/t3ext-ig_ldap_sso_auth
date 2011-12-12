@@ -1,27 +1,27 @@
 <?php
 
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2007 Michael Gagnon <mgagnon@infoglobe.ca>
-*  All rights reserved
-*
-*  This script is part of the TYPO3 project. The TYPO3 project is
-*  free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2007 Michael Gagnon <mgagnon@infoglobe.ca>
+ *  All rights reserved
+ *
+ *  This script is part of the TYPO3 project. The TYPO3 project is
+ *  free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 /**
  * Class tx_igldapssoauth_config for the 'ig_ldap_sso_auth' extension.
@@ -29,7 +29,7 @@
  * @author	Michael Gagnon <mgagnon@infoglobe.ca>
  * @package	TYPO3
  * @subpackage	ig_ldap_sso_auth
- * 
+ *
  * $Id$
  */
 class tx_igldapssoauth_config {
@@ -42,9 +42,9 @@ class tx_igldapssoauth_config {
 	var $ldap;
 	var $cas;
 
-	function init ($typo3_mode = null, $uid = 0) {
+	function init($typo3_mode = null, $uid = 0) {
 
-		global $EXT_CONFIG,$BE_USER,$LANG,$BACK_PATH,$TCA_DESCR,$TCA,$CLIENT,$TYPO3_CONF_VARS;
+		global $EXT_CONFIG, $BE_USER, $LANG, $BACK_PATH, $TCA_DESCR, $TCA, $CLIENT, $TYPO3_CONF_VARS;
 
 		$this->uid = $uid ? $uid : $EXT_CONFIG['uidConfiguration'];
 
@@ -55,7 +55,7 @@ class tx_igldapssoauth_config {
 
 		$config = tx_igldapssoauth_config::select($this->uid);
 
-		$EXT_CONFIG = array_merge( is_array($EXT_CONFIG) ? $EXT_CONFIG : array(), $config ? $config : array());
+		$EXT_CONFIG = array_merge(is_array($EXT_CONFIG) ? $EXT_CONFIG : array(), $config ? $config : array());
 
 		$this->name = $EXT_CONFIG['name'];
 
@@ -66,21 +66,21 @@ class tx_igldapssoauth_config {
 		$this->be['evaluateGroupsFromMembership'] = $EXT_CONFIG['evaluateGroupsFromMembership'];
 		$this->be['IfUserExist'] = $EXT_CONFIG['TYPO3BEUserExist'];
 		$this->be['IfGroupExist'] = 0;
-		$this->be['BEfailsafe'] =  $EXT_CONFIG['BEfailsafe'];		
+		$this->be['BEfailsafe'] = $EXT_CONFIG['BEfailsafe'];
 		$this->be['DeleteUserIfNoLDAPGroups'] = 0;
 		$this->be['DeleteUserIfNoTYPO3Groups'] = 0;
 		$this->be['GroupsNotSynchronize'] = $EXT_CONFIG['TYPO3BEGroupsNotSynchronize'];
 		$this->be['requiredLDAPGroups'] = $EXT_CONFIG['requiredLDAPBEGroups'] ? $EXT_CONFIG['requiredLDAPBEGroups'] : 0;
-	    $this->be['updateAdminAttribForGroups'] = $EXT_CONFIG['updateAdminAttribForGroups'] ? $EXT_CONFIG['updateAdminAttribForGroups'] : 0;
+		$this->be['updateAdminAttribForGroups'] = $EXT_CONFIG['updateAdminAttribForGroups'] ? $EXT_CONFIG['updateAdminAttribForGroups'] : 0;
 		$this->be['assignGroups'] = $EXT_CONFIG['assignBEGroups'] ? $EXT_CONFIG['assignBEGroups'] : 0;
 		$this->be['keepTYPO3Groups'] = $EXT_CONFIG['keepBEGroups'];
-		$this->be['users']['basedn'] = explode('||',$EXT_CONFIG['be_users_basedn']);
+		$this->be['users']['basedn'] = explode('||', $EXT_CONFIG['be_users_basedn']);
 		$this->be['users']['filter'] = $EXT_CONFIG['be_users_filter'];
 		$this->be['users']['mapping'] = tx_igldapssoauth_config::make_user_mapping($EXT_CONFIG['be_users_mapping'], $EXT_CONFIG['be_users_filter']);
 		$this->be['groups']['basedn'] = $EXT_CONFIG['be_groups_basedn'];
 		$this->be['groups']['filter'] = $EXT_CONFIG['be_groups_filter'];
 		$this->be['groups']['mapping'] = tx_igldapssoauth_config::make_group_mapping($EXT_CONFIG['be_groups_mapping']);
-		
+
 		$this->fe['LDAPAuthentication'] = $EXT_CONFIG['enableFELDAPAuthentication'];
 		$this->fe['DeleteCookieLogout'] = $EXT_CONFIG['DeleteCookieLogout'];
 		$this->fe['CASAuthentication'] = $EXT_CONFIG['enableFECASAuthentication'];
@@ -89,14 +89,14 @@ class tx_igldapssoauth_config {
 		$this->fe['IfUserExist'] = 0;
 		$this->fe['IfGroupExist'] = $EXT_CONFIG['TYPO3FEGroupExist'];
 		$this->fe['BEfailsafe'] = 0;
-		$this->fe['updateAdminAttribForGroups']=0;
+		$this->fe['updateAdminAttribForGroups'] = 0;
 		$this->fe['DeleteUserIfNoTYPO3Groups'] = $EXT_CONFIG['TYPO3FEDeleteUserIfNoTYPO3Groups'];
 		$this->fe['DeleteUserIfNoLDAPGroups'] = $EXT_CONFIG['TYPO3FEDeleteUserIfNoLDAPGroups'];
 		$this->fe['GroupsNotSynchronize'] = $EXT_CONFIG['TYPO3FEGroupsNotSynchronize'];
 		$this->fe['assignGroups'] = $EXT_CONFIG['assignFEGroups'] ? $EXT_CONFIG['assignFEGroups'] : 0;
 		$this->fe['keepTYPO3Groups'] = $EXT_CONFIG['keepFEGroups'];
 		$this->fe['requiredLDAPGroups'] = $EXT_CONFIG['requiredLDAPFEGroups'] ? $EXT_CONFIG['requiredLDAPFEGroups'] : 0;
-		$this->fe['users']['basedn'] = explode('||',$EXT_CONFIG['fe_users_basedn']);
+		$this->fe['users']['basedn'] = explode('||', $EXT_CONFIG['fe_users_basedn']);
 		$this->fe['users']['filter'] = $EXT_CONFIG['fe_users_filter'];
 		$this->fe['users']['mapping'] = tx_igldapssoauth_config::make_user_mapping($EXT_CONFIG['fe_users_mapping'], $EXT_CONFIG['fe_users_filter']);
 		$this->fe['groups']['basedn'] = $EXT_CONFIG['fe_groups_basedn'];
@@ -110,7 +110,7 @@ class tx_igldapssoauth_config {
 		$this->cas['service_url'] = $EXT_CONFIG['cas_service_url'];
 
 		$this->ldap['server'] = $EXT_CONFIG['ldap_server'];
-		$this->ldap['host'] = $EXT_CONFIG['ldap_host'];		
+		$this->ldap['host'] = $EXT_CONFIG['ldap_host'];
 		$this->ldap['port'] = $EXT_CONFIG['ldap_port'];
 		$this->ldap['protocol'] = $EXT_CONFIG['ldap_protocol'];
 		$this->ldap['charset'] = $EXT_CONFIG['ldap_charset'] ? $EXT_CONFIG['ldap_charset'] : 'utf-8';
@@ -119,19 +119,19 @@ class tx_igldapssoauth_config {
 
 	}
 
-	function make_user_mapping ($mapping = '', $filter = '') {
+	function make_user_mapping($mapping = '', $filter = '') {
 
 		// Default fields : username, tx_igldapssoauth_dn
 
 		$user_mapping = tx_igldapssoauth_config::make_mapping($mapping);
-		$user_mapping['username'] = '<'.tx_igldapssoauth_config::get_username_attribute($filter).'>';
+		$user_mapping['username'] = '<' . tx_igldapssoauth_config::get_username_attribute($filter) . '>';
 		$user_mapping['tx_igldapssoauth_dn'] = '<dn>';
 
 		return $user_mapping;
 
 	}
 
-	function make_group_mapping ($mapping = '') {
+	function make_group_mapping($mapping = '') {
 
 		// Default fields : title, tx_igldapssoauth_dn
 
@@ -143,7 +143,7 @@ class tx_igldapssoauth_config {
 
 	}
 
-	function make_mapping ($mapping = '') {
+	function make_mapping($mapping = '') {
 
 		$config_mapping = array();
 
@@ -165,19 +165,21 @@ class tx_igldapssoauth_config {
 
 	}
 
-	function get_pid ($mapping = array()) {
+	function get_pid($mapping = array()) {
 
-		if (!$mapping) { return null; }
+		if (!$mapping) {
+			return null;
+		}
 
 		return array_key_exists('pid', $mapping) ? (is_numeric($mapping['pid']) ? $mapping['pid'] : 0) : 0;
 
 	}
 
-	function get_username_attribute ($filter = null) {
+	function get_username_attribute($filter = null) {
 
 		if ($filter && preg_match("'([^$]*)\(([^$]*)={USERNAME}\)'", $filter, $username)) {
 
-			return($username[2]);
+			return ($username[2]);
 
 		}
 
@@ -185,7 +187,7 @@ class tx_igldapssoauth_config {
 
 	}
 
-	function get_values ($key = null) {
+	function get_values($key = null) {
 
 		$config = get_object_vars($this);
 
@@ -218,15 +220,15 @@ class tx_igldapssoauth_config {
 
 	}
 
-	function is_enable ($feature = null) {
+	function is_enable($feature = null) {
 
 		$config = tx_igldapssoauth_config::get_values($this->typo3_mode);
 
-		return(isset($config[$feature]) ? $config[$feature] : 0);
+		return (isset($config[$feature]) ? $config[$feature] : 0);
 
 	}
 
-	function get_ldap_attributes ($mapping = array()) {
+	function get_ldap_attributes($mapping = array()) {
 
 		if (is_array($mapping)) {
 
@@ -246,7 +248,7 @@ class tx_igldapssoauth_config {
 
 	}
 
-	function get_server_name ($uid = null) {
+	function get_server_name($uid = null) {
 
 		switch ($uid) {
 
@@ -264,23 +266,23 @@ class tx_igldapssoauth_config {
 
 	}
 
-	function replace_filter_markers ($filter = null) {
+	function replace_filter_markers($filter = null) {
 
-		$filter  = str_replace('{USERNAME}', '*',$filter);
+		$filter = str_replace('{USERNAME}', '*', $filter);
 		preg_match("'([^$]*)\(([^$]*)={USERDN}\)'", $filter, $member_attribute);
 		//return str_replace('('.$member_attribute[2].'={USERDN})', '', $filter);
 		return str_replace('{USERDN}', '*', $filter);
 
 	}
 
-	function select ($uid = 0) {
+	function select($uid = 0) {
 
 		// Get extension configuration array from table tx_igldapssoauth_config
 
-		$query =  array (
+		$query = array(
 			'SELECT' => '*',
 			'FROM' => 'tx_igldapssoauth_config',
-			'WHERE' => 'tx_igldapssoauth_config.hidden = 0 AND tx_igldapssoauth_config.deleted = 0 AND tx_igldapssoauth_config.uid='.$uid,
+			'WHERE' => 'tx_igldapssoauth_config.hidden = 0 AND tx_igldapssoauth_config.deleted = 0 AND tx_igldapssoauth_config.uid=' . $uid,
 			'GROUP_BY' => '',
 			'ORDER_BY' => '',
 			'LIMIT' => '0,1',
@@ -292,11 +294,11 @@ class tx_igldapssoauth_config {
 
 	}
 
-	function update ($config = array()) {
+	function update($config = array()) {
 
 		$query = array(
 			'TABLE' => 'tx_igldapssoauth_config',
-			'WHERE' => 'tx_igldapssoauth_config.uid='.$config['uid'],
+			'WHERE' => 'tx_igldapssoauth_config.uid=' . $config['uid'],
 			'FIELDS_VALUES' => $config,
 			'NO_QUOTE' => false,
 		);
@@ -309,7 +311,7 @@ class tx_igldapssoauth_config {
 
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/lib/class.tx_igldapssoauth_config.php'])	{
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/lib/class.tx_igldapssoauth_config.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/lib/class.tx_igldapssoauth_config.php']);
 }
 

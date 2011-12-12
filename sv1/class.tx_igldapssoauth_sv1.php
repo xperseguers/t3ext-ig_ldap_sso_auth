@@ -36,7 +36,7 @@ require_once(t3lib_extMgm::extPath('sv') . 'class.tx_sv_auth.php');
  */
 class tx_igldapssoauth_sv1 extends tx_sv_auth {
 
-	var $prefixId = 'tx_igldapssoauth_sv1';  // Same as class name
+	var $prefixId = 'tx_igldapssoauth_sv1'; // Same as class name
 	var $scriptRelPath = 'sv1/class.tx_igldapssoauth_sv1.php'; // Path to this script relative to the extension dir.
 	var $extKey = 'ig_ldap_sso_auth'; // The extension key.
 	var $igldapssoauth;
@@ -68,7 +68,6 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 					// Authenticate user from LDAP
 				} elseif ($this->login['status'] == 'login' && $this->login['uident']) {
 
-
 					// Configuration of authentication service.
 					$loginSecurityLevel = $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['loginSecurityLevel'];
 					// normal case
@@ -96,7 +95,7 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 
 						$this->backend = tx_rsaauth_backendfactory::getBackend();
 						$password = $this->backend->decrypt($key, substr($password, 4));
-						
+
 					}
 
 					$userTemp = tx_igldapssoauth_auth::ldap_auth($this->login['uname'], $password);
@@ -115,13 +114,14 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 		if (!is_array($user)) {
 
 			$this->writelog(255, 3, 3, 2,
-					"Login-attempt from %s (%s), username '%s' not found!!",
-					Array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $this->login['uname'])); // Logout written to log
+				"Login-attempt from %s (%s), username '%s' not found!!",
+				Array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $this->login['uname'])); // Logout written to log
 			// User found
 		} else {
 
-			if ($this->writeDevLog)
+			if ($this->writeDevLog) {
 				t3lib_div::devLog('User found: ' . t3lib_div::arrayToLogString($user, array($this->db_user['userid_column'], $this->db_user['username_column'])), 'tx_igldapssoauth_sv1');
+			}
 		}
 		return $user;
 	}
@@ -156,12 +156,13 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 
 				if ($this->writeAttemptLog) {
 					$this->writelog(255, 3, 3, 1,
-							"Login-attempt from %s (%s), username '%s', password not accepted!",
-							Array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $this->login['uname']));
+						"Login-attempt from %s (%s), username '%s', password not accepted!",
+						Array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $this->login['uname']));
 				}
 
-				if ($this->writeDevLog)
+				if ($this->writeDevLog) {
 					t3lib_div::devLog('Password not accepted: ' . $this->login['uident'], 'tx_igldapssoauth_sv1', 2);
+				}
 			}
 			else {
 				$OK = 200;
@@ -173,8 +174,8 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 				// Lock domain didn't match, so error:
 				if ($this->writeAttemptLog) {
 					$this->writelog(255, 3, 3, 1,
-							"Login-attempt from %s (%s), username '%s', locked domain '%s' did not match '%s'!",
-							Array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $user[$this->db_user['username_column']], $user['lockToDomain'], $this->authInfo['HTTP_HOST']));
+						"Login-attempt from %s (%s), username '%s', locked domain '%s' did not match '%s'!",
+						Array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $user[$this->db_user['username_column']], $user['lockToDomain'], $this->authInfo['HTTP_HOST']));
 				}
 				$OK = false;
 			}

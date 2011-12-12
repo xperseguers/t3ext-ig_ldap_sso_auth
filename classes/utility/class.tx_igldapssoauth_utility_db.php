@@ -45,7 +45,7 @@ class tx_igldapssoauth_utility_Db {
 	 * Execute insert query.
 	 *
 	 * @access	public
-	 * @param array 	Insert query array for at exec_INSERTquery function.
+	 * @param array	 Insert query array for at exec_INSERTquery function.
 	 * @return integer	Last inserted uid.
 	 */
 	function insert($query = array()) {
@@ -85,7 +85,7 @@ class tx_igldapssoauth_utility_Db {
 	 * Execute select many-many query.
 	 *
 	 * @access	public
-	 * @param	array 	Select many-many query for exec_SELECT_mm_query function.
+	 * @param	array	 Select many-many query for exec_SELECT_mm_query function.
 	 * @return	pointer	MySQL result pointer / DBAL object.
 	 */
 	function select_mm($query = array()) {
@@ -98,7 +98,7 @@ class tx_igldapssoauth_utility_Db {
 	 *
 	 * @access	private
 	 * @param	pointer	MySQL result pointer / DBAL object.
-	 * @return	array 	Result array.
+	 * @return	array	 Result array.
 	 */
 	function get_rows($link) {
 
@@ -120,7 +120,7 @@ class tx_igldapssoauth_utility_Db {
 	 * Return table structure.
 	 *
 	 * @access	private
-	 * @param	array 	Select many-many query for exec_SELECT_mm_query function.
+	 * @param	array	 Select many-many query for exec_SELECT_mm_query function.
 	 * @return	pointer	MySQL result pointer / DBAL object.
 	 */
 	function get_columns_from($table = null) {

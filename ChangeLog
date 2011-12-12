@@ -1,5 +1,6 @@
 2011-12-12  Xavier Perseguers  <xavier@typo3.org>
 
+	* [BUGFIX] #32484: Retrieval of groups fails if user is not authorized to list them
 	* [TASK][!!!] Code cleanup using PhpStorm
 
 2011-10-07	Michael Miousse	  <mmiousse@infoglobe.ca>

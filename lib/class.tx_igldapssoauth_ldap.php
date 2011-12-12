@@ -62,8 +62,13 @@ class tx_igldapssoauth_ldap {
 				// Bind DN of user with password.
 				if (tx_igldapssoauth_utility_Ldap::bind(tx_igldapssoauth_utility_Ldap::get_dn(), $password)) {
 
-					return tx_igldapssoauth_utility_Ldap::get_dn();
+					$dn = tx_igldapssoauth_utility_Ldap::get_dn();
 
+					// Restore last LDAP binding
+					$config = tx_igldapssoauth_config::get_values('ldap');
+					tx_igldapssoauth_utility_Ldap::bind($config['binddn'], $config['password']);
+
+					return $dn;
 				}
 				else {
 					return TRUE;

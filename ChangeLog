@@ -1,5 +1,6 @@
 2011-12-19  Xavier Perseguers  <xavier@typo3.org>
 
+	* [BUGFIX] Remove deprecated call ereg()
 	* [TASK][!!!] Remove useless DB layer tx_igldapssoauth_utility_Db
 	* [TASK][!!!] Code cleanup
 

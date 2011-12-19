@@ -187,36 +187,27 @@ class tx_igldapssoauth_config {
 	}
 
 	function get_values($key = null) {
-
 		$config = get_object_vars($this);
 
 		// No key, return all configuration array.
 		if (!$key) {
-
 			return $config;
-
 		}
 
 		// Key exist in array, return this value.
 		if (array_key_exists($key, $config)) {
-
 			return $config[$key];
-
 		}
 
 		// If one sequence of key is in index add it.
+		$config_array = array();
 		foreach ($config as $index => $value) {
-
-			if (ereg($key, $index)) {
-
+			if (preg_match('`' . $key . '`', $index)) {
 				$config_array[$index] = $config[$index];
-
 			}
-
 		}
 
 		return $config_array;
-
 	}
 
 	function is_enable($feature = null) {
@@ -228,23 +219,16 @@ class tx_igldapssoauth_config {
 	}
 
 	function get_ldap_attributes($mapping = array()) {
-
+		$ldap_attributes = array();
 		if (is_array($mapping)) {
-
 			foreach ($mapping as $attribute) {
-
 				if (preg_match("`<([^$]*)>`", $attribute, $match)) {
-
 					$ldap_attributes[] = strtolower($match[1]);
-
 				}
-
 			}
-
 		}
 
 		return $ldap_attributes;
-
 	}
 
 	function get_server_name($uid = null) {
@@ -263,12 +247,10 @@ class tx_igldapssoauth_config {
 	}
 
 	function replace_filter_markers($filter = null) {
-
 		$filter = str_replace('{USERNAME}', '*', $filter);
 		preg_match("'([^$]*)\(([^$]*)={USERDN}\)'", $filter, $member_attribute);
 		//return str_replace('('.$member_attribute[2].'={USERDN})', '', $filter);
 		return str_replace('{USERDN}', '*', $filter);
-
 	}
 
 	/**

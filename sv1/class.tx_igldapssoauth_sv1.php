@@ -56,6 +56,7 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 	 */
 	public function __construct() {
 		$this->config = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']);
+		tx_igldapssoauth_auth::init($this);
 	}
 
 	/**

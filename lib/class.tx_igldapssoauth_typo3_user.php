@@ -118,7 +118,7 @@ class tx_igldapssoauth_typo3_user {
 		return $ret;
 	}
 
-	public static function set_usergroup($typo3_groups = array(), $typo3_user = array()) {
+	public static function set_usergroup($typo3_groups = array(), $typo3_user = array(), tx_igldapssoauth_sv1 $pObj) {
 		$required = TRUE;
 		$group_uid = array();
 
@@ -132,7 +132,7 @@ class tx_igldapssoauth_typo3_user {
 
 		if ($assignGroups = t3lib_div::trimExplode(',', tx_igldapssoauth_config::is_enable('assignGroups'))) {
 			foreach ($assignGroups as $uid) {
-				if (tx_igldapssoauth_typo3_group::select($this->authInfo['db_groups']['table'], $uid) && !in_array($uid, $group_uid)) {
+				if (tx_igldapssoauth_typo3_group::select($pObj->authInfo['db_groups']['table'], $uid) && !in_array($uid, $group_uid)) {
 					$group_uid[] = $uid;
 				}
 			}

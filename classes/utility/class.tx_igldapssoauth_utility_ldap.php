@@ -93,8 +93,7 @@ class tx_igldapssoauth_utility_Ldap {
 		self::$status['connect']['status'] = ldap_error(self::$cid);
 
 		// Set configuration.
-
-		tx_igldapssoauth_utility_Ldap::init_charset($charset);
+		self::init_charset($charset);
 
 		@ldap_set_option(self::$cid, LDAP_OPT_PROTOCOL_VERSION, $protocol);
 
@@ -274,62 +273,46 @@ class tx_igldapssoauth_utility_Ldap {
 		return (bool)self::$cid;
 	}
 
-	function init_charset($charset = null) {
-
-		global $TYPO3_CONF_VARS;
+	private static function init_charset($charset = null) {
+		/** @var $csObj t3lib_cs */
 
 		if ((isset($GLOBALS['TSFE'])) && (isset($GLOBALS['TSFE']->csConvObj))) {
-
 			$csObj = $GLOBALS['TSFE']->csConvObj;
-
 		} else {
-
 			if (!class_exists('t3lib_cs') && defined('PATH_t3lib')) {
-
 				require_once(PATH_t3lib . 'class.t3lib_cs.php');
-
 			}
 
 			$csObj = t3lib_div::makeInstance('t3lib_cs');
 		}
 
 		// LDAP server charset
-		$this->ldap_charset = $csObj->parse_charset($charset ? $charset : 'utf-8');
+		self::$ldap_charset = $csObj->parse_charset($charset ? $charset : 'utf-8');
 
 		// TYPO3 charset
-		$this->local_charset = $csObj->parse_charset($TYPO3_CONF_VARS['BE']['forceCharset'] ? $TYPO3_CONF_VARS['BE']['forceCharset'] : 'iso-8859-1');
+		self::$local_charset = $csObj->parse_charset($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'] ? $GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'] : 'iso-8859-1');
 
 	}
 
-	function convert_charset_array($arr, $char1, $char2) {
+	public static function convert_charset_array($arr, $char1, $char2) {
+		/** @var $csObj t3lib_cs */
 
 		if ((isset($GLOBALS['TSFE'])) && (isset($GLOBALS['TSFE']->csConvObj))) {
-
 			$csObj = $GLOBALS['TSFE']->csConvObj;
-
 		} else {
-
 			if (!class_exists('t3lib_cs') && defined('PATH_t3lib')) {
-
 				require_once(PATH_t3lib . 'class.t3lib_cs.php');
-
 			}
 
 			$csObj = t3lib_div::makeInstance('t3lib_cs');
 		}
 
 		while (list($k, $val) = each($arr)) {
-
 			if (is_array($val)) {
-
 				$arr[$k] = tx_igldapssoauth_utility_Ldap::convert_charset_array($val, $char1, $char2);
-
 			} else {
-
 				$arr[$k] = $csObj->conv($val, $char1, $char2);
-
 			}
-
 		}
 
 		return $arr;

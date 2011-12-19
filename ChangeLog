@@ -1,3 +1,7 @@
+2011-12-19  Xavier Perseguers  <xavier@typo3.org>
+
+	* [TASK][!!!] Code cleanup
+
 2011-12-12  Xavier Perseguers  <xavier@typo3.org>
 
 	* [BUGFIX] #32484: Retrieval of groups fails if user is not authorized to list them

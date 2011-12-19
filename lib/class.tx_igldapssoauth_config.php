@@ -3,7 +3,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2007 Michael Gagnon <mgagnon@infoglobe.ca>
+ *  (c) 2007-2011 Michael Gagnon <mgagnon@infoglobe.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -43,10 +43,7 @@ class tx_igldapssoauth_config {
 	var $cas;
 
 	function init($typo3_mode = null, $uid = 0) {
-
-		global $EXT_CONFIG, $BE_USER, $LANG, $BACK_PATH, $TCA_DESCR, $TCA, $CLIENT, $TYPO3_CONF_VARS;
-
-		$this->uid = $uid ? $uid : $EXT_CONFIG['uidConfiguration'];
+		$this->uid = $uid ? $uid : $GLOBALS['EXT_CONFIG']['uidConfiguration'];
 
 		// Default TYPO3_MODE is BE
 		$this->typo3_mode = $typo3_mode ? strtolower($typo3_mode) : strtolower(TYPO3_MODE);
@@ -55,67 +52,67 @@ class tx_igldapssoauth_config {
 
 		$config = tx_igldapssoauth_config::select($this->uid);
 
-		$EXT_CONFIG = array_merge(is_array($EXT_CONFIG) ? $EXT_CONFIG : array(), $config ? $config : array());
+		$GLOBALS['EXT_CONFIG'] = array_merge(is_array($GLOBALS['EXT_CONFIG']) ? $GLOBALS['EXT_CONFIG'] : array(), $config ? $config : array());
 
-		$this->name = $EXT_CONFIG['name'];
+		$this->name = $GLOBALS['EXT_CONFIG']['name'];
 
-		$this->be['LDAPAuthentication'] = $EXT_CONFIG['enableBELDAPAuthentication'];
+		$this->be['LDAPAuthentication'] = $GLOBALS['EXT_CONFIG']['enableBELDAPAuthentication'];
 		$this->be['CASAuthentication'] = 0;
 		$this->be['DeleteCookieLogout'] = 0;
-		$this->be['forceLowerCaseUsername'] = $EXT_CONFIG['forceLowerCaseUsername'] ? $EXT_CONFIG['forceLowerCaseUsername'] : 0;
-		$this->be['evaluateGroupsFromMembership'] = $EXT_CONFIG['evaluateGroupsFromMembership'];
-		$this->be['IfUserExist'] = $EXT_CONFIG['TYPO3BEUserExist'];
+		$this->be['forceLowerCaseUsername'] = $GLOBALS['EXT_CONFIG']['forceLowerCaseUsername'] ? $GLOBALS['EXT_CONFIG']['forceLowerCaseUsername'] : 0;
+		$this->be['evaluateGroupsFromMembership'] = $GLOBALS['EXT_CONFIG']['evaluateGroupsFromMembership'];
+		$this->be['IfUserExist'] = $GLOBALS['EXT_CONFIG']['TYPO3BEUserExist'];
 		$this->be['IfGroupExist'] = 0;
-		$this->be['BEfailsafe'] = $EXT_CONFIG['BEfailsafe'];
+		$this->be['BEfailsafe'] = $GLOBALS['EXT_CONFIG']['BEfailsafe'];
 		$this->be['DeleteUserIfNoLDAPGroups'] = 0;
 		$this->be['DeleteUserIfNoTYPO3Groups'] = 0;
-		$this->be['GroupsNotSynchronize'] = $EXT_CONFIG['TYPO3BEGroupsNotSynchronize'];
-		$this->be['requiredLDAPGroups'] = $EXT_CONFIG['requiredLDAPBEGroups'] ? $EXT_CONFIG['requiredLDAPBEGroups'] : 0;
-		$this->be['updateAdminAttribForGroups'] = $EXT_CONFIG['updateAdminAttribForGroups'] ? $EXT_CONFIG['updateAdminAttribForGroups'] : 0;
-		$this->be['assignGroups'] = $EXT_CONFIG['assignBEGroups'] ? $EXT_CONFIG['assignBEGroups'] : 0;
-		$this->be['keepTYPO3Groups'] = $EXT_CONFIG['keepBEGroups'];
-		$this->be['users']['basedn'] = explode('||', $EXT_CONFIG['be_users_basedn']);
-		$this->be['users']['filter'] = $EXT_CONFIG['be_users_filter'];
-		$this->be['users']['mapping'] = tx_igldapssoauth_config::make_user_mapping($EXT_CONFIG['be_users_mapping'], $EXT_CONFIG['be_users_filter']);
-		$this->be['groups']['basedn'] = $EXT_CONFIG['be_groups_basedn'];
-		$this->be['groups']['filter'] = $EXT_CONFIG['be_groups_filter'];
-		$this->be['groups']['mapping'] = tx_igldapssoauth_config::make_group_mapping($EXT_CONFIG['be_groups_mapping']);
+		$this->be['GroupsNotSynchronize'] = $GLOBALS['EXT_CONFIG']['TYPO3BEGroupsNotSynchronize'];
+		$this->be['requiredLDAPGroups'] = $GLOBALS['EXT_CONFIG']['requiredLDAPBEGroups'] ? $GLOBALS['EXT_CONFIG']['requiredLDAPBEGroups'] : 0;
+		$this->be['updateAdminAttribForGroups'] = $GLOBALS['EXT_CONFIG']['updateAdminAttribForGroups'] ? $GLOBALS['EXT_CONFIG']['updateAdminAttribForGroups'] : 0;
+		$this->be['assignGroups'] = $GLOBALS['EXT_CONFIG']['assignBEGroups'] ? $GLOBALS['EXT_CONFIG']['assignBEGroups'] : 0;
+		$this->be['keepTYPO3Groups'] = $GLOBALS['EXT_CONFIG']['keepBEGroups'];
+		$this->be['users']['basedn'] = explode('||', $GLOBALS['EXT_CONFIG']['be_users_basedn']);
+		$this->be['users']['filter'] = $GLOBALS['EXT_CONFIG']['be_users_filter'];
+		$this->be['users']['mapping'] = tx_igldapssoauth_config::make_user_mapping($GLOBALS['EXT_CONFIG']['be_users_mapping'], $GLOBALS['EXT_CONFIG']['be_users_filter']);
+		$this->be['groups']['basedn'] = $GLOBALS['EXT_CONFIG']['be_groups_basedn'];
+		$this->be['groups']['filter'] = $GLOBALS['EXT_CONFIG']['be_groups_filter'];
+		$this->be['groups']['mapping'] = tx_igldapssoauth_config::make_group_mapping($GLOBALS['EXT_CONFIG']['be_groups_mapping']);
 
-		$this->fe['LDAPAuthentication'] = $EXT_CONFIG['enableFELDAPAuthentication'];
-		$this->fe['DeleteCookieLogout'] = $EXT_CONFIG['DeleteCookieLogout'];
-		$this->fe['CASAuthentication'] = $EXT_CONFIG['enableFECASAuthentication'];
-		$this->fe['forceLowerCaseUsername'] = $EXT_CONFIG['forceLowerCaseUsername'] ? $EXT_CONFIG['forceLowerCaseUsername'] : 0;
-		$this->fe['evaluateGroupsFromMembership'] = $EXT_CONFIG['evaluateGroupsFromMembership'];
+		$this->fe['LDAPAuthentication'] = $GLOBALS['EXT_CONFIG']['enableFELDAPAuthentication'];
+		$this->fe['DeleteCookieLogout'] = $GLOBALS['EXT_CONFIG']['DeleteCookieLogout'];
+		$this->fe['CASAuthentication'] = $GLOBALS['EXT_CONFIG']['enableFECASAuthentication'];
+		$this->fe['forceLowerCaseUsername'] = $GLOBALS['EXT_CONFIG']['forceLowerCaseUsername'] ? $GLOBALS['EXT_CONFIG']['forceLowerCaseUsername'] : 0;
+		$this->fe['evaluateGroupsFromMembership'] = $GLOBALS['EXT_CONFIG']['evaluateGroupsFromMembership'];
 		$this->fe['IfUserExist'] = 0;
-		$this->fe['IfGroupExist'] = $EXT_CONFIG['TYPO3FEGroupExist'];
+		$this->fe['IfGroupExist'] = $GLOBALS['EXT_CONFIG']['TYPO3FEGroupExist'];
 		$this->fe['BEfailsafe'] = 0;
 		$this->fe['updateAdminAttribForGroups'] = 0;
-		$this->fe['DeleteUserIfNoTYPO3Groups'] = $EXT_CONFIG['TYPO3FEDeleteUserIfNoTYPO3Groups'];
-		$this->fe['DeleteUserIfNoLDAPGroups'] = $EXT_CONFIG['TYPO3FEDeleteUserIfNoLDAPGroups'];
-		$this->fe['GroupsNotSynchronize'] = $EXT_CONFIG['TYPO3FEGroupsNotSynchronize'];
-		$this->fe['assignGroups'] = $EXT_CONFIG['assignFEGroups'] ? $EXT_CONFIG['assignFEGroups'] : 0;
-		$this->fe['keepTYPO3Groups'] = $EXT_CONFIG['keepFEGroups'];
-		$this->fe['requiredLDAPGroups'] = $EXT_CONFIG['requiredLDAPFEGroups'] ? $EXT_CONFIG['requiredLDAPFEGroups'] : 0;
-		$this->fe['users']['basedn'] = explode('||', $EXT_CONFIG['fe_users_basedn']);
-		$this->fe['users']['filter'] = $EXT_CONFIG['fe_users_filter'];
-		$this->fe['users']['mapping'] = tx_igldapssoauth_config::make_user_mapping($EXT_CONFIG['fe_users_mapping'], $EXT_CONFIG['fe_users_filter']);
-		$this->fe['groups']['basedn'] = $EXT_CONFIG['fe_groups_basedn'];
-		$this->fe['groups']['filter'] = $EXT_CONFIG['fe_groups_filter'];
-		$this->fe['groups']['mapping'] = tx_igldapssoauth_config::make_group_mapping($EXT_CONFIG['fe_groups_mapping']);
+		$this->fe['DeleteUserIfNoTYPO3Groups'] = $GLOBALS['EXT_CONFIG']['TYPO3FEDeleteUserIfNoTYPO3Groups'];
+		$this->fe['DeleteUserIfNoLDAPGroups'] = $GLOBALS['EXT_CONFIG']['TYPO3FEDeleteUserIfNoLDAPGroups'];
+		$this->fe['GroupsNotSynchronize'] = $GLOBALS['EXT_CONFIG']['TYPO3FEGroupsNotSynchronize'];
+		$this->fe['assignGroups'] = $GLOBALS['EXT_CONFIG']['assignFEGroups'] ? $GLOBALS['EXT_CONFIG']['assignFEGroups'] : 0;
+		$this->fe['keepTYPO3Groups'] = $GLOBALS['EXT_CONFIG']['keepFEGroups'];
+		$this->fe['requiredLDAPGroups'] = $GLOBALS['EXT_CONFIG']['requiredLDAPFEGroups'] ? $GLOBALS['EXT_CONFIG']['requiredLDAPFEGroups'] : 0;
+		$this->fe['users']['basedn'] = explode('||', $GLOBALS['EXT_CONFIG']['fe_users_basedn']);
+		$this->fe['users']['filter'] = $GLOBALS['EXT_CONFIG']['fe_users_filter'];
+		$this->fe['users']['mapping'] = tx_igldapssoauth_config::make_user_mapping($GLOBALS['EXT_CONFIG']['fe_users_mapping'], $GLOBALS['EXT_CONFIG']['fe_users_filter']);
+		$this->fe['groups']['basedn'] = $GLOBALS['EXT_CONFIG']['fe_groups_basedn'];
+		$this->fe['groups']['filter'] = $GLOBALS['EXT_CONFIG']['fe_groups_filter'];
+		$this->fe['groups']['mapping'] = tx_igldapssoauth_config::make_group_mapping($GLOBALS['EXT_CONFIG']['fe_groups_mapping']);
 
-		$this->cas['host'] = $EXT_CONFIG['cas_host'];
-		$this->cas['port'] = $EXT_CONFIG['cas_port'];
-		$this->cas['logout_url'] = $EXT_CONFIG['cas_logout_url'];
-		$this->cas['uri'] = $EXT_CONFIG['cas_uri'];
-		$this->cas['service_url'] = $EXT_CONFIG['cas_service_url'];
+		$this->cas['host'] = $GLOBALS['EXT_CONFIG']['cas_host'];
+		$this->cas['port'] = $GLOBALS['EXT_CONFIG']['cas_port'];
+		$this->cas['logout_url'] = $GLOBALS['EXT_CONFIG']['cas_logout_url'];
+		$this->cas['uri'] = $GLOBALS['EXT_CONFIG']['cas_uri'];
+		$this->cas['service_url'] = $GLOBALS['EXT_CONFIG']['cas_service_url'];
 
-		$this->ldap['server'] = $EXT_CONFIG['ldap_server'];
-		$this->ldap['host'] = $EXT_CONFIG['ldap_host'];
-		$this->ldap['port'] = $EXT_CONFIG['ldap_port'];
-		$this->ldap['protocol'] = $EXT_CONFIG['ldap_protocol'];
-		$this->ldap['charset'] = $EXT_CONFIG['ldap_charset'] ? $EXT_CONFIG['ldap_charset'] : 'utf-8';
-		$this->ldap['binddn'] = $EXT_CONFIG['ldap_binddn'];
-		$this->ldap['password'] = $EXT_CONFIG['ldap_password'];
+		$this->ldap['server'] = $GLOBALS['EXT_CONFIG']['ldap_server'];
+		$this->ldap['host'] = $GLOBALS['EXT_CONFIG']['ldap_host'];
+		$this->ldap['port'] = $GLOBALS['EXT_CONFIG']['ldap_port'];
+		$this->ldap['protocol'] = $GLOBALS['EXT_CONFIG']['ldap_protocol'];
+		$this->ldap['charset'] = $GLOBALS['EXT_CONFIG']['ldap_charset'] ? $GLOBALS['EXT_CONFIG']['ldap_charset'] : 'utf-8';
+		$this->ldap['binddn'] = $GLOBALS['EXT_CONFIG']['ldap_binddn'];
+		$this->ldap['password'] = $GLOBALS['EXT_CONFIG']['ldap_password'];
 
 	}
 
@@ -136,7 +133,9 @@ class tx_igldapssoauth_config {
 		// Default fields : title, tx_igldapssoauth_dn
 
 		$group_mapping = tx_igldapssoauth_config::make_mapping($mapping);
-		array_key_exists('title', $group_mapping) ? $group_mapping['title'] = $group_mapping['title'] : $group_mapping['title'] = '<dn>';
+		if (!array_key_exists('title', $group_mapping)) {
+			$group_mapping['title'] = '<dn>';
+		}
 		$group_mapping['tx_igldapssoauth_dn'] = '<dn>';
 
 		return $group_mapping;
@@ -249,21 +248,18 @@ class tx_igldapssoauth_config {
 	}
 
 	function get_server_name($uid = null) {
-
 		switch ($uid) {
-
 			case 0 :
-
-				return 'OpenLDAP';
+				$server = 'OpenLDAP';
 				break;
-
 			case 1 :
-
-				return 'Novell eDirectory';
+				$server = 'Novell eDirectory';
 				break;
-
+			default:
+				$server = NULL;
 		}
 
+		return $server;
 	}
 
 	function replace_filter_markers($filter = null) {

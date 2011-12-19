@@ -57,7 +57,7 @@ class tx_igldapssoauth_scheduler_synchroniseusers extends tx_scheduler_Task {
 	/**
 	 * Function executed from the Scheduler.
 	 *
-	 * @return	void
+	 * @return	boolean
 	 */
 	public function execute() {
 		$this->setCliArguments();

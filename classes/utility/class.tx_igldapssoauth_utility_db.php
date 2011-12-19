@@ -3,7 +3,7 @@
 /* * *************************************************************
  *  Copyright notice
  *
- *  (c) 2007 Michael Gagnon <mgagnon@infoglobe.ca>
+ *  (c) 2007-2011 Michael Gagnon <mgagnon@infoglobe.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -48,7 +48,7 @@ class tx_igldapssoauth_utility_Db {
 	 * @param array	 Insert query array for at exec_INSERTquery function.
 	 * @return integer	Last inserted uid.
 	 */
-	function insert($query = array()) {
+	public static function insert($query = array()) {
 
 		$link = $GLOBALS['TYPO3_DB']->exec_INSERTquery($query['TABLE'], $query['FIELDS_VALUES'], $query['NO_QUOTE_FIELDS']);
 
@@ -62,7 +62,7 @@ class tx_igldapssoauth_utility_Db {
 	 * @param	array		Updatd query array for exec_UPDATEquery function.
 	 * @return	pointer		MySQL result pointer / DBAL object.
 	 */
-	function update($query = array()) {
+	public static function update($query = array()) {
 
 		$GLOBALS['TYPO3_DB']->exec_UPDATEquery($query['TABLE'], $query['WHERE'], $query['FIELDS_VALUES'], $query['NO_QUOTE_FIELDS']);
 
@@ -76,8 +76,7 @@ class tx_igldapssoauth_utility_Db {
 	 * @param	array	Select query array for exec_SELECTgetRows function.
 	 * @return	array	Query result array.
 	 */
-	function select($query = array()) {
-
+	public static function select($query = array()) {
 		return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows($query['SELECT'], $query['FROM'], $query['WHERE'], $query['GROUP_BY'], $query['ORDER_BY'], $query['LIMIT'], $query['UID_INDEX_FIELD']);
 	}
 
@@ -123,8 +122,7 @@ class tx_igldapssoauth_utility_Db {
 	 * @param	array	 Select many-many query for exec_SELECT_mm_query function.
 	 * @return	pointer	MySQL result pointer / DBAL object.
 	 */
-	function get_columns_from($table = null) {
-
+	public static function get_columns_from($table = null) {
 		return $GLOBALS['TYPO3_DB']->admin_get_fields($table);
 	}
 

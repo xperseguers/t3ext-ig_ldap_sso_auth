@@ -3,7 +3,7 @@
 /* * *************************************************************
  *  Copyright notice
  *
- *  (c) 2007 Michael Gagnon <mgagnon@infoglobe.ca>
+ *  (c) 2007-2011 Michael Gagnon <mgagnon@infoglobe.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -48,17 +48,16 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 	 */
 	function getUser() {
 
-		$user = false;
+		$user = FALSE;
 
-		global $EXT_CONFIG;
-		$uidConf = $EXT_CONFIG['uidConfiguration'];
+		$uidConf = $GLOBALS['EXT_CONFIG']['uidConfiguration'];
 		$uidArray = t3lib_div::trimExplode(',', $uidConf);
 		if (is_array($uidArray)) {
 			foreach ($uidArray as $uid) {
 				tx_igldapssoauth_config::init(TYPO3_MODE, $uid);
 
 				// Enable feature
-				$userTemp = false;
+				$userTemp = FALSE;
 
 				// CAS authentication
 				if (tx_igldapssoauth_config::is_enable('CASAuthentication')) {
@@ -66,7 +65,7 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 					$userTemp = tx_igldapssoauth_auth::cas_auth();
 
 					// Authenticate user from LDAP
-				} elseif ($this->login['status'] == 'login' && $this->login['uident']) {
+				} elseif ($this->login['status'] === 'login' && $this->login['uident']) {
 
 					// Configuration of authentication service.
 					$loginSecurityLevel = $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['loginSecurityLevel'];
@@ -74,8 +73,8 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 					// Check if $loginSecurityLevel is set to "challenged" or "superchallenged" and throw an error if the configuration allows it
 					// By default, it will not throw an Exception
 					$throwExceptionAtLogin = 0;
-					if (isset($EXT_CONFIG['throwExceptionAtLogin']) && $EXT_CONFIG['throwExceptionAtLogin'] == 1) {
-						if ($loginSecurityLevel == 'challenged' || $loginSecurityLevel == 'superchallenged') {
+					if (isset($GLOBALS['EXT_CONFIG']['throwExceptionAtLogin']) && $GLOBALS['EXT_CONFIG']['throwExceptionAtLogin'] == 1) {
+						if ($loginSecurityLevel === 'challenged' || $loginSecurityLevel === 'superchallenged') {
 							$message = "ig_ldap_sso_auth error: current login security level '" . $loginSecurityLevel . "' is not supported.";
 							$message .= " Try to use 'normal' or 'rsa' (recommanded but would need more settings): ";
 							$message .= "\$TYPO3_CONF_VARS['BE']['loginSecurityLevel'] = 'normal';";
@@ -190,7 +189,7 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/sv1/class.tx_igldapssoauth_sv1.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/sv1/class.tx_igldapssoauth_sv1.php']);
+if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/sv1/class.tx_igldapssoauth_sv1.php'])) {
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/sv1/class.tx_igldapssoauth_sv1.php']);
 }
 ?>

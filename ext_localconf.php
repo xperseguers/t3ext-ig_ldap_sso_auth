@@ -1,6 +1,8 @@
 <?php
 
-if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
+if (!defined ('TYPO3_MODE')) {
+	die ('Access denied.');
+}
 
 
 // Configuration of authentication service.
@@ -12,7 +14,7 @@ $EXT_CONFIG = unserialize($TYPO3_CONF_VARS['EXT']['extConf']['ig_ldap_sso_auth']
 if ($EXT_CONFIG['enableFECASAuthentication']) {
 	// iglib class require
 	require_once(t3lib_extMgm::extPath($_EXTKEY) . 'framework/CAS/CAS.php');
-	
+
 	if($EXT_CONFIG['enableFetchUserIfNoSession']){
    		$TYPO3_CONF_VARS['SVCONF']['auth']['setup']['FE_fetchUserIfNoSession'] = 1;
 	}
@@ -43,7 +45,7 @@ if($EXT_CONFIG['enableFECASAuthentication']){
 	$subTypesArr[] ='authUserFE';
 }
 if(is_array($subTypesArr)){
-	$subTypesArr =array_unique($subTypesArr);
+	$subTypesArr = array_unique($subTypesArr);
 	$subTypes = implode(',',$subTypesArr);
 }
 

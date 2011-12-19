@@ -3,7 +3,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2007 Michael Gagnon <mgagnon@infoglobe.ca>
+ *  (c) 2007-2011 Michael Gagnon <mgagnon@infoglobe.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -35,11 +35,13 @@
 class tx_igldapssoauth_typo3_group {
 
 	function init($table = null) {
+		$typo3_group = array();
+
 		// Get users table structure.
 		$typo3_group_default = tx_igldapssoauth_utility_Db::get_columns_from($table);
 
 		foreach ($typo3_group_default as $field => $value) {
-			$typo3_group[$field] = null;
+			$typo3_group[$field] = NULL;
 		}
 
 		return $typo3_group;
@@ -124,7 +126,7 @@ class tx_igldapssoauth_typo3_group {
 
 	function get_title($ldap_user = array(), $mapping = array()) {
 		if (!$mapping) {
-			return null;
+			return NULL;
 		}
 
 		if (array_key_exists('title', $mapping) && preg_match('`<([^$]*)>`', $mapping['title'], $attribute)) {
@@ -135,11 +137,12 @@ class tx_igldapssoauth_typo3_group {
 			return $ldap_user[$attribute[1]][0];
 		}
 
-		return null;
+		return NULL;
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/lib/class.tx_igldapssoauth_typo3_group.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/lib/class.tx_igldapssoauth_typo3_group.php']);
+if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/lib/class.tx_igldapssoauth_typo3_group.php'])) {
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/lib/class.tx_igldapssoauth_typo3_group.php']);
 }
+
 ?>

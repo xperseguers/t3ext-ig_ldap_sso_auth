@@ -124,7 +124,7 @@ class tx_igldapssoauth_typo3_user {
 		return tx_igldapssoauth_utility_Db::select($QUERY);
 	}
 
-	function update($table = null, $typo3_user = array()) {
+	public static function update($table = null, $typo3_user = array()) {
 		$QUERY = array(
 			'TABLE' => $table,
 			'WHERE' => 'uid=' . intval($typo3_user['uid']),
@@ -141,7 +141,8 @@ class tx_igldapssoauth_typo3_user {
 				'typo3_user' => $typo3_user,
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['processUpdateUser'] as $funcRef) {
-				t3lib_div::callUserFunction($funcRef, $params, $this);
+				$null = NULL;
+				t3lib_div::callUserFunction($funcRef, $params, $null);
 			}
 		}
 

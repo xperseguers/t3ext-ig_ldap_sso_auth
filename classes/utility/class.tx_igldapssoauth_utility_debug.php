@@ -3,7 +3,7 @@
 /* * *************************************************************
  * Copyright notice
  *
- * (c) 2007 Michaël Gagnon <mgagnon@infoglobe.ca>
+ * (c) 2007-2011 Michaël Gagnon <mgagnon@infoglobe.ca>
  * All rights reserved
  *
  * Is free software; you can redistribute it and/or modify
@@ -52,20 +52,20 @@ class tx_igldapssoauth_utility_Debug {
 
 		if ($var_dump) {
 
-			echo '<stonrg><u>var_dump : </u></strong><br /><br />';
+			echo '<strong>var_dump: </strong><br /><br />';
 
 			//var_export($to_print);
 
-			print_r("<xmp>");
+			print_r("<code>");
 			print_r(var_dump($value));
-			print_r("</xmp>");
+			print_r("</code>");
 
-			echo '<br /><br /><stonrg><u>print_r : </u></strong>';
+			echo '<br /><br /><strong>print_r: </strong>';
 		}
 
-		print_r("<xmp>");
+		print_r("<code>");
 		print_r($value);
-		print_r("</xmp>");
+		print_r("</code>");
 
 		echo '<hr />';
 	}

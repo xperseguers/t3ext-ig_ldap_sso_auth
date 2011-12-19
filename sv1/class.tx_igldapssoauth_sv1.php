@@ -55,77 +55,75 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 		$user = FALSE;
 
 		$uidConf = $GLOBALS['EXT_CONFIG']['uidConfiguration'];
-		$uidArray = t3lib_div::trimExplode(',', $uidConf);
-		if (is_array($uidArray)) {
-			foreach ($uidArray as $uid) {
-				tx_igldapssoauth_config::init(TYPO3_MODE, $uid);
+		$uidArray = t3lib_div::intExplode(',', $uidConf);
+		foreach ($uidArray as $uid) {
+			tx_igldapssoauth_config::init(TYPO3_MODE, $uid);
 
-				// Enable feature
-				$userTemp = FALSE;
+			// Enable feature
+			$userTemp = FALSE;
 
-				// CAS authentication
-				if (tx_igldapssoauth_config::is_enable('CASAuthentication')) {
+			// CAS authentication
+			if (tx_igldapssoauth_config::is_enable('CASAuthentication')) {
 
-					$userTemp = tx_igldapssoauth_auth::cas_auth();
+				$userTemp = tx_igldapssoauth_auth::cas_auth();
 
-					// Authenticate user from LDAP
-				} elseif ($this->login['status'] === 'login' && $this->login['uident']) {
+				// Authenticate user from LDAP
+			} elseif ($this->login['status'] === 'login' && $this->login['uident']) {
 
-					// Configuration of authentication service.
-					$loginSecurityLevel = $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['loginSecurityLevel'];
-					// normal case
-					// Check if $loginSecurityLevel is set to "challenged" or "superchallenged" and throw an error if the configuration allows it
-					// By default, it will not throw an Exception
-					$throwExceptionAtLogin = 0;
-					if (isset($GLOBALS['EXT_CONFIG']['throwExceptionAtLogin']) && $GLOBALS['EXT_CONFIG']['throwExceptionAtLogin'] == 1) {
-						if ($loginSecurityLevel === 'challenged' || $loginSecurityLevel === 'superchallenged') {
-							$message = "ig_ldap_sso_auth error: current login security level '" . $loginSecurityLevel . "' is not supported.";
-							$message .= " Try to use 'normal' or 'rsa' (recommanded but would need more settings): ";
-							$message .= "\$TYPO3_CONF_VARS['BE']['loginSecurityLevel'] = 'normal';";
-							throw new Exception($message, 1324313489);
-						}
+				// Configuration of authentication service.
+				$loginSecurityLevel = $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['loginSecurityLevel'];
+				// normal case
+				// Check if $loginSecurityLevel is set to "challenged" or "superchallenged" and throw an error if the configuration allows it
+				// By default, it will not throw an Exception
+				$throwExceptionAtLogin = 0;
+				if (isset($GLOBALS['EXT_CONFIG']['throwExceptionAtLogin']) && $GLOBALS['EXT_CONFIG']['throwExceptionAtLogin'] == 1) {
+					if ($loginSecurityLevel === 'challenged' || $loginSecurityLevel === 'superchallenged') {
+						$message = "ig_ldap_sso_auth error: current login security level '" . $loginSecurityLevel . "' is not supported.";
+						$message .= " Try to use 'normal' or 'rsa' (recommanded but would need more settings): ";
+						$message .= "\$TYPO3_CONF_VARS['BE']['loginSecurityLevel'] = 'normal';";
+						throw new Exception($message, 1324313489);
 					}
-
-					// normal case
-					$password = $this->login['uident_text'];
-					if ($loginSecurityLevel == 'rsa') {
-						$password = $this->login['uident'];
-						/* @var $storage tx_rsaauth_abstract_storage */
-						$storage = tx_rsaauth_storagefactory::getStorage();
-
-						// Preprocess the password
-						$key = $storage->get();
-
-						$this->backend = tx_rsaauth_backendfactory::getBackend();
-						$password = $this->backend->decrypt($key, substr($password, 4));
-
-					}
-
-					$userTemp = tx_igldapssoauth_auth::ldap_auth($this->login['uname'], $password);
 				}
-				if (is_array($userTemp)) {
-					$user = $userTemp;
-					break;
+
+				// normal case
+				$password = $this->login['uident_text'];
+				if ($loginSecurityLevel == 'rsa') {
+					$password = $this->login['uident'];
+					/* @var $storage tx_rsaauth_abstract_storage */
+					$storage = tx_rsaauth_storagefactory::getStorage();
+
+					// Preprocess the password
+					$key = $storage->get();
+
+					$this->backend = tx_rsaauth_backendfactory::getBackend();
+					$password = $this->backend->decrypt($key, substr($password, 4));
+
 				}
+
+				$userTemp = tx_igldapssoauth_auth::ldap_auth($this->login['uname'], $password);
+			}
+			if (is_array($userTemp)) {
+				$user = $userTemp;
+				break;
 			}
 		}
-		if (!$user) {
 
+		if (!$user) {
 			$user = $this->fetchUserRecord($this->login['uname']);
 		}
+
 		// Failed login attempt (no username found)
 		if (!is_array($user)) {
-
 			$this->writelog(255, 3, 3, 2,
 				"Login-attempt from %s (%s), username '%s' not found!!",
 				array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $this->login['uname'])); // Logout written to log
 			// User found
 		} else {
-
 			if ($this->writeDevLog) {
 				t3lib_div::devLog('User found: ' . t3lib_div::arrayToLogString($user, array($this->db_user['userid_column'], $this->db_user['username_column'])), 'tx_igldapssoauth_sv1');
 			}
 		}
+
 		return $user;
 	}
 

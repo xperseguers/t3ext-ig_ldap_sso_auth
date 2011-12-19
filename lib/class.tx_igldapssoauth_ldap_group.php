@@ -74,7 +74,7 @@ class tx_igldapssoauth_ldap_group {
 
 		}
 
-		return false;
+		return FALSE;
 
 	}
 

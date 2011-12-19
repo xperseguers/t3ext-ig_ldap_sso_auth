@@ -38,20 +38,20 @@ class tx_igldapssoauth_ldap {
 
 		// Connect to ldap server.
 		if (!tx_igldapssoauth_utility_Ldap::connect($config['host'], $config['port'], $config['protocol'], $config['charset'], $config['server'])) {
-			return false;
+			return FALSE;
 		}
 
 		// Bind to ldap server.
 		if (!tx_igldapssoauth_utility_Ldap::bind($config['binddn'], $config['password'])) {
 			tx_igldapssoauth_ldap::disconnect();
-			return false;
+			return FALSE;
 		}
 
-		return true;
+		return TRUE;
 
 	}
 
-	function valid_user($username = null, $password = null, $basedn = null, $filter = null) {
+	function valid_user($username = NULL, $password = NULL, $basedn = NULL, $filter = NULL) {
 
 		// If user found on ldap server.
 		if (tx_igldapssoauth_utility_Ldap::search($basedn, str_replace('{USERNAME}', $username, $filter), array('dn'))) {
@@ -92,40 +92,28 @@ class tx_igldapssoauth_ldap {
 
 	}
 
-	function search($basedn = null, $filter = null, $attributes = array(), $first_entry = false) {
-
+	function search($basedn = NULL, $filter = NULL, $attributes = array(), $first_entry = FALSE) {
 		$result = array();
 
 		if (tx_igldapssoauth_utility_Ldap::search($basedn, $filter, $attributes)) {
-
 			if ($first_entry) {
-
 				$result = tx_igldapssoauth_utility_Ldap::get_first_entry();
 				$result['dn'] = tx_igldapssoauth_utility_Ldap::get_dn();
 				unset($result['count']);
-
 			} else {
-
 				$result = tx_igldapssoauth_utility_Ldap::get_entries();
-
 			}
-
 		}
 
 		return $result;
-
 	}
 
 	function get_status() {
-
 		return tx_igldapssoauth_utility_Ldap::get_status();
-
 	}
 
 	function disconnect() {
-
 		tx_igldapssoauth_utility_Ldap::disconnect();
-
 	}
 
 }

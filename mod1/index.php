@@ -235,8 +235,7 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 		} else {
 
 			$this->content[] = '<strong>' . $this->lang->getLL('view_configuration_ldap_disable') . '</strong>';
-			return false;
-
+			return FALSE;
 		}
 
 		// CAS
@@ -244,13 +243,9 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 		$this->content[] = '<hr />';
 
 		if ($this->config['fe']['LDAPAuthentication'] && $this->config['fe']['CASAuthentication']) {
-
 			$this->content[] = t3lib_div::view_array($this->config['cas']);
-
 		} else {
-
 			$this->content[] = '<strong>' . $this->lang->getLL('view_configuration_cas_disable') . '</strong>';
-
 		}
 
 		// BE
@@ -258,13 +253,9 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 		$this->content[] = '<hr />';
 
 		if ($this->config['be']['LDAPAuthentication']) {
-
 			$this->content[] = t3lib_div::view_array($this->config['be']);
-
 		} else {
-
 			$this->content[] = '<strong>' . $this->lang->getLL('view_configuration_backend_authentication_disable') . '</strong>';
-
 		}
 
 		// FE
@@ -272,15 +263,10 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 		$this->content[] = '<hr />';
 
 		if ($this->config['fe']['LDAPAuthentication']) {
-
 			$this->content[] = t3lib_div::view_array($this->config['fe']);
-
 		} else {
-
 			$this->content[] = '<strong>' . $this->lang->getLL('view_configuration_frontend_authentication_disable') . '</strong>';
-
 		}
-
 	}
 
 	function wizard_search($search = array()) {
@@ -307,14 +293,13 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 
 				list($typo3_mode, $table) = explode('_', $search['table']);
 
-				$search['first_entry'] = true;
-				$search['see_status'] = false;
+				$search['first_entry'] = TRUE;
+				$search['see_status'] = FALSE;
 				$search['basedn'] = $this->config[$typo3_mode][$table]['basedn'];
 				$search['filter'] = tx_igldapssoauth_config::replace_filter_markers($this->config[$typo3_mode][$table]['filter']);
 				$search['attributes'] = $search['first_entry'] ? '' : implode(',', tx_igldapssoauth_config::get_ldap_attributes($this->config[$typo3_mode][$table]['mapping']));
 
 				break;
-
 		}
 
 		$this->content[] = '<h2>' . $this->lang->getLL('wizard_search_title') . '</h2>';
@@ -483,7 +468,7 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 
 	function setParentGroup($parentsLDAPGroups, $feildParent, $childUid, $typo3_group_pid, $typo3_mode) {
 		foreach ($parentsLDAPGroups as $parentDn) {
-			$typo3ParentGroup = tx_igldapssoauth_typo3_group::select($typo3_mode . '_groups', false, $typo3_group_pid, '', $parentDn);
+			$typo3ParentGroup = tx_igldapssoauth_typo3_group::select($typo3_mode . '_groups', FALSE, $typo3_group_pid, '', $parentDn);
 
 			if (is_array($typo3ParentGroup[0])) {
 				if (!empty($typo3ParentGroup[0]['subgroup'])) {

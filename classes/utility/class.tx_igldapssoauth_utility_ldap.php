@@ -61,10 +61,10 @@ class tx_igldapssoauth_utility_Ldap {
 	var $status; // LDAP server status.
 
 	/**
-	 * Connect to LDAP Server and set the cid.
+	 * Connects to LDAP Server and set the cid.
 	 *
 	 * @param	void
-	 * @return	bool True if connexion successful.
+	 * @return	bool TRUE if connection succeeded.
 	 */
 	function connect($host = null, $port = null, $protocol = null, $charset = null, $type = 0) {
 
@@ -73,8 +73,7 @@ class tx_igldapssoauth_utility_Ldap {
 
 			//Your PHP version seems to lack LDAP support. Please install.
 			echo 'Your PHP version seems to lack LDAP support. Please install.';
-			return false;
-
+			return FALSE;
 		}
 
 		// Connect to ldap server.
@@ -85,9 +84,9 @@ class tx_igldapssoauth_utility_Ldap {
 		if (!($this->cid = @ldap_connect($host, $port))) {
 
 			// Could not connect to ldap server.
-			$this->cid = false;
+			$this->cid = FALSE;
 			$this->status['connect']['status'] = ldap_error($this->cid);
-			return false;
+			return FALSE;
 
 		}
 
@@ -110,8 +109,7 @@ class tx_igldapssoauth_utility_Ldap {
 
 				$this->status['option']['tls'] = 'Disable';
 				$this->status['option']['status'] = ldap_error($this->cid);
-				return false;
-
+				return FALSE;
 			}
 
 			$this->status['option']['tls'] = 'Enable';
@@ -119,7 +117,7 @@ class tx_igldapssoauth_utility_Ldap {
 
 		}
 
-		return true;
+		return TRUE;
 
 	}
 
@@ -127,9 +125,9 @@ class tx_igldapssoauth_utility_Ldap {
 	 * Bind.
 	 *
 	 * @param	void
-	 * @return	bool True if bind success.
+	 * @return	bool TRUE if bind succeeded.
 	 */
-	function bind($dn = null, $password = null) {
+	function bind($dn = NULL, $password = NULL) {
 
 		$this->status['bind']['dn'] = $dn;
 		$this->status['bind']['password'] = $password ? '********' : null;
@@ -137,15 +135,15 @@ class tx_igldapssoauth_utility_Ldap {
 		if (!($this->bid = @ldap_bind($this->cid, $dn, $password))) {
 
 			// Could not bind to server.
-			$this->bid = false;
+			$this->bid = FALSE;
 			$this->status['bind']['status'] = ldap_error($this->cid);
-			return false;
+			return FALSE;
 
 		}
 
 		// Bind successful.
 		$this->status['bind']['status'] = ldap_error($this->cid);
-		return true;
+		return TRUE;
 
 	}
 
@@ -166,11 +164,11 @@ class tx_igldapssoauth_utility_Ldap {
 
 		if (!$basedn) {
 			$this->status['search']['basedn'] = 'No valid base DN';
-			return false;
+			return FALSE;
 		}
 		if (!$filter) {
 			$this->status['search']['filter'] = 'No valid filter';
-			return false;
+			return FALSE;
 		}
 
 		if ($this->cid) {
@@ -184,37 +182,30 @@ class tx_igldapssoauth_utility_Ldap {
 			}
 
 			if (!($this->sid = @ldap_search($cid, $basedn, $filter, $attributes, $attributes_only, $size_limit, $time_limit, $deref))) {
-
 				// Search failed.
 				$this->status['search']['status'] = ldap_error($this->cid);
-				return false;
-
+				return FALSE;
 			}
 
 			$result = tx_igldapssoauth_utility_Ldap::get_entries();
 			if ($result['count'] == 0) {
-
 				// Search failed.
 				$this->status['search']['status'] = ldap_error($this->cid);
-				return false;
-
+				return FALSE;
 			}
 			if (is_array($this->sid)) {
 				// Search successful.
 				$this->feid = @ldap_first_entry($this->cid, $this->sid[0]);
-
-			}
-			else {
+			} else {
 				$this->feid = @ldap_first_entry($this->cid, $this->sid);
 			}
 			$this->status['search']['status'] = ldap_error($this->cid);
-			return true;
-
+			return TRUE;
 		}
 
 		// No connexion identifer (cid).
 		$this->status['search']['status'] = ldap_error($this->cid);
-		return false;
+		return FALSE;
 
 	}
 
@@ -293,9 +284,7 @@ class tx_igldapssoauth_utility_Ldap {
 	}
 
 	function is_connect() {
-
-		return $this->cid ? true : false;
-
+		return (bool)$this->cid;
 	}
 
 	function init_charset($charset = null) {

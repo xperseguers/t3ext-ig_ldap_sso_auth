@@ -42,12 +42,16 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 	var $igldapssoauth;
 
 	/**
+	 * @var tx_rsaauth_abstract_backend
+	 */
+	protected $backend;
+
+	/**
 	 * Find a user (eg. look up the user record in database when a login is sent)
 	 *
-	 * @return	mixed		user array or false
+	 * @return	mixed		user array or FALSE
 	 */
 	function getUser() {
-
 		$user = FALSE;
 
 		$uidConf = $GLOBALS['EXT_CONFIG']['uidConfiguration'];
@@ -78,7 +82,7 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 							$message = "ig_ldap_sso_auth error: current login security level '" . $loginSecurityLevel . "' is not supported.";
 							$message .= " Try to use 'normal' or 'rsa' (recommanded but would need more settings): ";
 							$message .= "\$TYPO3_CONF_VARS['BE']['loginSecurityLevel'] = 'normal';";
-							throw new Exception($message);
+							throw new Exception($message, 1324313489);
 						}
 					}
 
@@ -114,7 +118,7 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 
 			$this->writelog(255, 3, 3, 2,
 				"Login-attempt from %s (%s), username '%s' not found!!",
-				Array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $this->login['uname'])); // Logout written to log
+				array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $this->login['uname'])); // Logout written to log
 			// User found
 		} else {
 
@@ -174,9 +178,9 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 				if ($this->writeAttemptLog) {
 					$this->writelog(255, 3, 3, 1,
 						"Login-attempt from %s (%s), username '%s', locked domain '%s' did not match '%s'!",
-						Array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $user[$this->db_user['username_column']], $user['lockToDomain'], $this->authInfo['HTTP_HOST']));
+						array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $user[$this->db_user['username_column']], $user['lockToDomain'], $this->authInfo['HTTP_HOST']));
 				}
-				$OK = false;
+				$OK = FALSE;
 			}
 		}
 

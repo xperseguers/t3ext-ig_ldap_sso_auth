@@ -4,49 +4,48 @@ if (!defined ('TYPO3_MODE')) die ('Access denied.');
 global $EXT_CONFIG;
 
 // Init table configuration array for tx_igldapssoauth_config.
-$TCA["tx_igldapssoauth_config"] = array (
-
-"ctrl" => array (
+$TCA['tx_igldapssoauth_config'] = array(
+	'ctrl' => array(
 		'title'     => 'LLL:EXT:ig_ldap_sso_auth/res/locallang_db.xml:tx_igldapssoauth_config',
 		'label'     => 'name',
 		'adminOnly' => 1,
 		'rootLevel' => 1,
-		'dividers2tabs'=> true,
+		'dividers2tabs'=> TRUE,
 		'tstamp'    => 'tstamp',
 		'crdate'    => 'crdate',
 		'cruser_id' => 'cruser_id',
 		//'type' => 'name',
-		'default_sortby' => "ORDER BY name",
+		'default_sortby' => 'ORDER BY name',
 		'delete' => 'deleted',
-		'enablecolumns' => array (
+		'enablecolumns' => array(
 			'disabled' => 'hidden',
 		),
-		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY).'res/tca.php',
-		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY).'res/icon_tx_igldapssoauth_config.png',
+		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY) . 'res/tca.php',
+		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY) . 'res/icon_tx_igldapssoauth_config.png',
 	),
 
-	"feInterface" => array (
-		"fe_admin_fieldList" => "hidden, name, cas_host,cas_uri, cas_port, ldap_server, ldap_protocol, ldap_host, ldap_port, ldap_basedn, ldap_password, be_users_basedn, be_users_filter, be_users_mapping, be_groups_basedn, be_groups_filter, be_groups_mapping, fe_users_basedn, fe_users_filter, fe_users_mapping, fe_groups_basedn, fe_groups_filter, fe_groups_mapping",
+	'feInterface' => array(
+		'fe_admin_fieldList' => 'hidden, name, cas_host,cas_uri, cas_port, ldap_server, ldap_protocol, ldap_host, ldap_port, ldap_basedn, ldap_password, be_users_basedn, be_users_filter, be_users_mapping, be_groups_basedn, be_groups_filter, be_groups_mapping, fe_users_basedn, fe_users_filter, fe_users_mapping, fe_groups_basedn, fe_groups_filter, fe_groups_mapping',
 	)
 
 );
 
 // Add fields tx_igldapssoauth_dn to be_groups TCA.
-$tempColumns = Array (
-	"tx_igldapssoauth_dn" => Array (
-		"exclude" => 1,
-		"label" => "LLL:EXT:ig_ldap_sso_auth/res/locallang_db.xml:tx_igldapssoauth_config.be_groups.tx_igldapssoauth_dn",
-		"config" => Array (
-			"type" => "input",
-			"size" => "30",
+$tempColumns = array(
+	'tx_igldapssoauth_dn' => array(
+		'exclude' => 1,
+		'label' => 'LLL:EXT:ig_ldap_sso_auth/res/locallang_db.xml:tx_igldapssoauth_config.be_groups.tx_igldapssoauth_dn',
+		'config' => array(
+			'type' => 'input',
+			'size' => 30,
 		)
 	),
 );
 
 
-t3lib_div::loadTCA("be_groups");
-t3lib_extMgm::addTCAcolumns("be_groups", $tempColumns, 1);
-t3lib_extMgm::addToAllTCAtypes("be_groups","tx_igldapssoauth_dn;;;;1-1-1");
+t3lib_div::loadTCA('be_groups');
+t3lib_extMgm::addTCAcolumns('be_groups', $tempColumns, 1);
+t3lib_extMgm::addToAllTCAtypes('be_groups', 'tx_igldapssoauth_dn;;;;1-1-1');
 
 //// Add fields tx_igldapssoauth_dn to be_users TCA.
 //$tempColumns = Array (
@@ -110,16 +109,17 @@ $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi1']='la
 
 // Add plugin in list_type
 
-t3lib_extMgm::addPlugin(array('LLL:EXT:ig_ldap_sso_auth/res/locallang_db.xml:tt_content.list_type_pi1', $_EXTKEY.'_pi1'),'list_type');
+t3lib_extMgm::addPlugin(array('LLL:EXT:ig_ldap_sso_auth/res/locallang_db.xml:tt_content.list_type_pi1', $_EXTKEY.'_pi1'), 'list_type');
 
 // Add plugin to content wizard
 
-if (TYPO3_MODE=="BE")$TBE_MODULES_EXT["xMOD_db_new_content_el"]["addElClasses"]["tx_igldapssoauth_pi1_wizicon"] = t3lib_extMgm::extPath($_EXTKEY).'pi1/class.tx_igldapssoauth_pi1_wizicon.php';
+if (TYPO3_MODE === 'BE') {
+	$TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['tx_igldapssoauth_pi1_wizicon'] = t3lib_extMgm::extPath($_EXTKEY) . 'pi1/class.tx_igldapssoauth_pi1_wizicon.php';
+}
 
 // Add BE module on top of tools main module
 
-if (TYPO3_MODE == 'BE')	{
-
+if (TYPO3_MODE === 'BE') {
 	t3lib_extMgm::addModule('tools','txigldapssoauthM1','top',t3lib_extMgm::extPath($_EXTKEY).'mod1/');
 }
 
@@ -130,6 +130,6 @@ if (TYPO3_MODE == 'BE')	{
 
 //Initialize "context sensitive help" (csh)
 
-t3lib_extMgm::addLLrefForTCAdescr('tx_igldapssoauth_config','EXT:ig_ldap_sso_auth/res/locallang_csh_db.xml');
-t3lib_extMgm::addStaticFile($_EXTKEY,'static/', 'ig_ldap_sso_auth');
+t3lib_extMgm::addLLrefForTCAdescr('tx_igldapssoauth_config', 'EXT:ig_ldap_sso_auth/res/locallang_csh_db.xml');
+t3lib_extMgm::addStaticFile($_EXTKEY, 'static/', 'ig_ldap_sso_auth');
 ?>

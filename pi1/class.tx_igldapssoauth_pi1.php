@@ -38,7 +38,7 @@ class tx_igldapssoauth_pi1 extends tslib_pibase {
 	var $prefixId = 'tx_igldapssoauth_pi1'; // Same as class name
 	var $scriptRelPath = 'pi1/class.tx_igldapssoauth_pi1.php'; // Path to this script relative to the extension dir.
 	var $extKey = 'ig_ldap_sso_auth'; // The extension key.
-	var $pi_checkCHash = true;
+	var $pi_checkCHash = TRUE;
 	var $template;
 
 	/**

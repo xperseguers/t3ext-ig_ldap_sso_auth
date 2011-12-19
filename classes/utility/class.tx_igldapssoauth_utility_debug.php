@@ -44,11 +44,11 @@
  */
 class tx_igldapssoauth_utility_Debug {
 
-	function print_this($value = null, $comment = null, $var_dump = false) {
+	function print_this($value = NULL, $comment = NULL, $var_dump = FALSE) {
 
 		echo '<hr />';
 
-		echo $comment ? '<h2>' . $comment . '</h2>' : null;
+		echo $comment ? '<h2>' . $comment . '</h2>' : NULL;
 
 		if ($var_dump) {
 

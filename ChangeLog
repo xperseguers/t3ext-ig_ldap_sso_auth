@@ -1,5 +1,6 @@
 2011-12-19  Xavier Perseguers  <xavier@typo3.org>
 
+	* [TASK][!!!] Fix non-static method calls with tx_igldapssoauth_config
 	* [TASK] Fix XCLASS definition
 	* [BUGFIX] Remove deprecated call ereg()
 	* [TASK][!!!] Remove useless DB layer tx_igldapssoauth_utility_Db

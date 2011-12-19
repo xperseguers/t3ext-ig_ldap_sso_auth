@@ -65,7 +65,7 @@ class tx_igldapssoauth_ldap {
 					$dn = tx_igldapssoauth_utility_Ldap::get_dn();
 
 					// Restore last LDAP binding
-					$config = tx_igldapssoauth_config::get_values('ldap');
+					$config = tx_igldapssoauth_config::getLdapConfiguration();
 					tx_igldapssoauth_utility_Ldap::bind($config['binddn'], $config['password']);
 
 					return $dn;

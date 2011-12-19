@@ -32,10 +32,10 @@ require_once($BACK_PATH . 'template.php');
 require_once(PATH_t3lib . 'class.t3lib_scbase.php');
 
 // Load locallang
-$LANG->includeLLFile('EXT:ig_ldap_sso_auth/res/locallang_mod1.xml');
+$GLOBALS['LANG']->includeLLFile('EXT:ig_ldap_sso_auth/res/locallang_mod1.xml');
 
 // This checks permissions and exits if the users has no permission for entry.
-$BE_USER->modAccess($MCONF, 1);
+$GLOBALS['BE_USER']->modAccess($MCONF, 1);
 
 // DEFAULT initialization of a module [END]
 
@@ -51,26 +51,7 @@ $BE_USER->modAccess($MCONF, 1);
 class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 
 	var $pageinfo;
-	var $config;
 	var $lang;
-
-	/**
-	 * Initializes the Module
-	 *
-	 * @return	void
-	 */
-	function init() {
-
-		global $BE_USER, $LANG, $BACK_PATH, $TCA_DESCR, $TCA, $CLIENT, $TYPO3_CONF_VARS;
-
-		parent::init();
-
-		/*
-		if (t3lib_div::_GP('clear_all_cache'))	{
-			$this->include_once[] = PATH_t3lib.'class.t3lib_tcemain.php';
-		}
-		*/
-	}
 
 	/**
 	 * Adds items to the ->MOD_MENU array. Used for the function menu selector.
@@ -78,14 +59,11 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 	 * @return	void
 	 */
 	function menuConfig() {
-
-		global $LANG;
-
 		$this->MOD_MENU = Array(
 			'function' => Array(
-				'1' => $LANG->getLL('view_configuration'),
-				'2' => $LANG->getLL('wizard_search'),
-				'4' => $LANG->getLL('import_groups'),
+				'1' => $GLOBALS['LANG']->getLL('view_configuration'),
+				'2' => $GLOBALS['LANG']->getLL('wizard_search'),
+				'4' => $GLOBALS['LANG']->getLL('import_groups'),
 			)
 		);
 
@@ -98,27 +76,20 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 	 *
 	 * @return	[type]		...
 	 */
-	function main() {
-
-		global $BE_USER, $LANG, $BACK_PATH, $TCA_DESCR, $TCA, $CLIENT, $TYPO3_CONF_VARS;
-
+	public function main() {
 		// Access check!
 		$this->pageinfo = t3lib_BEfunc::readPageAccess($this->id, $this->perms_clause);
 		$access = is_array($this->pageinfo) ? 1 : 0;
 
 		// The page will show only if there is a valid page and if this page may be viewed by the user
-		if (($this->id && $access) || ($BE_USER->user['admin'] && !$this->id)) {
-
+		if (($this->id && $access) || ($GLOBALS['BE_USER']->user['admin'] && !$this->id)) {
 			tx_igldapssoauth_config::init('', 0);
 
-			$this->config = tx_igldapssoauth_config::get_values();
-
-			$this->lang = $LANG;
-
+			$this->lang = $GLOBALS['LANG'];
 			$this->doc = t3lib_div::makeInstance('mediumDoc');
 
 			#HEADER
-			$this->doc->backPath = $BACK_PATH;
+			$this->doc->backPath = $GLOBALS['BACK_PATH'];
 
 			#JS
 			$this->doc->JScode = '
@@ -139,10 +110,10 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 
 			$this->doc->form = '<form action="" method="POST">';
 
-			$this->content[] = $this->doc->startPage($LANG->getLL('title'));
+			$this->content[] = $this->doc->startPage($GLOBALS['LANG']->getLL('title'));
 
 			#TITLE
-			$this->content[] = $this->doc->header($LANG->getLL('title'));
+			$this->content[] = $this->doc->header($GLOBALS['LANG']->getLL('title'));
 
 			#MENU
 			$this->content[] = $this->doc->funcMenu('', t3lib_BEfunc::getFuncMenu($this->id, 'SET[function]', $this->MOD_SETTINGS['function'], $this->MOD_MENU['function']));
@@ -153,29 +124,23 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 			if (is_array($uidArray)) {
 				foreach ($uidArray as $uid) {
 					tx_igldapssoauth_config::init(TYPO3_MODE, $uid);
-					$this->config = tx_igldapssoauth_config::get_values();
-					$this->content[] = '<h2>' . $this->lang->getLL('view_configuration_title') . '&nbsp;' . $this->config['name'] . '&nbsp;(' . $this->config['uid'] . ')</h2>';
+					$this->content[] = '<h2>' . $this->lang->getLL('view_configuration_title') . '&nbsp;' . tx_igldapssoauth_config::getName() . '&nbsp;(' . tx_igldapssoauth_config::getUid() . ')</h2>';
 					$this->content[] = '<hr />';
 
 					switch ((string)$this->MOD_SETTINGS['function']) {
-
 						case 1:
-
 							$this->view_configuration();
 							break;
 
 						case 2:
-
 							$this->wizard_search(t3lib_div::_GP('search'));
 							break;
 
 						case 3:
-
 							//$this->wizard_authentication(t3lib_div::_GP('authentication'));
 							break;
 
 						case 4:
-
 							$this->import_groups();
 							break;
 
@@ -184,10 +149,8 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 			}
 
 			#SHORTCUT
-			if ($BE_USER->mayMakeShortcut()) {
-
+			if ($GLOBALS['BE_USER']->mayMakeShortcut()) {
 				$this->content[] = $this->doc->spacer(20) . $this->doc->section('', $this->doc->makeShortcutIcon('id', implode(',', array_keys($this->MOD_MENU)), $this->MCONF['name']));
-
 			}
 
 			#FOOTER
@@ -199,11 +162,11 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 
 			#HEADER
 			$this->doc = t3lib_div::makeInstance('mediumDoc');
-			$this->doc->backPath = $BACK_PATH;
-			$this->content[] = $this->doc->startPage($LANG->getLL('title'));
+			$this->doc->backPath = $GLOBALS['BACK_PATH'];
+			$this->content[] = $this->doc->startPage($GLOBALS['LANG']->getLL('title'));
 
 			#TITLE
-			$this->content[] = $this->doc->header($LANG->getLL('title'));
+			$this->content[] = $this->doc->header($GLOBALS['LANG']->getLL('title'));
 			$this->content[] = $this->doc->spacer(5);
 
 			#FOOTER
@@ -215,19 +178,22 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 	}
 
 	function view_configuration() {
+		$feConfiguration = tx_igldapssoauth_config::getFeConfiguration();
+		$beConfiguration = tx_igldapssoauth_config::getBeConfiguration();
 
 		// LDAP
 		$this->content[] = '<h3>' . $this->lang->getLL('view_configuration_ldap') . '</h3>';
 		$this->content[] = '<hr />';
 
-		if ($this->config['ldap']['host']) {
+		$ldapConfiguration = tx_igldapssoauth_config::getLdapConfiguration();
+		if ($ldapConfiguration['host']) {
 
-			$this->config['ldap']['server'] = tx_igldapssoauth_config::get_server_name($this->config['ldap']['server']);
+			$ldapConfiguration['server'] = tx_igldapssoauth_config::get_server_name($ldapConfiguration['server']);
 
-			tx_igldapssoauth_ldap::connect($this->config['ldap']);
-			$this->config['ldap']['password'] = $this->config['ldap']['password'] ? '********' : null;
+			tx_igldapssoauth_ldap::connect($ldapConfiguration);
+			$ldapConfiguration['password'] = $ldapConfiguration['password'] ? '********' : NULL;
 
-			$this->content[] = t3lib_div::view_array($this->config['ldap']);
+			$this->content[] = t3lib_div::view_array($ldapConfiguration);
 
 			$this->content[] = '<h3><strong>' . $this->lang->getLL('view_configuration_ldap_connexion_status') . '</strong></h3>';
 			$this->content[] = '<h4>' . t3lib_div::view_array(tx_igldapssoauth_ldap::get_status()) . '</h4>';
@@ -242,8 +208,8 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 		$this->content[] = '<h3>' . $this->lang->getLL('view_configuration_cas') . '</h3>';
 		$this->content[] = '<hr />';
 
-		if ($this->config['fe']['LDAPAuthentication'] && $this->config['fe']['CASAuthentication']) {
-			$this->content[] = t3lib_div::view_array($this->config['cas']);
+		if ($feConfiguration['LDAPAuthentication'] && $feConfiguration['CASAuthentication']) {
+			$this->content[] = t3lib_div::view_array(tx_igldapssoauth_config::getCasConfiguration());
 		} else {
 			$this->content[] = '<strong>' . $this->lang->getLL('view_configuration_cas_disable') . '</strong>';
 		}
@@ -252,8 +218,8 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 		$this->content[] = '<h3>' . $this->lang->getLL('view_configuration_backend_authentication') . '</h3>';
 		$this->content[] = '<hr />';
 
-		if ($this->config['be']['LDAPAuthentication']) {
-			$this->content[] = t3lib_div::view_array($this->config['be']);
+		if ($beConfiguration['LDAPAuthentication']) {
+			$this->content[] = t3lib_div::view_array($beConfiguration);
 		} else {
 			$this->content[] = '<strong>' . $this->lang->getLL('view_configuration_backend_authentication_disable') . '</strong>';
 		}
@@ -262,8 +228,8 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 		$this->content[] = '<h3>' . $this->lang->getLL('view_configuration_frontend_authentication') . '</h3>';
 		$this->content[] = '<hr />';
 
-		if ($this->config['fe']['LDAPAuthentication']) {
-			$this->content[] = t3lib_div::view_array($this->config['fe']);
+		if ($feConfiguration['LDAPAuthentication']) {
+			$this->content[] = t3lib_div::view_array($feConfiguration);
 		} else {
 			$this->content[] = '<strong>' . $this->lang->getLL('view_configuration_frontend_authentication_disable') . '</strong>';
 		}
@@ -276,10 +242,11 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 			case 'select' :
 
 				list($typo3_mode, $table) = explode('_', $search['table']);
+				$config = ($typo3_mode === 'be') ? tx_igldapssoauth_config::getBeConfiguration() : tx_igldapssoauth_config::getFeConfiguration();
 
-				$search['basedn'] = $this->config[$typo3_mode][$table]['basedn'];
-				$search['filter'] = tx_igldapssoauth_config::replace_filter_markers($this->config[$typo3_mode][$table]['filter']);
-				$search['attributes'] = $search['first_entry'] ? '' : implode(',', tx_igldapssoauth_config::get_ldap_attributes($this->config[$typo3_mode][$table]['mapping']));
+				$search['basedn'] = $config[$table]['basedn'];
+				$search['filter'] = tx_igldapssoauth_config::replace_filter_markers($config[$table]['filter']);
+				$search['attributes'] = $search['first_entry'] ? '' : implode(',', tx_igldapssoauth_config::get_ldap_attributes($config[$table]['mapping']));
 
 				break;
 
@@ -292,12 +259,13 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 				$search['table'] = 'be_users';
 
 				list($typo3_mode, $table) = explode('_', $search['table']);
+				$config = ($typo3_mode === 'be') ? tx_igldapssoauth_config::getBeConfiguration() : tx_igldapssoauth_config::getFeConfiguration();
 
 				$search['first_entry'] = TRUE;
 				$search['see_status'] = FALSE;
-				$search['basedn'] = $this->config[$typo3_mode][$table]['basedn'];
-				$search['filter'] = tx_igldapssoauth_config::replace_filter_markers($this->config[$typo3_mode][$table]['filter']);
-				$search['attributes'] = $search['first_entry'] ? '' : implode(',', tx_igldapssoauth_config::get_ldap_attributes($this->config[$typo3_mode][$table]['mapping']));
+				$search['basedn'] = $config[$table]['basedn'];
+				$search['filter'] = tx_igldapssoauth_config::replace_filter_markers($config[$table]['filter']);
+				$search['attributes'] = $search['first_entry'] ? '' : implode(',', tx_igldapssoauth_config::get_ldap_attributes($config[$table]['mapping']));
 
 				break;
 		}
@@ -305,7 +273,7 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 		$this->content[] = '<h2>' . $this->lang->getLL('wizard_search_title') . '</h2>';
 		$this->content[] = '<hr />';
 
-		if (tx_igldapssoauth_ldap::connect($this->config['ldap'])) {
+		if (tx_igldapssoauth_ldap::connect(tx_igldapssoauth_config::getLdapConfiguration())) {
 			if (is_array($search['basedn'])) {
 				$search['basedn'] = implode('||', $search['basedn']);
 			}
@@ -385,11 +353,16 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 		$this->content[] = '<h2>' . $this->lang->getLL('import_groups_title') . '</h2>';
 		$this->content[] = '<hr />';
 
-		if (tx_igldapssoauth_ldap::connect($this->config['ldap'])) {
+		if (tx_igldapssoauth_ldap::connect(tx_igldapssoauth_config::getLdapConfiguration())) {
 
 			foreach ($typo3_modes as $typo3_mode) {
-
-				if ($ldap_groups = tx_igldapssoauth_ldap::search($this->config[$typo3_mode]['groups']['basedn'], tx_igldapssoauth_config::replace_filter_markers($this->config[$typo3_mode]['groups']['filter']), tx_igldapssoauth_config::get_ldap_attributes($this->config[$typo3_mode]['groups']['mapping']))) {
+				$config = ($typo3_mode === 'be') ? tx_igldapssoauth_config::getBeConfiguration() : tx_igldapssoauth_config::getFeConfiguration();
+				if ($ldap_groups = tx_igldapssoauth_ldap::search(
+					$config['groups']['basedn'],
+					tx_igldapssoauth_config::replace_filter_markers(
+						$config['groups']['filter']),
+						tx_igldapssoauth_config::get_ldap_attributes($config['groups']['mapping'])
+					)) {
 
 					$this->content[] = '<form action="" method="post" name="import_' . $typo3_mode . '_groups">';
 
@@ -407,19 +380,19 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 
 					$this->content[] = '<caption><h2>' . $this->lang->getLL('import_groups_' . $typo3_mode . '_title') . '</h2></caption>';
 
-					$typo3_group_pid = tx_igldapssoauth_config::get_pid($this->config[$typo3_mode]['groups']['mapping']);
-					$typo3_groups = tx_igldapssoauth_auth::get_typo3_groups($ldap_groups, $this->config[$typo3_mode]['groups']['mapping'], $typo3_mode . '_groups', $typo3_group_pid);
+					$typo3_group_pid = tx_igldapssoauth_config::get_pid($config['groups']['mapping']);
+					$typo3_groups = tx_igldapssoauth_auth::get_typo3_groups($ldap_groups, $config['groups']['mapping'], $typo3_mode . '_groups', $typo3_group_pid);
 
 					unset($ldap_groups['count']);
 
 					foreach ($ldap_groups as $index => $ldap_group) {
-						$typo3_group = tx_igldapssoauth_auth::merge($ldap_group, $typo3_groups[$index], $this->config[$typo3_mode]['groups']['mapping']);
+						$typo3_group = tx_igldapssoauth_auth::merge($ldap_group, $typo3_groups[$index], $config['groups']['mapping']);
 						if (isset($import_groups[$typo3_mode]) && in_array($typo3_group['tx_igldapssoauth_dn'], $import_groups[$typo3_mode])) {
 							unset($typo3_group['parentGroup']);
 							$typo3_group = tx_igldapssoauth_typo3_group::insert($typo3_mode . '_groups', $typo3_group);
 							$typo3_group = $typo3_group[0];
 
-							$fieldParent = $this->config[$typo3_mode]['groups']['mapping']['parentGroup'];
+							$fieldParent = $config['groups']['mapping']['parentGroup'];
 							preg_match("`<([^$]*)>`", $fieldParent, $attribute);
 							$fieldParent = $attribute[1];
 
@@ -481,17 +454,17 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 				tx_igldapssoauth_typo3_group::update($typo3_mode . '_groups', $typo3ParentGroup[0]);
 				//}
 			} else {
-
-				if ($ldap_groups = tx_igldapssoauth_ldap::search($this->config[$typo3_mode]['groups']['basedn'], '(&' . tx_igldapssoauth_config::replace_filter_markers($this->config[$typo3_mode]['groups']['filter']) . '&(distinguishedName=' . $parentDn . '))', tx_igldapssoauth_config::get_ldap_attributes($this->config[$typo3_mode]['groups']['mapping']))) {
+				$config = ($typo3_mode === 'be') ? tx_igldapssoauth_config::getBeConfiguration() : tx_igldapssoauth_config::getFeConfiguration();
+				if ($ldap_groups = tx_igldapssoauth_ldap::search($config['groups']['basedn'], '(&' . tx_igldapssoauth_config::replace_filter_markers($config['groups']['filter']) . '&(distinguishedName=' . $parentDn . '))', tx_igldapssoauth_config::get_ldap_attributes($config['groups']['mapping']))) {
 					if (is_array($ldap_groups)) {
-						$typo3_group_pid = tx_igldapssoauth_config::get_pid($this->config[$typo3_mode]['groups']['mapping']);
+						$typo3_group_pid = tx_igldapssoauth_config::get_pid($config['groups']['mapping']);
 
-						$typo3_groups = tx_igldapssoauth_auth::get_typo3_groups($ldap_groups, $this->config[$typo3_mode]['groups']['mapping'], $typo3_mode . '_groups', $typo3_group_pid);
+						$typo3_groups = tx_igldapssoauth_auth::get_typo3_groups($ldap_groups, $config['groups']['mapping'], $typo3_mode . '_groups', $typo3_group_pid);
 
 						unset($ldap_groups['count']);
 
 						foreach ($ldap_groups as $index => $ldap_group) {
-							$typo3_group = tx_igldapssoauth_auth::merge($ldap_group, $typo3_groups[$index], $this->config[$typo3_mode]['groups']['mapping']);
+							$typo3_group = tx_igldapssoauth_auth::merge($ldap_group, $typo3_groups[$index], $config['groups']['mapping']);
 							unset($typo3_group['parentGroup']);
 							$typo3_group['subgroup'] = $childUid;
 							$typo3_group = tx_igldapssoauth_typo3_group::insert($typo3_mode . '_groups', $typo3_group);
@@ -517,23 +490,24 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 	 * @return	string	HTML content.
 	 */
 	function printContent() {
-
-		echo implode(chr(10), $this->content);
-
+		echo implode(LF, $this->content);
 	}
 
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/mod1/index.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/mod1/index.php']);
+if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/mod1/index.php'])) {
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/mod1/index.php']);
 }
 
 // Make instance:
+/** @var $SOBE tx_igldapssoauth_module1 */
 $SOBE = t3lib_div::makeInstance('tx_igldapssoauth_module1');
 $SOBE->init();
 
 // Include files?
-foreach ($SOBE->include_once as $INC_FILE) include_once($INC_FILE);
+foreach ($SOBE->include_once as $INC_FILE) {
+	include_once($INC_FILE);
+}
 
 $SOBE->main();
 $SOBE->printContent();

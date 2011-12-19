@@ -48,9 +48,9 @@ class tx_igldapssoauth_pi1 extends tslib_pibase {
 	 * @param	array		$conf : The PlugIn configuration
 	 * @return	The content that is displayed on the website
 	 */
-	function main($content, $conf) {
-		$uidConf = $GLOBALS['EXT_CONFIG']['uidConfiguration'];
-		$uidArray = t3lib_div::trimExplode(',', $uidConf);
+	public function main($content, array $conf) {
+		$config = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']);
+		$uidArray = t3lib_div::intExplode(',', $config['uidConfiguration']);
 		tx_igldapssoauth_config::init(TYPO3_MODE, $uidArray[0]);
 
 		$this->conf = $conf;
@@ -69,7 +69,7 @@ class tx_igldapssoauth_pi1 extends tslib_pibase {
 
 		if (tx_igldapssoauth_config::is_enable('CASAuthentication')) {
 
-			$cas_config = tx_igldapssoauth_config::get_values('cas');
+			$cas_config = tx_igldapssoauth_config::getCasConfiguration();
 
 			phpCAS::client(CAS_VERSION_2_0, (string)$cas_config['host'], (integer)$cas_config['port'], (string)$cas_config['uri']);
 			if (!empty($cas_config['service_url'])) {
@@ -106,55 +106,40 @@ class tx_igldapssoauth_pi1 extends tslib_pibase {
 		return $this->pi_wrapInBaseClass($tmpl_cas_auth);
 	}
 
-	function pi_loadLL() {
-
+	/**
+	 * Loads the localization files.
+	 *
+	 * @return void
+	 */
+	public function pi_loadLL() {
 		if (!$this->LOCAL_LANG_loaded && $this->scriptRelPath) {
-
 			$basePath = t3lib_extMgm::extPath($this->extKey) . 'res/locallang_pi1.xml';
 			$this->LOCAL_LANG = t3lib_div::readLLfile($basePath, $this->LLkey);
 
 			if ($this->altLLkey) {
-
 				$tempLOCAL_LANG = t3lib_div::readLLfile($basePath, $this->altLLkey);
 				$this->LOCAL_LANG = array_merge(is_array($this->LOCAL_LANG) ? $this->LOCAL_LANG : array(), $tempLOCAL_LANG);
-
 			}
 
 			// Overlaying labels from TypoScript (including fictitious language keys for non-system languages!):
 			if (is_array($this->conf['_LOCAL_LANG.'])) {
-
-				reset($this->conf['_LOCAL_LANG.']);
-
-				while (list($k, $lA) = each($this->conf['_LOCAL_LANG.'])) {
-
+				foreach ($this->conf['_LOCAL_LANG.'] as $k => $lA) {
 					if (is_array($lA)) {
-
 						$k = substr($k, 0, -1);
-
 						foreach ($lA as $llK => $llV) {
-
 							if (!is_array($llV)) {
-
 								$this->LOCAL_LANG[$k][$llK] = $llV;
-
-								if ($k != 'default') {
+								if ($k !== 'default') {
 									$this->LOCAL_LANG_charset[$k][$llK] = $GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset']; // For labels coming from the TypoScript (database) the charset is assumed to be "forceCharset" and if that is not set, assumed to be that of the individual system languages (thus no conversion)
 								}
-
 							}
-
 						}
-
 					}
-
 				}
-
 			}
-
 		}
 
 		$this->LOCAL_LANG_loaded = 1;
-
 	}
 
 }

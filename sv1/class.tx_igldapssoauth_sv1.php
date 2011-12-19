@@ -47,6 +47,18 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 	protected $backend;
 
 	/**
+	 * @var array
+	 */
+	protected $config;
+
+	/**
+	 * Default constructor
+	 */
+	public function __construct() {
+		$this->config = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']);
+	}
+
+	/**
 	 * Find a user (eg. look up the user record in database when a login is sent)
 	 *
 	 * @return	mixed		user array or FALSE
@@ -54,7 +66,7 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 	function getUser() {
 		$user = FALSE;
 
-		$uidConf = $GLOBALS['EXT_CONFIG']['uidConfiguration'];
+		$uidConf = $this->config['uidConfiguration'];
 		$uidArray = t3lib_div::intExplode(',', $uidConf);
 		foreach ($uidArray as $uid) {
 			tx_igldapssoauth_config::init(TYPO3_MODE, $uid);
@@ -76,7 +88,7 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 				// Check if $loginSecurityLevel is set to "challenged" or "superchallenged" and throw an error if the configuration allows it
 				// By default, it will not throw an Exception
 				$throwExceptionAtLogin = 0;
-				if (isset($GLOBALS['EXT_CONFIG']['throwExceptionAtLogin']) && $GLOBALS['EXT_CONFIG']['throwExceptionAtLogin'] == 1) {
+				if (isset($this->config['throwExceptionAtLogin']) && $this->config['throwExceptionAtLogin'] == 1) {
 					if ($loginSecurityLevel === 'challenged' || $loginSecurityLevel === 'superchallenged') {
 						$message = "ig_ldap_sso_auth error: current login security level '" . $loginSecurityLevel . "' is not supported.";
 						$message .= " Try to use 'normal' or 'rsa' (recommanded but would need more settings): ";

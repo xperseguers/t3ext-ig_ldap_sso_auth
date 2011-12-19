@@ -1215,7 +1215,6 @@ class CASClient
     {
       // the URL is built when needed only
       if ( empty($this->_callback_url) ) {
-        $final_uri = '';
 	    // remove the ticket if present in the URL
 	    $final_uri = 'https://';
 	    /* replaced by Julien Marchal - v0.4.6
@@ -1958,7 +1957,6 @@ class CASClient
       phpCAS::traceBegin();
       // the URL is built when needed only
       if ( empty($this->_url) ) {
-	    $final_uri = '';
 	    // remove the ticket if present in the URL
 	    $final_uri = ($this->isHttps()) ? 'https' : 'http';
 	    $final_uri .= '://';

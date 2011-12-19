@@ -48,10 +48,10 @@ class tx_igldapssoauth_auth {
 		}
 
 		// Valid user only if username and connect to LDAP server.
-		if ($username && tx_igldapssoauth_ldap::connect(tx_igldapssoauth_config::get_values('ldap'))) {
+		if ($username && tx_igldapssoauth_ldap::connect(tx_igldapssoauth_config::getLdapConfiguration())) {
 
 			// Get extension configuration from TYPO3 mode (BE / FE).
-			$this->config = tx_igldapssoauth_config::get_values(tx_igldapssoauth_config::get_values('typo3_mode'));
+			$this->config = (tx_igldapssoauth_config::getTypo3Mode() === 'be') ? tx_igldapssoauth_config::getBeConfiguration() : tx_igldapssoauth_config::getFeConfiguration();
 
 			// Valid user from LDAP server.
 			if ($userdn = tx_igldapssoauth_ldap::valid_user($username, $password, $this->config['users']['basedn'], $this->config['users']['filter'])) {
@@ -241,7 +241,7 @@ class tx_igldapssoauth_auth {
 	 */
 	function cas_auth() {
 
-		$cas = tx_igldapssoauth_config::get_values('cas');
+		$cas = tx_igldapssoauth_config::getCasConfiguration();
 		phpCAS::client(CAS_VERSION_2_0, (string)$cas['host'], (integer)$cas['port'], (string)$cas['uri']);
 		if (!empty($cas['service_url'])) {
 			phpCAS::setFixedServiceURL((string)$cas['service_url']);

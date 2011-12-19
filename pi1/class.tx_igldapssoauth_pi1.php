@@ -159,8 +159,8 @@ class tx_igldapssoauth_pi1 extends tslib_pibase {
 
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/pi1/class.tx_igldapssoauth_pi1.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/pi1/class.tx_igldapssoauth_pi1.php']);
+if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/pi1/class.tx_igldapssoauth_pi1.php'])) {
+	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/pi1/class.tx_igldapssoauth_pi1.php']);
 }
 
 ?>

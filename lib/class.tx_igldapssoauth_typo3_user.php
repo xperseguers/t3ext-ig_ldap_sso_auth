@@ -35,9 +35,10 @@
 class tx_igldapssoauth_typo3_user {
 
 	function init($table = null) {
+		$typo3_user = array();
 
 		// Get users table structure.
-		$typo3_user_default = tx_igldapssoauth_utility_Db::get_columns_from($table);
+		$typo3_user_default = $GLOBALS['TYPO3_DB']->admin_get_fields($table);
 
 		foreach ($typo3_user_default as $field => $value) {
 			$typo3_user[0][$field] = null;
@@ -50,89 +51,57 @@ class tx_igldapssoauth_typo3_user {
 
 		// Search with uid and pid.
 		if ($uid) {
-			$QUERY = array(
-				'SELECT' => '*',
-				'FROM' => $table,
-				'WHERE' => 'uid=' . $uid,
-				'GROUP_BY' => '',
-				'ORDER_BY' => '',
-				'LIMIT' => '',
-				'UID_INDEX_FIELD' => '',
+			$user = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+				'*',
+				$table,
+				'uid=' . intval($uid)
 			);
 
 			// Search with DN, username and pid.
 		} else {
-			$QUERY = array(
-				'SELECT' => '*',
-				'FROM' => $table,
-				'WHERE' => 'tx_igldapssoauth_dn=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($dn, $table)
-					. ' AND pid IN (' . $pid . ')',
-				'GROUP_BY' => '',
-				'ORDER_BY' => '',
-				'LIMIT' => '',
-				'UID_INDEX_FIELD' => '',
+			$user = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+				'*',
+				$table,
+				'tx_igldapssoauth_dn=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($dn, $table)
+					. ($pid ? ' AND pid IN (' . $pid . ')' : '')
 			);
-
-			// If no user found with DN and username, search with username and pid only.
-			if (!tx_igldapssoauth_utility_Db::select($QUERY) && $pid) {
-				$QUERY = array(
-					'SELECT' => '*',
-					'FROM' => $table,
-					'WHERE' => 'username=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($username, $table) . ' AND pid IN (' . $pid . ')',
-					'GROUP_BY' => '',
-					'ORDER_BY' => '',
-					'LIMIT' => '',
-					'UID_INDEX_FIELD' => '',
-				);
-
-			} elseif (!tx_igldapssoauth_utility_Db::select($QUERY)) {
-				$QUERY = array(
-					'SELECT' => '*',
-					'FROM' => $table,
-					'WHERE' => 'username=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($username, $table),
-					'GROUP_BY' => '',
-					'ORDER_BY' => '',
-					'LIMIT' => '',
-					'UID_INDEX_FIELD' => '',
+			if (!$user) {
+				$user = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+					'*',
+					$table,
+					'username=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($username, $table)
+						. ($pid ? ' AND pid IN (' . $pid . ')' : '')
 				);
 			}
 		}
 
 		// Return TYPO3 user.
-		return tx_igldapssoauth_utility_Db::select($QUERY);
+		return $user;
 	}
 
 	function insert($table = null, $typo3_user = array()) {
-		$QUERY = array(
-			'TABLE' => $table,
-			'FIELDS_VALUES' => $typo3_user,
-			'NO_QUOTE_FIELDS' => FALSE,
+		$GLOBALS['TYPO3_DB']->exec_INSERTquery(
+			$table,
+			$typo3_user,
+			FALSE
 		);
+		$uid = $GLOBALS['TYPO3_DB']->sql_insert_id();
 
-		$uid = tx_igldapssoauth_utility_Db::insert($QUERY);
-
-		$QUERY = array(
-			'SELECT' => '*',
-			'FROM' => $table,
-			'WHERE' => 'uid=' . intval($uid),
-			'GROUP_BY' => '',
-			'ORDER_BY' => '',
-			'LIMIT' => '',
-			'UID_INDEX_FIELD' => '',
+		return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			'*',
+			$table,
+			'uid=' . intval($uid)
 		);
-
-		return tx_igldapssoauth_utility_Db::select($QUERY);
 	}
 
 	public static function update($table = null, $typo3_user = array()) {
-		$QUERY = array(
-			'TABLE' => $table,
-			'WHERE' => 'uid=' . intval($typo3_user['uid']),
-			'FIELDS_VALUES' => $typo3_user,
-			'NO_QUOTE_FIELDS' => FALSE,
+		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+			$table,
+			'uid=' . intval($typo3_user['uid']),
+			$typo3_user,
+			FALSE
 		);
-
-		$ret = tx_igldapssoauth_utility_Db::update($QUERY);
+		$ret = $GLOBALS['TYPO3_DB']->sql_affected_rows();
 
 		// Hook for post-processing the user
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['processUpdateUser'])) {

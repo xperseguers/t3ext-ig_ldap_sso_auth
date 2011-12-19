@@ -271,35 +271,29 @@ class tx_igldapssoauth_config {
 
 	}
 
+	/**
+	 * Gets the extension configuration array from table tx_igldapssoauth_config.
+	 *
+	 * @param int $uid
+	 * @return array
+	 */
 	function select($uid = 0) {
-
-		// Get extension configuration array from table tx_igldapssoauth_config
-
-		$query = array(
-			'SELECT' => '*',
-			'FROM' => 'tx_igldapssoauth_config',
-			'WHERE' => 'tx_igldapssoauth_config.hidden = 0 AND tx_igldapssoauth_config.deleted = 0 AND tx_igldapssoauth_config.uid=' . $uid,
-			'GROUP_BY' => '',
-			'ORDER_BY' => '',
-			'LIMIT' => '0,1',
-			'UID_INDEX_FIELD' => ''
+		$config = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			'*',
+			'tx_igldapssoauth_config',
+			'tx_igldapssoauth_config.hidden=0 AND tx_igldapssoauth_config.deleted=0 AND tx_igldapssoauth_config.uid=' . intval($uid)
 		);
 
-		$config = tx_igldapssoauth_utility_Db::select($query);
 		return $config[0];
-
 	}
 
 	function update($config = array()) {
-
-		$query = array(
-			'TABLE' => 'tx_igldapssoauth_config',
-			'WHERE' => 'tx_igldapssoauth_config.uid=' . $config['uid'],
-			'FIELDS_VALUES' => $config,
-			'NO_QUOTE' => false,
+		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+			'tx_igldapssoauth_config',
+			'tx_igldapssoauth_config.uid=' . intval($config['uid']),
+			$config,
+			FALSE
 		);
-
-		tx_igldapssoauth_utility_Db::update($query);
 
 		tx_igldapssoauth_config::init(tx_igldapssoauth_config::select($config['uid']));
 

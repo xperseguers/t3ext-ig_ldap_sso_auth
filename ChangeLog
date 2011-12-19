@@ -1,5 +1,6 @@
 2011-12-19  Xavier Perseguers  <xavier@typo3.org>
 
+	* [TASK][!!!] Remove useless DB layer tx_igldapssoauth_utility_Db
 	* [TASK][!!!] Code cleanup
 
 2011-12-12  Xavier Perseguers  <xavier@typo3.org>

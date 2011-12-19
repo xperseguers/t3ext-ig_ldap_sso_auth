@@ -34,7 +34,7 @@
  */
 class tx_igldapssoauth_typo3_user {
 
-	function init($table = null) {
+	public static function init($table = null) {
 		$typo3_user = array();
 
 		// Get users table structure.
@@ -47,7 +47,7 @@ class tx_igldapssoauth_typo3_user {
 		return $typo3_user;
 	}
 
-	function select($table = null, $uid = 0, $pid = 0, $username = null, $dn = null) {
+	public static function select($table = null, $uid = 0, $pid = 0, $username = null, $dn = null) {
 
 		// Search with uid and pid.
 		if ($uid) {
@@ -79,7 +79,7 @@ class tx_igldapssoauth_typo3_user {
 		return $user;
 	}
 
-	function insert($table = null, $typo3_user = array()) {
+	public static function insert($table = null, $typo3_user = array()) {
 		$GLOBALS['TYPO3_DB']->exec_INSERTquery(
 			$table,
 			$typo3_user,
@@ -118,7 +118,7 @@ class tx_igldapssoauth_typo3_user {
 		return $ret;
 	}
 
-	function set_usergroup($typo3_groups = array(), $typo3_user = array()) {
+	public static function set_usergroup($typo3_groups = array(), $typo3_user = array()) {
 		$required = TRUE;
 		$group_uid = array();
 

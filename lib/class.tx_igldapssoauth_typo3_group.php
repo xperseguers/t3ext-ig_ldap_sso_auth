@@ -34,7 +34,7 @@
  */
 class tx_igldapssoauth_typo3_group {
 
-	function init($table = null) {
+	public static function init($table = null) {
 		$typo3_group = array();
 
 		// Get users table structure.
@@ -47,7 +47,7 @@ class tx_igldapssoauth_typo3_group {
 		return $typo3_group;
 	}
 
-	function select($table = null, $uid = 0, $pid = null, $title = null, $dn = null) {
+	public static function select($table = null, $uid = 0, $pid = null, $title = null, $dn = null) {
 			// Search with uid and pid.
 		if ($uid) {
 			$where = 'uid=' . intval($uid);
@@ -65,7 +65,7 @@ class tx_igldapssoauth_typo3_group {
 		);
 	}
 
-	function insert($table = null, $typo3_group = array()) {
+	public static function insert($table = null, $typo3_group = array()) {
 		$GLOBALS['TYPO3_DB']->exec_INSERTquery(
 			$table,
 			$typo3_group,
@@ -80,7 +80,7 @@ class tx_igldapssoauth_typo3_group {
 		);
 	}
 
-	function update($table = null, $typo3_group = array()) {
+	public static function update($table = null, $typo3_group = array()) {
 		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 			$table,
 			'uid=' . intval($typo3_group['uid']),
@@ -103,7 +103,7 @@ class tx_igldapssoauth_typo3_group {
 		return $ret;
 	}
 
-	function get_title($ldap_user = array(), $mapping = array()) {
+	public static function get_title($ldap_user = array(), $mapping = array()) {
 		if (!$mapping) {
 			return NULL;
 		}

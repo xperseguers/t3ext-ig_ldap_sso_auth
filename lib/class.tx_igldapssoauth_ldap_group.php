@@ -34,7 +34,7 @@
  */
 class tx_igldapssoauth_ldap_group {
 
-	function select_from_membership($membership = array(), $filter = null, $attributes = array()) {
+	public static function select_from_membership($membership = array(), $filter = null, $attributes = array()) {
 
 		$ldap_groups['count'] = 0;
 
@@ -60,22 +60,16 @@ class tx_igldapssoauth_ldap_group {
 
 	}
 
-	function select_from_userdn($userdn = null, $basedn = null, $filter = null, $attributes = array()) {
-
+	public static function select_from_userdn($userdn = null, $basedn = null, $filter = null, $attributes = array()) {
 		return tx_igldapssoauth_ldap::search($basedn, str_replace('{USERDN}', $userdn, $filter), $attributes);
-
 	}
 
-	function get_membership($ldap_user = array(), $mapping = array()) {
-
+	public static function get_membership($ldap_user = array(), $mapping = array()) {
 		if (array_key_exists('usergroup', $mapping) && preg_match("`<([^$]*)>`", $mapping['usergroup'], $attribute)) {
-
 			return $ldap_user[strtolower($attribute[1])];
-
 		}
 
 		return FALSE;
-
 	}
 
 }

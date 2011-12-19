@@ -263,7 +263,7 @@ class phpCAS
    *
    * @return a newly created CASClient object
    */
-  function client($server_version,
+  static function client($server_version,
 		  $server_hostname,
 		  $server_port,
 		  $server_uri,
@@ -447,7 +447,7 @@ class phpCAS
    *
    * @private
    */
-  function error($msg)
+  static function error($msg)
     {
       $dbg = phpCAS::backtrace();
       $function = '?';
@@ -473,7 +473,7 @@ class phpCAS
   /**
    * This method is used to log something in debug mode.
    */
-  function trace($str)
+  static function trace($str)
     {
       $dbg = phpCAS::backtrace();
       phpCAS::log($str.' ['.basename($dbg[1]['file']).':'.$dbg[1]['line'].']');
@@ -482,7 +482,7 @@ class phpCAS
   /**
    * This method is used to indicate the start of the execution of a function in debug mode.
    */
-  function traceBegin()
+  static function traceBegin()
     {
       global $PHPCAS_DEBUG;
 
@@ -510,7 +510,7 @@ class phpCAS
    *
    * @param $res the result of the function
    */
-  function traceEnd($res='')
+  static function traceEnd($res='')
     {
       global $PHPCAS_DEBUG;
 
@@ -524,7 +524,7 @@ class phpCAS
   /**
    * This method is used to indicate the end of the execution of the program
    */
-  function traceExit()
+  static function traceExit()
     {
       global $PHPCAS_DEBUG;
 
@@ -578,7 +578,7 @@ class phpCAS
    *
    * @return the phpCAS version.
    */
-  function getVersion()
+  static function getVersion()
     {
       return PHPCAS_VERSION;
     }
@@ -883,7 +883,7 @@ class phpCAS
    * authenticated. If the user is not authenticated, halt by redirecting to
    * the CAS server.
    */
-  function forceAuthentication()
+  static function forceAuthentication()
     {
       global $PHPCAS_CLIENT, $PHPCAS_AUTH_CHECK_CALL;
 
@@ -927,7 +927,7 @@ class phpCAS
    *
    * @return TRUE when the user is authenticated.
    */
-  function isAuthenticated()
+  static function isAuthenticated()
     {
       global $PHPCAS_CLIENT, $PHPCAS_AUTH_CHECK_CALL;
 
@@ -972,7 +972,7 @@ class phpCAS
    *
    * @return the login name of the authenticated user
    */
-  function getUser()
+  static function getUser()
     {
       global $PHPCAS_CLIENT, $PHPCAS_AUTH_CHECK_CALL;
       if ( !is_object($PHPCAS_CLIENT) ) {
@@ -1063,7 +1063,7 @@ class phpCAS
    * This method is used to logout from CAS. Halts by redirecting to the CAS server.
    * @param $url a URL that will be transmitted to the CAS server (to come back to when logged out)
    */
-  function logout($url = "")
+  static function logout($url = "")
     {
       global $PHPCAS_CLIENT;
 
@@ -1105,7 +1105,7 @@ class phpCAS
    *
    * @param $url the URL
    */
-   function setFixedServiceURL($url)
+   static function setFixedServiceURL($url)
    {
      global $PHPCAS_CLIENT;
      phpCAS::traceBegin();

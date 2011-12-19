@@ -15,37 +15,35 @@
  * @ingroup internalPGTStorage
  */
 
-class PGTStorage
-{
-  /** 
-   * @addtogroup internalPGTStorage
-   * @{ 
-   */
+class PGTStorage {
+	/**
+	 * @addtogroup internalPGTStorage
+	 * @{
+	 */
 
-  // ########################################################################
-  //  CONSTRUCTOR
-  // ########################################################################
-  
-  /**
-   * The constructor of the class, should be called only by inherited classes.
-   *
-   * @param $cas_parent the CASclient instance that creates the current object.
-   *
-   * @protected
-   */
-  function PGTStorage($cas_parent)
-    {
-      phpCAS::traceBegin();
-      if ( !$cas_parent->isProxy() ) {
-	phpCAS::error('defining PGT storage makes no sense when not using a CAS proxy'); 
-      }
-      phpCAS::traceEnd();
-    }
+	// ########################################################################
+	//  CONSTRUCTOR
+	// ########################################################################
+
+	/**
+	 * The constructor of the class, should be called only by inherited classes.
+	 *
+	 * @param $cas_parent the CASclient instance that creates the current object.
+	 *
+	 * @protected
+	 */
+	function PGTStorage($cas_parent) {
+		phpCAS::traceBegin();
+		if (!$cas_parent->isProxy()) {
+			phpCAS::error('defining PGT storage makes no sense when not using a CAS proxy');
+		}
+		phpCAS::traceEnd();
+	}
 
   // ########################################################################
   //  DEBUGGING
   // ########################################################################
-  
+
   /**
    * This virtual method returns an informational string giving the type of storage
    * used by the object (used for debugging purposes).
@@ -54,7 +52,7 @@ class PGTStorage
    */
   function getStorageType()
     {
-      phpCAS::error(__CLASS__.'::'.__FUNCTION__.'() should never be called'); 
+      phpCAS::error(__CLASS__.'::'.__FUNCTION__.'() should never be called');
     }
 
   /**
@@ -65,13 +63,13 @@ class PGTStorage
    */
   function getStorageInfo()
     {
-      phpCAS::error(__CLASS__.'::'.__FUNCTION__.'() should never be called'); 
+      phpCAS::error(__CLASS__.'::'.__FUNCTION__.'() should never be called');
     }
 
   // ########################################################################
   //  ERROR HANDLING
   // ########################################################################
-  
+
   /**
    * string used to store an error message. Written by PGTStorage::setErrorMessage(),
    * read by PGTStorage::getErrorMessage().
@@ -83,7 +81,7 @@ class PGTStorage
   var $_error_message=FALSE;
 
   /**
-   * This method sets en error message, which can be read later by 
+   * This method sets en error message, which can be read later by
    * PGTStorage::getErrorMessage().
    *
    * @param $error_message an error message
@@ -115,7 +113,7 @@ class PGTStorage
   // ########################################################################
 
   /**
-   * a boolean telling if the storage has already been initialized. Written by 
+   * a boolean telling if the storage has already been initialized. Written by
    * PGTStorage::init(), read by PGTStorage::isInitialized().
    *
    * @hideinitializer
@@ -160,7 +158,7 @@ class PGTStorage
    */
   function write($pgt,$pgt_iou)
     {
-      phpCAS::error(__CLASS__.'::'.__FUNCTION__.'() should never be called'); 
+      phpCAS::error(__CLASS__.'::'.__FUNCTION__.'() should never be called');
     }
 
   /**
@@ -174,15 +172,15 @@ class PGTStorage
    */
   function read($pgt_iou)
     {
-      phpCAS::error(__CLASS__.'::'.__FUNCTION__.'() should never be called'); 
+      phpCAS::error(__CLASS__.'::'.__FUNCTION__.'() should never be called');
     }
 
   /** @} */
-  
-} 
+
+}
 
 // include specific PGT storage classes
-include_once(dirname(__FILE__).'/pgt-file.php'); 
+include_once(dirname(__FILE__).'/pgt-file.php');
 include_once(dirname(__FILE__).'/pgt-db.php');
-  
+
 ?>

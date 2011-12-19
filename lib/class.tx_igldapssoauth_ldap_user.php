@@ -34,10 +34,8 @@
  */
 class tx_igldapssoauth_ldap_user {
 
-	function select($dn = null, $filter = null, $attributes = array()) {
-
+	public static function select($dn = null, $filter = null, $attributes = array()) {
 		return tx_igldapssoauth_ldap::search($dn, str_replace('{USERNAME}', '*', $filter), $attributes);
-
 	}
 
 }

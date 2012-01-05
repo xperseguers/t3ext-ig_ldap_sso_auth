@@ -190,7 +190,9 @@ class tx_igldapssoauth_auth {
 
 			include_once(PATH_tslib . 'class.tslib_fe.php');
 			if (empty($GLOBALS['TCA'])) {
-				tslib_fe::includeTCA();
+				/** @var $tslibFe tslib_fe */
+				$tslibFe = t3lib_div::makeInstance('tslib_fe');
+				$tslibFe->includeTCA();
 			}
 
 			// Insert new user: use TCA configuration to override default values

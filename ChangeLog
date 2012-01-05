@@ -1,5 +1,6 @@
 2012-01-05  Xavier Perseguers  <xavier@typo3.org>
 
+	* [BUGFIX] PHP Fatal Error: Using $this from a static context
 	* [BUGFIX] Fix syntax error in pi1 wizicon
 
 2011-12-19  Xavier Perseguers  <xavier@typo3.org>

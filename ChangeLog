@@ -1,3 +1,7 @@
+2012-01-19  Xavier Perseguers  <xavier@typo3.org>
+
+	* [BUGFIX] #33325: Backend module crashes while retrieving first entry
+
 2012-01-05  Xavier Perseguers  <xavier@typo3.org>
 
 	* [BUGFIX] PHP Fatal Error: Using $this from a static context

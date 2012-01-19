@@ -319,7 +319,7 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 
 			}
 			$search['basedn'] = explode('||', $search['basedn']);
-			if ($result = tx_igldapssoauth_ldap::search($search['basedn'], $search['filter'], $attributes, $search['first_entry'])) {
+			if ($result = tx_igldapssoauth_ldap::search($search['basedn'], $search['filter'], $attributes, $search['first_entry'], 100)) {
 
 				$this->content[] = $search['see_status'] ? '<h2>' . $this->lang->getLL('wizard_search_ldap_status') . '</h2><hr />' . t3lib_div::view_array(tx_igldapssoauth_ldap::get_status()) : null;
 				$this->content[] = '<h2>' . $this->lang->getLL('wizard_search_result') . '</h2>';

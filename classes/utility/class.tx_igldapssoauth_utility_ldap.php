@@ -185,12 +185,6 @@ class tx_igldapssoauth_utility_Ldap {
 				return FALSE;
 			}
 
-			$result = tx_igldapssoauth_utility_Ldap::get_entries();
-			if ($result['count'] == 0) {
-				// Search failed.
-				self::$status['search']['status'] = ldap_error(self::$cid);
-				return FALSE;
-			}
 			if (is_array(self::$sid)) {
 				// Search successful.
 				self::$feid = @ldap_first_entry(self::$cid, self::$sid[0]);

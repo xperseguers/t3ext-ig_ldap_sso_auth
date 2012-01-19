@@ -90,10 +90,10 @@ class tx_igldapssoauth_ldap {
 
 	}
 
-	public static function search($basedn = NULL, $filter = NULL, $attributes = array(), $first_entry = FALSE) {
+	public static function search($basedn = NULL, $filter = NULL, $attributes = array(), $first_entry = FALSE, $limit = 0) {
 		$result = array();
 
-		if (tx_igldapssoauth_utility_Ldap::search($basedn, $filter, $attributes)) {
+		if (tx_igldapssoauth_utility_Ldap::search($basedn, $filter, $attributes, 0, $first_entry ? 1 : $limit)) {
 			if ($first_entry) {
 				$result = tx_igldapssoauth_utility_Ldap::get_first_entry();
 				$result['dn'] = tx_igldapssoauth_utility_Ldap::get_dn();

@@ -1,3 +1,7 @@
+2012-01-20  Xavier Perseguers  <xavier@typo3.org>
+
+	* [TASK] Rework most extension configuration labels
+
 2012-01-19  Xavier Perseguers  <xavier@typo3.org>
 
 	* [BUGFIX] #33325: Backend module crashes while retrieving first entry

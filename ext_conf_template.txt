@@ -1,70 +1,70 @@
 # cat=basic; type=user[EXT:ig_ldap_sso_auth/class.tx_igldapssoauth_emconfhelper.php:tx_igldapssoauth_emconfhelper->checkConfiguration]; label=Configuration check
 checkConfiguration=0
 
-# cat=basic; type=boolean; label=Throw Exception if misconfigured: Recommended for new installation - LDAP authentification is not compatible with loginSecurityLevel set to "challenged" or "superchallenged" since the real password can never be sent against the LDAP repository. Instead of failing silently, the extension with throw an Exception when login. If the method appear to be brutal it will save a log of headaches. Value of loginSecurityLevel should be handled manually to "normal" or even better "rsa" in the Install Tool.
+# cat=basic; type=boolean; label=Throw Exception if misconfigured: Recommended for new installation - LDAP authentication is not compatible with loginSecurityLevel set to "challenged" or "superchallenged" since the real password can never be sent against the LDAP repository. Instead of failing silently, the extension will throw an Exception at login. If the method appears to be brutal it will save a lot of headaches. Value of loginSecurityLevel should be handled manually to "normal" or even better "rsa" in the Install Tool.
 throwExceptionAtLogin = 1
 
-# cat=basic; type=string; label=Use configuration: Uid of configuration record in table tx_igldapssoauth_config.
+# cat=basic; type=string; label=Use configuration: Uid of the configuration record in table tx_igldapssoauth_config.
 uidConfiguration = 1
 
-# cat=basic; type=boolean; label=Force lowercase username: If checked, user names will be always be stored lowercased. Usefull for case-sensitive databases.
+# cat=basic; type=boolean; label=Force lower-case user name: If checked, user names will be always be stored in lower-cases. Useful for case-sensitive databases.
 forceLowerCaseUsername = 0
 
-# cat=basic/enable; type=boolean; label=Groups from membership: If checked, obtain groups from user with membership attribute. Else, obtain groups object indirectly with DN of user.
+# cat=basic/enable; type=boolean; label=Extract groups from membership: If checked, obtain groups from user using the membership attribute. Otherwise, gather groups object indirectly using the user's DN.
 evaluateGroupsFromMembership = 0
 
 # cat=basic/enable; type=boolean; label=Backend LDAP authentication: Enable LDAP authentication for the backend.
 enableBELDAPAuthentication = 0
 
-# cat=basic/enable; type=boolean; label=If backend user exist locally : If checked, user not found in the table be_users may not log on.
+# cat=basic/enable; type=boolean; label=Backend user must exist: If checked, users that are not already present in TYPO3 may not log on.
 TYPO3BEUserExist = 0
 
-# cat=basic/enable; type=boolean; label=backend user failsafe: If checked, backend users found in the database can log on only if the username does not exist in the LDAP.
+# cat=basic/enable; type=boolean; label=Enable local Backend users: If checked, Backend users found in TYPO3 may only log on if their user name does not exist in LDAP.
 BEfailsafe = 0
 
-# cat=basic/enable; type=boolean; label=Not synchronize the BE groups: If checked, TYPO3 backend groups will not update.
+# cat=basic/enable; type=boolean; label=Disable Backend group synchronization: If checked, TYPO3 Backend user groups will not get updated.
 TYPO3BEGroupsNotSynchronize = 0
 
-# cat=basic/enable; type=string; label=Assign these BE groups : Comma-separated list of BE groups uid automatically assign to all BE users.
+# cat=basic/enable; type=string; label=Assign Backend groups: Comma-separated list of Backend user group uids to be automatically assigned to authenticated Backend users.
 assignBEGroups = 0
 
-# cat=basic/enable; type=boolean; label=Keep BE groups: Keep the groups assigned to user in TYPO3.
+# cat=basic/enable; type=boolean; label=Keep Backend groups: Keep the Backend user groups assigned locally.
 keepBEGroups = 0
 
-# cat=basic/enable; type=string; label=LDAP Groups to update admin: Comma-separated list of BE groups uid automatically assign to admin BE users flag.
+# cat=basic/enable; type=string; label=Mapping of TYPO3 Admininistrators with LDAP groups: Comma-separated list of Backend user group uids that trigger their members to be TYPO3 administrators.
 updateAdminAttribForGroups = 0
 
-# cat=basic/enable; type=string; label=Required ldap groups: Comma-separated list of BE groups uid require to accept login.
+# cat=basic/enable; type=string; label=Required LDAP groups: Comma-separated list of Backend user group uids required to accept login.
 requiredLDAPBEGroups = 0
 
 # cat=basic/enable; type=boolean; label=Frontend LDAP authentication: Enable LDAP authentication for the frontend.
 enableFELDAPAuthentication = 0
 
-# cat=basic/enable; type=boolean; label=Delete frontend user LDAP group: Delete frontend user if no LDAP groups found.
+# cat=basic/enable; type=boolean; label=Purge Frontend users: Delete Frontend user upon login if no LDAP groups are found.
 TYPO3FEDeleteUserIfNoLDAPGroups = 0
 
-# cat=basic/enable; type=boolean; label=Delete frontend user TYPO3 group: Don't import frontend user if no Typo3 groups found.
+# cat=basic/enable; type=boolean; label=Restrict new Frontend users: Do not synchronize Frontend user if the LDAP groups they are member of are not found locally.
 TYPO3FEDeleteUserIfNoTYPO3Groups = 0
 
-# cat=basic/enable; type=boolean; label=If Frontend group exist locally: If no groups found in the table fe_groups then the user may not log on.
+# cat=basic/enable; type=boolean; label=Frontend user group must exist: If no groups are found locally, the user may not log on.
 TYPO3FEGroupExist = 0
 
-# cat=basic/enable; type=string; label=Required ldap groups: Comma-separated list of FE groups uid require to accept login.
+# cat=basic/enable; type=string; label=Required LDAP groups: Comma-separated list of Frontend user group uids required to accept login.
 requiredLDAPFEGroups = 0
 
-# cat=basic/enable; type=boolean; label=Not synchronize the FE groups: If checked, frontend groups not import in TYPO3.
+# cat=basic/enable; type=boolean; label=Disable Frontend group synchronization: If checked, TYPO3 Frontend user groups will not get updated.
 TYPO3FEGroupsNotSynchronize = 0
 
-# cat=basic/enable; type=string; label=Assign these FE groups: Comma-separated list of FE groups uid automatically assign to all FE users.
+# cat=basic/enable; type=string; label=Assign Frontend groups: Comma-separated list of Frontend user group uids to be automatically assigned to authenticated Frontend users.
 assignFEGroups = 0
 
-# cat=basic/enable; type=boolean; label=Keep FE groups: Keep the groups assigned to user in TYPO3.
+# cat=basic/enable; type=boolean; label=Keep Frontend groups: Keep the Frontend user groups assigned locally.
 keepFEGroups = 0
 
-# cat=basic/enable; type=boolean; label=Frontend CAS authentication: If checked, enable the Single Sign On feature with CAS server.
+# cat=basic/enable; type=boolean; label=Frontend CAS authentication: If checked, enable the Single Sign On feature with a CAS server.
 enableFECASAuthentication = 0
 
-# cat=basic/enable; type=boolean; label=CAS User fetching: If checked, fetch only user informations when the current session is empty else alwayse fetch user informations.
+# cat=basic/enable; type=boolean; label=CAS User fetching: If checked, fetch only user information when the current session is empty else always fetch user information.
 enableFetchUserIfNoSession = 0
-# cat=basic/enable; type=boolean; label=Delete cookie domain: If checked,Clean all cookie domain on CAS logout.
+# cat=basic/enable; type=boolean; label=Delete cookie domain: If checked, clean all cookie domain on CAS logout.
 DeleteCookieLogout = 0

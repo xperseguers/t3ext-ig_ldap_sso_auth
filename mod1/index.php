@@ -193,10 +193,10 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 			tx_igldapssoauth_ldap::connect($ldapConfiguration);
 			$ldapConfiguration['password'] = $ldapConfiguration['password'] ? '********' : NULL;
 
-			$this->content[] = t3lib_div::view_array($ldapConfiguration);
+			$this->content[] = t3lib_utility_Debug::viewArray($ldapConfiguration);
 
 			$this->content[] = '<h3><strong>' . $this->lang->getLL('view_configuration_ldap_connexion_status') . '</strong></h3>';
-			$this->content[] = '<h4>' . t3lib_div::view_array(tx_igldapssoauth_ldap::get_status()) . '</h4>';
+			$this->content[] = '<h4>' . t3lib_utility_Debug::viewArray(tx_igldapssoauth_ldap::get_status()) . '</h4>';
 
 		} else {
 
@@ -209,7 +209,7 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 		$this->content[] = '<hr />';
 
 		if ($feConfiguration['LDAPAuthentication'] && $feConfiguration['CASAuthentication']) {
-			$this->content[] = t3lib_div::view_array(tx_igldapssoauth_config::getCasConfiguration());
+			$this->content[] = t3lib_utility_Debug::viewArray(tx_igldapssoauth_config::getCasConfiguration());
 		} else {
 			$this->content[] = '<strong>' . $this->lang->getLL('view_configuration_cas_disable') . '</strong>';
 		}
@@ -219,7 +219,7 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 		$this->content[] = '<hr />';
 
 		if ($beConfiguration['LDAPAuthentication']) {
-			$this->content[] = t3lib_div::view_array($beConfiguration);
+			$this->content[] = t3lib_utility_Debug::viewArray($beConfiguration);
 		} else {
 			$this->content[] = '<strong>' . $this->lang->getLL('view_configuration_backend_authentication_disable') . '</strong>';
 		}
@@ -229,7 +229,7 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 		$this->content[] = '<hr />';
 
 		if ($feConfiguration['LDAPAuthentication']) {
-			$this->content[] = t3lib_div::view_array($feConfiguration);
+			$this->content[] = t3lib_utility_Debug::viewArray($feConfiguration);
 		} else {
 			$this->content[] = '<strong>' . $this->lang->getLL('view_configuration_frontend_authentication_disable') . '</strong>';
 		}
@@ -321,17 +321,17 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 			$search['basedn'] = explode('||', $search['basedn']);
 			if ($result = tx_igldapssoauth_ldap::search($search['basedn'], $search['filter'], $attributes, $search['first_entry'], 100)) {
 
-				$this->content[] = $search['see_status'] ? '<h2>' . $this->lang->getLL('wizard_search_ldap_status') . '</h2><hr />' . t3lib_div::view_array(tx_igldapssoauth_ldap::get_status()) : null;
+				$this->content[] = $search['see_status'] ? '<h2>' . $this->lang->getLL('wizard_search_ldap_status') . '</h2><hr />' . t3lib_utility_Debug::viewArray(tx_igldapssoauth_ldap::get_status()) : null;
 				$this->content[] = '<h2>' . $this->lang->getLL('wizard_search_result') . '</h2>';
 				$this->content[] = '<hr />';
-				$this->content[] = t3lib_div::view_array($result);
+				$this->content[] = t3lib_utility_Debug::viewArray($result);
 
 			} else {
 
-				$this->content[] = $search['see_status'] ? '<h2>' . $this->lang->getLL('wizard_search_ldap_status') . '</h2><hr />' . t3lib_div::view_array(tx_igldapssoauth_ldap::get_status()) : null;
+				$this->content[] = $search['see_status'] ? '<h2>' . $this->lang->getLL('wizard_search_ldap_status') . '</h2><hr />' . t3lib_utility_Debug::viewArray(tx_igldapssoauth_ldap::get_status()) : null;
 				$this->content[] = '<h2>' . $this->lang->getLL('wizard_search_no_result') . '</h2>';
 				$this->content[] = '<hr />';
-				$this->content[] = t3lib_div::view_array(array());
+				$this->content[] = t3lib_utility_Debug::viewArray(array());
 
 			}
 
@@ -339,7 +339,7 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 
 		} else {
 
-			$this->content[] = '<h2>' . $this->lang->getLL('wizard_search_ldap_status') . '</h2><hr />' . t3lib_div::view_array(tx_igldapssoauth_ldap::get_status());
+			$this->content[] = '<h2>' . $this->lang->getLL('wizard_search_ldap_status') . '</h2><hr />' . t3lib_utility_Debug::viewArray(tx_igldapssoauth_ldap::get_status());
 
 		}
 
@@ -427,7 +427,7 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 
 					$this->content[] = '<h3>' . $this->lang->getLL('import_groups_' . $typo3_mode . '_no_groups_found') . '</h3>';
 					//$this->content[] = '<hr />';
-					//$this->content[] = t3lib_div::view_array(array());
+					//$this->content[] = t3lib_utility_Debug::viewArray(array());
 
 				}
 

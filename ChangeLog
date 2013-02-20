@@ -1,3 +1,7 @@
+2013-02-20  Xavier Perseguers  <xavier@typo3.org>
+
+	* [TASK][CLEANUP] Rewrite ChangeLog with Core's CGL
+
 2012-01-20  Xavier Perseguers  <xavier@typo3.org>
 
 	* [TASK] Rework most extension configuration labels
@@ -13,16 +17,16 @@
 
 2011-12-19  Xavier Perseguers  <xavier@typo3.org>
 
-	* [TASK][!!!] Fix non-static method calls with tx_igldapssoauth_config
+	* [!!!][TASK] Fix non-static method calls with tx_igldapssoauth_config
 	* [TASK] Fix XCLASS definition
 	* [BUGFIX] Remove deprecated call ereg()
-	* [TASK][!!!] Remove useless DB layer tx_igldapssoauth_utility_Db
-	* [TASK][!!!] Code cleanup
+	* [!!!][TASK] Remove useless DB layer tx_igldapssoauth_utility_Db
+	* [!!!][TASK] Code cleanup
 
 2011-12-12  Xavier Perseguers  <xavier@typo3.org>
 
 	* [BUGFIX] #32484: Retrieval of groups fails if user is not authorized to list them
-	* [TASK][!!!] Code cleanup using PhpStorm
+	* [!!!][TASK] Code cleanup using PhpStorm
 
 2011-10-07  Michael Miousse  <mmiousse@infoglobe.ca>
 
@@ -45,97 +49,105 @@
 	* [TASK] #26332: Code clean up
 	
 2011-04-27  Michael Miousse  <mmiousse@infoglobe.ca>
-	*Refactoring of classes names and files names to respect TYPO3 format, add a checkup of $GLOBALS['TYPO3_CONF_VARS']['BE']['loginSecurityLevel'] to catch the 
-	*case were it is empty (empty mean supechallenged by default), removing of debugs comments
+
+	* [TASK] Refactoring of classes names and files names to respect TYPO3 format
+	* [TASK] Add a checkup of $GLOBALS['TYPO3_CONF_VARS']['BE']['loginSecurityLevel'] to prevent empty value (=> superchallenged)
+	* [TASK][CLEANUP] Remove debugging comments
 	
-2011-04-27  Fabien Udriot <fabien.udriot@ecodev.ch>
-	*Bug #25891: Don't set the loginSecurityLevel, references 
-	*Feature #3542: Standard TYPO3 authentication as fail-over, references 
-	*Task #25915: Merge iglib into ig_ldap_sso_auth, references 
-	*Task #26332: Code clean up, references 
-	*Bug #25917: Fail when ig_ldap_sso_auth is chained with openid, resolves 
+2011-04-27  Fabien Udriot  <fabien.udriot@ecodev.ch>
+
+	* [BUGFIX] #25891: Don't set the loginSecurityLevel, references 
+	* [FEATURE] #3542: Standard TYPO3 authentication as fail-over, references 
+	* [TASK] #25915: Merge iglib into ig_ldap_sso_auth, references 
+	* [TASK] #26332: Code clean up, references 
+	* [BUGFIX] #25917: Fail when ig_ldap_sso_auth is chained with openid, resolves 
 	
 2011-04-20  Michael Miousse  <mmiousse@infoglobe.ca>
-	*Bug #26149: Synchronisation script do not support multi-ldap
+
+	* [BUGFIX] #26149: Synchronisation script do not support multi-ldap
 
 2011-02-16  Michael Miousse  <mmiousse@infoglobe.ca>
-	*Feature #13103: Allow multiple configuration records
+
+	* [FEATURE] #13103: Allow multiple configuration records
 
 2010-11-17  Michael Miousse  <mmiousse@infoglobe.ca>
-	*Bug #10805: Backend Ldap authentification
-	*Feature #10399: Users synchronisation
-	*Feature #5251: Allow multiple LDAP servers to be defined
-	*Feature #3542: Standard TYPO3 authentication as fail-over
+
+	* [BUGFIX] #10805: Backend Ldap authentification
+	* [FEATURE] #10399: Users synchronisation
+	* [FEATURE] #5251: Allow multiple LDAP servers to be defined
+	* [FEATURE] #3542: Standard TYPO3 authentication as fail-over
 
 2010-10-14  Patrice Caron
-	*Feature #6565: Clean all cookie domain on logout
+
+	* [FEATURE] #6565: Clean all cookie domain on logout
 
 2010-10-13  Michael Miousse  <mmiousse@infoglobe.ca>
-	*Feature #10244: add hook for maping field
-	*Bug #10243: priority error with TYPO3 4.4.x
-	*Bug #10259: Default value from TCA
+
+	* [FEATURE] #10244: add hook for maping field
+	* [BUGFIX] #10243: priority error with TYPO3 4.4.x
+	* [BUGFIX] #10259: Default value from TCA
 
 2010-03-19  Xavier Perseguers  <typo3@perseguers.ch>
 
-	* Fixed bug #6918: Mapping field is too small
+	* [BUGFIX] #6918: Mapping field is too small
 
 2010-03-06  Xavier Perseguers  <typo3@perseguers.ch>
 
-	* Removed naming annoyances in EM for modified tables
+	* [TASK] Remove naming annoyances in EM for modified tables
 
 2010-03-01  Xavier Perseguers  <typo3@perseguers.ch>
 
-	* Added feature #5120: Add hook to postprocess creation of be/fe users and groups
-	* Applied CGL
-	* Added missing SVN properties
+	* [FEATURE] #5120: Add hook to postprocess creation of be/fe users and groups
+	* [TASK][CLEANUP] Apply CGL
+	* [TASK] Add missing SVN properties
 
 2010-01-13  Xavier Perseguers  <typo3@perseguers.ch>
 
-	* Fixed bug #6015: Bad CAS config variable name (thanks to Patrice Caron)
+	* [BUGFIX] #6015: Bad CAS config variable name (thanks to Patrice Caron)
 
 2009-08-27  Xavier Perseguers <typo3@perseguers.ch>
 
-	* Feature #4354: Add option to force username as lowercase
+	* [FEATURE] #4354: Add option to force username as lowercase
 
 2009-06-30  Michael Miousse  <mmiousse@infoglobe.ca>
 
-	* Bug : modification of the autologout URL for realurl
+	* [BUGFIX] Modification of the autologout URL for realurl
 
 2009-06-29  Patrice Caron 
 
-	* Feature #3775: Lock users to a certain list of ldap group
-	* Feature #3774: Set imported user to Admin (Backend)
+	* [FEATURE] #3775: Lock users to a certain list of ldap group
+	* [FEATURE] #3774: Set imported user to Admin (Backend)
 
 2009-06-29  Patrice Caron & Michael Miousse  <mmiousse@infoglobe.ca>
 
-	* Feature #3773: Autologin or logout option for the cas plugin 
-	* Replace the ext_typoscript_setup.txt and ext_typoscript_constant.txt by a static folder
+	* [FEATURE] #3773: Autologin or logout option for the cas plugin 
+	* [TASK] Replace the ext_typoscript_setup.txt and ext_typoscript_constant.txt by a static folder
 
 2009-06-25  Patrice Caron
 
-	* Feature #3764: Configuration for the service Url for cas
+	* [FEATURE] #3764: Configuration for the service Url for cas
 
 2009-06-25  Michael Miousse <mmiousse@infoglobe.ca>
 
-	* Feature #3763: Add a new configuration denying import of users which do not have TYPO3 group
+	* [FEATURE] #3763: Add a new configuration denying import of users which do not have TYPO3 group
 	
 2009-06-05  Michael Miousse <mmiousse@infoglobe.ca>
 	
-	* Feature #3539: Enabeling CAS authentification as a stand alone feature
+	* [FEATURE] #3539: Enabeling CAS authentification as a stand alone feature
 
 2009-06-02  Xavier Perseguers <typo3@perseguers.ch>
 
-	* Took TCA default configuration into account when creating users
-	* Set a default random password for new users
+	* [TASK] Take TCA default configuration into account when creating users
+	* [TASK] Set a default random password for new users
 
 2009-06-01  Michael Miousse <mmiousse@infoglobe.ca>
 
-	* Added feature: possiblility to add uri at the end of an url for the cas server. We can now create url like localhost:8080/cas
+	* [FEATURE] Possiblility to add uri at the end of an url for the cas server. We can now create url like localhost:8080/cas
 
 2009-02-23  Michael Miousse <mmiousse@infoglobe.ca>
 
-	* Fixed bug #2532: Missing dependency of iglib extension
+	* [BUGFIX] #2532: Missing dependency of iglib extension
 
 2009-01-29  Michael Miousse <mmiousse@infoglobe.ca>
 
-	* Initial Commit
+	* [TASK] Initial Commit

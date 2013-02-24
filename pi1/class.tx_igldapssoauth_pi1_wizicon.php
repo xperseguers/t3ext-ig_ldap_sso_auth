@@ -63,7 +63,14 @@ class tx_igldapssoauth_pi1_wizicon {
 	function includeLocalLang() {
 
 		$llFile = t3lib_extMgm::extPath('ig_ldap_sso_auth') . 'res/locallang_pi1.xml';
-		$LOCAL_LANG = t3lib_div::readLLXMLfile($llFile, $GLOBALS['LANG']->lang);
+		$version = class_exists('t3lib_utility_VersionNumber') ? t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) : t3lib_div::int_from_ver(TYPO3_version);
+		if ($version >= 6000000) {
+			/** @var $localLangParser \TYPO3\CMS\Core\Localization\Parser\LocallangXmlParser */
+			$localLangParser = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Core\Localization\Parser\LocallangXmlParser');
+			$LOCAL_LANG = $localLangParser->getParsedData($llFile, $GLOBALS['LANG']->lang);
+		} else {
+			$LOCAL_LANG = t3lib_div::readLLXMLfile($llFile, $GLOBALS['LANG']->lang);
+		}
 
 		return $LOCAL_LANG;
 	}

@@ -38,7 +38,7 @@ if (!defined('TYPO3_MODE'))
  * @package	TYPO3
  * @subpackage	ig_ldap_sso_auth
  */
-class tx_igldapssoauth_emconfhelper extends \TYPO3\CMS\Core\TypoScript\ConfigurationForm {
+class tx_igldapssoauth_emconfhelper {
 
     /**
      * @var	integer

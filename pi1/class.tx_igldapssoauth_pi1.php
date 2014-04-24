@@ -30,8 +30,6 @@ require_once(PATH_tslib . 'class.tslib_pibase.php');
  * @author	Michael Gagnon <mgagnon@infoglobe.ca>
  * @package	TYPO3
  * @subpackage	tx_igldapssoauth
- *
- * $Id$
  */
 class tx_igldapssoauth_pi1 extends tslib_pibase {
 

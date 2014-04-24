@@ -29,8 +29,6 @@
  * @author	Michael Gagnon <mgagnon@infoglobe.ca>
  * @package	TYPO3
  * @subpackage	ig_ldap_sso_auth
- *
- * $Id$
  */
 class tx_igldapssoauth_config {
 

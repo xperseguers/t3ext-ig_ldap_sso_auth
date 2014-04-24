@@ -1,21 +1,21 @@
 <?php
 
-########################################################################
-# Extension Manager/Repository config file for ext "ig_ldap_sso_auth".
-#
-# Auto generated 12-06-2012 21:00
-#
-# Manual updates:
-# Only the data in the array - everything else is removed by next
-# writing. "version" and "dependencies" must not be touched!
-########################################################################
+/***************************************************************
+ * Extension Manager/Repository config file for ext "ig_ldap_sso_auth".
+ *
+ * Auto generated 24-04-2014 13:35
+ *
+ * Manual updates:
+ * Only the data in the array - everything else is removed by next
+ * writing. "version" and "dependencies" must not be touched!
+ ***************************************************************/
 
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'LDAP / SSO Authentication',
 	'description' => 'Enable LDAP/SSO authentication service.',
 	'category' => 'services',
 	'shy' => 0,
-	'version' => '1.1.2',
+	'version' => '1.1.3',
 	'dependencies' => '',
 	'conflicts' => '',
 	'priority' => '',

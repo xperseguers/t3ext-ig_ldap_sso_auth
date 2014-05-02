@@ -9,42 +9,43 @@
 		<languageKey index="default" type="array">
 
 			<label index="tx_igldapssoauth_config">Configuration LDAP / SSO</label>
-			<label index="tx_igldapssoauth_config.name">Name :</label>
+			<label index="tx_igldapssoauth_config.name">Name:</label>
 
-			<label index="tx_igldapssoauth_config.cas_host">Host :</label>
-			<label index="tx_igldapssoauth_config.cas_uri">Uri :</label>
-			<label index="tx_igldapssoauth_config.cas_port">Port :</label>
-			<label index="tx_igldapssoauth_config.cas_logout_url">Back URL :</label>
-			<label index="tx_igldapssoauth_config.cas_service_url">Service URL :</label>
+			<label index="tx_igldapssoauth_config.cas_host">Host:</label>
+			<label index="tx_igldapssoauth_config.cas_uri">Uri:</label>
+			<label index="tx_igldapssoauth_config.cas_port">Port:</label>
+			<label index="tx_igldapssoauth_config.cas_logout_url">Back URL:</label>
+			<label index="tx_igldapssoauth_config.cas_service_url">Service URL:</label>
 
-			<label index="tx_igldapssoauth_config.ldap_server">Server :</label>
+			<label index="tx_igldapssoauth_config.ldap_server">Server Type:</label>
 			<label index="tx_igldapssoauth_config.ldap_server.I.0">OpenLDAP</label>
 			<label index="tx_igldapssoauth_config.ldap_server.I.1">Novell eDirectory</label>
-			<label index="tx_igldapssoauth_config.ldap_protocol">Protocol :</label>
+			<label index="tx_igldapssoauth_config.ldap_protocol">Protocol:</label>
 			<label index="tx_igldapssoauth_config.ldap_protocol.I.0">3</label>
 			<label index="tx_igldapssoauth_config.ldap_protocol.I.1">2</label>
-			<label index="tx_igldapssoauth_config.ldap_charset">Charset :</label>
-			<label index="tx_igldapssoauth_config.ldap_host">Host :</label>
-			<label index="tx_igldapssoauth_config.ldap_port">Port :</label>
-			<label index="tx_igldapssoauth_config.ldap_binddn">Bind DN :</label>
-			<label index="tx_igldapssoauth_config.ldap_password">Password :</label>
+			<label index="tx_igldapssoauth_config.ldap_charset">Charset:</label>
+			<label index="tx_igldapssoauth_config.ldap_host">Host:</label>
+			<label index="tx_igldapssoauth_config.ldap_port">Port:</label>
+			<label index="tx_igldapssoauth_config.ldap_tls">Use TLS:</label>
+			<label index="tx_igldapssoauth_config.ldap_binddn">Bind DN:</label>
+			<label index="tx_igldapssoauth_config.ldap_password">Password:</label>
 
-			<label index="tx_igldapssoauth_config.be_users_basedn">Base DN :</label>
-			<label index="tx_igldapssoauth_config.be_users_filter">Filter :</label>
-			<label index="tx_igldapssoauth_config.be_users_mapping">Mapping :</label>
+			<label index="tx_igldapssoauth_config.be_users_basedn">Base DN:</label>
+			<label index="tx_igldapssoauth_config.be_users_filter">Filter:</label>
+			<label index="tx_igldapssoauth_config.be_users_mapping">Mapping:</label>
 
-			<label index="tx_igldapssoauth_config.be_groups_basedn">Base DN :</label>
-			<label index="tx_igldapssoauth_config.be_groups_filter">Filter :</label>
-			<label index="tx_igldapssoauth_config.be_groups_mapping">Mapping :</label>
+			<label index="tx_igldapssoauth_config.be_groups_basedn">Base DN:</label>
+			<label index="tx_igldapssoauth_config.be_groups_filter">Filter:</label>
+			<label index="tx_igldapssoauth_config.be_groups_mapping">Mapping:</label>
 			<label index="tx_igldapssoauth_config.be_groups.tx_igldapssoauth_dn">Groups DN (Distinguished Name)</label>
 
-			<label index="tx_igldapssoauth_config.fe_users_basedn">Base DN :</label>
-			<label index="tx_igldapssoauth_config.fe_users_filter">Filter :</label>
-			<label index="tx_igldapssoauth_config.fe_users_mapping">Mapping :</label>
+			<label index="tx_igldapssoauth_config.fe_users_basedn">Base DN:</label>
+			<label index="tx_igldapssoauth_config.fe_users_filter">Filter:</label>
+			<label index="tx_igldapssoauth_config.fe_users_mapping">Mapping:</label>
 
-			<label index="tx_igldapssoauth_config.fe_groups_basedn">Base DN :</label>
-			<label index="tx_igldapssoauth_config.fe_groups_filter">Filter :</label>
-			<label index="tx_igldapssoauth_config.fe_groups_mapping">Mapping :</label>
+			<label index="tx_igldapssoauth_config.fe_groups_basedn">Base DN:</label>
+			<label index="tx_igldapssoauth_config.fe_groups_filter">Filter:</label>
+			<label index="tx_igldapssoauth_config.fe_groups_mapping">Mapping:</label>
 			<label index="tx_igldapssoauth_config.fe_groups.tx_igldapssoauth_dn">Groups DN (Distinguished Name)</label>
 
 			<label index="tt_content.list_type_pi1">Central Authentication Service</label>
@@ -54,45 +55,46 @@
 		<languageKey index="fr" type="array">
 
 			<label index="tx_igldapssoauth_config">Configuration LDAP / SSO</label>
-			<label index="tx_igldapssoauth_config.name">Name :</label>
+			<label index="tx_igldapssoauth_config.name">Nom :</label>
 
-			<label index="tx_igldapssoauth_config.cas_host">Host :</label>
+			<label index="tx_igldapssoauth_config.cas_host">Serveur :</label>
 			<label index="tx_igldapssoauth_config.cas_port">Port :</label>
 			<label index="tx_igldapssoauth_config.cas_uri">Uri :</label>
 			<label index="tx_igldapssoauth_config.cas_logout_url">Back URL :</label>
 			<label index="tx_igldapssoauth_config.cas_service_url">Service URL :</label>
 
-			<label index="tx_igldapssoauth_config.ldap_server">Server :</label>
+			<label index="tx_igldapssoauth_config.ldap_server">Type de serveur :</label>
 			<label index="tx_igldapssoauth_config.ldap_server.I.0">OpenLDAP</label>
 			<label index="tx_igldapssoauth_config.ldap_server.I.1">Novell eDirectory</label>
-			<label index="tx_igldapssoauth_config.ldap_protocol">Protocol :</label>
+			<label index="tx_igldapssoauth_config.ldap_protocol">Protocole :</label>
 			<label index="tx_igldapssoauth_config.ldap_protocol.I.0">3</label>
 			<label index="tx_igldapssoauth_config.ldap_protocol.I.1">2</label>
-			<label index="tx_igldapssoauth_config.ldap_charset">Charset :</label>
-			<label index="tx_igldapssoauth_config.ldap_host">Host :</label>
+			<label index="tx_igldapssoauth_config.ldap_charset">Jeu de caractères :</label>
+			<label index="tx_igldapssoauth_config.ldap_host">Serveur :</label>
 			<label index="tx_igldapssoauth_config.ldap_port">Port :</label>
+			<label index="tx_igldapssoauth_config.ldap_tls">Utiliser TLS:</label>
 			<label index="tx_igldapssoauth_config.ldap_binddn">Bind DN :</label>
-			<label index="tx_igldapssoauth_config.ldap_password">Password :</label>
+			<label index="tx_igldapssoauth_config.ldap_password">Mot de passe :</label>
 
 			<label index="tx_igldapssoauth_config.be_users_basedn">Base DN :</label>
-			<label index="tx_igldapssoauth_config.be_users_filter">Filter :</label>
+			<label index="tx_igldapssoauth_config.be_users_filter">Filtre :</label>
 			<label index="tx_igldapssoauth_config.be_users_mapping">Mapping :</label>
 
 			<label index="tx_igldapssoauth_config.be_groups_basedn">Base DN :</label>
-			<label index="tx_igldapssoauth_config.be_groups_filter">Filter :</label>
+			<label index="tx_igldapssoauth_config.be_groups_filter">Filtre :</label>
 			<label index="tx_igldapssoauth_config.be_groups_mapping">Mapping :</label>
 			<label index="tx_igldapssoauth_config.be_groups.tx_igldapssoauth_dn">Groups DN (Distinguished Name)</label>
 
 			<label index="tx_igldapssoauth_config.fe_users_basedn">Base DN :</label>
-			<label index="tx_igldapssoauth_config.fe_users_filter">Filter :</label>
+			<label index="tx_igldapssoauth_config.fe_users_filter">Filtre :</label>
 			<label index="tx_igldapssoauth_config.fe_users_mapping">Mapping :</label>
 
 			<label index="tx_igldapssoauth_config.fe_groups_basedn">Base DN :</label>
-			<label index="tx_igldapssoauth_config.fe_groups_filter">Filter :</label>
+			<label index="tx_igldapssoauth_config.fe_groups_filter">Filtre :</label>
 			<label index="tx_igldapssoauth_config.fe_groups_mapping">Mapping :</label>
 			<label index="tx_igldapssoauth_config.fe_groups.tx_igldapssoauth_dn">Groups DN (Distinguished Name)</label>
 
-			<label index="tt_content.list_type_pi1">Central Authentication Service</label>
+			<label index="tt_content.list_type_pi1">Service d'authentification central</label>
 
 		</languageKey>
 

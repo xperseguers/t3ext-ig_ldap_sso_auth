@@ -66,7 +66,7 @@ class tx_igldapssoauth_utility_Ldap {
 	 * @param	void
 	 * @return	bool TRUE if connection succeeded.
 	 */
-	public static function connect($host = null, $port = null, $protocol = null, $charset = null, $type = 0) {
+	public static function connect($host = null, $port = null, $protocol = null, $charset = null, $type = 0, $tls = FALSE) {
 
 		// Valid if php load ldap module.
 		if (!extension_loaded('ldap')) {
@@ -102,10 +102,8 @@ class tx_igldapssoauth_utility_Ldap {
 			@ldap_set_option(self::$cid, LDAP_OPT_REFERRALS, 0);
 		}
 
-		if (substr(strtolower($host), 0, 8) == 'ldaps://') {
-
+		if ($tls) {
 			if (!@ldap_start_tls(self::$cid)) {
-
 				self::$status['option']['tls'] = 'Disable';
 				self::$status['option']['status'] = ldap_error(self::$cid);
 				return FALSE;
@@ -113,7 +111,6 @@ class tx_igldapssoauth_utility_Ldap {
 
 			self::$status['option']['tls'] = 'Enable';
 			self::$status['option']['status'] = ldap_error(self::$cid);
-
 		}
 
 		return TRUE;

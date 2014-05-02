@@ -34,7 +34,7 @@ class tx_igldapssoauth_ldap {
 
 	public static function connect(array $config = array()) {
 		// Connect to ldap server.
-		if (!tx_igldapssoauth_utility_Ldap::connect($config['host'], $config['port'], $config['protocol'], $config['charset'], $config['server'])) {
+		if (!tx_igldapssoauth_utility_Ldap::connect($config['host'], $config['port'], $config['protocol'], $config['charset'], $config['server'], $config['tls'])) {
 			return FALSE;
 		}
 

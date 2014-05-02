@@ -34,3 +34,20 @@ Screenshots
 .. figure:: ../Images/manual_html_75fdf107.png
 
 .. figure:: ../Images/manual_html_ad0ec73.png
+
+
+.. _sponsorship:
+
+Sponsorship
+-----------
+
+This extension has been developped by Infoglobe, a Canadian company specialized in open-source software.
+
+Support for TYPO3 6.2 LTS has been sponsored by the "Centre électronique de gestion (CEG)", technically the
+IT department of the Swiss city Neuchâtel and realized by Causal Sàrl.
+
+Further information:
+
+- Infoglobe: http://www.infoglobe.ca/
+- Centre électronique de gestion (CEG): `http://www.neuchatelville.ch/ <http://www.neuchatelville.ch/profils/admin.asp/3-3-7174-5001-4803-0-5028-2-0/1-11-160-14801-5001-1001-1-1-2-1/2-1-4803-5001-5028-2-0-100/>`_
+- Causal Sàrl: https://www.causal.ch/

@@ -116,7 +116,7 @@ frontend authentication.
 
   Example::
 
-      (&(uid={USERNAME})(objectClass=user)
+      (&(uid={USERNAME})(objectClass=posixAccount)
 
   .. note:: The string ``{USERNAME}`` will be substituted by the username entered in the login form.
 
@@ -181,7 +181,7 @@ authentication and do not want to use groups from LDAP.
 
   Example::
 
-      &(objectClass=posixGroup)
+      (objectClass=posixGroup)
 
   .. note:: The string ``{USERDN}`` will be substituted by the Distinguished Name (DN) of the authenticated user.
 

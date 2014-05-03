@@ -199,7 +199,7 @@ class tx_igldapssoauth_module1 extends t3lib_SCbase {
 		return $buttons;
 	}
 
-	function view_configuration() {
+	protected function view_configuration() {
 		$feConfiguration = tx_igldapssoauth_config::getFeConfiguration();
 		$beConfiguration = tx_igldapssoauth_config::getBeConfiguration();
 
@@ -310,17 +310,39 @@ class tx_igldapssoauth_module1 extends t3lib_SCbase {
 
 			$this->content .= '<fieldset>';
 
-			$this->content .= '<br /><div>';
-			$this->content .= '<span><input type="radio" name="search[table]" value="be_users" ' . $be_users . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />&nbsp;<strong>' . $GLOBALS['LANG']->getLL('wizard_search_radio_be_users') . '</strong></span>';
-			$this->content .= '<span><input type="radio" name="search[table]" value="fe_users" ' . $fe_users . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />&nbsp;<strong>' . $GLOBALS['LANG']->getLL('wizard_search_radio_fe_users') . '</strong></span>';
-			$this->content .= '<span><input type="radio" name="search[table]" value="be_groups" ' . $be_groups . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />&nbsp;<strong>' . $GLOBALS['LANG']->getLL('wizard_search_radio_be_groups') . '</strong></span>';
-			$this->content .= '<span><input type="radio" name="search[table]" value="fe_groups" ' . $fe_groups . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />&nbsp;<strong>' . $GLOBALS['LANG']->getLL('wizard_search_radio_fe_groups') . '</strong></span>';
-			$this->content .= '</div><br />';
+			$this->content .= '
+				<div>
+					<input type="radio" name="search[table]" id="table-beusers" value="be_users" ' . $be_users . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />
+					<label for="table-beusers"><strong>' . $GLOBALS['LANG']->getLL('wizard_search_radio_be_users') . '</strong></label>
+				</div>';
+			$this->content .= '
+				<div>
+					<input type="radio" name="search[table]" id="table-begroups" value="be_groups" ' . $be_groups . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />
+					<label for="table-beusers"><strong>' . $GLOBALS['LANG']->getLL('wizard_search_radio_be_groups') . '</strong></label>
+				</div>';
+			$this->content .= '
+				<div>
+					<input type="radio" name="search[table]" id="table-feusers" value="fe_users" ' . $fe_users . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />
+					<label for="table-feusers"><strong>' . $GLOBALS['LANG']->getLL('wizard_search_radio_fe_users') . '</strong></label>
+				</div>';
+			$this->content .= '
+				<div>
+					<input type="radio" name="search[table]" id="table-fegroups" value="fe_groups" ' . $fe_groups . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />
+					<label for="table-fegroups"><strong>' . $GLOBALS['LANG']->getLL('wizard_search_radio_fe_groups') . '</strong></label>
+				</div>';
+			$this->content .= '<br />';
 
-			$this->content .= '<div>';
-			$this->content .= '<span><input type="checkbox" name="search[first_entry]" value="true" ' . $first_entry . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />&nbsp;<strong>' . $GLOBALS['LANG']->getLL('wizard_search_checkbox_first_entry') . '</strong></span>';
-			$this->content .= '<span><input type="checkbox" name="search[see_status]" value="true" ' . $see_status . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />&nbsp;<strong>' . $GLOBALS['LANG']->getLL('wizard_search_checkbox_see_status') . '</strong></span>';
-			$this->content .= '</div><br />';
+			$this->content .= '
+				<div>
+					<input type="checkbox" name="search[first_entry]" id="first-entry" value="true" ' . $first_entry . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />
+					<label for="first-entry"><strong>' . $GLOBALS['LANG']->getLL('wizard_search_checkbox_first_entry') . '</strong></label>
+				</div>';
+			$this->content .= '
+				<div>
+					<input type="checkbox" name="search[see_status]" id="see-status" value="true" ' . $see_status . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />
+					<label for="see-status"><strong>' . $GLOBALS['LANG']->getLL('wizard_search_checkbox_see_status') . '</strong></label>
+				</div>';
+			$this->content .= '<br />';
 
 			$this->content .= '<div><strong>' . $GLOBALS['LANG']->getLL('wizard_search_input_base_dn') . '</strong>&nbsp;<input type="text" name="search[basedn]" value="' . $search['basedn'] . '" size="50" /></div><br />';
 			$this->content .= '<div><strong>' . $GLOBALS['LANG']->getLL('wizard_search_input_filter') . '</strong>&nbsp;<input type="text" name="search[filter]" value="' . $search['filter'] . '" size="50" /></div><br />';

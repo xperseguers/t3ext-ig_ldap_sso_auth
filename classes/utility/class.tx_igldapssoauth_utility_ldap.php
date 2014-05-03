@@ -284,6 +284,10 @@ class tx_igldapssoauth_utility_Ldap {
 	}
 
 	public static function convert_charset_array($arr, $char1, $char2) {
+		if (!is_array($arr)) {
+			return $arr;
+		}
+
 		/** @var $csObj t3lib_cs */
 
 		if ((isset($GLOBALS['TSFE'])) && (isset($GLOBALS['TSFE']->csConvObj))) {
@@ -296,7 +300,7 @@ class tx_igldapssoauth_utility_Ldap {
 			$csObj = t3lib_div::makeInstance('t3lib_cs');
 		}
 
-		while (list($k, $val) = each($arr)) {
+		foreach ($arr as $k => $val) {
 			if (is_array($val)) {
 				$arr[$k] = tx_igldapssoauth_utility_Ldap::convert_charset_array($val, $char1, $char2);
 			} else {

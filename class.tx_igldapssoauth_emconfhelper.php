@@ -1,6 +1,6 @@
 <?php
 
-/* * *************************************************************
+/***************************************************************
  *  Copyright notice
  *
  *  (c) Steffen Ritter (info@rs-websystems.de)
@@ -24,7 +24,8 @@
  *  GNU General Public License for more details.
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
- * ************************************************************* */
+ ***************************************************************/
+
 // Make sure that we are executed only in TYPO3 context
 if (!defined('TYPO3_MODE')) {
 	die('Access denied.');
@@ -63,11 +64,10 @@ class tx_igldapssoauth_emconfhelper {
 	 * Set the error level if no higher level
 	 * is set already
 	 *
-	 * @param	string		$level: one out of error, ok, warning, info
-	 * @return	void
+	 * @param string $level one out of "error", "ok", "warning", "info"
+	 * @return void
 	 */
 	private function setErrorLevel($level) {
-
 		switch ($level) {
 			case 'error':
 				$this->errorType = t3lib_FlashMessage::ERROR;
@@ -102,7 +102,7 @@ class tx_igldapssoauth_emconfhelper {
 	/**
 	 * Renders the flash messages if problems have been found.
 	 *
-	 * @return	string		The flash message as HTML.
+	 * @return string The flash message as HTML.
 	 */
 	private function renderFlashMessage() {
 		$message = '';
@@ -139,26 +139,55 @@ EOT;
 	/**
 	 * Checks the backend configuration and shows a message if necessary.
 	 *
-	 * @param array $params: Field information to be rendered
+	 * @param array $params Field information to be rendered
 	 * @param \TYPO3\CMS\Extensionmanager\ViewHelpers\Form\TypoScriptConstantsViewHelper $pObj: The calling parent object.
 	 * @return string Messages as HTML if something needs to be reported
 	 */
 	public function checkConfiguration(array $params, $pObj) {
 		$this->init();
+		$problems = array();
 
 		// Configuration of authentication service.
-		$loginSecurityLevel = $GLOBALS['TYPO3_CONF_VARS']['BE']['loginSecurityLevel'];
+		$loginSecurityLevelBE = $GLOBALS['TYPO3_CONF_VARS']['BE']['loginSecurityLevel'];
+		$loginSecurityLevelFE = $GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'];
 
-		if ($loginSecurityLevel == 'challenged' || $loginSecurityLevel == 'superchallenged' || $loginSecurityLevel == '' ) {
-			$this->setErrorLevel('error');
+		$errorlevel = 'error';
+		if ($loginSecurityLevelBE === 'rsa' || $loginSecurityLevelBE === 'normal' ||
+			$loginSecurityLevelFE === 'rsa' || $loginSecurityLevelFE === 'normal') {
+
+			$errorlevel = 'warning';
+		}
+
+		if ($loginSecurityLevelBE === 'challenged' || $loginSecurityLevelBE === 'superchallenged' || $loginSecurityLevelBE === '') {
+			$this->setErrorLevel($errorlevel);
+
 			$problems[] = <<<EOT
-LDAPauthentification is not compatible with loginSecurityLevel set to "challenged" or "superchallenged" since the real password can never be sent against the LDAP repository.
-Value of loginSecurityLevel should be handled manually to "normal" or even better "rsa" in the Install Tool. <br/><br/>
+LDAP authentification for backend is not compatible with loginSecurityLevel set to "challenged" or "superchallenged" since the real password can never be sent against the LDAP repository.
 
-	\$TYPO3_CONF_VARS['BE']['loginSecurityLevel'] = 'normal';<br/>
-	\$TYPO3_CONF_VARS['BE']['loginSecurityLevel'] = 'rsa';<br/>
+Value of loginSecurityLevel should be changed manually to "normal" or even better "rsa" in the Install Tool.<br/><br/>
+
+	\$GLOBALS['TYPO3_CONF_VARS']['BE']['loginSecurityLevel'] = 'normal';<br/>
+	\$GLOBALS['TYPO3_CONF_VARS']['BE']['loginSecurityLevel'] = 'rsa';
 EOT;
-			$problems[] = 'Current value is : "' . $loginSecurityLevel . '"';
+
+			$problems[] = 'Current value for backend is: "' . $loginSecurityLevelBE . '"' . "<br />\n" .
+				'Current value for frontend is: "' . $loginSecurityLevelFE . '"';
+
+		} elseif ($loginSecurityLevelFE === 'challenged' || $loginSecurityLevelFE === 'superchallenged' || $loginSecurityLevelFE === '') {
+			$this->setErrorLevel($errorlevel);
+
+			$problems[] = <<< EOT
+LDAP authentification for Website-Users (FE) is not compatible with loginSecurityLevel set to "challenged" or "superchallenged" since the real password can never be sent against the LDAP repository.
+
+Value of loginSecurityLevel should be changed manually to "normal" or even better "rsa" in the Install Tool.<br/><br/>
+
+	\$GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'] = 'normal';<br/>
+	\$GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'] = 'rsa';
+EOT;
+
+			$problems[] = 'Current value for backend is: "' . $loginSecurityLevelBE . '"' . "<br />\n" .
+				'Current value for frontend is: "' . $loginSecurityLevelFE . '"';
+
 		} else {
 			$this->setErrorLevel('ok');
 			$problems = array();
@@ -173,8 +202,8 @@ EOT;
 	 * Processes the information submitted by the user using a POST request and
 	 * transforms it to a TypoScript node notation.
 	 *
-	 * @param	array		$postArray: Incoming POST information
-	 * @return	array		Processed and transformed POST information
+	 * @param array $postArray Incoming POST information
+	 * @return array Processed and transformed POST information
 	 */
 	private function processPostData(array $postArray = array()) {
 		foreach ($postArray as $key => $value) {
@@ -195,5 +224,3 @@ EOT;
 	}
 
 }
-
-?>

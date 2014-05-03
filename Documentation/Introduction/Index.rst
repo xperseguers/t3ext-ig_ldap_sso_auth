@@ -16,10 +16,9 @@ Introduction
 What does it do?
 ----------------
 
-This extension enables import/update/deletion of users and groups (frontend, backend or both) from a
-LDAP-directory. This way, TYPO3 can be used as an intranet CMS. Multiple LDAP server configurations are
-allowed. Works with OpenLDAP, eDirectory and Active Directory. You can also use a CAS server to implement
-:abbr:`SSO (Single Sign-On)`.
+This extension enables import/update/deletion of users and groups (frontend, backend or both) from a LDAP-directory.
+This way, TYPO3 can be used as an intranet CMS. Multiple LDAP server configurations are allowed. Works with OpenLDAP,
+Active Directory and Novell eDirectory. You can also use a CAS server to implement :abbr:`SSO (Single Sign-On)`.
 
 
 .. _screenshots:

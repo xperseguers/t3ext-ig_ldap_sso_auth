@@ -15,12 +15,23 @@ Administrator manual
 
 	This chapter describes how to manage the extension from a superuser point of view.
 
-First step for configuring your LDAP authentication is to create one or more server configurations.
+First step for configuring your LDAP authentication is to create one or more server configuration records. To do this,
+use module Web > List and create a record "Configuration LDAP / SSO" on the root level of your TYPO3 website (pid 0):
 
-All server configurations have to be stored on the root level of your TYPO3 website.
-Create a Configuration LDAP / SSO records. These records have 7 tabs for specific
-configuration types.
+.. figure:: ../Images/new-record.png
+	:alt: Creating a record "Configuration LDAP / SSO"
 
+	When creating a new record at the root of your website, choose "Configuration LDAP / SSO".
+
+The form to edit such a record is split in 7 tabs that we will describe separately in the next few sections
+
+.. figure:: ../Images/blank-record.png
+ 	:alt: Edit mask for a record "Configuration LDAP / SSO"
+
+ 	Edit mask of a record "Configuration LDAP / SSO"
+
+
+.. _admin-manual-general:
 
 General
 -------
@@ -28,87 +39,106 @@ General
 - The only thing you have to fill is the configuration name. This is
   only to name the records you have just created.
 
-Global Configuration
---------------------
 
-The second tab is the Global configurations about a single LDAP (not
-that you can create multiple configuration records with the same LDAP).
+.. _admin-manual-ldap:
 
-- **Server:** Choose your LDAP type (OpenLDAP or eDirectory).
+LDAP
+----
 
-  Note that if you are using Active directory, your LDAP type is
-  eDirectory
+The second tab is the global configurations about a single LDAP server.
 
-- **Protocol:** Choose the LDAP protocol version (2 or 3). Recent LDAP
-  use version 3
+.. tip:: Please note that you may create multiple configuration records with the same LDAP server.
 
-- **Charset:** is the character set of your LDAP. Usually ``utf-8``
+- **Server:** Choose your LDAP type (OpenLDAP or Novell eDirectory).
 
-- **Host:** is the host of your LDAP
+  .. note:: If you are using Active directory, your LDAP type is Novell eDirectory.
 
-- **Port:** is the port your LDAP use. Default LDAP port is 389
+- **Protocol:** Choose the LDAP protocol version (2 or 3). Recent LDAP use version 3
 
-- **Bind DN:** is the full DN of the LDAP user you will use to connect
-  to the LDAP
+- **Charset:** Character set of your LDAP connection. Usually ``utf-8``.
 
-  note that your LDAP user need access to the directory where users and
-  groups are stored and full read access to users and groups.
+- **Host:** Host of your LDAP. You may use either a host name / IP address or prefix it with a protocol such as
+  ``ldap://<hostname>`` or ``ldaps://<hostname>`` (latter in case you want to connect with SSL).
 
-  Example: ``cn=admin,dc=example,dc=com``
+- **Port:** Port your LDAP uses. Default LDAP port is 389 (``ldap://``) and 636 (``ldaps://``).
 
-- **Password:** Password of the user used to connect to the LDAP
+- **TLS:** Whether you want to use :abbr:`TLS (Transport Layer Security)`, that is typically start with an connection
+  on default port 389 and then set up an encrypted connection.
 
+  .. note:: More information on TLS may be found at http://www.openldap.org/doc/admin24/tls.html.
+
+- **Bind DN:** :abbr:`DN (Distinguished Name)` of the LDAP user you will use to connect to the LDAP server. The DN is
+  composed of a series of :abbr:`RDN (Relative Distinguised Names)`'s which are the unique (or unique'ish) attributes at
+  each level in the :abbr:`DIT (Directory Information Tree (a.k.a the naming-context)`. The following diagram
+  illustrates building up the DN from the RDN's.
+
+  .. figure:: ../Images/dit-dn-rdn.png
+      :alt: DN is the sum of all RDNs
+
+      Building up the DN (Distinguised Name) from the RDN's (Relative Distinguised Names)
+
+  Example::
+
+      cn=Robert Smith,ou=people,dc=example,dc=com
+
+  .. note:: Your LDAP user needs to be granted access to the directory where users and groups are stored and full read
+      access to users and groups for all attributes you plan to fetch.
+
+- **Password:** Password of the user used to connect to the LDAP server.
+
+
+.. _admin-manual-beusers:
+.. _admin-manual-feusers:
 
 BE_USERS and FE_USERS
 ---------------------
 
-The third tab and the fifth tabscan be fill exactly the same way. The
-only difference between them is that BE\_USERS store the
-configurations for the backend LDAP userauthenticationand FE\_USERS
-store the configurations for the frontend LDAP user authenticate.You
-will only fill the section you need,BE\_USERSif you need
-backendauthenticationandFE\_USERSif you need frontendauthentication.
+The third tab and the fifth tabs can be fill exactly the same way. The only difference between them is that BE_USERS
+stores the configuration options for the backend LDAP user authentication and FE_USERS stores the configuration options
+for the frontend LDAP user authentication.
 
-- **Base DN:** is the full DN path of the directory containing all the
-  users that you want to use with you TYPO3 authentification.
+You may only fill the section you need. That is, BE_USERS if you need backend authentication and FE_USERS if you need
+frontend authentication.
 
-  Example: ``ou=Users,dc=example,dc=com``
+- **Base DN:** Full DN path of the directory containing all the users that you want to use with your TYPO3
+  authentification.
 
-- **Filter:** is used to precise which LDAP attribute contain the
-  username of your users.
+  Example::
 
-  Example: ``(uid={USERNAME})`` uid is the most common attribute used to keep
-  the username in LDAP but if you are in an Active directory, the field
-  where the username is stored is usually ``sAMAccountName`` instead.
+      ou=people,dc=example,dc=com
 
-  Note that the string ``{USERNAME}`` will be substituted by the username
-  entered in the login form.
+- **Filter:** is used to precise which LDAP attribute contain the username of your users.
 
-  You will also be able to add restrictions that allow you to exclude
-  user from specific properties. The syntax used in this field is the
-  LDAP search syntax.
+  Example: ``(uid={USERNAME})`` uid is the most common attribute used to keep the username in LDAP but if you are in an
+  Active directory, the field where the username is stored is usually ``sAMAccountName`` instead.
 
-  Example: ``(&(uid={USERNAME})(objectClass=user)``
+  You will also be able to add restrictions that allow you to exclude user from specific properties. The syntax used in
+  this field is the standard LDAP search syntax.
 
-- **Mapping:** is used to fetch other attributes form the LDAP that we
-  would likeusersto have. It is quite simple, each line is a new
-  command. Each command have 2 parts separated by a =. the first part is
-  the field form the TYPO3 user that we want to fill and the second part
-  is the value we that the field will have. There is 3 possible value
-  type you could use:
+  Example::
+
+      (&(uid={USERNAME})(objectClass=user)
+
+  .. note:: The string ``{USERNAME}`` will be substituted by the username entered in the login form.
+
+- **Mapping:** Used to fetch other attributes from the LDAP server that we would like users to have. It is quite simple,
+  each line is a new command. Each command has two parts separated by a ``=`` (equal sign). the first part is the field
+  from the TYPO3 user that we want to fill and the second part is the value that the field will have. There are three
+  possible value types you may use:
 
   - a string: this will assign the value directly to the field
 
-  - a LDAP attribute value: LDAP attributes will be recognized by the
-    specific characters ``<>``.
+  - a LDAP attribute value: LDAP attributes will be recognized by the specific characters ``<>``.
 
-    Example: ``email = <email>`` this will set the field email of the TYPO3
-    user to the value of the attributes email of the user fetch from the
-    LDAP
+    Example::
 
-  - a custom marker: custom markers are markers create by the extension to
-    assgin specific type of values. There are only4 markers available for
-    the moment:
+        email = <email>
+
+    This will set the field email of the TYPO3 user to the value of the attributes email of the user fetch from the LDAP
+    server.
+
+  - a custom marker: custom markers are markers create by the extension to assign specific type of values. There are
+    only four markers available at the moment:
 
     - ``{DATE}``: the current timestamp
 
@@ -118,8 +148,7 @@ backendauthenticationandFE\_USERSif you need frontendauthentication.
       automatically fill the needed field. This markers is only used if you
       want to put the username in an other field than the one by default )
 
-    - ``{hook parameters}``: will only be usefull if an extension il hooked on
-      ig\_ldap\_sso\_auth
+    - ``{hook parameters}``: will only be useful if an extension is hooked on ig_ldap_sso_auth
 
   Example::
 
@@ -129,45 +158,50 @@ backendauthenticationandFE\_USERSif you need frontendauthentication.
       lang = fr
 
 
+.. _admin-manual-begroups:
+.. _admin-manual-fegroups:
+
 BE_GROUPS and FE_GROUPS
 -----------------------
 
-The fourth and sixth tabs can be fill exactly the same way. The only
-difference between them is that BE\_GROUPS stores the configurations for
-the backend LDAP usergroup association and FE\_GROUPS stores the
-configurations for the frontend LDAP user group association. You will only
-fill the sections you need, BE\_GROUPS if you need backend authentication and
-FE\_GROUPS if you need frontend authentication. You can skip this entire section
-if you just want to validate the authentication and do not want to use groups from
-LDAP.
+The fourth and sixth tabs can be fill exactly the same way. The only difference between them is that BE\_GROUPS stores
+the configurations for the backend LDAP usergroup association and FE\_GROUPS stores the configurations for the frontend
+LDAP user group association. You will only fill the sections you need, BE\_GROUPS if you need backend authentication and
+FE\_GROUPS if you need frontend authentication. You can skip this entire section if you just want to validate the
+authentication and do not want to use groups from LDAP.
 
-- **Base DN:** is the full DN path of the directory containing all
-  the groups that are related to your LDAP users and you want to use in
-  your TYPO3.
+- **Base DN:** Full DN path of the directory containing all the groups that are related to your LDAP users and you want
+  to use in your TYPO3 website.
 
-  Example: ``ou=Groups,dc=example,dc=com``
+  Example::
 
-- **Filter:** You will only by used to add restrictions that allow you to
-  exclude obects from specific properties. The syntax used in this field
-  is the LDAP search syntax.
+      ou=groups,dc=example,dc=com
 
-  Example: ``&(objectClass=posixGroup)``
+- **Filter:** To be used only to add restrictions that allow you to exclude objects from specific properties. The
+  syntax used in this field is the standard LDAP search syntax.
 
-- **Mapping :** is used to fetch other attributes form the LDAP that we
-  would like groups to have. It is quite simple, each line is a new
-  command. Each command have 2 parts separated by a ``=`` (equal sign).
-  the first part is the field form the TYPO3 group that we want to fill and the second part
-  is the value we that the field will have. There is 3 possible value
-  type you could use:
+  Example::
+
+      &(objectClass=posixGroup)
+
+  .. note:: The string ``{USERDN}`` will be substituted by the Distinguished Name (DN) of the authenticated user.
+
+- **Mapping:** Used to fetch other attributes form the LDAP server that we would like groups to have. It is quite
+  simple, each line is a new command. Each command has two parts separated by a ``=`` (equal sign). The first part is
+  the field from the TYPO3 group that we want to fill and the second part is the value we that the field will have.
+  There are three possible value types you could use:
 
   - a string: this will assign the value directly to the field
 
   - a LDAP attribute value: LDAP attributes will be recognized by the
     specific characters ``<>``.
 
-    Example: ``email = <email>`` this will set the field email of the
-    TYPO3 group to the value of the attributes email of the user fetch from
-    the LDAP
+    Example::
+
+        email = <email>
+
+    This will set the field email of the TYPO3 group to the value of the attributes email of the user fetch from the
+    LDAP server.
 
   - a custom marker: custom markers are markers create by the extension to
     assgin specific type of values. There are only 4 markers available for
@@ -179,7 +213,7 @@ LDAP.
 
     - ``{USERNAME}``: the username from the login form ( the username will
       automatically fill the needed field. This markers is only used if you
-      want to put the username in an other field than the one by default )
+      want to put the username in an other field than the one by default)
 
     - ``{hook parameters}``: will only be usefull if an extension il hooked on
       ig\_ldap\_sso\_auth
@@ -189,21 +223,22 @@ LDAP.
       tstamp = {DATE}
 
 
+.. _admin-manual-cas:
+
 CAS
 ---
 
-The last tab is for CAS configurations. You only have to fill it if
-you want to use a CAS server to implement some single sing on (SSO)
+The last tab is for CAS configurations. You only have to fill it if you want to use a CAS server to implement some
+single sign on (SSO).
 
-- **Host:** is the host of your CAS server
+- **Host:** Host of your CAS server
 
-- **URI:** path to postpend to the host used if the CAS sever is
-  not at the root of your host
+- **URI:** Path to append to the host used if the CAS sever is not at the root of your host.
 
   Example: ``/userSSo/cas`` in the string ``localhost/userSSo/cas``
 
-- **Service URL:** this is a specific url for your CAS
+- **Service URL:** Specific url for your CAS
 
-- **Port:** port on which you CAS is configure
+- **Port:** Port on which you CAS is configure
 
-- **Back URL:** Url to return to in case of a CAS login
+- **Back URL:** URL to return to in case of a CAS login

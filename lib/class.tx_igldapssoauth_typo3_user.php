@@ -38,8 +38,8 @@ class tx_igldapssoauth_typo3_user {
 		// Get users table structure.
 		$typo3_user_default = $GLOBALS['TYPO3_DB']->admin_get_fields($table);
 
-		foreach ($typo3_user_default as $field => $value) {
-			$typo3_user[0][$field] = null;
+		foreach ($typo3_user_default as $field => $configuration) {
+			$typo3_user[0][$field] = $configuration['Null'] === 'NO' ? $configuration['Default'] : null;
 		}
 
 		return $typo3_user;

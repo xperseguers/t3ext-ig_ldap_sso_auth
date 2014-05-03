@@ -131,9 +131,9 @@ frontend authentication.
 
     Example::
 
-        email = <email>
+        email = <mail>
 
-    This will set the field email of the TYPO3 user to the value of the attributes email of the user fetch from the LDAP
+    This will set the field email of the TYPO3 user to the value of the attributes mail of the user fetch from the LDAP
     server.
 
   - a custom marker: custom markers are markers create by the extension to assign specific type of values. There are
@@ -151,9 +151,11 @@ frontend authentication.
 
   Example::
 
+      pid = 34
       tstamp = {DATE}
       realName = <cn>
-      email = <email>
+      name = <cn>
+      email = <mail>
       lang = fr
 
 
@@ -194,13 +196,6 @@ authentication and do not want to use groups from LDAP.
 
   - a LDAP attribute value: LDAP attributes will be recognized by the
     specific characters ``<>``.
-
-    Example::
-
-        email = <email>
-
-    This will set the field email of the TYPO3 group to the value of the attributes email of the user fetch from the
-    LDAP server.
 
   - a custom marker: custom markers are markers create by the extension to
     assgin specific type of values. There are only 4 markers available for

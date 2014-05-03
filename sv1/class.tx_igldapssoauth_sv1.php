@@ -1,9 +1,8 @@
 <?php
-
-/* * *************************************************************
+/***************************************************************
  *  Copyright notice
  *
- *  (c) 2007-2011 Michael Gagnon <mgagnon@infoglobe.ca>
+ *  (c) 2007-2014 Michael Gagnon <mgagnon@infoglobe.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -21,9 +20,7 @@
  *  GNU General Public License for more details.
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
- * ************************************************************* */
-
-require_once(t3lib_extMgm::extPath('sv') . 'class.tx_sv_auth.php');
+ ***************************************************************/
 
 /**
  * LDAP / SSO authentication service.
@@ -53,7 +50,8 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 	 * Default constructor
 	 */
 	public function __construct() {
-		$this->config = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']);
+		$config = $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey];
+		$this->config = $config ? unserialize($config) : array();
 		tx_igldapssoauth_auth::init($this);
 	}
 
@@ -62,11 +60,10 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 	 *
 	 * @return	mixed		user array or FALSE
 	 */
-	function getUser() {
+	public function getUser() {
 		$user = FALSE;
 
-		$uidConf = $this->config['uidConfiguration'];
-		$uidArray = t3lib_div::intExplode(',', $uidConf);
+		$uidArray = t3lib_div::intExplode(',', $this->config['uidConfiguration']);
 		foreach ($uidArray as $uid) {
 			tx_igldapssoauth_config::init(TYPO3_MODE, $uid);
 
@@ -98,18 +95,18 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 
 				// normal case
 				$password = $this->login['uident_text'];
-				/*if ($loginSecurityLevel == 'rsa') {
-					$password = $this->login['uident'];
-					/* @var $storage tx_rsaauth_abstract_storage */
-					/*$storage = tx_rsaauth_storagefactory::getStorage();
 
-					// Preprocess the password
-					$key = $storage->get();
+				//if ($loginSecurityLevel === 'rsa') {
+				//	$password = $this->login['uident'];
+				//	/* @var $storage tx_rsaauth_abstract_storage */
+				//	$storage = tx_rsaauth_storagefactory::getStorage();
+				//
+				//	// Preprocess the password
+				//	$key = $storage->get();
 
-					$this->backend = tx_rsaauth_backendfactory::getBackend();
-					$password = $this->backend->decrypt($key, substr($password, 4));
-
-				}*/
+				//	$this->backend = tx_rsaauth_backendfactory::getBackend();
+				//	$password = $this->backend->decrypt($key, substr($password, 4));
+				//}
 
 				$userTemp = tx_igldapssoauth_auth::ldap_auth($this->login['uname'], $password);
 			}
@@ -144,7 +141,7 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 	 * @param	array		Data of user.
 	 * @return	boolean
 	 */
-	function authUser($user) {
+	public function authUser($user) {
 
 		// 100 -> login failed
 		// 200 -> login success
@@ -205,4 +202,3 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/sv1/class.tx_igldapssoauth_sv1.php'])) {
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/sv1/class.tx_igldapssoauth_sv1.php']);
 }
-?>

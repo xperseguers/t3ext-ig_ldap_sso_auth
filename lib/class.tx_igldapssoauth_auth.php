@@ -186,10 +186,9 @@ class tx_igldapssoauth_auth {
 			// User not exist in TYPO3.
 		} elseif (!$typo3_user[0]['uid'] && (!empty($typo3_groups) || !tx_igldapssoauth_config::is_enable('DeleteUserIfNoTYPO3Groups'))) {
 
-			include_once(PATH_tslib . 'class.tslib_fe.php');
 			if (empty($GLOBALS['TCA'])) {
 				/** @var $tslibFe tslib_fe */
-				$tslibFe = t3lib_div::makeInstance('tslib_fe');
+				$tslibFe = t3lib_div::makeInstance('tslib_fe', $GLOBALS['TYPO3_CONF_VARS'], t3lib_div::_GP('id'), '');
 				$tslibFe->includeTCA();
 			}
 
@@ -203,13 +202,16 @@ class tx_igldapssoauth_auth {
 					}
 				}
 			}
-			// Set random password
-			$charSet = 'abdeghjmnpqrstuvxyzABDEGHJLMNPQRSTVWXYZ23456789@#$%';
-			$password = '';
-			for ($i = 0; $i < 12; $i++) {
-				$password .= $charSet[(rand() % strlen($charSet))];
+
+			/** @var tx_saltedpasswords_salts $instance */
+			$instance = NULL;
+			if (t3lib_extMgm::isLoaded('saltedpasswords')) {
+				$instance = tx_saltedpasswords_salts_factory::getSaltingInstance(NULL, TYPO3_MODE);
 			}
-			$typo3_user[0]['password'] = $password;
+
+			// Set random password
+			$password = t3lib_div::generateRandomBytes(16);
+			$typo3_user[0]['password'] = $instance ? $instance->getHashedPassword($password) : md5($password);
 
 			if (tx_igldapssoauth_config::is_enable('forceLowerCaseUsername')) {
 				// Possible enhancement: use t3lib_cs::conv_case instead
@@ -353,15 +355,16 @@ class tx_igldapssoauth_auth {
 	 * @return ...
 	 */
 	private static function get_typo3_user($username = null, $userdn = null, $pid = 0) {
-
 		if ($typo3_user = tx_igldapssoauth_typo3_user::select(self::$pObj->authInfo['db_user']['table'], 0, $pid, $username, $userdn)) {
-
 			return $typo3_user;
 		} else {
-
 			$typo3_user = tx_igldapssoauth_typo3_user::init(self::$pObj->authInfo['db_user']['table']);
+
 			$typo3_user[0]['pid'] = $pid;
-			$typo3_user[0]['tstamp'] = time();
+			$typo3_user[0]['crdate'] = $GLOBALS['EXEC_TIME'];
+			$typo3_user[0]['tstamp'] = $GLOBALS['EXEC_TIME'];
+			$typo3_user[0]['username'] = $username;
+			$typo3_user[0]['tx_igldapssoauth_dn'] = $userdn;
 
 			return $typo3_user;
 		}

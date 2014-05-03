@@ -139,11 +139,11 @@ EOT;
 	/**
 	 * Checks the backend configuration and shows a message if necessary.
 	 *
-	 * @param	array				$params: Field information to be rendered
-	 * @param	t3lib_tsStyleConfig	$pObj: The calling parent object.
-	 * @return	string				Messages as HTML if something needs to be reported
+	 * @param array $params: Field information to be rendered
+	 * @param \TYPO3\CMS\Extensionmanager\ViewHelpers\Form\TypoScriptConstantsViewHelper $pObj: The calling parent object.
+	 * @return string Messages as HTML if something needs to be reported
 	 */
-	public function checkConfiguration(array $params, t3lib_tsStyleConfig $pObj) {
+	public function checkConfiguration(array $params, $pObj) {
 		$this->init();
 
 		// Configuration of authentication service.
@@ -152,7 +152,7 @@ EOT;
 		if ($loginSecurityLevel == 'challenged' || $loginSecurityLevel == 'superchallenged' || $loginSecurityLevel == '' ) {
 			$this->setErrorLevel('error');
 			$problems[] = <<<EOT
-LDAPauthentification is not compatible with loginSecurityLevel set to "challenged" or "superchallenged" since the real password can never be sent against the LDAP repository. 
+LDAPauthentification is not compatible with loginSecurityLevel set to "challenged" or "superchallenged" since the real password can never be sent against the LDAP repository.
 Value of loginSecurityLevel should be handled manually to "normal" or even better "rsa" in the Install Tool. <br/><br/>
 
 	\$TYPO3_CONF_VARS['BE']['loginSecurityLevel'] = 'normal';<br/>

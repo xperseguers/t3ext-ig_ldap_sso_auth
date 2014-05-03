@@ -365,14 +365,14 @@ class tx_igldapssoauth_module1 extends t3lib_SCbase {
 			$search['basedn'] = explode('||', $search['basedn']);
 			if ($result = tx_igldapssoauth_ldap::search($search['basedn'], $search['filter'], $attributes, $search['first_entry'], 100)) {
 
-				$this->content .= $search['see_status'] ? '<h2>' . $GLOBALS['LANG']->getLL('wizard_search_ldap_status') . '</h2><hr />' . t3lib_utility_Debug::viewArray(tx_igldapssoauth_ldap::get_status()) : null;
+				$this->content .= $search['see_status'] ? '<h2>' . $GLOBALS['LANG']->getLL('wizard_search_ldap_status') . '</h2><hr />' . t3lib_utility_Debug::viewArray(tx_igldapssoauth_ldap::get_status()) : NULL;
 				$this->content .= '<h2>' . $GLOBALS['LANG']->getLL('wizard_search_result') . '</h2>';
 				$this->content .= '<hr />';
 				$this->content .= t3lib_utility_Debug::viewArray($result);
 
 			} else {
 
-				$this->content .= $search['see_status'] ? '<h2>' . $GLOBALS['LANG']->getLL('wizard_search_ldap_status') . '</h2><hr />' . t3lib_utility_Debug::viewArray(tx_igldapssoauth_ldap::get_status()) : null;
+				$this->content .= $search['see_status'] ? '<h2>' . $GLOBALS['LANG']->getLL('wizard_search_ldap_status') . '</h2><hr />' . t3lib_utility_Debug::viewArray(tx_igldapssoauth_ldap::get_status()) : NULL;
 				$this->content .= '<h2>' . $GLOBALS['LANG']->getLL('wizard_search_no_result') . '</h2>';
 				$this->content .= '<hr />';
 				$this->content .= t3lib_utility_Debug::viewArray(array());
@@ -453,7 +453,7 @@ class tx_igldapssoauth_module1 extends t3lib_SCbase {
 							'<td>' . $typo3_group['tx_igldapssoauth_dn'] . '</td>' .
 							'<td>' . ($typo3_group['pid'] ? $typo3_group['pid'] : 0) . '</td>' .
 							'<td>' . ($typo3_group['uid'] ? $typo3_group['uid'] : 0) . '</td>' .
-							'<td align="center"><input type="checkbox" name="import[' . $typo3_mode . '][]" value="' . $typo3_group['tx_igldapssoauth_dn'] . '" ' . ($typo3_group['uid'] ? 'checked="checked" disabled="disabled"' : null) . ' /></td>' .
+							'<td align="center"><input type="checkbox" name="import[' . $typo3_mode . '][]" value="' . $typo3_group['tx_igldapssoauth_dn'] . '" ' . ($typo3_group['uid'] ? 'checked="checked" disabled="disabled"' : NULL) . ' /></td>' .
 							'</tr>';
 
 					}

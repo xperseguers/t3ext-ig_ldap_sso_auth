@@ -50,42 +50,41 @@
  */
 class tx_igldapssoauth_utility_Ldap {
 
-	protected static $ldap_charset; // LDAP Server charset.
-	protected static $local_charset; // Local character set (TYPO3).
-	protected static $cid; // LDAP Server Connection ID
-	protected static $bid; // LDAP Server Bind ID
-	protected static $sid; // LDAP Server Search ID
-	protected static $feid; // LDAP First Entry ID
-	protected static $status; // LDAP server status.
+	static protected $ldap_charset; // LDAP Server charset.
+	static protected $local_charset; // Local character set (TYPO3).
+	static protected $cid; // LDAP Server Connection ID
+	static protected $bid; // LDAP Server Bind ID
+	static protected $sid; // LDAP Server Search ID
+	static protected $feid; // LDAP First Entry ID
+	static protected $status; // LDAP server status.
 
 	/**
-	 * Connects to LDAP Server and set the cid.
+	 * Connects to LDAP Server and sets the cid.
 	 *
-	 * @param	void
-	 * @return	bool TRUE if connection succeeded.
+	 * @param string $host
+	 * @param integer $port
+	 * @param integer $protocol Either 2 or 3
+	 * @param string $charset
+	 * @param integer $type (0 = OpenLDAP, 1 = Novell eDirectory)
+	 * @param bool $tls
+	 * @return bool TRUE if connection succeeded.
 	 */
-	public static function connect($host = null, $port = null, $protocol = null, $charset = null, $type = 0, $tls = FALSE) {
-
+	static public function connect($host = NULL, $port = NULL, $protocol = NULL, $charset = NULL, $type = 0, $tls = FALSE) {
 		// Valid if php load ldap module.
 		if (!extension_loaded('ldap')) {
-
-			//Your PHP version seems to lack LDAP support. Please install.
 			echo 'Your PHP version seems to lack LDAP support. Please install.';
 			return FALSE;
 		}
 
 		// Connect to ldap server.
-
 		self::$status['connect']['host'] = $host;
 		self::$status['connect']['port'] = $port;
 
 		if (!(self::$cid = @ldap_connect($host, $port))) {
-
 			// Could not connect to ldap server.
 			self::$cid = FALSE;
 			self::$status['connect']['status'] = ldap_error(self::$cid);
 			return FALSE;
-
 		}
 
 		self::$status['connect']['status'] = ldap_error(self::$cid);
@@ -117,43 +116,40 @@ class tx_igldapssoauth_utility_Ldap {
 	/**
 	 * Bind.
 	 *
-	 * @param	void
-	 * @return	bool TRUE if bind succeeded.
+	 * @param string $dn
+	 * @param string $password
+	 * @return bool TRUE if bind succeeded.
 	 */
-	public static function bind($dn = NULL, $password = NULL) {
-
+	static public function bind($dn = NULL, $password = NULL) {
 		self::$status['bind']['dn'] = $dn;
-		self::$status['bind']['password'] = $password ? '********' : null;
+		self::$status['bind']['password'] = $password ? '********' : NULL;
 
 		if (!(self::$bid = @ldap_bind(self::$cid, $dn, $password))) {
-
 			// Could not bind to server.
 			self::$bid = FALSE;
 			self::$status['bind']['status'] = ldap_error(self::$cid);
 			return FALSE;
-
 		}
 
 		// Bind successful.
 		self::$status['bind']['status'] = ldap_error(self::$cid);
 		return TRUE;
-
 	}
 
 	/**
 	 * Search.
 	 *
-	 * @param	string
-	 * @param	string
-	 * @param	array
-	 * @param	integer
-	 * @param	integer
-	 * @param	integer
-	 * @param	string
-	 * @return	boolean
+	 * @param string $basedn
+	 * @param string $filter
+	 * @param array $attributes
+	 * @param integer $attributes_only
+	 * @param integer $size_limit
+	 * @param integer $time_limit
+	 * @param string $deref
+	 * @return bool
 	 * @see http://ca3.php.net/manual/fr/function.ldap-search.php
 	 */
-	public static function search($basedn = null, $filter = null, $attributes = array(), $attributes_only = 0, $size_limit = 0, $time_limit = 0, $deref = LDAP_DEREF_NEVER) {
+	static public function search($basedn = NULL, $filter = NULL, $attributes = array(), $attributes_only = 0, $size_limit = 0, $time_limit = 0, $deref = LDAP_DEREF_NEVER) {
 
 		if (!$basedn) {
 			self::$status['search']['basedn'] = 'No valid base DN';
@@ -193,10 +189,9 @@ class tx_igldapssoauth_utility_Ldap {
 		// No connexion identifer (cid).
 		self::$status['search']['status'] = ldap_error(self::$cid);
 		return FALSE;
-
 	}
 
-	public static function get_entries() {
+	static public function get_entries() {
 		$result = array();
 		if (is_array(self::$sid)) {
 			foreach (self::$sid as $sid) {
@@ -210,49 +205,44 @@ class tx_igldapssoauth_utility_Ldap {
 				}
 
 			}
-		}
-		else {
+		} else {
 			$result = @ldap_get_entries(self::$cid, self::$sid);
 		}
 
 		// Search successfull
 		if ($result) {
-
 			self::$status['get_entries']['status'] = ldap_error(self::$cid);
 			// Convert LDAP result character set  -> local character set
 			return (tx_igldapssoauth_utility_Ldap::convert_charset_array($result, self::$ldap_charset, self::$local_charset));
-
 		}
 
 		self::$status['get_entries']['status'] = ldap_error(self::$cid);
 		return array();
-
 	}
 
-	public static function get_first_entry() {
+	static public function get_first_entry() {
 		self::$status['get_first_entry']['status'] = ldap_error(self::$cid);
 		return (tx_igldapssoauth_utility_Ldap::convert_charset_array(@ldap_get_attributes(self::$cid, self::$feid), self::$ldap_charset, self::$local_charset));
 	}
 
-	public static function get_dn() {
+	static public function get_dn() {
 		return (@ldap_get_dn(self::$cid, self::$feid));
 	}
 
-	public static function get_attributes() {
+	static public function get_attributes() {
 		return (@ldap_get_attributes(self::$cid, self::$feid));
 	}
 
-	public static function get_status() {
+	static public function get_status() {
 		return self::$status;
 	}
 
 	/**
 	 * Disconnect.
 	 *
-	 * @param	void
-	 * @return	void
+	 * @return void
 	 */
-	public static function disconnect() {
+	static public function disconnect() {
 		if (self::$cid) {
 			@ldap_close(self::$cid);
 		}
@@ -262,9 +252,8 @@ class tx_igldapssoauth_utility_Ldap {
 		return (bool)self::$cid;
 	}
 
-	private static function init_charset($charset = null) {
+	static protected function init_charset($charset = NULL) {
 		/** @var $csObj t3lib_cs */
-
 		if ((isset($GLOBALS['TSFE'])) && (isset($GLOBALS['TSFE']->csConvObj))) {
 			$csObj = $GLOBALS['TSFE']->csConvObj;
 		} else {
@@ -280,16 +269,14 @@ class tx_igldapssoauth_utility_Ldap {
 
 		// TYPO3 charset
 		self::$local_charset = $csObj->parse_charset($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'] ? $GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'] : 'iso-8859-1');
-
 	}
 
-	public static function convert_charset_array($arr, $char1, $char2) {
+	static public function convert_charset_array($arr, $char1, $char2) {
 		if (!is_array($arr)) {
 			return $arr;
 		}
 
 		/** @var $csObj t3lib_cs */
-
 		if ((isset($GLOBALS['TSFE'])) && (isset($GLOBALS['TSFE']->csConvObj))) {
 			$csObj = $GLOBALS['TSFE']->csConvObj;
 		} else {

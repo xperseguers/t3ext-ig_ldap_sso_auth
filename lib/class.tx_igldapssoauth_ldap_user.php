@@ -32,7 +32,7 @@
  */
 class tx_igldapssoauth_ldap_user {
 
-	public static function select($dn = null, $filter = null, $attributes = array()) {
+	static public function select($dn = NULL, $filter = NULL, $attributes = array()) {
 		return tx_igldapssoauth_ldap::search($dn, str_replace('{USERNAME}', '*', $filter), $attributes);
 	}
 
@@ -41,5 +41,3 @@ class tx_igldapssoauth_ldap_user {
 if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/lib/class.tx_igldapssoauth_ldap_user.php'])) {
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/lib/class.tx_igldapssoauth_ldap_user.php']);
 }
-
-?>

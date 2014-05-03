@@ -31,13 +31,13 @@
  */
 class tx_igldapssoauth_config {
 
-	protected static $uid;
-	protected static $name;
-	protected static $typo3_mode;
-	protected static $be = array();
-	protected static $fe = array();
-	protected static $ldap = array();
-	protected static $cas = array();
+	static protected $uid;
+	static protected $name;
+	static protected $typo3_mode;
+	static protected $be = array();
+	static protected $fe = array();
+	static protected $ldap = array();
+	static protected $cas = array();
 
 	/**
 	 * Initializes the configuration class.
@@ -46,7 +46,7 @@ class tx_igldapssoauth_config {
 	 * @param int $uid
 	 * @return void
 	 */
-	public static function init($typo3_mode = null, $uid = 0) {
+	static public function init($typo3_mode = NULL, $uid = 0) {
 		$globalConfig = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']);
 		self::$uid = $uid ? $uid : $globalConfig['uidConfiguration'];
 
@@ -124,7 +124,7 @@ class tx_igldapssoauth_config {
 	 * @param string $filter
 	 * @return array
 	 */
-	private static function make_user_mapping($mapping = '', $filter = '') {
+	static protected function make_user_mapping($mapping = '', $filter = '') {
 		// Default fields : username, tx_igldapssoauth_dn
 
 		$user_mapping = self::make_mapping($mapping);
@@ -140,7 +140,7 @@ class tx_igldapssoauth_config {
 	 * @param string $mapping
 	 * @return array
 	 */
-	private static function make_group_mapping($mapping = '') {
+	static protected function make_group_mapping($mapping = '') {
 		// Default fields : title, tx_igldapssoauth_dn
 
 		$group_mapping = self::make_mapping($mapping);
@@ -158,7 +158,7 @@ class tx_igldapssoauth_config {
 	 * @param string $mapping
 	 * @return array
 	 */
-	private static function make_mapping($mapping = '') {
+	static protected function make_mapping($mapping = '') {
 		$config_mapping = array();
 		$mapping_array = explode(LF, $mapping);
 
@@ -176,11 +176,11 @@ class tx_igldapssoauth_config {
 	 * Gets the Pid to use.
 	 *
 	 * @param array $mapping
-	 * @return int|null
+	 * @return int|NULL
 	 */
-	public static function get_pid($mapping = array()) {
+	static public function get_pid($mapping = array()) {
 		if (!$mapping) {
-			return null;
+			return NULL;
 		}
 
 		if (isset($mapping['pid'])) {
@@ -191,11 +191,11 @@ class tx_igldapssoauth_config {
 	}
 
 	/**
-	 * @param null $filter
+	 * @param string $filter
 	 * @return string
 	 */
-	public static function get_username_attribute($filter = NULL) {
-		if ($filter && preg_match("'([^$]*)\(([^$]*)={USERNAME}\)'", $filter, $username)) {
+	static public function get_username_attribute($filter = NULL) {
+		if ($filter && preg_match("'([^$]*)\\(([^$]*)={USERNAME}\\)'", $filter, $username)) {
 			return $username[2];
 		}
 
@@ -207,7 +207,7 @@ class tx_igldapssoauth_config {
 	 *
 	 * @return array
 	 */
-	public static function getCasConfiguration() {
+	static public function getCasConfiguration() {
 		return self::$cas;
 	}
 
@@ -216,7 +216,7 @@ class tx_igldapssoauth_config {
 	 *
 	 * @return array
 	 */
-	public static function getLdapConfiguration() {
+	static public function getLdapConfiguration() {
 		return self::$ldap;
 	}
 
@@ -225,7 +225,7 @@ class tx_igldapssoauth_config {
 	 *
 	 * @return array
 	 */
-	public static function getFeConfiguration() {
+	static public function getFeConfiguration() {
 		return self::$fe;
 	}
 
@@ -234,7 +234,7 @@ class tx_igldapssoauth_config {
 	 *
 	 * @return array
 	 */
-	public static function getBeConfiguration() {
+	static public function getBeConfiguration() {
 		return self::$be;
 	}
 
@@ -243,7 +243,7 @@ class tx_igldapssoauth_config {
 	 *
 	 * @return string
 	 */
-	public static function getTypo3Mode() {
+	static public function getTypo3Mode() {
 		return self::$typo3_mode;
 	}
 
@@ -252,7 +252,7 @@ class tx_igldapssoauth_config {
 	 *
 	 * @return mixed
 	 */
-	public static function getUid() {
+	static public function getUid() {
 		return self::$uid;
 	}
 
@@ -261,16 +261,16 @@ class tx_igldapssoauth_config {
 	 *
 	 * @return mixed
 	 */
-	public static function getName() {
+	static public function getName() {
 		return self::$name;
 	}
 
-	public static function is_enable($feature = null) {
+	static public function is_enable($feature = NULL) {
 		$config = (self::$typo3_mode === 'be') ? self::getBeConfiguration() : self::getFeConfiguration();
 		return (isset($config[$feature]) ? $config[$feature] : FALSE);
 	}
 
-	public static function get_ldap_attributes($mapping = array()) {
+	static public function get_ldap_attributes($mapping = array()) {
 		$ldap_attributes = array();
 		if (is_array($mapping)) {
 			foreach ($mapping as $attribute) {
@@ -283,24 +283,25 @@ class tx_igldapssoauth_config {
 		return $ldap_attributes;
 	}
 
-	public static function get_server_name($uid = NULL) {
+	static public function get_server_name($uid = NULL) {
 		switch ($uid) {
-			case 0 :
+			case 0:
 				$server = 'OpenLDAP';
 				break;
-			case 1 :
+			case 1:
 				$server = 'Novell eDirectory';
 				break;
 			default:
 				$server = NULL;
+				break;
 		}
 
 		return $server;
 	}
 
-	public static function replace_filter_markers($filter = null) {
+	static public function replace_filter_markers($filter = NULL) {
 		$filter = str_replace('{USERNAME}', '*', $filter);
-		preg_match("'([^$]*)\(([^$]*)={USERDN}\)'", $filter, $member_attribute);
+		preg_match("'([^$]*)\\(([^$]*)={USERDN}\\)'", $filter, $member_attribute);
 		//return str_replace('('.$member_attribute[2].'={USERDN})', '', $filter);
 		return str_replace('{USERDN}', '*', $filter);
 	}
@@ -311,7 +312,7 @@ class tx_igldapssoauth_config {
 	 * @param int $uid
 	 * @return array
 	 */
-	private static function select($uid = 0) {
+	static protected function select($uid = 0) {
 		$config = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'*',
 			'tx_igldapssoauth_config',
@@ -338,5 +339,3 @@ class tx_igldapssoauth_config {
 if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/lib/class.tx_igldapssoauth_config.php'])) {
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/lib/class.tx_igldapssoauth_config.php']);
 }
-
-?>

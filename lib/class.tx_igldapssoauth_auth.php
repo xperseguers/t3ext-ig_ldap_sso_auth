@@ -1,6 +1,5 @@
 <?php
-
-/* * *************************************************************
+/***************************************************************
  *  Copyright notice
  *
  *  (c) 2007 Michael Gagnon <mgagnon@infoglobe.ca>
@@ -21,7 +20,7 @@
  *  GNU General Public License for more details.
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
- * ************************************************************* */
+ ***************************************************************/
 
 /**
  * Class tx_igldapssoauth_auth for the 'ig_ldap_sso_auth' extension.
@@ -32,12 +31,12 @@
  */
 class tx_igldapssoauth_auth {
 
-	protected static $config;
+	static protected $config;
 
 	/**
 	 * @var tx_igldapssoauth_sv1
 	 */
-	protected static $pObj;
+	static protected $pObj;
 
 	/**
 	 * Sets the base authentication class.
@@ -45,16 +44,19 @@ class tx_igldapssoauth_auth {
 	 * @param tx_igldapssoauth_sv1 $pObj
 	 * @return void
 	 */
-	public static function init(tx_igldapssoauth_sv1 $pObj) {
+	static public function init(tx_igldapssoauth_sv1 $pObj) {
 		self::$pObj = $pObj;
 	}
 
 	/**
-	 * ...
+	 * Authenticates using LDAP and returns a user record or FALSE
+	 * if operation fails.
 	 *
-	 * @return ...
+	 * @param string $username
+	 * @param string $password
+	 * @return array|FALSE
 	 */
-	public static function ldap_auth($username = null, $password = null) {
+	static public function ldap_auth($username = NULL, $password = NULL) {
 		if ($username && tx_igldapssoauth_config::is_enable('forceLowerCaseUsername')) {
 			// Possible enhancement: use t3lib_cs::conv_case instead
 			$username = strtolower($username);
@@ -80,20 +82,22 @@ class tx_igldapssoauth_auth {
 
 			// LDAP authentication failed.
 			tx_igldapssoauth_ldap::disconnect();
-			return false;
+			return FALSE;
 		}
 
 		// LDAP authentication failed.
 		tx_igldapssoauth_ldap::disconnect();
-		return false;
+		return FALSE;
 	}
 
 	/**
-	 * ...
+	 * Synchronizes a user.
 	 *
-	 * @return ...
+	 * @param string $userdn
+	 * @param $username
+	 * @return array|FALSE
 	 */
-	public static function synchroniseUser($userdn, $username = null) {
+	static public function synchroniseUser($userdn, $username = NULL) {
 		// User is valid. Get it from DN.
 		$ldap_user = self::get_ldap_user($userdn);
 
@@ -120,7 +124,7 @@ class tx_igldapssoauth_auth {
 
 			if (tx_igldapssoauth_config::is_enable('IfGroupExist') && $typo3_groups_tmp['count'] == 0) {
 
-				return false;
+				return FALSE;
 			}
 			unset($typo3_groups_tmp['count']);
 
@@ -137,20 +141,17 @@ class tx_igldapssoauth_auth {
 					}
 				}
 				if (!$required) {
-					return false;
+					return FALSE;
 				}
 			}
 			$i = 0;
 			foreach ($typo3_groups_tmp as $typo3_group) {
 
 				if (tx_igldapssoauth_config::is_enable('GroupsNotSynchronize') && !$typo3_group['uid']) {
-
-					$typo3_groups[] = null;
+					$typo3_groups[] = NULL;
 				} elseif (tx_igldapssoauth_config::is_enable('GroupsNotSynchronize')) {
-
 					$typo3_groups[] = $typo3_group;
 				} elseif (!$typo3_group['uid']) {
-
 					$typo3_group = tx_igldapssoauth_typo3_group::insert(self::$pObj->authInfo['db_groups']['table'], $typo3_group);
 
 					$typo3_group_merged = tx_igldapssoauth_auth::merge($ldap_groups[$i], $typo3_group[0], self::$config['groups']['mapping']);
@@ -175,15 +176,13 @@ class tx_igldapssoauth_auth {
 			}
 		} else {
 			if ($requiredLDAPGroups = tx_igldapssoauth_config::is_enable('requiredLDAPGroups')) {
-				return false;
+				return FALSE;
 			}
 		}
 
 		if (tx_igldapssoauth_config::is_enable('IfUserExist') && !$typo3_user[0]['uid']) {
-
-			return false;
-
-			// User not exist in TYPO3.
+			return FALSE;
+			// User does not exist in TYPO3.
 		} elseif (!$typo3_user[0]['uid'] && (!empty($typo3_groups) || !tx_igldapssoauth_config::is_enable('DeleteUserIfNoTYPO3Groups'))) {
 
 			if (empty($GLOBALS['TCA'])) {
@@ -250,17 +249,17 @@ class tx_igldapssoauth_auth {
 				$typo3_user['tx_igldapssoauth_from'] = 'LDAP';
 			}
 		} else {
-			$typo3_user = false;
+			$typo3_user = FALSE;
 		}
 		return $typo3_user;
 	}
 
 	/**
-	 * Authenticate with CAS
+	 * Authenticates with CAS.
 	 *
 	 * @return boolean
 	 */
-	public static function cas_auth() {
+	static public function cas_auth() {
 
 		$cas = tx_igldapssoauth_config::getCasConfiguration();
 		phpCAS::client(CAS_VERSION_2_0, (string)$cas['host'], (integer)$cas['port'], (string)$cas['uri']);
@@ -289,7 +288,7 @@ class tx_igldapssoauth_auth {
 					}
 				}
 				phpCAS::logout($cas['logout_url']);
-				return false;
+				return FALSE;
 				break;
 		}
 
@@ -303,30 +302,31 @@ class tx_igldapssoauth_auth {
 				return $typo3_user;
 			} else {
 				phpCAS::logout($cas['logout_url']);
-				return false;
+				return FALSE;
 			}
 		}
 
-		return false;
+		return FALSE;
 	}
 
 	/**
-	 * ...
+	 * Returns a LDAP user.
 	 *
-	 * @return ...
+	 * @param string $userdn
+	 * @return array
 	 */
-	private static function get_ldap_user($userdn = null) {
-
+	static protected function get_ldap_user($userdn = NULL) {
 		// Get user from LDAP server with DN.
 		return tx_igldapssoauth_ldap_user::select($userdn, self::$config['users']['filter'], tx_igldapssoauth_config::get_ldap_attributes(self::$config['users']['mapping']));
 	}
 
 	/**
-	 * ...
+	 * Returns LDAP groups.
 	 *
-	 * @return ...
+	 * @param array $ldap_user
+	 * @return array
 	 */
-	private static function get_ldap_groups($ldap_user = array()) {
+	static protected function get_ldap_groups(array $ldap_user = array()) {
 
 		// Get groups attributes from group mapping configuration.
 		$ldap_group_attributes = tx_igldapssoauth_config::get_ldap_attributes(self::$config['groups']['mapping']);
@@ -350,11 +350,14 @@ class tx_igldapssoauth_auth {
 	}
 
 	/**
-	 * ...
+	 * Returns a TYPO3 user.
 	 *
-	 * @return ...
+	 * @param string $username
+	 * @param string $userdn
+	 * @param integer $pid
+	 * @return array
 	 */
-	private static function get_typo3_user($username = null, $userdn = null, $pid = 0) {
+	static protected function get_typo3_user($username = NULL, $userdn = NULL, $pid = 0) {
 		if ($typo3_user = tx_igldapssoauth_typo3_user::select(self::$pObj->authInfo['db_user']['table'], 0, $pid, $username, $userdn)) {
 			return $typo3_user;
 		} else {
@@ -371,12 +374,15 @@ class tx_igldapssoauth_auth {
 	}
 
 	/**
-	 * ...
+	 * Returns TYPO3 groups.
 	 *
-	 * @return ...
+	 * @param array $ldap_groups
+	 * @param array $mapping
+	 * @param string $table
+	 * @param integer $pid
+	 * @return array
 	 */
-	public static function get_typo3_groups($ldap_groups = array(), $mapping = array(), $table = null, $pid = 0) {
-
+	static public function get_typo3_groups(array $ldap_groups = array(), array $mapping = array(), $table = NULL, $pid = 0) {
 		$typo3_groups = array();
 
 		if (!$ldap_groups) {
@@ -387,14 +393,11 @@ class tx_igldapssoauth_auth {
 
 		$i = 0;
 		foreach ($ldap_groups as $ldap_group) {
-
 			$typo3_group_title = tx_igldapssoauth_typo3_group::get_title($ldap_group, $mapping);
 			if ($typo3_group = tx_igldapssoauth_typo3_group::select($table, 0, $pid, $typo3_group_title, $ldap_group['dn'])) {
-
 				$typo3_groups[] = $typo3_group[0];
 				$i++;
 			} else {
-
 				$typo3_group = tx_igldapssoauth_typo3_group::init($table);
 				$typo3_group['pid'] = $pid;
 				$typo3_group['tstamp'] = time();
@@ -408,12 +411,14 @@ class tx_igldapssoauth_auth {
 	}
 
 	/**
-	 * ...
+	 * Merges a user from LDAP and from TYPO3.
 	 *
-	 * @return ...
+	 * @param array $ldap
+	 * @param array $typo3
+	 * @param array $mapping
+	 * @return array
 	 */
-	public static function merge($ldap = array(), $typo3 = array(), $mapping = array()) {
-
+	static public function merge(array $ldap = array(), array $typo3 = array(), array $mapping = array()) {
 		foreach ($mapping as $field => $value) {
 
 			// If field exist in TYPO3.
@@ -421,19 +426,14 @@ class tx_igldapssoauth_auth {
 
 				// Constant.
 				if (preg_match("`{([^$]*)}`", $value, $match)) {
-
 					switch ($value) {
-
 						case '{DATE}' :
-
 							$typo3[$field] = time();
 							break;
-
 						case '{RAND}' :
-
 							$typo3[$field] = rand();
 							break;
-						DEFAULT :
+						default:
 							$params = explode(';', $match[1]);
 
 							foreach ($params as $param) {
@@ -455,16 +455,12 @@ class tx_igldapssoauth_auth {
 
 					// LDAP attribute.
 				} elseif (preg_match("`<([^$]*)>`", $value, $attribute)) {
-
 					if ($field == 'tx_igldapssoauth_dn' || ($field == 'title' && $value == '<dn>')) {
-
 						$typo3[$field] = $ldap[strtolower($attribute[1])];
 					} else {
-
 						$typo3[$field] = $ldap[strtolower($attribute[1])][0];
 					}
 				} else {
-
 					$typo3[$field] = $value;
 				}
 			}
@@ -478,4 +474,3 @@ class tx_igldapssoauth_auth {
 if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/lib/class.tx_igldapssoauth_auth.php'])) {
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/lib/class.tx_igldapssoauth_auth.php']);
 }
-?>

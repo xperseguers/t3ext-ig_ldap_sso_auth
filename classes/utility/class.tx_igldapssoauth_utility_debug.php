@@ -69,40 +69,28 @@ class tx_igldapssoauth_utility_Debug {
 		echo '<hr />';
 	}
 
-	function session($comment = null) {
-
+	function session($comment = NULL) {
 		tx_igldapssoauth_utility_Debug::print_this($_SESSION, $comment ? $comment : 'SESSION');
 	}
 
-	function post($comment = null) {
-
+	function post($comment = NULL) {
 		tx_igldapssoauth_utility_Debug::print_this($_POST, $comment ? $comment : 'POST');
 	}
 
-	function get($comment = null) {
-
+	function get($comment = NULL) {
 		tx_igldapssoauth_utility_Debug::print_this($_GET, $comment ? $comment : 'GET');
 	}
 
-	function be_user($comment = null) {
-
-		global $BE_USER;
-
-		tx_igldapssoauth_utility_Debug::print_this($BE_USER, $comment ? $comment : 'BE_USER');
+	function be_user($comment = NULL) {
+		tx_igldapssoauth_utility_Debug::print_this($GLOBALS['BE_USER'], $comment ? $comment : 'BE_USER');
 	}
 
-	function lang($comment = null) {
-
-		global $LANG;
-
-		tx_igldapssoauth_utility_Debug::print_this($LANG, $comment ? $comment : 'LANG');
+	function lang($comment = NULL) {
+		tx_igldapssoauth_utility_Debug::print_this($GLOBALS['LANG'], $comment ? $comment : 'LANG');
 	}
 
-	function tca($comment = null) {
-
-		global $TCA;
-
-		tx_igldapssoauth_utility_Debug::print_this($TCA, $comment ? $comment : 'TCA');
+	function tca($comment = NULL) {
+		tx_igldapssoauth_utility_Debug::print_this($GLOBALS['TCA'], $comment ? $comment : 'TCA');
 	}
 
 }

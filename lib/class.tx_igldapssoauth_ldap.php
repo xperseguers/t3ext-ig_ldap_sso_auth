@@ -32,7 +32,7 @@
  */
 class tx_igldapssoauth_ldap {
 
-	public static function connect(array $config = array()) {
+	static public function connect(array $config = array()) {
 		// Connect to ldap server.
 		if (!tx_igldapssoauth_utility_Ldap::connect($config['host'], $config['port'], $config['protocol'], $config['charset'], $config['server'], $config['tls'])) {
 			return FALSE;
@@ -47,7 +47,7 @@ class tx_igldapssoauth_ldap {
 		return TRUE;
 	}
 
-	public static function valid_user($username = NULL, $password = NULL, $basedn = NULL, $filter = NULL) {
+	static public function valid_user($username = NULL, $password = NULL, $basedn = NULL, $filter = NULL) {
 
 		// If user found on ldap server.
 		if (tx_igldapssoauth_utility_Ldap::search($basedn, str_replace('{USERNAME}', $username, $filter), array('dn'))) {
@@ -88,7 +88,7 @@ class tx_igldapssoauth_ldap {
 
 	}
 
-	public static function search($basedn = NULL, $filter = NULL, $attributes = array(), $first_entry = FALSE, $limit = 0) {
+	static public function search($basedn = NULL, $filter = NULL, $attributes = array(), $first_entry = FALSE, $limit = 0) {
 		$result = array();
 
 		if (tx_igldapssoauth_utility_Ldap::search($basedn, $filter, $attributes, 0, $first_entry ? 1 : $limit)) {
@@ -104,11 +104,11 @@ class tx_igldapssoauth_ldap {
 		return $result;
 	}
 
-	public static function get_status() {
+	static public function get_status() {
 		return tx_igldapssoauth_utility_Ldap::get_status();
 	}
 
-	public static function disconnect() {
+	static public function disconnect() {
 		tx_igldapssoauth_utility_Ldap::disconnect();
 	}
 
@@ -117,5 +117,3 @@ class tx_igldapssoauth_ldap {
 if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/lib/class.tx_igldapssoauth_ldap.php'])) {
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/lib/class.tx_igldapssoauth_ldap.php']);
 }
-
-?>

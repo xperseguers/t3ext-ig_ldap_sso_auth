@@ -32,8 +32,7 @@
  */
 class tx_igldapssoauth_ldap_group {
 
-	public static function select_from_membership($membership = array(), $filter = null, $attributes = array()) {
-
+	static public function select_from_membership($membership = array(), $filter = NULL, $attributes = array()) {
 		$ldap_groups['count'] = 0;
 
 		if (!$membership) {
@@ -46,23 +45,20 @@ class tx_igldapssoauth_ldap_group {
 		unset($membership['count']);
 
 		foreach ($membership as $groupdn) {
-
 			$ldap_group = tx_igldapssoauth_ldap::search($groupdn, $filter, $attributes);
 
 			$ldap_groups['count'] = $ldap_groups['count'] + 1;
 			$ldap_groups[] = $ldap_group[0];
-
 		}
 
 		return $ldap_groups;
-
 	}
 
-	public static function select_from_userdn($userdn = null, $basedn = null, $filter = null, $attributes = array()) {
+	static public function select_from_userdn($userdn = NULL, $basedn = NULL, $filter = NULL, $attributes = array()) {
 		return tx_igldapssoauth_ldap::search($basedn, str_replace('{USERDN}', $userdn, $filter), $attributes);
 	}
 
-	public static function get_membership($ldap_user = array(), $mapping = array()) {
+	static public function get_membership($ldap_user = array(), $mapping = array()) {
 		if (array_key_exists('usergroup', $mapping) && preg_match("`<([^$]*)>`", $mapping['usergroup'], $attribute)) {
 			return $ldap_user[strtolower($attribute[1])];
 		}
@@ -75,5 +71,3 @@ class tx_igldapssoauth_ldap_group {
 if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/lib/class.tx_igldapssoauth_ldap_group.php'])) {
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/lib/class.tx_igldapssoauth_ldap_group.php']);
 }
-
-?>

@@ -32,20 +32,20 @@
  */
 class tx_igldapssoauth_typo3_user {
 
-	public static function init($table = null) {
+	static public function init($table = NULL) {
 		$typo3_user = array();
 
 		// Get users table structure.
 		$typo3_user_default = $GLOBALS['TYPO3_DB']->admin_get_fields($table);
 
 		foreach ($typo3_user_default as $field => $configuration) {
-			$typo3_user[0][$field] = $configuration['Null'] === 'NO' ? $configuration['Default'] : null;
+			$typo3_user[0][$field] = $configuration['Null'] === 'NO' ? $configuration['Default'] : NULL;
 		}
 
 		return $typo3_user;
 	}
 
-	public static function select($table = null, $uid = 0, $pid = 0, $username = null, $dn = null) {
+	static public function select($table = NULL, $uid = 0, $pid = 0, $username = NULL, $dn = NULL) {
 
 		// Search with uid and pid.
 		if ($uid) {
@@ -77,7 +77,7 @@ class tx_igldapssoauth_typo3_user {
 		return $user;
 	}
 
-	public static function insert($table = null, $typo3_user = array()) {
+	static public function insert($table = NULL, $typo3_user = array()) {
 		$GLOBALS['TYPO3_DB']->exec_INSERTquery(
 			$table,
 			$typo3_user,
@@ -92,7 +92,7 @@ class tx_igldapssoauth_typo3_user {
 		);
 	}
 
-	public static function update($table = null, $typo3_user = array()) {
+	static public function update($table = NULL, $typo3_user = array()) {
 		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
 			$table,
 			'uid=' . intval($typo3_user['uid']),
@@ -116,7 +116,7 @@ class tx_igldapssoauth_typo3_user {
 		return $ret;
 	}
 
-	public static function set_usergroup($typo3_groups = array(), $typo3_user = array(), tx_igldapssoauth_sv1 $pObj) {
+	static public function set_usergroup($typo3_groups = array(), $typo3_user = array(), tx_igldapssoauth_sv1 $pObj) {
 		$required = TRUE;
 		$group_uid = array();
 

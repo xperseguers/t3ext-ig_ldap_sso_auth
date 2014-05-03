@@ -1,9 +1,8 @@
 <?php
-
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2007 Michael Gagnon <mgagnon@infoglobe.ca>
+ *  (c) 2007-2014 Michael Gagnon <mgagnon@infoglobe.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,13 +24,6 @@
 
 // DEFAULT initialization of a module [BEGIN]
 
-unset($MCONF);
-require_once('conf.php');
-require_once($BACK_PATH . 'init.php');
-require_once($BACK_PATH . 'template.php');
-require_once(PATH_t3lib . 'class.t3lib_scbase.php');
-
-// Load locallang
 $GLOBALS['LANG']->includeLLFile('EXT:ig_ldap_sso_auth/res/locallang_mod1.xml');
 
 // This checks permissions and exits if the users has no permission for entry.
@@ -46,22 +38,45 @@ $GLOBALS['BE_USER']->modAccess($MCONF, 1);
  * @package	TYPO3
  * @subpackage	tx_igldapssoauth
  */
-class  tx_igldapssoauth_module1 extends t3lib_SCbase {
+class tx_igldapssoauth_module1 extends t3lib_SCbase {
+
+	const FUNCTION_VIEW_CONFIGURATION = 1;
+	const FUNCTION_WIZARD_SEARCH = 2;
+	const FUNCTION_WIZARD_AUTHENTICATION = 3;
+	const FUNCTION_IMPORT_GROUPS = 4;
 
 	var $pageinfo;
 	var $lang;
+
+	/**
+	 * @var string
+	 */
+	protected $extKey = 'ig_ldap_sso_auth';
+
+	/**
+	 * @var array
+	 */
+	protected $config;
+
+	/**
+	 * Default constructor
+	 */
+	public function __construct() {
+		$config = $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey];
+		$this->config = $config ? unserialize($config) : array();
+	}
 
 	/**
 	 * Adds items to the ->MOD_MENU array. Used for the function menu selector.
 	 *
 	 * @return	void
 	 */
-	function menuConfig() {
+	public function menuConfig() {
 		$this->MOD_MENU = Array(
 			'function' => Array(
-				'1' => $GLOBALS['LANG']->getLL('view_configuration'),
-				'2' => $GLOBALS['LANG']->getLL('wizard_search'),
-				'4' => $GLOBALS['LANG']->getLL('import_groups'),
+				static::FUNCTION_VIEW_CONFIGURATION => $GLOBALS['LANG']->getLL('view_configuration'),
+				static::FUNCTION_WIZARD_SEARCH => $GLOBALS['LANG']->getLL('wizard_search'),
+				static::FUNCTION_IMPORT_GROUPS => $GLOBALS['LANG']->getLL('import_groups'),
 			)
 		);
 
@@ -72,107 +87,116 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 	 * Main function of the module. Write the content to $this->content
 	 * If you chose "web" as main module, you will need to consider the $this->id parameter which will contain the uid-number of the page clicked in the page tree
 	 *
-	 * @return	[type]		...
+	 * @return void
 	 */
 	public function main() {
-		// Access check!
-		$this->pageinfo = t3lib_BEfunc::readPageAccess($this->id, $this->perms_clause);
-		$access = is_array($this->pageinfo) ? 1 : 0;
+		if (!version_compare(TYPO3_version, '4.5.99', '>')) {
+			// See bug http://forge.typo3.org/issues/31697
+			$GLOBALS['TYPO3_CONF_VARS']['BE']['debug'] = 1;
+		}
+		if (version_compare(TYPO3_version, '6.1.0', '>=')) {
+			$this->doc = t3lib_div::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+		} else {
+			$this->doc = t3lib_div::makeInstance('template');
+		}
+		if (version_compare(TYPO3_branch, '6.2', '>=')) {
+			$this->doc->setModuleTemplate(t3lib_extMgm::extPath($this->extKey) . 'mod1/mod_template.html');
+		} else {
+			$this->doc->setModuleTemplate(t3lib_extMgm::extPath($this->extKey) . 'mod1/mod_template_v45-61.html');
+		}
+		$this->doc->backPath = $GLOBALS['BACK_PATH'];
+		$docHeaderButtons = $this->getButtons();
 
-		// The page will show only if there is a valid page and if this page may be viewed by the user
 		if (($this->id && $access) || ($GLOBALS['BE_USER']->user['admin'] && !$this->id)) {
-			tx_igldapssoauth_config::init('', 0);
+			$this->doc->form = '<form action="" method="post">';
 
-			$this->lang = $GLOBALS['LANG'];
-			$this->doc = t3lib_div::makeInstance('mediumDoc');
-
-			#HEADER
-			$this->doc->backPath = $GLOBALS['BACK_PATH'];
-
-			#JS
-			$this->doc->JScode = '
-				<script language="javascript" type="text/javascript">
-					script_ended = 0;
-					function jumpToUrl(URL)	{
+			if (version_compare(TYPO3_branch, '6.0', '<')) {
+				// override the default jumpToUrl
+				$this->doc->JScodeArray['jumpToUrl'] = '
+					function jumpToUrl(URL) {
 						document.location = URL;
 					}
-				</script>
-			';
-
-			$this->doc->postCode = '
-				<script language="javascript" type="text/javascript">
-					script_ended = 1;
-					if (top.fsMod) top.fsMod.recentIds["web"] = 0;
-				</script>
-			';
-
-			$this->doc->form = '<form action="" method="POST">';
-
-			$this->content[] = $this->doc->startPage($GLOBALS['LANG']->getLL('title'));
-
-			#TITLE
-			$this->content[] = $this->doc->header($GLOBALS['LANG']->getLL('title'));
-
-			#MENU
-			$this->content[] = $this->doc->funcMenu('', t3lib_BEfunc::getFuncMenu($this->id, 'SET[function]', $this->MOD_SETTINGS['function'], $this->MOD_MENU['function']));
-
-			#CONTENT
-			$uidConf = $GLOBALS['EXT_CONFIG']['uidConfiguration'];
-			$uidArray = t3lib_div::trimExplode(',', $uidConf);
-			if (is_array($uidArray)) {
-				foreach ($uidArray as $uid) {
-					tx_igldapssoauth_config::init(TYPO3_MODE, $uid);
-					$this->content[] = '<h2>' . $this->lang->getLL('view_configuration_title') . '&nbsp;' . tx_igldapssoauth_config::getName() . '&nbsp;(' . tx_igldapssoauth_config::getUid() . ')</h2>';
-					$this->content[] = '<hr />';
-
-					switch ((string)$this->MOD_SETTINGS['function']) {
-						case 1:
-							$this->view_configuration();
-							break;
-
-						case 2:
-							$this->wizard_search(t3lib_div::_GP('search'));
-							break;
-
-						case 3:
-							//$this->wizard_authentication(t3lib_div::_GP('authentication'));
-							break;
-
-						case 4:
-							$this->import_groups();
-							break;
-
-					}
-				}
+				';
 			}
 
-			#SHORTCUT
-			if ($GLOBALS['BE_USER']->mayMakeShortcut()) {
-				$this->content[] = $this->doc->spacer(20) . $this->doc->section('', $this->doc->makeShortcutIcon('id', implode(',', array_keys($this->MOD_MENU)), $this->MCONF['name']));
-			}
+			// Initialize the LDAP connection:
+			tx_igldapssoauth_config::init('', 0);
 
-			#FOOTER
-			$this->content[] = $this->doc->spacer(10);
-			$this->content[] = $this->doc->endPage();
-
-			// If no access or if ID == zero
+			// Render content:
+			$this->moduleContent();
 		} else {
-
-			#HEADER
-			$this->doc = t3lib_div::makeInstance('mediumDoc');
-			$this->doc->backPath = $GLOBALS['BACK_PATH'];
-			$this->content[] = $this->doc->startPage($GLOBALS['LANG']->getLL('title'));
-
-			#TITLE
-			$this->content[] = $this->doc->header($GLOBALS['LANG']->getLL('title'));
-			$this->content[] = $this->doc->spacer(5);
-
-			#FOOTER
-			$this->content[] = $this->doc->spacer(10);
-			$this->content[] = $this->doc->endPage();
-
+			// If no access or if ID == zero
+			$docHeaderButtons['save'] = '';
+			$this->content .= $this->doc->spacer(10);
 		}
 
+		// Compile document
+		$markers['FUNC_MENU'] = $this->doc->funcMenu('', t3lib_BEfunc::getFuncMenu($this->id, 'SET[function]', $this->MOD_SETTINGS['function'], $this->MOD_MENU['function']));
+		$markers['CONTENT'] = $this->content;
+		$this->content = '';
+
+		// Build the <body> for the module
+		$this->content .= $this->doc->startPage($GLOBALS['LANG']->getLL('title'));
+		$this->content .= $this->doc->moduleBody($this->pageinfo, $docHeaderButtons, $markers);
+		$this->content .= $this->doc->endPage();
+		$this->content = $this->doc->insertStylesAndJS($this->content);
+	}
+
+	/**
+	 * Generates the module content.
+	 *
+	 * @return void
+	 */
+	protected function moduleContent() {
+		$this->content .= $this->doc->header($GLOBALS['LANG']->getLL('title'));
+
+		$uidArray = t3lib_div::intExplode(',', $this->conf['uidConfiguration']);
+
+		foreach ($uidArray as $uid) {
+			tx_igldapssoauth_config::init(TYPO3_MODE, $uid);
+			$this->content .= '<h2>' . $GLOBALS['LANG']->getLL('view_configuration_title') . ' ' . tx_igldapssoauth_config::getName() . ' (' . tx_igldapssoauth_config::getUid() . ')</h2>';
+			$this->content .= '<hr />';
+
+			switch ((string)$this->MOD_SETTINGS['function']) {
+				case static::FUNCTION_VIEW_CONFIGURATION:
+					$this->view_configuration();
+					break;
+				case static::FUNCTION_WIZARD_SEARCH:
+					$this->wizard_search(t3lib_div::_GP('search'));
+					break;
+				case static::FUNCTION_WIZARD_AUTHENTICATION:
+					//$this->wizard_authentication(t3lib_div::_GP('authentication'));
+					break;
+				case static::FUNCTION_IMPORT_GROUPS:
+					$this->import_groups();
+					break;
+			}
+		}
+	}
+
+	/**
+	 * Creates the panel of buttons for submitting the form or otherwise perform operations.
+	 *
+	 * @return array All available buttons as an assoc.
+	 */
+	protected function getButtons() {
+		$buttons = array(
+			'csh' => '',
+			'shortcut' => '',
+			'close' => '',
+			'save' => '',
+			'save_close' => '',
+		);
+
+		// CSH
+		$buttons['csh'] = t3lib_BEfunc::cshItem('_MOD_web_func', '', $GLOBALS['BACK_PATH']);
+
+		// Shortcut
+		if ($GLOBALS['BE_USER']->mayMakeShortcut()) {
+			$buttons['shortcut'] = $this->doc->makeShortcutIcon('id', implode(',', array_keys($this->MOD_MENU)), $this->MCONF['name']);
+		}
+
+		return $buttons;
 	}
 
 	function view_configuration() {
@@ -180,8 +204,8 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 		$beConfiguration = tx_igldapssoauth_config::getBeConfiguration();
 
 		// LDAP
-		$this->content[] = '<h3>' . $this->lang->getLL('view_configuration_ldap') . '</h3>';
-		$this->content[] = '<hr />';
+		$this->content .= '<h3>' . $GLOBALS['LANG']->getLL('view_configuration_ldap') . '</h3>';
+		$this->content .= '<hr />';
 
 		$ldapConfiguration = tx_igldapssoauth_config::getLdapConfiguration();
 		if ($ldapConfiguration['host']) {
@@ -191,45 +215,45 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 			tx_igldapssoauth_ldap::connect($ldapConfiguration);
 			$ldapConfiguration['password'] = $ldapConfiguration['password'] ? '********' : NULL;
 
-			$this->content[] = t3lib_utility_Debug::viewArray($ldapConfiguration);
+			$this->content .= t3lib_utility_Debug::viewArray($ldapConfiguration);
 
-			$this->content[] = '<h3><strong>' . $this->lang->getLL('view_configuration_ldap_connexion_status') . '</strong></h3>';
-			$this->content[] = '<h4>' . t3lib_utility_Debug::viewArray(tx_igldapssoauth_ldap::get_status()) . '</h4>';
+			$this->content .= '<h3><strong>' . $GLOBALS['LANG']->getLL('view_configuration_ldap_connexion_status') . '</strong></h3>';
+			$this->content .= '<h4>' . t3lib_utility_Debug::viewArray(tx_igldapssoauth_ldap::get_status()) . '</h4>';
 
 		} else {
 
-			$this->content[] = '<strong>' . $this->lang->getLL('view_configuration_ldap_disable') . '</strong>';
+			$this->content .= '<strong>' . $GLOBALS['LANG']->getLL('view_configuration_ldap_disable') . '</strong>';
 			return FALSE;
 		}
 
 		// CAS
-		$this->content[] = '<h3>' . $this->lang->getLL('view_configuration_cas') . '</h3>';
-		$this->content[] = '<hr />';
+		$this->content .= '<h3>' . $GLOBALS['LANG']->getLL('view_configuration_cas') . '</h3>';
+		$this->content .= '<hr />';
 
 		if ($feConfiguration['LDAPAuthentication'] && $feConfiguration['CASAuthentication']) {
-			$this->content[] = t3lib_utility_Debug::viewArray(tx_igldapssoauth_config::getCasConfiguration());
+			$this->content .= t3lib_utility_Debug::viewArray(tx_igldapssoauth_config::getCasConfiguration());
 		} else {
-			$this->content[] = '<strong>' . $this->lang->getLL('view_configuration_cas_disable') . '</strong>';
+			$this->content .= '<strong>' . $GLOBALS['LANG']->getLL('view_configuration_cas_disable') . '</strong>';
 		}
 
 		// BE
-		$this->content[] = '<h3>' . $this->lang->getLL('view_configuration_backend_authentication') . '</h3>';
-		$this->content[] = '<hr />';
+		$this->content .= '<h3>' . $GLOBALS['LANG']->getLL('view_configuration_backend_authentication') . '</h3>';
+		$this->content .= '<hr />';
 
 		if ($beConfiguration['LDAPAuthentication']) {
-			$this->content[] = t3lib_utility_Debug::viewArray($beConfiguration);
+			$this->content .= t3lib_utility_Debug::viewArray($beConfiguration);
 		} else {
-			$this->content[] = '<strong>' . $this->lang->getLL('view_configuration_backend_authentication_disable') . '</strong>';
+			$this->content .= '<strong>' . $GLOBALS['LANG']->getLL('view_configuration_backend_authentication_disable') . '</strong>';
 		}
 
 		// FE
-		$this->content[] = '<h3>' . $this->lang->getLL('view_configuration_frontend_authentication') . '</h3>';
-		$this->content[] = '<hr />';
+		$this->content .= '<h3>' . $GLOBALS['LANG']->getLL('view_configuration_frontend_authentication') . '</h3>';
+		$this->content .= '<hr />';
 
 		if ($feConfiguration['LDAPAuthentication']) {
-			$this->content[] = t3lib_utility_Debug::viewArray($feConfiguration);
+			$this->content .= t3lib_utility_Debug::viewArray($feConfiguration);
 		} else {
-			$this->content[] = '<strong>' . $this->lang->getLL('view_configuration_frontend_authentication_disable') . '</strong>';
+			$this->content .= '<strong>' . $GLOBALS['LANG']->getLL('view_configuration_frontend_authentication_disable') . '</strong>';
 		}
 	}
 
@@ -268,8 +292,8 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 				break;
 		}
 
-		$this->content[] = '<h2>' . $this->lang->getLL('wizard_search_title') . '</h2>';
-		$this->content[] = '<hr />';
+		$this->content .= '<h2>' . $GLOBALS['LANG']->getLL('wizard_search_title') . '</h2>';
+		$this->content .= '<hr />';
 
 		if (tx_igldapssoauth_ldap::connect(tx_igldapssoauth_config::getLdapConfiguration())) {
 			if (is_array($search['basedn'])) {
@@ -282,32 +306,32 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 			$fe_users = ($search['table'] == 'fe_users') ? 'checked="checked"' : "";
 			$fe_groups = ($search['table'] == 'fe_groups') ? 'checked="checked"' : "";
 
-			$this->content[] = '<form action="" method="post" name="search">';
+			$this->content .= '<form action="" method="post" name="search">';
 
-			$this->content[] = '<fieldset>';
+			$this->content .= '<fieldset>';
 
-			$this->content[] = '<br /><div>';
-			$this->content[] = '<span><input type="radio" name="search[table]" value="be_users" ' . $be_users . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />&nbsp;<strong>' . $this->lang->getLL('wizard_search_radio_be_users') . '</strong></span>';
-			$this->content[] = '<span><input type="radio" name="search[table]" value="fe_users" ' . $fe_users . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />&nbsp;<strong>' . $this->lang->getLL('wizard_search_radio_fe_users') . '</strong></span>';
-			$this->content[] = '<span><input type="radio" name="search[table]" value="be_groups" ' . $be_groups . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />&nbsp;<strong>' . $this->lang->getLL('wizard_search_radio_be_groups') . '</strong></span>';
-			$this->content[] = '<span><input type="radio" name="search[table]" value="fe_groups" ' . $fe_groups . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />&nbsp;<strong>' . $this->lang->getLL('wizard_search_radio_fe_groups') . '</strong></span>';
-			$this->content[] = '</div><br />';
+			$this->content .= '<br /><div>';
+			$this->content .= '<span><input type="radio" name="search[table]" value="be_users" ' . $be_users . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />&nbsp;<strong>' . $GLOBALS['LANG']->getLL('wizard_search_radio_be_users') . '</strong></span>';
+			$this->content .= '<span><input type="radio" name="search[table]" value="fe_users" ' . $fe_users . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />&nbsp;<strong>' . $GLOBALS['LANG']->getLL('wizard_search_radio_fe_users') . '</strong></span>';
+			$this->content .= '<span><input type="radio" name="search[table]" value="be_groups" ' . $be_groups . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />&nbsp;<strong>' . $GLOBALS['LANG']->getLL('wizard_search_radio_be_groups') . '</strong></span>';
+			$this->content .= '<span><input type="radio" name="search[table]" value="fe_groups" ' . $fe_groups . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />&nbsp;<strong>' . $GLOBALS['LANG']->getLL('wizard_search_radio_fe_groups') . '</strong></span>';
+			$this->content .= '</div><br />';
 
-			$this->content[] = '<div>';
-			$this->content[] = '<span><input type="checkbox" name="search[first_entry]" value="true" ' . $first_entry . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />&nbsp;<strong>' . $this->lang->getLL('wizard_search_checkbox_first_entry') . '</strong></span>';
-			$this->content[] = '<span><input type="checkbox" name="search[see_status]" value="true" ' . $see_status . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />&nbsp;<strong>' . $this->lang->getLL('wizard_search_checkbox_see_status') . '</strong></span>';
-			$this->content[] = '</div><br />';
+			$this->content .= '<div>';
+			$this->content .= '<span><input type="checkbox" name="search[first_entry]" value="true" ' . $first_entry . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />&nbsp;<strong>' . $GLOBALS['LANG']->getLL('wizard_search_checkbox_first_entry') . '</strong></span>';
+			$this->content .= '<span><input type="checkbox" name="search[see_status]" value="true" ' . $see_status . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />&nbsp;<strong>' . $GLOBALS['LANG']->getLL('wizard_search_checkbox_see_status') . '</strong></span>';
+			$this->content .= '</div><br />';
 
-			$this->content[] = '<div><strong>' . $this->lang->getLL('wizard_search_input_base_dn') . '</strong>&nbsp;<input type="text" name="search[basedn]" value="' . $search['basedn'] . '" size="50" /></div><br />';
-			$this->content[] = '<div><strong>' . $this->lang->getLL('wizard_search_input_filter') . '</strong>&nbsp;<input type="text" name="search[filter]" value="' . $search['filter'] . '" size="50" /></div><br />';
-			$this->content[] = $search['attributes'] ? '<div><strong>' . $this->lang->getLL('wizard_search_input_attributes') . '</strong>&nbsp;<input type="text" name="search[attributes]" value="' . $search['attributes'] . '" size="50" /></div><br />' : '';
+			$this->content .= '<div><strong>' . $GLOBALS['LANG']->getLL('wizard_search_input_base_dn') . '</strong>&nbsp;<input type="text" name="search[basedn]" value="' . $search['basedn'] . '" size="50" /></div><br />';
+			$this->content .= '<div><strong>' . $GLOBALS['LANG']->getLL('wizard_search_input_filter') . '</strong>&nbsp;<input type="text" name="search[filter]" value="' . $search['filter'] . '" size="50" /></div><br />';
+			$this->content .= $search['attributes'] ? '<div><strong>' . $GLOBALS['LANG']->getLL('wizard_search_input_attributes') . '</strong>&nbsp;<input type="text" name="search[attributes]" value="' . $search['attributes'] . '" size="50" /></div><br />' : '';
 
-			$this->content[] = '<input type="hidden" name="search[action]" value="' . $search['action'] . '" />';
-			$this->content[] = '<input type="submit" value="' . $this->lang->getLL('wizard_search_submit_search') . '" onclick="this.form.elements[\'search[action]\'].value=\'search\';" />';
+			$this->content .= '<input type="hidden" name="search[action]" value="' . $search['action'] . '" />';
+			$this->content .= '<input type="submit" value="' . $GLOBALS['LANG']->getLL('wizard_search_submit_search') . '" onclick="this.form.elements[\'search[action]\'].value=\'search\';" />';
 
-			$this->content[] = '</fieldset>';
+			$this->content .= '</fieldset>';
 
-			$this->content[] = '</form><br />';
+			$this->content .= '</form><br />';
 
 			$attributes = array();
 
@@ -319,17 +343,17 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 			$search['basedn'] = explode('||', $search['basedn']);
 			if ($result = tx_igldapssoauth_ldap::search($search['basedn'], $search['filter'], $attributes, $search['first_entry'], 100)) {
 
-				$this->content[] = $search['see_status'] ? '<h2>' . $this->lang->getLL('wizard_search_ldap_status') . '</h2><hr />' . t3lib_utility_Debug::viewArray(tx_igldapssoauth_ldap::get_status()) : null;
-				$this->content[] = '<h2>' . $this->lang->getLL('wizard_search_result') . '</h2>';
-				$this->content[] = '<hr />';
-				$this->content[] = t3lib_utility_Debug::viewArray($result);
+				$this->content .= $search['see_status'] ? '<h2>' . $GLOBALS['LANG']->getLL('wizard_search_ldap_status') . '</h2><hr />' . t3lib_utility_Debug::viewArray(tx_igldapssoauth_ldap::get_status()) : null;
+				$this->content .= '<h2>' . $GLOBALS['LANG']->getLL('wizard_search_result') . '</h2>';
+				$this->content .= '<hr />';
+				$this->content .= t3lib_utility_Debug::viewArray($result);
 
 			} else {
 
-				$this->content[] = $search['see_status'] ? '<h2>' . $this->lang->getLL('wizard_search_ldap_status') . '</h2><hr />' . t3lib_utility_Debug::viewArray(tx_igldapssoauth_ldap::get_status()) : null;
-				$this->content[] = '<h2>' . $this->lang->getLL('wizard_search_no_result') . '</h2>';
-				$this->content[] = '<hr />';
-				$this->content[] = t3lib_utility_Debug::viewArray(array());
+				$this->content .= $search['see_status'] ? '<h2>' . $GLOBALS['LANG']->getLL('wizard_search_ldap_status') . '</h2><hr />' . t3lib_utility_Debug::viewArray(tx_igldapssoauth_ldap::get_status()) : null;
+				$this->content .= '<h2>' . $GLOBALS['LANG']->getLL('wizard_search_no_result') . '</h2>';
+				$this->content .= '<hr />';
+				$this->content .= t3lib_utility_Debug::viewArray(array());
 
 			}
 
@@ -337,19 +361,19 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 
 		} else {
 
-			$this->content[] = '<h2>' . $this->lang->getLL('wizard_search_ldap_status') . '</h2><hr />' . t3lib_utility_Debug::viewArray(tx_igldapssoauth_ldap::get_status());
+			$this->content .= '<h2>' . $GLOBALS['LANG']->getLL('wizard_search_ldap_status') . '</h2><hr />' . t3lib_utility_Debug::viewArray(tx_igldapssoauth_ldap::get_status());
 
 		}
 
 	}
 
-	function import_groups() {
+	protected function import_groups() {
 
 		$typo3_modes = array('fe', 'be');
 		$import_groups = t3lib_div::_GP('import');
 
-		$this->content[] = '<h2>' . $this->lang->getLL('import_groups_title') . '</h2>';
-		$this->content[] = '<hr />';
+		$this->content .= '<h2>' . $GLOBALS['LANG']->getLL('import_groups_title') . '</h2>';
+		$this->content .= '<hr />';
 
 		if (tx_igldapssoauth_ldap::connect(tx_igldapssoauth_config::getLdapConfiguration())) {
 
@@ -362,21 +386,21 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 						tx_igldapssoauth_config::get_ldap_attributes($config['groups']['mapping'])
 					)) {
 
-					$this->content[] = '<form action="" method="post" name="import_' . $typo3_mode . '_groups">';
+					$this->content .= '<form action="" method="post" name="import_' . $typo3_mode . '_groups">';
 
-					$this->content[] = '<fieldset>';
+					$this->content .= '<fieldset>';
 
-					$this->content[] = '<table border="1">';
+					$this->content .= '<table border="1">';
 
-					$this->content[] = '<tr>' .
-						'<th>' . $this->lang->getLL('import_groups_table_th_title') . '</th>' .
-						'<th>' . $this->lang->getLL('import_groups_table_th_dn') . '</th>' .
-						'<th>' . $this->lang->getLL('import_groups_table_th_pid') . '</th>' .
-						'<th>' . $this->lang->getLL('import_groups_table_th_uid') . '</th>' .
-						'<th>' . $this->lang->getLL('import_groups_table_th_import') . '</th>' .
+					$this->content .= '<tr>' .
+						'<th>' . $GLOBALS['LANG']->getLL('import_groups_table_th_title') . '</th>' .
+						'<th>' . $GLOBALS['LANG']->getLL('import_groups_table_th_dn') . '</th>' .
+						'<th>' . $GLOBALS['LANG']->getLL('import_groups_table_th_pid') . '</th>' .
+						'<th>' . $GLOBALS['LANG']->getLL('import_groups_table_th_uid') . '</th>' .
+						'<th>' . $GLOBALS['LANG']->getLL('import_groups_table_th_import') . '</th>' .
 						'</tr>';
 
-					$this->content[] = '<caption><h2>' . $this->lang->getLL('import_groups_' . $typo3_mode . '_title') . '</h2></caption>';
+					$this->content .= '<caption><h2>' . $GLOBALS['LANG']->getLL('import_groups_' . $typo3_mode . '_title') . '</h2></caption>';
 
 					$typo3_group_pid = tx_igldapssoauth_config::get_pid($config['groups']['mapping']);
 					$typo3_groups = tx_igldapssoauth_auth::get_typo3_groups($ldap_groups, $config['groups']['mapping'], $typo3_mode . '_groups', $typo3_group_pid);
@@ -402,7 +426,7 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 							}
 						}
 
-						$this->content[] = '<tr>' .
+						$this->content .= '<tr>' .
 							'<td>' . ($typo3_group['title'] ? $typo3_group['title'] : '&nbsp;') . '</td>' .
 							'<td>' . $typo3_group['tx_igldapssoauth_dn'] . '</td>' .
 							'<td>' . ($typo3_group['pid'] ? $typo3_group['pid'] : 0) . '</td>' .
@@ -412,20 +436,20 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 
 					}
 
-					$this->content[] = '</table><br />';
+					$this->content .= '</table><br />';
 
-					$this->content[] = '<input type="hidden" name="import[action]" value="update" />';
-					$this->content[] = '<input type="submit" value="' . $this->lang->getLL('import_groups_form_submit_value') . '" onclick="this.form.elements[\'import[action]\'].value=\'update\';" />';
+					$this->content .= '<input type="hidden" name="import[action]" value="update" />';
+					$this->content .= '<input type="submit" value="' . $GLOBALS['LANG']->getLL('import_groups_form_submit_value') . '" onclick="this.form.elements[\'import[action]\'].value=\'update\';" />';
 
-					$this->content[] = '</fieldset>';
+					$this->content .= '</fieldset>';
 
-					$this->content[] = '</form><br />';
+					$this->content .= '</form><br />';
 
 				} else {
 
-					$this->content[] = '<h3>' . $this->lang->getLL('import_groups_' . $typo3_mode . '_no_groups_found') . '</h3>';
-					//$this->content[] = '<hr />';
-					//$this->content[] = t3lib_utility_Debug::viewArray(array());
+					$this->content .= '<h3>' . $GLOBALS['LANG']->getLL('import_groups_' . $typo3_mode . '_no_groups_found') . '</h3>';
+					//$this->content .= '<hr />';
+					//$this->content .= t3lib_utility_Debug::viewArray(array());
 
 				}
 
@@ -485,10 +509,10 @@ class  tx_igldapssoauth_module1 extends t3lib_SCbase {
 	/**
 	 * Prints out the module HTML
 	 *
-	 * @return	string	HTML content.
+	 * @return string HTML content
 	 */
 	function printContent() {
-		echo implode(LF, $this->content);
+		echo $this->content;
 	}
 
 }
@@ -509,5 +533,3 @@ foreach ($SOBE->include_once as $INC_FILE) {
 
 $SOBE->main();
 $SOBE->printContent();
-
-?>

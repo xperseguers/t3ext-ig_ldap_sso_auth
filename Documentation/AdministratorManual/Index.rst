@@ -36,8 +36,9 @@ The form to edit such a record is split in 7 tabs that we will describe separate
 General
 -------
 
-- The only thing you have to fill is the configuration name. This is
-  only to name the records you have just created.
+The only thing you have to fill is the configuration name. This is only to name the records you have just created.
+
+.. tip:: Please note that you may create multiple configuration records with the same LDAP server.
 
 
 .. _admin-manual-ldap:
@@ -46,8 +47,6 @@ LDAP
 ----
 
 The second tab is the global configurations about a single LDAP server.
-
-.. tip:: Please note that you may create multiple configuration records with the same LDAP server.
 
 - **Server:** Choose your LDAP type (OpenLDAP or Novell eDirectory).
 
@@ -68,14 +67,14 @@ The second tab is the global configurations about a single LDAP server.
   .. note:: More information on TLS may be found at http://www.openldap.org/doc/admin24/tls.html.
 
 - **Bind DN:** :abbr:`DN (Distinguished Name)` of the LDAP user you will use to connect to the LDAP server. The DN is
-  composed of a series of :abbr:`RDN (Relative Distinguised Names)`'s which are the unique (or unique'ish) attributes at
-  each level in the :abbr:`DIT (Directory Information Tree (a.k.a the naming-context)`. The following diagram
+  composed of a series of :abbr:`RDN (Relative Distinguished Names)`'s which are the unique (or unique'ish) attributes at
+  each level in the :abbr:`DIT (Directory Information Tree, a.k.a the naming-context)`. The following diagram
   illustrates building up the DN from the RDN's.
 
   .. figure:: ../Images/dit-dn-rdn.png
       :alt: DN is the sum of all RDNs
 
-      Building up the DN (Distinguised Name) from the RDN's (Relative Distinguised Names)
+      Building up the DN (Distinguished Name) from the RDN's (Relative Distinguished Names)
 
   Example::
 

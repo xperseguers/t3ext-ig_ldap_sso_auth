@@ -21,20 +21,21 @@ $EM_CONF[$_EXTKEY] = array(
 	'priority' => '',
 	'loadOrder' => '',
 	'module' => 'mod1',
-	'state' => 'beta',
+	'state' => 'stable',
 	'uploadfolder' => 0,
 	'createDirs' => '',
 	'modify_tables' => 'be_groups,be_users,fe_groups,fe_users',
 	'clearcacheonload' => 0,
 	'lockType' => '',
-	'author' => 'Michael Gagnon,Michael Miousse',
+	'author' => 'Michael Gagnon, Michael Miousse',
 	'author_email' => 'michael.miousse@infoglobe.ca',
 	'author_company' => '',
 	'CGLcompliance' => '',
 	'CGLcompliance_note' => '',
 	'constraints' => array(
 		'depends' => array(
-			'typo3' => '4.5.0-4.7.99'
+			'typo3' => '4.5.0-6.2.99',
+			'php' => '5.3.3-5.5.99',
 		),
 		'conflicts' => array(
 		),

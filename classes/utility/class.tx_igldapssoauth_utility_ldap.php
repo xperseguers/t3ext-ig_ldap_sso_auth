@@ -1,10 +1,8 @@
 <?php
-
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2007 Michael Gagnon <mgagnon
- * @infoglobe.ca>
+ *  (c) 2007 Michael Gagnon <mgagnon@infoglobe.ca>
  *  All rights reserved
  *
  *  This script is part of the Typo3 project. The Typo3 project is
@@ -310,5 +308,3 @@ class tx_igldapssoauth_utility_Ldap {
 	}
 
 }
-
-?>

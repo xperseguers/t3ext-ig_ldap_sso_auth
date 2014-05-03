@@ -1,9 +1,8 @@
 <?php
-
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2007-2011 Michael Gagnon <mgagnon@infoglobe.ca>
+ *  (c) 2007-2014 Michael Gagnon <mgagnon@infoglobe.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is

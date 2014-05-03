@@ -1,26 +1,25 @@
 <?php
-
-/* * *************************************************************
- * Copyright notice
+/***************************************************************
+ *  Copyright notice
  *
- * (c) 2007-2011 Michaël Gagnon <mgagnon@infoglobe.ca>
- * All rights reserved
+ *  (c) 2007-2011 Michaël Gagnon <mgagnon@infoglobe.ca>
+ *  All rights reserved
  *
- * Is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ *  Is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
  *
- * The GNU General Public License can be found at
- * http://www.gnu.org/copyleft/gpl.html.
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
  *
- * This script is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
  *
- * This copyright notice MUST APPEAR in all copies of the script!
- * ************************************************************* */
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 
 /**
  * Class tx_igldapssoauth_utility_Debug.
@@ -107,5 +106,3 @@ class tx_igldapssoauth_utility_Debug {
 	}
 
 }
-
-?>

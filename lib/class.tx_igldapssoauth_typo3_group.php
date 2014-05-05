@@ -52,7 +52,7 @@ class tx_igldapssoauth_typo3_group {
 
 			// Search with DN, title and pid.
 		} else {
-			$where = 'tx_igldapssoauth_dn=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($dn, $table) . ' AND pid IN (' . $pid . ')';
+			$where = 'tx_igldapssoauth_dn=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($dn, $table) . ' AND pid IN (' . intval($pid) . ')';
 		}
 
 		// Return TYPO3 group.

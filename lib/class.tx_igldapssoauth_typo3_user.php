@@ -1,9 +1,8 @@
 <?php
-
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2007 Michael Gagnon <mgagnon@infoglobe.ca>
+ *  (c) 2007-2014 Michael Gagnon <mgagnon@infoglobe.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -61,14 +60,14 @@ class tx_igldapssoauth_typo3_user {
 				'*',
 				$table,
 				'tx_igldapssoauth_dn=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($dn, $table)
-					. ($pid ? ' AND pid IN (' . $pid . ')' : '')
+					. ($pid ? ' AND pid IN (' . intval($pid) . ')' : '')
 			);
 			if (!$user) {
 				$user = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 					'*',
 					$table,
 					'username=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($username, $table)
-						. ($pid ? ' AND pid IN (' . $pid . ')' : '')
+						. ($pid ? ' AND pid IN (' . intval($pid) . ')' : '')
 				);
 			}
 		}
@@ -128,7 +127,7 @@ class tx_igldapssoauth_typo3_user {
 			}
 		}
 
-		if ($assignGroups = t3lib_div::trimExplode(',', tx_igldapssoauth_config::is_enable('assignGroups'))) {
+		if ($assignGroups = t3lib_div::intExplode(',', tx_igldapssoauth_config::is_enable('assignGroups'), TRUE)) {
 			foreach ($assignGroups as $uid) {
 				if (tx_igldapssoauth_typo3_group::select($pObj->authInfo['db_groups']['table'], $uid) && !in_array($uid, $group_uid)) {
 					$group_uid[] = $uid;
@@ -137,7 +136,7 @@ class tx_igldapssoauth_typo3_user {
 		}
 
 		if (tx_igldapssoauth_config::is_enable('keepTYPO3Groups') && $typo3_user[0]['usergroup']) {
-			$usergroup = t3lib_div::trimExplode(',', $typo3_user[0]['usergroup']);
+			$usergroup = t3lib_div::intExplode(',', $typo3_user[0]['usergroup'], TRUE);
 
 			foreach ($usergroup as $uid) {
 				if (!in_array($uid, $group_uid)) {
@@ -156,7 +155,7 @@ class tx_igldapssoauth_typo3_user {
 			}
 		}
 
-		$typo3_user[0]['usergroup'] = (string)implode(',', $group_uid);
+		$typo3_user[0]['usergroup'] = implode(',', $group_uid);
 
 		if ($required) {
 			return $typo3_user;
@@ -170,5 +169,3 @@ class tx_igldapssoauth_typo3_user {
 if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/lib/class.tx_igldapssoauth_typo3_user.php'])) {
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/lib/class.tx_igldapssoauth_typo3_user.php']);
 }
-
-?>

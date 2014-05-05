@@ -24,7 +24,9 @@ LDAP / SSO Authentication
 		en
 
 	:Description:
-		Enable LDAP/SSO authentication service.
+		Authenticate frontend and/or backend users using LDAP or Central Authentication Service (CAS). Provide SSO
+		authentication service. Support for OpenLDAP, Active Directory and Novell eDirectory. Handle TLS and SSL
+		(ldaps://).
 
 	:Keywords:
 		openldap, active directory, ldap, authentication, sso, cas
@@ -33,10 +35,10 @@ LDAP / SSO Authentication
 		2000-2014
 
 	:Author:
-		Michael Miousse, Xavier Perseguers
+		Team Infoglobe, Xavier Perseguers
 
 	:Email:
-		mmiousse@infoglobe.ca, xavier@typo3.org
+		contact@infoglobe.ca, xavier@typo3.org
 
 	:License:
 		This document is published under the Open Content License

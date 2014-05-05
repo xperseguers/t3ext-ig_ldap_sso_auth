@@ -12,7 +12,7 @@
 
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'LDAP / SSO Authentication',
-	'description' => 'Enable LDAP/SSO authentication service.',
+	'description' => 'Authenticate frontend and/or backend users using LDAP or Central Authentication Service (CAS). Provide SSO authentication service. Support for OpenLDAP, Active Directory and Novell eDirectory. Handle TLS and SSL (ldaps://).',
 	'category' => 'services',
 	'shy' => 0,
 	'version' => '1.2.0-dev',
@@ -28,7 +28,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'clearcacheonload' => 0,
 	'lockType' => '',
 	'author' => 'Michael Gagnon, Michael Miousse',
-	'author_email' => 'michael.miousse@infoglobe.ca',
+	'author_email' => 'contact@infoglobe.ca',
 	'author_company' => '',
 	'CGLcompliance' => '',
 	'CGLcompliance_note' => '',

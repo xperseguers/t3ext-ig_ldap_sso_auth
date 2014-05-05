@@ -274,8 +274,10 @@ class tx_igldapssoauth_config {
 		$ldap_attributes = array();
 		if (is_array($mapping)) {
 			foreach ($mapping as $attribute) {
-				if (preg_match("`<([^$]*)>`", $attribute, $match)) {
-					$ldap_attributes[] = strtolower($match[1]);
+				if (preg_match_all('/<(.+?)>/', $attribute, $matches)) {
+					foreach ($matches[1] as $matchedAttribute) {
+						$ldap_attributes[] = strtolower($matchedAttribute);
+					}
 				}
 			}
 		}

@@ -191,6 +191,11 @@ frontend authentication.
       city = <l>
       telephone = <telephoneNumber>
 
+  .. tip::
+      You may combine multiple markers as well, e.g., ::
+
+          name = <sn>, <givenName>
+
 
 .. _admin-manual-begroups:
 .. _admin-manual-fegroups:

@@ -455,10 +455,10 @@ class tx_igldapssoauth_auth {
 
 					// LDAP attribute.
 				} elseif (preg_match("`<([^$]*)>`", $value, $attribute)) {
-					if ($field == 'tx_igldapssoauth_dn' || ($field == 'title' && $value == '<dn>')) {
+					if ($field === 'tx_igldapssoauth_dn' || ($field === 'title' && $value === '<dn>')) {
 						$typo3[$field] = $ldap[strtolower($attribute[1])];
 					} else {
-						$typo3[$field] = $ldap[strtolower($attribute[1])][0];
+						$typo3[$field] = self::replaceLdapMarkers($value, $ldap);
 					}
 				} else {
 					$typo3[$field] = $value;
@@ -467,6 +467,37 @@ class tx_igldapssoauth_auth {
 		}
 
 		return $typo3;
+	}
+
+	/**
+	 * Replaces all LDAP markers (e.g. <cn>) with their corresponding values
+	 * in the LDAP data array.
+	 *
+	 * If no matching value was found in the array the marker will be removed.
+	 *
+	 * @param string $markerString The string containing the markers that should be replaced
+	 * @param array $ldapData Array containing the LDAP data that should be used for replacement
+	 * @return string The string with the replaced / removed markers
+	 * @author Alexander Stehlik <alexander.stehlik.deleteme@gmail.com>
+	 */
+	static public function replaceLdapMarkers($markerString, $ldapData) {
+		preg_match_all('/<(.+?)>/', $markerString, $matches);
+
+		foreach ($matches[0] as $index => $fullMatchedMarker) {
+			$ldapProperty = strtolower($matches[1][$index]);
+
+			if (isset($ldapData[$ldapProperty])) {
+				$ldapValue = $ldapData[$ldapProperty];
+				if (is_array($ldapValue)) {
+					$ldapValue = $ldapValue[0];
+				}
+				$markerString = str_replace($fullMatchedMarker, $ldapValue, $markerString);
+			} else {
+				$markerString = str_replace($fullMatchedMarker, '', $markerString);
+			}
+		}
+
+		return $markerString;
 	}
 
 }

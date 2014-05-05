@@ -112,7 +112,7 @@ class tx_igldapssoauth_typo3_group {
 				return $ldap_user[$attribute[1]];
 			}
 
-			return $ldap_user[$attribute[1]][0];
+			return tx_igldapssoauth_auth::replaceLdapMarkers($mapping['title'], $ldap_user);
 		}
 
 		return NULL;

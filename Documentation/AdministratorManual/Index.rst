@@ -165,31 +165,31 @@ frontend authentication.
 
     - ``{hook parameters}``: will only be useful if an extension is hooked on ig_ldap_sso_auth
 
-    **Example (BE_USERS):**
+  **Example (BE_USERS):**
 
-    ::
+  ::
 
-        pid = 34
-        tstamp = {DATE}
-        email = <mail>
-        realName = <cn>
-        lang = fr
+      pid = 34
+      tstamp = {DATE}
+      email = <mail>
+      realName = <cn>
+      lang = fr
 
-    **Example (FE_USERS):**
+  **Example (FE_USERS):**
 
-    ::
+  ::
 
-        pid = 45
-        tstamp = {DATE}
-        email = <mail>
-        name = <cn>
-        first_name = <givenName>
-        last_name = <sn>
-        title = <title>
-        address = <street>
-        zip = <postalCode>
-        city = <l>
-        telephone = <telephoneNumber>
+      pid = 45
+      tstamp = {DATE}
+      email = <mail>
+      name = <cn>
+      first_name = <givenName>
+      last_name = <sn>
+      title = <title>
+      address = <street>
+      zip = <postalCode>
+      city = <l>
+      telephone = <telephoneNumber>
 
 
 .. _admin-manual-begroups:

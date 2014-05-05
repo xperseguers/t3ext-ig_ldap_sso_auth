@@ -169,7 +169,6 @@ frontend authentication.
 
   ::
 
-      pid = 34
       tstamp = {DATE}
       email = <mail>
       realName = <cn>

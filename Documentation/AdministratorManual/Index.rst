@@ -15,6 +15,13 @@ Administrator manual
 
 	This chapter describes how to manage the extension from a superuser point of view.
 
+	**Sections:**
+
+	.. contents::
+		:local:
+		:depth: 1
+
+
 First step for configuring your LDAP authentication is to create one or more server configuration records. To do this,
 use module Web > List and create a record "Configuration LDAP / SSO" on the root level of your TYPO3 website (pid 0):
 
@@ -76,7 +83,9 @@ The second tab is the global configurations about a single LDAP server.
 
       Building up the DN (Distinguished Name) from the RDN's (Relative Distinguished Names)
 
-  Example::
+  **Example:**
+
+  ::
 
       cn=Robert Smith,ou=people,dc=example,dc=com
 
@@ -102,7 +111,9 @@ frontend authentication.
 - **Base DN:** Full DN path of the directory containing all the users that you want to use with your TYPO3
   authentification.
 
-  Example::
+  **Example:**
+
+  ::
 
       ou=people,dc=example,dc=com
 
@@ -114,7 +125,9 @@ frontend authentication.
   You will also be able to add restrictions that allow you to exclude user from specific properties. The syntax used in
   this field is the standard LDAP search syntax.
 
-  Example::
+  **Example:**
+
+  ::
 
       (&(uid={USERNAME})(objectClass=posixAccount)
 
@@ -129,9 +142,12 @@ frontend authentication.
 
   - a LDAP attribute value: LDAP attributes will be recognized by the specific characters ``<>``.
 
-    Example::
+    **Example:**
+
+    ::
 
         email = <mail>
+
 
     This will set the field email of the TYPO3 user to the value of the attributes mail of the user fetch from the LDAP
     server.
@@ -149,14 +165,31 @@ frontend authentication.
 
     - ``{hook parameters}``: will only be useful if an extension is hooked on ig_ldap_sso_auth
 
-  Example::
+    **Example (BE_USERS):**
 
-      pid = 34
-      tstamp = {DATE}
-      realName = <cn>
-      name = <cn>
-      email = <mail>
-      lang = fr
+    ::
+
+        pid = 34
+        tstamp = {DATE}
+        email = <mail>
+        realName = <cn>
+        lang = fr
+
+    **Example (FE_USERS):**
+
+    ::
+
+        pid = 45
+        tstamp = {DATE}
+        email = <mail>
+        name = <cn>
+        first_name = <givenName>
+        last_name = <sn>
+        title = <title>
+        address = <street>
+        zip = <postalCode>
+        city = <l>
+        telephone = <telephoneNumber>
 
 
 .. _admin-manual-begroups:
@@ -174,47 +207,25 @@ authentication and do not want to use groups from LDAP.
 - **Base DN:** Full DN path of the directory containing all the groups that are related to your LDAP users and you want
   to use in your TYPO3 website.
 
-  Example::
+  **Example:**
+
+  ::
 
       ou=groups,dc=example,dc=com
 
 - **Filter:** To be used only to add restrictions that allow you to exclude objects from specific properties. The
   syntax used in this field is the standard LDAP search syntax.
 
-  Example::
+  **Example:**
+
+  ::
 
       (objectClass=posixGroup)
 
   .. note:: The string ``{USERDN}`` will be substituted by the Distinguished Name (DN) of the authenticated user.
 
-- **Mapping:** Used to fetch other attributes form the LDAP server that we would like groups to have. It is quite
-  simple, each line is a new command. Each command has two parts separated by a ``=`` (equal sign). The first part is
-  the field from the TYPO3 group that we want to fill and the second part is the value we that the field will have.
-  There are three possible value types you could use:
-
-  - a string: this will assign the value directly to the field
-
-  - a LDAP attribute value: LDAP attributes will be recognized by the
-    specific characters ``<>``.
-
-  - a custom marker: custom markers are markers create by the extension to
-    assgin specific type of values. There are only 4 markers available for
-    the moment:
-
-    - ``{DATE}``: the current timestamp
-
-    - ``{RAND}``: a random number
-
-    - ``{USERNAME}``: the username from the login form ( the username will
-      automatically fill the needed field. This markers is only used if you
-      want to put the username in an other field than the one by default)
-
-    - ``{hook parameters}``: will only be usefull if an extension il hooked on
-      ig\_ldap\_sso\_auth
-
-  Example::
-
-      tstamp = {DATE}
+- **Mapping:** Used to fetch other attributes form the LDAP server that we would like groups to have. Please see
+  syntax and examples in :ref:`admin-manual-beusers`.
 
 
 .. _admin-manual-cas:

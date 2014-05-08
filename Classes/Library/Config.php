@@ -48,6 +48,7 @@ class tx_igldapssoauth_config {
 	 */
 	static public function init($typo3_mode = NULL, $uid = 0) {
 		$globalConfig = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']);
+		if (!is_array($globalConfig)) $globalConfig = array();
 		self::$uid = $uid ? $uid : $globalConfig['uidConfiguration'];
 
 		// Default TYPO3_MODE is BE
@@ -318,7 +319,7 @@ class tx_igldapssoauth_config {
 		$config = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'*',
 			'tx_igldapssoauth_config',
-			'tx_igldapssoauth_config.hidden=0 AND tx_igldapssoauth_config.deleted=0 AND tx_igldapssoauth_config.uid=' . intval($uid)
+			'deleted=0 AND hidden=0 AND uid=' . intval($uid)
 		);
 
 		return count($config) == 1 ? $config[0] : array();

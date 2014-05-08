@@ -57,7 +57,7 @@ class tx_igldapssoauth_pi1 extends tslib_pibase {
 		$this->pi_loadLL();
 
 		//$this->pi_initPIflexForm(); //Load flexform
-		$this->template = $this->cObj->fileResource($this->conf["templateFile"]); //Load template
+		$this->template = $this->cObj->fileResource($this->conf['templateFile']); //Load template
 
 		$marker['###LOGIN_FORM_ACTION###'] = $this->pi_getPageLink($GLOBALS['TSFE']->id);
 		$marker['###LOGIN_SUBMIT_VALUE###'] = htmlspecialchars($this->pi_getLL('login'));
@@ -66,7 +66,6 @@ class tx_igldapssoauth_pi1 extends tslib_pibase {
 		$marker['###DISABLE###'] = htmlspecialchars($this->pi_getLL('disable'));
 
 		if (tx_igldapssoauth_config::is_enable('CASAuthentication')) {
-
 			$cas_config = tx_igldapssoauth_config::getCasConfiguration();
 
 			phpCAS::client(CAS_VERSION_2_0, (string)$cas_config['host'], (integer)$cas_config['port'], (string)$cas_config['uri']);
@@ -76,15 +75,12 @@ class tx_igldapssoauth_pi1 extends tslib_pibase {
 
 			if (phpCAS::isAuthenticated()) {
 				if ($conf['autoLogout']) {
-
-					Header('Location: ' . $this->pi_getPageLink($GLOBALS['TSFE']->id, '', array('logintype' => 'logout')));
+					header('Location: ' . $this->pi_getPageLink($GLOBALS['TSFE']->id, '', array('logintype' => 'logout')));
 					exit;
 				} else {
 					$tmpl_cas_auth = $this->cObj->getSubpart($this->template, '###CAS_AUTHENTICATION_LOGOUT###');
 				}
-
 			} else {
-
 				if ($conf['autoLogin']) {
 					phpCAS::forceAuthentication();
 					exit;
@@ -92,7 +88,6 @@ class tx_igldapssoauth_pi1 extends tslib_pibase {
 					$tmpl_cas_auth = $this->cObj->getSubpart($this->template, '###CAS_AUTHENTICATION_LOGIN###');
 				}
 			}
-
 		} else {
 
 			$tmpl_cas_auth = $this->cObj->getSubpart($this->template, '###CAS_AUTHENTICATION_DISABLE###');
@@ -111,7 +106,7 @@ class tx_igldapssoauth_pi1 extends tslib_pibase {
 	 */
 	public function pi_loadLL() {
 		if (!$this->LOCAL_LANG_loaded && $this->scriptRelPath) {
-			$basePath = t3lib_extMgm::extPath($this->extKey) . 'res/locallang_pi1.xml';
+			$basePath = t3lib_extMgm::extPath($this->extKey) . 'Resources/Private/Language/locallang_pi1.xml';
 			$this->LOCAL_LANG = t3lib_div::readLLfile($basePath, $this->LLkey);
 
 			if ($this->altLLkey) {

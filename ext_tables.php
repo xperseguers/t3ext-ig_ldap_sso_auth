@@ -1,12 +1,14 @@
 <?php
-if (!defined ('TYPO3_MODE')) die ('Access denied.');
+if (!defined ('TYPO3_MODE')) {
+	die ('Access denied.');
+}
 
 global $EXT_CONFIG;
 
 // Init table configuration array for tx_igldapssoauth_config.
 $TCA['tx_igldapssoauth_config'] = array(
 	'ctrl' => array(
-		'title'     => 'LLL:EXT:ig_ldap_sso_auth/res/locallang_db.xml:tx_igldapssoauth_config',
+		'title'     => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config',
 		'label'     => 'name',
 		'adminOnly' => 1,
 		'rootLevel' => 1,
@@ -20,8 +22,8 @@ $TCA['tx_igldapssoauth_config'] = array(
 		'enablecolumns' => array(
 			'disabled' => 'hidden',
 		),
-		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY) . 'res/tca.php',
-		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY) . 'res/icon_tx_igldapssoauth_config.png',
+		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY) . 'Configuration/TCA/Config.php',
+		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY) . 'Resources/Public/Icons/icon_tx_igldapssoauth_config.png',
 	),
 
 	'feInterface' => array(
@@ -34,7 +36,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 $tempColumns = array(
 	'tx_igldapssoauth_dn' => array(
 		'exclude' => 1,
-		'label' => 'LLL:EXT:ig_ldap_sso_auth/res/locallang_db.xml:tx_igldapssoauth_config.be_groups.tx_igldapssoauth_dn',
+		'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.be_groups.tx_igldapssoauth_dn',
 		'config' => array(
 			'type' => 'input',
 			'size' => 30,
@@ -51,7 +53,7 @@ t3lib_extMgm::addToAllTCAtypes('be_groups', 'tx_igldapssoauth_dn;;;;1-1-1');
 //$tempColumns = Array (
 //	"tx_igldapssoauth_dn" => Array (
 //		"exclude" => 1,
-//		"label" => "LLL:EXT:ig_ldap_sso_auth/res/locallang_db.xml:be_users.tx_igldapssoauth_dn",
+//		"label" => "LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:be_users.tx_igldapssoauth_dn",
 //		"config" => Array (
 //			"type" => "input",
 //			"size" => "30",
@@ -68,7 +70,7 @@ t3lib_extMgm::addToAllTCAtypes('be_groups', 'tx_igldapssoauth_dn;;;;1-1-1');
 $tempColumns = Array (
 	"tx_igldapssoauth_dn" => Array (
 		"exclude" => 1,
-		"label" => "LLL:EXT:ig_ldap_sso_auth/res/locallang_db.xml:tx_igldapssoauth_config.fe_groups.tx_igldapssoauth_dn",
+		"label" => "LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.fe_groups.tx_igldapssoauth_dn",
 		"config" => Array (
 			"type" => "input",
 			"size" => "30",
@@ -85,7 +87,7 @@ t3lib_extMgm::addToAllTCAtypes("fe_groups", "tx_igldapssoauth_dn");
 //$tempColumns = Array (
 //	"tx_igldapssoauth_dn" => Array (
 //		"exclude" => 1,
-//		"label" => "LLL:EXT:ig_ldap_sso_auth/res/locallang_db.xml:fe_users.tx_igldapssoauth_dn",
+//		"label" => "LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:fe_users.tx_igldapssoauth_dn",
 //		"config" => Array (
 //			"type" => "input",
 //			"size" => "30",
@@ -109,7 +111,7 @@ $TCA['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY.'_pi1']='la
 
 // Add plugin in list_type
 
-t3lib_extMgm::addPlugin(array('LLL:EXT:ig_ldap_sso_auth/res/locallang_db.xml:tt_content.list_type_pi1', $_EXTKEY.'_pi1'), 'list_type');
+t3lib_extMgm::addPlugin(array('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tt_content.list_type_pi1', $_EXTKEY.'_pi1'), 'list_type');
 
 // Add plugin to content wizard
 
@@ -130,6 +132,8 @@ if (TYPO3_MODE === 'BE') {
 
 //Initialize "context sensitive help" (csh)
 
-t3lib_extMgm::addLLrefForTCAdescr('tx_igldapssoauth_config', 'EXT:ig_ldap_sso_auth/res/locallang_csh_db.xml');
-t3lib_extMgm::addStaticFile($_EXTKEY, 'static/', 'ig_ldap_sso_auth');
-?>
+t3lib_extMgm::addLLrefForTCAdescr('tx_igldapssoauth_config', 'EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_csh_db.xml');
+
+// Initialize static extension templates
+t3lib_extMgm::addStaticFile($GLOBALS['_EXTKEY'], 'static/', 'ig_ldap_sso_auth [DEPRECATED]');
+t3lib_extMgm::addStaticFile($GLOBALS['_EXTKEY'], 'Configuration/TypoScript/', 'ig_ldap_sso_auth');

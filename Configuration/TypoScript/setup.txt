@@ -1,0 +1,26 @@
+plugin.tx_igldapssoauth_pi1 = USER_INT
+plugin.tx_igldapssoauth_pi1 {
+	autoLogin = 0
+	autoLogout = 0
+	userFunc = tx_igldapssoauth_pi1->main
+
+	templateFile = {$plugin.tx_igldapssoauth_pi1.templateFile}
+
+	_CSS_DEFAULT_STYLE (
+
+		/*COMMENTAIRE*/
+
+		.login {
+			border:0px solid #000000;
+		}
+
+		.logout {
+			border:0px solid #000000;
+		}
+
+		.disable {
+			border:0px solid #000000;
+		}
+
+	)
+}

@@ -32,7 +32,7 @@
 class tx_igldapssoauth_sv1 extends tx_sv_auth {
 
 	var $prefixId = 'tx_igldapssoauth_sv1'; // Same as class name
-	var $scriptRelPath = 'sv1/class.tx_igldapssoauth_sv1.php'; // Path to this script relative to the extension dir.
+	var $scriptRelPath = 'Classes/Service/Sv1.php'; // Path to this script relative to the extension dir.
 	var $extKey = 'ig_ldap_sso_auth'; // The extension key.
 	var $igldapssoauth;
 

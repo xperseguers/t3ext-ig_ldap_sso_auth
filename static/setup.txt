@@ -1,26 +1,3 @@
-plugin.tx_igldapssoauth_pi1 = USER_INT
-plugin.tx_igldapssoauth_pi1{
-	autoLogin = 0
-	autoLogout = 0 
-	userFunc = tx_igldapssoauth_pi1->main
+# BEWARE: This file is deprecated since 1.2.0 and will be removed in 1.4.0
 
-	templateFile = {$plugin.tx_igldapssoauth_pi1.templateFile}
-
-	_CSS_DEFAULT_STYLE (
-
-		/*COMMENTAIRE*/
-
-		.login {
-			border:0px solid #000000;
-		}
-
-		.logout {
-			border:0px solid #000000;
-		}
-
-		.disable {
-			border:0px solid #000000;
-		}
-
-	)
-}
+<INCLUDE_TYPOSCRIPT: source="FILE: EXT:ig_ldap_sso_auth/Configuration/TypoScript/setup.txt">

@@ -38,15 +38,12 @@ class tx_igldapssoauth_pi1_wizicon {
 	 * @return	Modified array with wizard items
 	 */
 	function proc($wizardItems) {
-
-		global $LANG;
-
 		$LL = $this->includeLocalLang();
 
 		$wizardItems['plugins_tx_igldapssoauth_pi1'] = array(
-			'icon' => t3lib_extMgm::extRelPath('ig_ldap_sso_auth') . 'res/cas.png',
-			'title' => $LANG->getLLL('pi1_title', $LL),
-			'description' => $LANG->getLLL('pi1_plus_wiz_description', $LL),
+			'icon' => t3lib_extMgm::extRelPath('ig_ldap_sso_auth') . 'Resources/Public/Icons/cas.png',
+			'title' => $GLOBALS['LANG']->getLLL('pi1_title', $LL),
+			'description' => $GLOBALS['LANG']->getLLL('pi1_plus_wiz_description', $LL),
 			'params' => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=ig_ldap_sso_auth_pi1'
 		);
 
@@ -59,8 +56,7 @@ class tx_igldapssoauth_pi1_wizicon {
 	 * @return	The array with language labels
 	 */
 	function includeLocalLang() {
-
-		$llFile = t3lib_extMgm::extPath('ig_ldap_sso_auth') . 'res/locallang_pi1.xml';
+		$llFile = t3lib_extMgm::extPath('ig_ldap_sso_auth') . 'Resources/Private/Language/locallang_pi1.xml';
 		$version = class_exists('t3lib_utility_VersionNumber') ? t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) : t3lib_div::int_from_ver(TYPO3_version);
 		if ($version >= 6000000) {
 			/** @var $localLangParser \TYPO3\CMS\Core\Localization\Parser\LocallangXmlParser */
@@ -77,5 +73,3 @@ class tx_igldapssoauth_pi1_wizicon {
 if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/pi1/class.tx_igldapssoauth_pi1_wizicon.php'])) {
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/pi1/class.tx_igldapssoauth_pi1_wizicon.php']);
 }
-
-?>

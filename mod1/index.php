@@ -24,7 +24,7 @@
 
 // DEFAULT initialization of a module [BEGIN]
 
-$GLOBALS['LANG']->includeLLFile('EXT:ig_ldap_sso_auth/res/locallang_mod1.xml');
+$GLOBALS['LANG']->includeLLFile('EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_mod1.xml');
 
 // This checks permissions and exits if the users has no permission for entry.
 $GLOBALS['BE_USER']->modAccess($MCONF, 1);

@@ -19,6 +19,7 @@
 			<label index="wizard_authentication">Authentication wizard</label>
 
 			<label index="view_configuration_title">View configuration</label>
+			<label index="view_configuration_ldap_domains">Restricted to domain(s):</label>
 			<label index="view_configuration_ldap">LDAP</label>
 			<label index="view_configuration_ldap_disable">No host name specified.</label>
 			<label index="view_configuration_ldap_connexion_status">Connexion status</label>
@@ -70,6 +71,7 @@
 			<label index="wizard_authentication">Assistant d'authentification</label>
 
 			<label index="view_configuration_title">Montrer la configuration</label>
+			<label index="view_configuration_ldap_domains">Limité au(x) domaine(s) :</label>
 			<label index="view_configuration_ldap">LDAP</label>
 			<label index="view_configuration_ldap_disable">Aucun serveur spécifié.</label>
 			<label index="view_configuration_ldap_connexion_status">Statut de connexion</label>

@@ -12,6 +12,7 @@
 
 		<languageKey index="default" type="array">
 			<label index="name.description">Name used to distinguish each configuration.</label>
+			<label index="domains.description">Domains for which this configuration should be used. Leave empty to use it with any domain.</label>
 
 			<label index="cas_host.description">Address or URL of the CAS server.</label>
 			<label index="cas_port.description">Port used by the CAS server.</label>
@@ -59,6 +60,7 @@
 
 		<languageKey index="fr" type="array">
 			<label index="name.description">Nom utilisé afin de distinguer chaque configuration.</label>
+			<label index="domains.description">Domaines pour lesquels la configuration doit être utilisée. Laisser vide pour l'utiliser avec n'importe quel domaine.</label>
 
 			<label index="cas_host.description">Adresse ou URL du serveur CAS.</label>
 			<label index="cas_port.description">Port utilisé par le serveur CAS.</label>

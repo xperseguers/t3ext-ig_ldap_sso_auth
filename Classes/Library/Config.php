@@ -38,6 +38,7 @@ class tx_igldapssoauth_config {
 	static protected $fe = array();
 	static protected $ldap = array();
 	static protected $cas = array();
+	static protected $domains = array();
 
 	/**
 	 * Initializes the configuration class.
@@ -59,6 +60,12 @@ class tx_igldapssoauth_config {
 		$config = array_merge($globalConfig, $config);
 
 		self::$name = $config['name'];
+		self::$domains = array();
+		$domainUids = t3lib_div::intExplode(',', $config['domains'], TRUE);
+		foreach ($domainUids as $domainUid) {
+			$row = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('domainName', 'sys_domain', 'uid=' . intval($domainUid));
+			self::$domains[] = $row['domainName'];
+		}
 
 		self::$be['LDAPAuthentication'] = $config['enableBELDAPAuthentication'];
 		self::$be['CASAuthentication'] = 0;
@@ -116,6 +123,28 @@ class tx_igldapssoauth_config {
 			}
 		}
 		self::$ldap['charset'] = $config['ldap_charset'] ? $config['ldap_charset'] : 'utf-8';
+	}
+
+	/**
+	 * Returns TRUE if this configuration is enabled for current host.
+	 *
+	 * @return bool
+	 */
+	static public function isEnabledForCurrentHost() {
+		static $host = NULL;
+		if ($host === NULL && count(self::$domains) > 0) {
+			$host = t3lib_div::getIndpEnv('TYPO3_HOST_ONLY');
+		}
+		return count(self::$domains) === 0 || in_array($host, self::$domains);
+	}
+
+	/**
+	 * Returns the list of domains.
+	 *
+	 * @return array
+	 */
+	static public function getDomains() {
+		return self::$domains;
 	}
 
 	/**

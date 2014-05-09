@@ -10,6 +10,7 @@ CREATE TABLE tx_igldapssoauth_config (
 	deleted tinyint(4) DEFAULT '0' NOT NULL,
 	hidden tinyint(4) DEFAULT '0' NOT NULL,
 	name varchar(255) DEFAULT '' NOT NULL,
+	domains varchar(100) DEFAULT '' NOT NULL,
 	cas_host varchar(255) DEFAULT '' NOT NULL,
 	cas_port int(11) DEFAULT '0' NOT NULL,
 	cas_logout_url varchar(255) DEFAULT '' NOT NULL,

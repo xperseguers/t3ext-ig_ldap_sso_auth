@@ -204,6 +204,11 @@ class tx_igldapssoauth_module1 extends t3lib_SCbase {
 		$feConfiguration = tx_igldapssoauth_config::getFeConfiguration();
 		$beConfiguration = tx_igldapssoauth_config::getBeConfiguration();
 
+		$domains = tx_igldapssoauth_config::getDomains();
+		if (count($domains) > 0) {
+			$this->content .= '<p><strong>' . $GLOBALS['LANG']->getLL('view_configuration_ldap_domains') . '</strong> ' . implode(', ', $domains) . '</p>';
+		}
+
 		// LDAP
 		$this->content .= '<h3>' . $GLOBALS['LANG']->getLL('view_configuration_ldap') . '</h3>';
 		$this->content .= '<hr />';

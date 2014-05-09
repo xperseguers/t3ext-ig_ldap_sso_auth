@@ -4,7 +4,7 @@ if (!defined ('TYPO3_MODE')) die ('Access denied.');
 $TCA['tx_igldapssoauth_config'] = array(
 	'ctrl' => $TCA['tx_igldapssoauth_config']['ctrl'],
 	'interface' => array(
-		'showRecordFieldList' => 'hidden, name,
+		'showRecordFieldList' => 'hidden, name, domains,
 						ldap_server, ldap_protocol, ldap_charset, ldap_host, ldap_port, ldap_tls, ldap_binddn,
 						ldap_password,
 						be_users_basedn, be_users_filter, be_users_mapping,
@@ -18,7 +18,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 		'1' => array(
 			'showitem' => '
 					--div--;GENERAL,
-						name,
+						name, domains,
 					--div--;LDAP,
 						ldap_server, ldap_protocol, ldap_charset,
 					--palette--;LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:palette.connection;connection,
@@ -59,6 +59,24 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'type' => 'input',
 				'size' => '30',
 				'eval' => 'required,trim',
+			)
+		),
+		'domains' => array(
+			'exclude' => 1,
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.domains',
+			'config' => array(
+				'type' => 'select',
+				'foreign_table' => 'sys_domain',
+				'size' => 6,
+				'minitems' => 0,
+				'maxitems' => 30,
+				'wizards' => array(
+					'_PADDING' => 4,
+					'_VERTICAL' => 1,
+					'suggest' => array(
+						'type' => 'suggest'
+					),
+				),
 			)
 		),
 		'ldap_server' => array(
@@ -206,7 +224,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'foreign_table' => 'be_groups',
 				'size' => 6,
 				'minitems' => 0,
-				'maxitems' => 9999,
+				'maxitems' => 30,
 				'wizards' => array(
 					'_PADDING' => 4,
 					'_VERTICAL' => 1,
@@ -224,7 +242,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'foreign_table' => 'be_groups',
 				'size' => 10,
 				'minitems' => 0,
-				'maxitems' => 9999,
+				'maxitems' => 30,
 				'wizards' => array(
 					'_PADDING' => 4,
 					'_VERTICAL' => 1,
@@ -242,7 +260,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'foreign_table' => 'be_groups',
 				'size' => 6,
 				'minitems' => 0,
-				'maxitems' => 9999,
+				'maxitems' => 30,
 				'wizards' => array(
 					'_PADDING' => 4,
 					'_VERTICAL' => 1,
@@ -312,7 +330,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'foreign_table' => 'fe_groups',
 				'size' => 6,
 				'minitems' => 0,
-				'maxitems' => 9999,
+				'maxitems' => 30,
 				'wizards' => array(
 					'_PADDING' => 4,
 					'_VERTICAL' => 1,
@@ -330,7 +348,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'foreign_table' => 'fe_groups',
 				'size' => 10,
 				'minitems' => 0,
-				'maxitems' => 9999,
+				'maxitems' => 30,
 				'wizards' => array(
 					'_PADDING' => 4,
 					'_VERTICAL' => 1,

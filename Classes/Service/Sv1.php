@@ -71,6 +71,9 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 
 		foreach ($configurationRecords as $configurationRecord) {
 			tx_igldapssoauth_config::init(TYPO3_MODE, $configurationRecord['uid']);
+			if (!tx_igldapssoauth_config::isEnabledForCurrentHost()) {
+				continue;
+			}
 
 			// Enable feature
 			$userTemp = FALSE;

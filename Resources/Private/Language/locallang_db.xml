@@ -10,6 +10,7 @@
 
 			<label index="tx_igldapssoauth_config">Configuration LDAP / SSO</label>
 			<label index="tx_igldapssoauth_config.name">Name:</label>
+			<label index="tx_igldapssoauth_config.domains">Associated domains:</label>
 
 			<label index="tx_igldapssoauth_config.cas_host">Host:</label>
 			<label index="tx_igldapssoauth_config.cas_uri">Uri:</label>
@@ -61,6 +62,7 @@
 		<languageKey index="fr" type="array">
 			<label index="tx_igldapssoauth_config">Configuration LDAP / SSO</label>
 			<label index="tx_igldapssoauth_config.name">Nom :</label>
+			<label index="tx_igldapssoauth_config.domains">Domaines associés :</label>
 
 			<label index="tx_igldapssoauth_config.cas_host">Serveur :</label>
 			<label index="tx_igldapssoauth_config.cas_port">Port :</label>

@@ -4,11 +4,15 @@ if (!defined ('TYPO3_MODE')) die ('Access denied.');
 $TCA['tx_igldapssoauth_config'] = array(
 	'ctrl' => $TCA['tx_igldapssoauth_config']['ctrl'],
 	'interface' => array(
-		'showRecordFieldList' => 'hidden, name, ldap_server, ldap_protocol, ldap_charset, ldap_host, ldap_port,
-						ldap_tls, ldap_binddn, ldap_password, be_users_basedn, be_users_filter, be_users_mapping,
-						be_groups_basedn, be_groups_filter, be_groups_mapping, fe_users_basedn, fe_users_filter,
-						fe_users_mapping, fe_groups_basedn, fe_groups_filter, fe_groups_mapping, cas_host, cas_port,
-						cas_logout_url',
+		'showRecordFieldList' => 'hidden, name,
+						ldap_server, ldap_protocol, ldap_charset, ldap_host, ldap_port, ldap_tls, ldap_binddn,
+						ldap_password,
+						be_users_basedn, be_users_filter, be_users_mapping,
+						be_groups_basedn, be_groups_filter, be_groups_mapping, be_groups_required, be_groups_assigned,
+						be_groups_admin,
+						fe_users_basedn, fe_users_filter, fe_users_mapping,
+						fe_groups_basedn, fe_groups_filter, fe_groups_mapping, fe_groups_required, fe_groups_assigned,
+						cas_host, cas_port, cas_logout_url',
 	),
 	'types' => array(
 		'1' => array(
@@ -22,11 +26,12 @@ $TCA['tx_igldapssoauth_config'] = array(
 					--div--;BE_USERS,
 						be_users_basedn, be_users_filter, be_users_mapping,
 					--div--;BE_GROUPS,
-						be_groups_basedn, be_groups_filter, be_groups_mapping,
+						be_groups_basedn, be_groups_filter, be_groups_mapping, be_groups_required, be_groups_assigned,
+						be_groups_admin,
 					--div--;FE_USERS,
 						fe_users_basedn, fe_users_filter, fe_users_mapping,
 					--div--;FE_GROUPS,
-						fe_groups_basedn, fe_groups_filter, fe_groups_mapping,
+						fe_groups_basedn, fe_groups_filter, fe_groups_mapping, fe_groups_required, fe_groups_assigned,
 					--div--;CAS,
 						cas_host,cas_uri,cas_service_url, cas_port,cas_logout_url'
 		),
@@ -193,6 +198,60 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'eval' => 'trim',
 			)
 		),
+		'be_groups_required' => array(
+			'exclude' => 1,
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.be_groups_required',
+			'config' => array(
+				'type' => 'select',
+				'foreign_table' => 'be_groups',
+				'size' => 6,
+				'minitems' => 0,
+				'maxitems' => 9999,
+				'wizards' => array(
+					'_PADDING' => 4,
+					'_VERTICAL' => 1,
+					'suggest' => array(
+						'type' => 'suggest'
+					),
+				),
+			)
+		),
+		'be_groups_assigned' => array(
+			'exclude' => 1,
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.be_groups_assigned',
+			'config' => array(
+				'type' => 'select',
+				'foreign_table' => 'be_groups',
+				'size' => 10,
+				'minitems' => 0,
+				'maxitems' => 9999,
+				'wizards' => array(
+					'_PADDING' => 4,
+					'_VERTICAL' => 1,
+					'suggest' => array(
+						'type' => 'suggest'
+					),
+				),
+			)
+		),
+		'be_groups_admin' => array(
+			'exclude' => 1,
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.be_groups_admin',
+			'config' => array(
+				'type' => 'select',
+				'foreign_table' => 'be_groups',
+				'size' => 6,
+				'minitems' => 0,
+				'maxitems' => 9999,
+				'wizards' => array(
+					'_PADDING' => 4,
+					'_VERTICAL' => 1,
+					'suggest' => array(
+						'type' => 'suggest'
+					),
+				),
+			)
+		),
 		'fe_users_basedn' => array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.fe_users_basedn',
@@ -243,6 +302,42 @@ $TCA['tx_igldapssoauth_config'] = array(
 			'config' => array(
 				'type' => 'text',
 				'eval' => 'trim',
+			)
+		),
+		'fe_groups_required' => array(
+			'exclude' => 1,
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.fe_groups_required',
+			'config' => array(
+				'type' => 'select',
+				'foreign_table' => 'fe_groups',
+				'size' => 6,
+				'minitems' => 0,
+				'maxitems' => 9999,
+				'wizards' => array(
+					'_PADDING' => 4,
+					'_VERTICAL' => 1,
+					'suggest' => array(
+						'type' => 'suggest'
+					),
+				),
+			)
+		),
+		'fe_groups_assigned' => array(
+			'exclude' => 1,
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.fe_groups_assigned',
+			'config' => array(
+				'type' => 'select',
+				'foreign_table' => 'fe_groups',
+				'size' => 10,
+				'minitems' => 0,
+				'maxitems' => 9999,
+				'wizards' => array(
+					'_PADDING' => 4,
+					'_VERTICAL' => 1,
+					'suggest' => array(
+						'type' => 'suggest'
+					),
+				),
 			)
 		),
 		'cas_host' => array(

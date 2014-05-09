@@ -26,13 +26,34 @@ Active Directory and Novell eDirectory. You can also use a CAS server to impleme
 Screenshots
 -----------
 
-.. figure:: ../Images/manual_html_m410efc6c.png
+.. figure:: ../Images/configuration-ldap.png
+	:alt: Configuration of the LDAP server
 
-.. figure:: ../Images/manual_html_m38a0858d.png
+	Configuration of the connection to the LDAP server
 
-.. figure:: ../Images/manual_html_75fdf107.png
 
-.. figure:: ../Images/manual_html_ad0ec73.png
+.. figure:: ../Images/configuration-be-groups.png
+	:alt: Configuration of backend groups
+
+	Configuration of the retrieval of backend user groups and which ones to assign automatically to authenticated users
+
+
+.. figure:: ../Images/configuration-fe-users.png
+	:alt: Configuration of the frontend users
+
+	Configuration of the frontend authentication and how to map LDAP attributes to TYPO3 fields
+
+
+.. figure:: ../Images/status.png
+	:alt: LDAP status
+
+	Status of the LDAP connection
+
+
+.. figure:: ../Images/search-wizard.png
+	:alt: Search wizard
+
+	Search wizard as backend module
 
 
 .. _sponsorship:

@@ -47,9 +47,17 @@ class tx_igldapssoauth_pi1 extends tslib_pibase {
 	 * @return	The content that is displayed on the website
 	 */
 	public function main($content, array $conf) {
-		$config = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']);
-		$uidArray = t3lib_div::intExplode(',', $config['uidConfiguration']);
-		tx_igldapssoauth_config::init(TYPO3_MODE, $uidArray[0]);
+		$configurationRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			'uid',
+			'tx_igldapssoauth_config',
+			'deleted=0 AND hidden=0'
+		);
+
+		if (count($configurationRecords) > 0) {
+			tx_igldapssoauth_config::init(TYPO3_MODE, $configurationRecords[0]['uid']);
+		} else {
+			die('No configuration records found.');
+		}
 
 		$this->conf = $conf;
 

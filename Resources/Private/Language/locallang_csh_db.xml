@@ -38,6 +38,9 @@
 			<label index="be_groups_filter.description">Filter to search for BE groups in the LDAP server.</label>
 			<label index="be_groups_filter.syntax">Sample if global option evaluateGroupsFromMembership is inactive: (memberuid={USERDN})</label>
 			<label index="be_groups_mapping.description">Assign LDAP attribute to a field of the user group.</label>
+			<label index="be_groups_required.description">List of backend user groups required to authorize authentication of LDAP users.</label>
+			<label index="be_groups_assigned.description">List of backend user groups to be assigned automatically when authenticating LDAP users.</label>
+			<label index="be_groups_admin.description">List of backend user groups to be promoted as TYPO3 administrators.</label>
 
 			<label index="fe_users_basedn.description">DN (Distinguished Name) to be used to look for FE users in the LDAP server.</label>
 			<label index="fe_users_basedn.syntax">E.g., ou=USERS,dc=infoglobe,dc=ca</label>
@@ -50,7 +53,8 @@
 			<label index="fe_groups_filter.description">Filter to search for FE groups in the LDAP server.</label>
 			<label index="fe_groups_filter.syntax">Sample if global option evaluateGroupsFromMembership is inactive: (memberuid={USERDN})</label>
 			<label index="fe_groups_mapping.description">Assign LDAP attribute to a field of the group record.</label>
-
+			<label index="fe_groups_required.description">List of frontend user groups required to authorize authentication of LDAP users.</label>
+			<label index="fe_groups_assigned.description">List of frontend user groups to be assigned automatically when authenticating LDAP users.</label>
 		</languageKey>
 
 		<languageKey index="fr" type="array">
@@ -81,6 +85,9 @@
 			<label index="be_groups_filter.description">Filtre de recherche des groupes BE sur le serveur LDAP.</label>
 			<label index="be_groups_filter.syntax">Exemple si l'option globale evaluateGroupsFromMembership n'est pas activée : (memberuid={USERDN})</label>
 			<label index="be_groups_mapping.description">Assigner la valeur d'un attribut LDAP à un champ de la table de l'usager.</label>
+			<label index="be_groups_required.description">Liste de groupes utilisateurs backend requis pour autoriser l'authentification d'utilisateurs LDAP.</label>
+			<label index="be_groups_assigned.description">Liste de groupes utilisateurs backend à assigner lors de l'authentification d'utilisateurs LDAP.</label>
+			<label index="be_groups_admin.description">Liste de groupes utilisateurs backend à promouvoir administrateurs TYPO3.</label>
 
 			<label index="fe_users_basedn.description">DN (Distinguished Name) de base pour la recherche des usagers FE sur le serveur LDAP.</label>
 			<label index="fe_users_basedn.syntax">Ex.: ou=USERS,dc=infoglobe,dc=ca</label>
@@ -93,6 +100,8 @@
 			<label index="fe_groups_filter.description">Filtre de recherche des groupes FE sur le serveur LDAP.</label>
 			<label index="fe_groups_filter.syntax">Exemple si l'option globale evaluateGroupsFromMembership n'est pas activée : (memberuid={USERDN})</label>
 			<label index="fe_groups_mapping.description">Assigner la valeur d'un attribut LDAP à un champ de la table de l'usager.</label>
+			<label index="fe_groups_required.description">Liste de groupes utilisateurs frontend requis pour autoriser l'authentification d'utilisateurs LDAP.</label>
+			<label index="fe_groups_assigned.description">Liste de groupes utilisateurs frontend à assigner lors de l'authentification d'utilisateurs LDAP.</label>
 		</languageKey>
 
 	</data>

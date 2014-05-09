@@ -37,6 +37,9 @@
 			<label index="tx_igldapssoauth_config.be_groups_basedn">Base DN:</label>
 			<label index="tx_igldapssoauth_config.be_groups_filter">Filter:</label>
 			<label index="tx_igldapssoauth_config.be_groups_mapping">Mapping:</label>
+			<label index="tx_igldapssoauth_config.be_groups_required">Required groups:</label>
+			<label index="tx_igldapssoauth_config.be_groups_assigned">Groups to be assigned:</label>
+			<label index="tx_igldapssoauth_config.be_groups_admin">TYPO3 administrator groups:</label>
 			<label index="tx_igldapssoauth_config.be_groups.tx_igldapssoauth_dn">Groups DN (Distinguished Name)</label>
 
 			<label index="tx_igldapssoauth_config.fe_users_basedn">Base DN:</label>
@@ -46,6 +49,8 @@
 			<label index="tx_igldapssoauth_config.fe_groups_basedn">Base DN:</label>
 			<label index="tx_igldapssoauth_config.fe_groups_filter">Filter:</label>
 			<label index="tx_igldapssoauth_config.fe_groups_mapping">Mapping:</label>
+			<label index="tx_igldapssoauth_config.fe_groups_required">Required groups:</label>
+			<label index="tx_igldapssoauth_config.fe_groups_assigned">Groups to be assigned:</label>
 			<label index="tx_igldapssoauth_config.fe_groups.tx_igldapssoauth_dn">Groups DN (Distinguished Name)</label>
 
 			<label index="tt_content.list_type_pi1">Central Authentication Service</label>
@@ -83,6 +88,9 @@
 			<label index="tx_igldapssoauth_config.be_groups_basedn">Base DN :</label>
 			<label index="tx_igldapssoauth_config.be_groups_filter">Filtre :</label>
 			<label index="tx_igldapssoauth_config.be_groups_mapping">Mapping :</label>
+			<label index="tx_igldapssoauth_config.be_groups_required">Groupes requis :</label>
+			<label index="tx_igldapssoauth_config.be_groups_assigned">Groupes à assigner :</label>
+			<label index="tx_igldapssoauth_config.be_groups_admin">Groupes d'administrateurs TYPO3 :</label>
 			<label index="tx_igldapssoauth_config.be_groups.tx_igldapssoauth_dn">Groups DN (Distinguished Name)</label>
 
 			<label index="tx_igldapssoauth_config.fe_users_basedn">Base DN :</label>
@@ -92,6 +100,8 @@
 			<label index="tx_igldapssoauth_config.fe_groups_basedn">Base DN :</label>
 			<label index="tx_igldapssoauth_config.fe_groups_filter">Filtre :</label>
 			<label index="tx_igldapssoauth_config.fe_groups_mapping">Mapping :</label>
+			<label index="tx_igldapssoauth_config.fe_groups_required">Groupes requis :</label>
+			<label index="tx_igldapssoauth_config.fe_groups_assigned">Groupes à assigner :</label>
 			<label index="tx_igldapssoauth_config.fe_groups.tx_igldapssoauth_dn">Groups DN (Distinguished Name)</label>
 
 			<label index="tt_content.list_type_pi1">Service d'authentification central</label>

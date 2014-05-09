@@ -119,9 +119,6 @@ class tx_igldapssoauth_module1 extends t3lib_SCbase {
 				';
 			}
 
-			// Initialize the LDAP connection:
-			tx_igldapssoauth_config::init('', 0);
-
 			// Render content:
 			$this->moduleContent();
 		} else {
@@ -150,10 +147,14 @@ class tx_igldapssoauth_module1 extends t3lib_SCbase {
 	protected function moduleContent() {
 		$this->content .= $this->doc->header($GLOBALS['LANG']->getLL('title'));
 
-		$uidArray = t3lib_div::intExplode(',', $this->conf['uidConfiguration']);
+		$configurationRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			'uid',
+			'tx_igldapssoauth_config',
+			'deleted=0 AND hidden=0'
+		);
 
-		foreach ($uidArray as $uid) {
-			tx_igldapssoauth_config::init(TYPO3_MODE, $uid);
+		foreach ($configurationRecords as $configurationRecord) {
+			tx_igldapssoauth_config::init(TYPO3_MODE, $configurationRecord['uid']);
 			$this->content .= '<h2>' . $GLOBALS['LANG']->getLL('view_configuration_title') . ' ' . tx_igldapssoauth_config::getName() . ' (' . tx_igldapssoauth_config::getUid() . ')</h2>';
 			$this->content .= '<hr />';
 

@@ -63,9 +63,14 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 	public function getUser() {
 		$user = FALSE;
 
-		$uidArray = t3lib_div::intExplode(',', $this->config['uidConfiguration']);
-		foreach ($uidArray as $uid) {
-			tx_igldapssoauth_config::init(TYPO3_MODE, $uid);
+		$configurationRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			'uid',
+			'tx_igldapssoauth_config',
+			'deleted=0 AND hidden=0'
+		);
+
+		foreach ($configurationRecords as $configurationRecord) {
+			tx_igldapssoauth_config::init(TYPO3_MODE, $configurationRecord['uid']);
 
 			// Enable feature
 			$userTemp = FALSE;

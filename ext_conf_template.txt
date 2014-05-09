@@ -4,10 +4,7 @@ checkConfiguration=0
 # cat=basic//2; type=boolean; label=Throw Exception if misconfigured: Recommended for new installation - LDAP authentication is not compatible with loginSecurityLevel set to "challenged" or "superchallenged" since the real password can never be sent against the LDAP repository. Instead of failing silently, the extension will throw an Exception at login. If the method appears to be brutal it will save a lot of headaches. Value of loginSecurityLevel should be handled manually to "normal" or even better "rsa" in the Install Tool.
 throwExceptionAtLogin = 1
 
-# cat=basic//3; type=string; label=Use configuration: Uid of the configuration record in table tx_igldapssoauth_config.
-uidConfiguration = 1
-
-# cat=basic//4; type=boolean; label=Force lower-case user name: If checked, user names will be always be stored in lower-cases. Useful for case-sensitive databases.
+# cat=basic//3; type=boolean; label=Force lower-case user name: If checked, user names will be always be stored in lower-cases. Useful for case-sensitive databases.
 forceLowerCaseUsername = 0
 
 # cat=basic/enable; type=boolean; label=Extract groups from membership: If checked, obtain groups from user using the membership attribute. Otherwise, gather groups object indirectly using the user's DN.
@@ -25,17 +22,8 @@ BEfailsafe = 0
 # cat=backend/enable; type=boolean; label=Disable Backend group synchronization: If checked, TYPO3 Backend user groups will not get updated.
 TYPO3BEGroupsNotSynchronize = 0
 
-# cat=backend/enable; type=string; label=Assign Backend groups: Comma-separated list of Backend user group uids to be automatically assigned to authenticated Backend users.
-assignBEGroups = 0
-
 # cat=backend/enable; type=boolean; label=Keep Backend groups: Keep the Backend user groups assigned locally.
 keepBEGroups = 0
-
-# cat=backend/enable; type=string; label=Mapping of TYPO3 Admininistrators with LDAP groups: Comma-separated list of Backend user group uids that trigger their members to be TYPO3 administrators.
-updateAdminAttribForGroups = 0
-
-# cat=backend/enable; type=string; label=Required LDAP groups: Comma-separated list of Backend user group uids required to accept login.
-requiredLDAPBEGroups = 0
 
 # cat=frontend/enable/1; type=boolean; label=Frontend LDAP authentication: Enable LDAP authentication for the frontend.
 enableFELDAPAuthentication = 0
@@ -49,14 +37,8 @@ TYPO3FEDeleteUserIfNoTYPO3Groups = 0
 # cat=frontend/enable; type=boolean; label=Frontend user group must exist: If no groups are found locally, the user may not log on.
 TYPO3FEGroupExist = 0
 
-# cat=frontend/enable; type=string; label=Required LDAP groups: Comma-separated list of Frontend user group uids required to accept login.
-requiredLDAPFEGroups = 0
-
 # cat=frontend/enable; type=boolean; label=Disable Frontend group synchronization: If checked, TYPO3 Frontend user groups will not get updated.
 TYPO3FEGroupsNotSynchronize = 0
-
-# cat=frontend/enable; type=string; label=Assign Frontend groups: Comma-separated list of Frontend user group uids to be automatically assigned to authenticated Frontend users.
-assignFEGroups = 0
 
 # cat=frontend/enable; type=boolean; label=Keep Frontend groups: Keep the Frontend user groups assigned locally.
 keepFEGroups = 0

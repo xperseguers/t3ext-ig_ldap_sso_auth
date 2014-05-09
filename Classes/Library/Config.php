@@ -46,10 +46,10 @@ class tx_igldapssoauth_config {
 	 * @param int $uid
 	 * @return void
 	 */
-	static public function init($typo3_mode = NULL, $uid = 0) {
+	static public function init($typo3_mode = NULL, $uid) {
 		$globalConfig = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']);
 		if (!is_array($globalConfig)) $globalConfig = array();
-		self::$uid = $uid ? $uid : $globalConfig['uidConfiguration'];
+		self::$uid = $uid;
 
 		// Default TYPO3_MODE is BE
 		self::$typo3_mode = $typo3_mode ? strtolower($typo3_mode) : strtolower(TYPO3_MODE);
@@ -71,9 +71,9 @@ class tx_igldapssoauth_config {
 		self::$be['DeleteUserIfNoLDAPGroups'] = 0;
 		self::$be['DeleteUserIfNoTYPO3Groups'] = 0;
 		self::$be['GroupsNotSynchronize'] = $config['TYPO3BEGroupsNotSynchronize'];
-		self::$be['requiredLDAPGroups'] = $config['requiredLDAPBEGroups'] ? $config['requiredLDAPBEGroups'] : 0;
-		self::$be['updateAdminAttribForGroups'] = $config['updateAdminAttribForGroups'] ? $config['updateAdminAttribForGroups'] : 0;
-		self::$be['assignGroups'] = $config['assignBEGroups'] ? $config['assignBEGroups'] : 0;
+		self::$be['requiredLDAPGroups'] = $config['be_groups_required'] ? $config['be_groups_required'] : 0;
+		self::$be['updateAdminAttribForGroups'] = $config['be_groups_admin'] ? $config['be_groups_admin'] : 0;
+		self::$be['assignGroups'] = $config['be_groups_assigned'] ? $config['be_groups_assigned'] : 0;
 		self::$be['keepTYPO3Groups'] = $config['keepBEGroups'];
 		self::$be['users']['basedn'] = explode('||', $config['be_users_basedn']);
 		self::$be['users']['filter'] = $config['be_users_filter'];
@@ -94,9 +94,9 @@ class tx_igldapssoauth_config {
 		self::$fe['DeleteUserIfNoTYPO3Groups'] = $config['TYPO3FEDeleteUserIfNoTYPO3Groups'];
 		self::$fe['DeleteUserIfNoLDAPGroups'] = $config['TYPO3FEDeleteUserIfNoLDAPGroups'];
 		self::$fe['GroupsNotSynchronize'] = $config['TYPO3FEGroupsNotSynchronize'];
-		self::$fe['assignGroups'] = $config['assignFEGroups'] ? $config['assignFEGroups'] : 0;
+		self::$fe['assignGroups'] = $config['fe_groups_assigned'] ? $config['fe_groups_assigned'] : 0;
 		self::$fe['keepTYPO3Groups'] = $config['keepFEGroups'];
-		self::$fe['requiredLDAPGroups'] = $config['requiredLDAPFEGroups'] ? $config['requiredLDAPFEGroups'] : 0;
+		self::$fe['requiredLDAPGroups'] = $config['fe_groups_required'] ? $config['fe_groups_required'] : 0;
 		self::$fe['users']['basedn'] = explode('||', $config['fe_users_basedn']);
 		self::$fe['users']['filter'] = $config['fe_users_filter'];
 		self::$fe['users']['mapping'] = self::make_user_mapping($config['fe_users_mapping'], $config['fe_users_filter']);

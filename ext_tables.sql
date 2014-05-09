@@ -29,12 +29,17 @@ CREATE TABLE tx_igldapssoauth_config (
 	be_groups_basedn tinytext NOT NULL,
 	be_groups_filter tinytext NOT NULL,
 	be_groups_mapping tinytext NOT NULL,
+	be_groups_required varchar(100) DEFAULT '' NOT NULL,
+	be_groups_assigned varchar(100) DEFAULT '' NOT NULL,
+	be_groups_admin varchar(100) DEFAULT '' NOT NULL,
 	fe_users_basedn tinytext NOT NULL,
 	fe_users_filter tinytext NOT NULL,
 	fe_users_mapping text NOT NULL,
 	fe_groups_basedn tinytext NOT NULL,
 	fe_groups_filter tinytext NOT NULL,
 	fe_groups_mapping tinytext NOT NULL,
+	fe_groups_required varchar(100) DEFAULT '' NOT NULL,
+	fe_groups_assigned varchar(100) DEFAULT '' NOT NULL,
 
 	PRIMARY KEY (uid),
 	KEY parent (pid)
@@ -47,8 +52,6 @@ CREATE TABLE be_groups (
 	tx_igldapssoauth_dn tinytext NOT NULL
 );
 
-
-
 #
 # Table structure for table 'be_users'
 #
@@ -56,16 +59,12 @@ CREATE TABLE be_users (
 	tx_igldapssoauth_dn tinytext NOT NULL
 );
 
-
-
 #
 # Table structure for table 'fe_groups'
 #
 CREATE TABLE fe_groups (
 	tx_igldapssoauth_dn tinytext NOT NULL
 );
-
-
 
 #
 # Table structure for table 'fe_users'

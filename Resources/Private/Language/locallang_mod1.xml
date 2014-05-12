@@ -29,6 +29,7 @@
 			<label index="view_configuration_backend_authentication_disable">Backend authentication disable.</label>
 			<label index="view_configuration_frontend_authentication">Frontend authentication</label>
 			<label index="view_configuration_frontend_authentication_disable">Frontend authentication disable.</label>
+			<label index="view_configuration_title_no_group">none</label>
 
 			<label index="wizard_search_title">Search wizard</label>
 			<label index="wizard_search_radio_be_users">be_users</label>
@@ -81,6 +82,7 @@
 			<label index="view_configuration_backend_authentication_disable">Authentification backend désactivée.</label>
 			<label index="view_configuration_frontend_authentication">Authentification frontend</label>
 			<label index="view_configuration_frontend_authentication_disable">Authentification frontend désactivée.</label>
+			<label index="view_configuration_title_no_group">aucun</label>
 
 			<label index="wizard_search_title">Assistant de recherche</label>
 			<label index="wizard_search_radio_be_users">be_users</label>

@@ -72,8 +72,8 @@ class tx_igldapssoauth_module1 extends t3lib_SCbase {
 	 * @return	void
 	 */
 	public function menuConfig() {
-		$this->MOD_MENU = Array(
-			'function' => Array(
+		$this->MOD_MENU = array(
+			'function' => array(
 				static::FUNCTION_VIEW_CONFIGURATION => $GLOBALS['LANG']->getLL('view_configuration'),
 				static::FUNCTION_WIZARD_SEARCH => $GLOBALS['LANG']->getLL('wizard_search'),
 				static::FUNCTION_IMPORT_GROUPS => $GLOBALS['LANG']->getLL('import_groups'),
@@ -221,7 +221,7 @@ class tx_igldapssoauth_module1 extends t3lib_SCbase {
 			tx_igldapssoauth_ldap::connect($ldapConfiguration);
 			$ldapConfiguration['password'] = $ldapConfiguration['password'] ? '********' : NULL;
 
-			$this->content .= t3lib_utility_Debug::viewArray($ldapConfiguration);
+			$this->content .= $this->configurationToTable($ldapConfiguration, '');
 
 			$this->content .= '<h3><strong>' . $GLOBALS['LANG']->getLL('view_configuration_ldap_connexion_status') . '</strong></h3>';
 			$this->content .= '<h4>' . t3lib_utility_Debug::viewArray(tx_igldapssoauth_ldap::get_status()) . '</h4>';
@@ -247,7 +247,7 @@ class tx_igldapssoauth_module1 extends t3lib_SCbase {
 		$this->content .= '<hr />';
 
 		if ($beConfiguration['LDAPAuthentication']) {
-			$this->content .= t3lib_utility_Debug::viewArray($beConfiguration);
+			$this->content .= $this->configurationToTable($beConfiguration, 'BE');
 		} else {
 			$this->content .= '<strong>' . $GLOBALS['LANG']->getLL('view_configuration_backend_authentication_disable') . '</strong>';
 		}
@@ -257,10 +257,71 @@ class tx_igldapssoauth_module1 extends t3lib_SCbase {
 		$this->content .= '<hr />';
 
 		if ($feConfiguration['LDAPAuthentication']) {
-			$this->content .= t3lib_utility_Debug::viewArray($feConfiguration);
+			$this->content .= $this->configurationToTable($feConfiguration, 'FE');
 		} else {
 			$this->content .= '<strong>' . $GLOBALS['LANG']->getLL('view_configuration_frontend_authentication_disable') . '</strong>';
 		}
+	}
+
+	/**
+	 * Converts the configuration array to a HTML table.
+	 *
+	 * @param array $configuration
+	 * @param string $typo3_mode
+	 * @return string
+	 */
+	protected function configurationToTable(array $configuration, $typo3_mode) {
+		$groupKeys = array('requiredLDAPGroups', 'updateAdminAttribForGroups', 'assignGroups');
+		$iconPath = t3lib_extMgm::extRelPath($this->extKey) . 'Resources/Public/Icons/';
+
+		$out = array();
+		$out[] = '<table border="1" style="font-family:Verdana, Arial; font-size:x-small;">';
+
+		foreach ($configuration as $key => $value) {
+			$out[] = '<tr>';
+			$out[] = '<td>' . htmlspecialchars($key) . '</td>';
+
+			if (in_array($key, $groupKeys)) {
+				$table = $typo3_mode === 'BE' ? 'be_groups' : 'fe_groups';
+				if ($value != '0') {
+					$uids = t3lib_div::intExplode(',', $value, TRUE);
+					$rows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+						'uid, title',
+						$table,
+						'uid IN (' . implode(',', $uids) . ')'
+					);
+					$value = '<ul>';
+					foreach ($rows as $row) {
+						$value .= '<li style="color:red">' . htmlspecialchars(sprintf('%s [%s]', $row['title'], $row['uid'])) . '</li>';
+					}
+					$value .= '</ul>';
+				} else {
+					$value = '<span style="color:red"><em>' . htmlspecialchars($GLOBALS['LANG']->getLL('view_configuration_title_no_group')) . '</em></span>';
+				}
+			} elseif (is_array($value)) {
+				$value = t3lib_utility_Debug::viewArray($value);
+			} elseif ($typo3_mode === 'BE' || $typo3_mode === 'FE' || $key === 'tls') {
+				// This is a boolean flag
+				$value = $value ? '1' : '0';
+
+				if ($value) {
+					$icon = $iconPath . 'tick.png';
+				} else {
+					$icon = $iconPath . 'cross.png';
+				}
+
+				$value = sprintf('<img src="%s" alt="%s" />', $icon, $value);
+			} else {
+				$value = '<span style="color:red">' . htmlspecialchars($value) . '</span>';
+			}
+
+			$out[] = '<td>' . $value . '</td>';
+			$out[] = '</tr>';
+		}
+
+		$out[] = '</table>';
+
+		return implode(LF, $out);
 	}
 
 	function wizard_search($search = array()) {

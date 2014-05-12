@@ -202,16 +202,6 @@ class tx_igldapssoauth_auth {
 				}
 			}
 
-			/** @var tx_saltedpasswords_salts $instance */
-			$instance = NULL;
-			if (t3lib_extMgm::isLoaded('saltedpasswords')) {
-				$instance = tx_saltedpasswords_salts_factory::getSaltingInstance(NULL, TYPO3_MODE);
-			}
-
-			// Set random password
-			$password = t3lib_div::generateRandomBytes(16);
-			$typo3_user[0]['password'] = $instance ? $instance->getHashedPassword($password) : md5($password);
-
 			if (tx_igldapssoauth_config::is_enable('forceLowerCaseUsername')) {
 				// Possible enhancement: use t3lib_cs::conv_case instead
 				$typo3_user[0]['username'] = strtolower($typo3_user[0]['username']);
@@ -222,6 +212,16 @@ class tx_igldapssoauth_auth {
 
 		if (!empty($typo3_user[0]['uid'])) {
 			$typo3_user[0]['deleted'] = 0;
+
+			// Set random password
+			/** @var tx_saltedpasswords_salts $instance */
+			$instance = NULL;
+			if (t3lib_extMgm::isLoaded('saltedpasswords')) {
+				$instance = tx_saltedpasswords_salts_factory::getSaltingInstance(NULL, TYPO3_MODE);
+			}
+			$password = t3lib_div::generateRandomBytes(16);
+			$typo3_user[0]['password'] = $instance ? $instance->getHashedPassword($password) : md5($password);
+
 			if ((empty($typo3_groups) && tx_igldapssoauth_config::is_enable('DeleteUserIfNoTYPO3Groups'))) {
 				$typo3_user[0]['deleted'] = 1;
 			}

@@ -22,12 +22,12 @@
 			<label index="view_configuration_ldap_domains">Restricted to domain(s):</label>
 			<label index="view_configuration_ldap">LDAP</label>
 			<label index="view_configuration_ldap_disable">No host name specified.</label>
-			<label index="view_configuration_ldap_connexion_status">Connexion status</label>
+			<label index="view_configuration_ldap_connexion_status">Connexion Status</label>
 			<label index="view_configuration_cas">CAS</label>
 			<label index="view_configuration_cas_disable">CAS authentication disable.</label>
-			<label index="view_configuration_backend_authentication">Backend authentication</label>
+			<label index="view_configuration_backend_authentication">Backend Authentication</label>
 			<label index="view_configuration_backend_authentication_disable">Backend authentication disable.</label>
-			<label index="view_configuration_frontend_authentication">Frontend authentication</label>
+			<label index="view_configuration_frontend_authentication">Frontend Authentication</label>
 			<label index="view_configuration_frontend_authentication_disable">Frontend authentication disable.</label>
 			<label index="view_configuration_title_no_group">none</label>
 

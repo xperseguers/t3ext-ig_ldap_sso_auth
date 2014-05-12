@@ -186,7 +186,7 @@ class tx_igldapssoauth_utility_Ldap {
 			return TRUE;
 		}
 
-		// No connexion identifer (cid).
+		// No connection identifer (cid).
 		self::$status['search']['status'] = ldap_error(self::$cid);
 		return FALSE;
 	}

@@ -229,7 +229,7 @@ CSS;
 
 			$this->content .= $this->exportArrayAsTable($ldapConfiguration, $title);
 
-			$title = $GLOBALS['LANG']->getLL('view_configuration_ldap_connexion_status');
+			$title = $GLOBALS['LANG']->getLL('view_configuration_ldap_connection_status');
 			$this->content .= $this->exportArrayAsTable(tx_igldapssoauth_ldap::get_status(), $title);
 		} else {
 			$this->content .= $this->exportArrayAsTable($GLOBALS['LANG']->getLL('view_configuration_ldap_disable'), $title);

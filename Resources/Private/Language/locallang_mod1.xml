@@ -22,7 +22,7 @@
 			<label index="view_configuration_ldap_domains">Restricted to domain(s):</label>
 			<label index="view_configuration_ldap">LDAP</label>
 			<label index="view_configuration_ldap_disable">No host name specified.</label>
-			<label index="view_configuration_ldap_connexion_status">Connexion Status</label>
+			<label index="view_configuration_ldap_connection_status">Connection Status</label>
 			<label index="view_configuration_cas">CAS</label>
 			<label index="view_configuration_cas_disable">CAS authentication disable.</label>
 			<label index="view_configuration_backend_authentication">Backend Authentication</label>
@@ -75,7 +75,7 @@
 			<label index="view_configuration_ldap_domains">Limité au(x) domaine(s) :</label>
 			<label index="view_configuration_ldap">LDAP</label>
 			<label index="view_configuration_ldap_disable">Aucun serveur spécifié.</label>
-			<label index="view_configuration_ldap_connexion_status">Statut de connexion</label>
+			<label index="view_configuration_ldap_connection_status">Statut de connexion</label>
 			<label index="view_configuration_cas">CAS</label>
 			<label index="view_configuration_cas_disable">Authentification CAS désactivée.</label>
 			<label index="view_configuration_backend_authentication">Authentification backend</label>

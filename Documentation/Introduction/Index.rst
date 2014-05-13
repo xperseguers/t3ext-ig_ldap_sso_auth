@@ -69,5 +69,5 @@ IT department of the Swiss city Neuchâtel and realized by Causal Sàrl.
 Further information:
 
 - Infoglobe: http://www.infoglobe.ca/
-- Centre électronique de gestion (CEG): `http://www.neuchatelville.ch/ <http://www.neuchatelville.ch/profils/admin.asp/3-3-7174-5001-4803-0-5028-2-0/1-11-160-14801-5001-1001-1-1-2-1/2-1-4803-5001-5028-2-0-100/>`_
+- Centre électronique de gestion (CEG): `http://www.neuchatelville.ch/ <http://www.neuchatelville.ch/ceg>`_
 - Causal Sàrl: https://www.causal.ch/

@@ -38,8 +38,12 @@ class tx_igldapssoauth_typo3_group {
 		// Get users table structure.
 		$typo3_group_default = $GLOBALS['TYPO3_DB']->admin_get_fields($table);
 
-		foreach ($typo3_group_default as $field => $value) {
-			$typo3_group[$field] = NULL;
+		foreach ($typo3_group_default as $field => $configuration) {
+			if ($configuration['Null'] === 'NO' && $configuration['Default'] === NULL) {
+				$typo3_group[$field] = '';
+			} else {
+				$typo3_group[$field] = $configuration['Default'];
+			}
 		}
 
 		return $typo3_group;

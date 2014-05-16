@@ -40,7 +40,11 @@ class tx_igldapssoauth_typo3_user {
 		$typo3_user_default = $GLOBALS['TYPO3_DB']->admin_get_fields($table);
 
 		foreach ($typo3_user_default as $field => $configuration) {
-			$typo3_user[0][$field] = $configuration['Null'] === 'NO' ? $configuration['Default'] : NULL;
+			if ($configuration['Null'] === 'NO' && $configuration['Default'] === NULL) {
+				$typo3_user[0][$field] = '';
+			} else {
+				$typo3_user[0][$field] = $configuration['Default'];
+			}
 		}
 
 		return $typo3_user;

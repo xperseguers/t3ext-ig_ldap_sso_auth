@@ -2,7 +2,8 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2007-2014 Michael Gagnon <mgagnon@infoglobe.ca>
+ *  (c) 2014 Xavier Perseguers <xavier@typo3.org>
+ *  (c) 2007-2013 Michael Gagnon <mgagnon@infoglobe.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -34,9 +35,10 @@ $GLOBALS['BE_USER']->modAccess($MCONF, 1);
 /**
  * Module 'LDAP configuration' for the 'ig_ldap_sso_auth' extension.
  *
- * @author	Michael Gagnon <mgagnon@infoglobe.ca>
- * @package	TYPO3
- * @subpackage	tx_igldapssoauth
+ * @author     Xavier Perseguers <xavier@typo3.org>
+ * @author     Michael Gagnon <mgagnon@infoglobe.ca>
+ * @package    TYPO3
+ * @subpackage ig_ldap_sso_auth
  */
 class tx_igldapssoauth_module1 extends t3lib_SCbase {
 

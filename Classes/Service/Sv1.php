@@ -2,7 +2,8 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2007-2014 Michael Gagnon <mgagnon@infoglobe.ca>
+ *  (c) 2014 Xavier Perseguers <xavier@typo3.org>
+ *  (c) 2007-2013 Michael Gagnon <mgagnon@infoglobe.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,9 +26,10 @@
 /**
  * LDAP / SSO authentication service.
  *
- * @author	Michael Gagnon <mgagnon@infoglobe.ca>
- * @package	TYPO3
- * @subpackage	ig_ldap_sso_auth
+ * @author     Xavier Perseguers <xavier@typo3.org>
+ * @author     Michael Gagnon <mgagnon@infoglobe.ca>
+ * @package    TYPO3
+ * @subpackage ig_ldap_sso_auth
  */
 class tx_igldapssoauth_sv1 extends tx_sv_auth {
 
@@ -144,10 +146,11 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 	}
 
 	/**
-	 * Authenticate a user (Check various conditions for the user that might invalidate its authentication, eg. password match, domain, IP, etc.)
+	 * Authenticates a user (Check various conditions for the user that might invalidate its
+	 * authentication, eg. password match, domain, IP, etc.).
 	 *
-	 * @param	array		Data of user.
-	 * @return	boolean
+	 * @param array $user Data of user.
+	 * @return int Either 100 if login failed or 200 if login succeeded
 	 */
 	public function authUser($user) {
 

@@ -23,6 +23,10 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+if (version_compare(TYPO3_branch, '6.0', '<')) {
+	require_once(t3lib_extMgm::extPath('sv') . 'class.tx_sv_auth.php');
+}
+
 /**
  * LDAP / SSO authentication service.
  *

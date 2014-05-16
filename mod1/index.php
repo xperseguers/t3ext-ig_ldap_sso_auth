@@ -76,9 +76,9 @@ class tx_igldapssoauth_module1 extends t3lib_SCbase {
 	public function menuConfig() {
 		$this->MOD_MENU = array(
 			'function' => array(
-				static::FUNCTION_VIEW_CONFIGURATION => $GLOBALS['LANG']->getLL('view_configuration'),
-				static::FUNCTION_WIZARD_SEARCH => $GLOBALS['LANG']->getLL('wizard_search'),
-				static::FUNCTION_IMPORT_GROUPS => $GLOBALS['LANG']->getLL('import_groups'),
+				self::FUNCTION_VIEW_CONFIGURATION => $GLOBALS['LANG']->getLL('view_configuration'),
+				self::FUNCTION_WIZARD_SEARCH => $GLOBALS['LANG']->getLL('wizard_search'),
+				self::FUNCTION_IMPORT_GROUPS => $GLOBALS['LANG']->getLL('import_groups'),
 			)
 		);
 
@@ -169,16 +169,16 @@ CSS;
 			$this->content .= '<hr />';
 
 			switch ((string)$this->MOD_SETTINGS['function']) {
-				case static::FUNCTION_VIEW_CONFIGURATION:
+				case self::FUNCTION_VIEW_CONFIGURATION:
 					$this->view_configuration();
 					break;
-				case static::FUNCTION_WIZARD_SEARCH:
+				case self::FUNCTION_WIZARD_SEARCH:
 					$this->wizard_search(t3lib_div::_GP('search'));
 					break;
-				case static::FUNCTION_WIZARD_AUTHENTICATION:
+				case self::FUNCTION_WIZARD_AUTHENTICATION:
 					//$this->wizard_authentication(t3lib_div::_GP('authentication'));
 					break;
-				case static::FUNCTION_IMPORT_GROUPS:
+				case self::FUNCTION_IMPORT_GROUPS:
 					$this->import_groups();
 					break;
 			}

@@ -35,10 +35,10 @@ LDAP / SSO Authentication
 		2000-2014
 
 	:Author:
-		Team Infoglobe, Xavier Perseguers
+		Xavier Perseguers, Team Infoglobe
 
 	:Email:
-		contact@infoglobe.ca, xavier@typo3.org
+		xavier@typo3.org, contact@infoglobe.ca
 
 	:License:
 		This document is published under the Open Content License
@@ -66,3 +66,4 @@ LDAP / SSO Authentication
 	Introduction/Index
 	UsersManual/Index
 	AdministratorManual/Index
+	Targets

@@ -7,12 +7,12 @@ conf.py:
   copyright: 2000-2014
   project: LDAP / SSO Authentication
   version: 1.2
-  release: 1.2.0-dev
+  release: 1.2.0
   latex_documents:
   - - Index
     - ig_ldap_sso_auth.tex
     - LDAP / SSO Authentication
-    - Team Infoglobe \and Xavier Perseguers
+    - Xavier Perseguers \and Team Infoglobe
     - manual
   latex_elements:
     papersize: a4paper

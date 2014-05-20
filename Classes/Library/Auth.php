@@ -54,7 +54,7 @@ class tx_igldapssoauth_auth {
 	 *
 	 * @param string $username
 	 * @param string $password
-	 * @return array|FALSE
+	 * @return bool|array TRUE or array of user info on success, otherwise FALSE
 	 */
 	static public function ldap_auth($username = NULL, $password = NULL) {
 		if ($username && tx_igldapssoauth_config::is_enable('forceLowerCaseUsername')) {

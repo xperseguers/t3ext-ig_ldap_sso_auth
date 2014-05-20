@@ -19,7 +19,7 @@ TYPO3BEGroupExist = 0
 # cat=backend/enable; type=boolean; label=Backend user must exist: If checked, users that are not already present in TYPO3 may not log on.
 TYPO3BEUserExist = 0
 
-# cat=backend/enable; type=boolean; label=Enable local Backend users: If checked, Backend users found in TYPO3 may only log on if their user name does not exist in LDAP.
+# cat=backend/enable; type=boolean; label=Enable local Backend users: If checked, Backend users without a reference to LDAP (e.g., "admin") may log on.
 BEfailsafe = 0
 
 # cat=backend/enable; type=boolean; label=Disable Backend group synchronization: If checked, TYPO3 Backend user groups will not get updated.

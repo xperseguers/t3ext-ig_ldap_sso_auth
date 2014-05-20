@@ -82,12 +82,12 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 			}
 
 			// Enable feature
-			$userTemp = FALSE;
+			$userRecordOrIsValid = FALSE;
 
 			// CAS authentication
 			if (tx_igldapssoauth_config::is_enable('CASAuthentication')) {
 
-				$userTemp = tx_igldapssoauth_auth::cas_auth();
+				$userRecordOrIsValid = tx_igldapssoauth_auth::cas_auth();
 
 				// Authenticate user from LDAP
 			} elseif ($this->login['status'] === 'login' && $this->login['uident']) {
@@ -122,15 +122,20 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 				//	$password = $this->backend->decrypt($key, substr($password, 4));
 				//}
 
-				$userTemp = tx_igldapssoauth_auth::ldap_auth($this->login['uname'], $password);
+				$userRecordOrIsValid = tx_igldapssoauth_auth::ldap_auth($this->login['uname'], $password);
 			}
-			if (is_array($userTemp)) {
-				$user = $userTemp;
+			if (is_array($userRecordOrIsValid)) {
+				$user = $userRecordOrIsValid;
+				break;
+			} elseif ($userRecordOrIsValid) {
+				// Authentication is valid
 				break;
 			}
+
+			// Continue and try with next configuration record...
 		}
 
-		if (!$user) {
+		if (!$user && $userRecordOrIsValid) {
 			$user = $this->fetchUserRecord($this->login['uname']);
 		}
 
@@ -154,30 +159,28 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 	 * authentication, eg. password match, domain, IP, etc.).
 	 *
 	 * @param array $user Data of user.
-	 * @return int Either 100 if login failed or 200 if login succeeded
+	 * @return int|FALSE
 	 */
 	public function authUser($user) {
 
-		// 100 -> login failed
-		// 200 -> login success
-		$OK = 100;
+		// FALSE -> login failed and authentication should stop
+		// 100 -> login failed but authentication should try next service
+		// 200 -> login succeeded
+		if (TYPO3_MODE === 'BE') {
+			$OK = tx_igldapssoauth_config::is_enable('BEfailsafe') ? 100 : FALSE;
+		} else {
+			$OK = 100;
+		}
 
-		if (($this->login['uident'] && $this->login['uname']) || (tx_igldapssoauth_config::is_enable('CASAuthentication') && $user)) {
+		if ($this->login['uident'] && $this->login['uname'] && (!empty($user['tx_igldapssoauth_dn']) || tx_igldapssoauth_config::is_enable('CASAuthentication'))) {
 			$uidentComp = FALSE;
-			global $TYPO3_CONF_VARS;
-			// Checking password match for user:
-			if (tx_igldapssoauth_config::is_enable('BEfailsafe')) {
-				$oldSecurity = trim($TYPO3_CONF_VARS[TYPO3_MODE]['loginSecurityLevelOld']);
-				$this->pObj->security_level = !empty($oldSecurity) ? $oldSecurity : 'superchallenged';
-				$this->loginSec = $this->pObj->getLoginFormData();
-				$this->pObj->challengeStoredInCookie = 0;
-				$uidentComp = $this->compareUident($user, $this->loginSec, $this->pObj->security_level);
-			}
 
-			$OK = isset($user['tx_igldapssoauth_from']) ? 200 : $uidentComp;
-			if (!$OK) {
+			if (isset($user['tx_igldapssoauth_from'])) {
+				$OK = 200;
+			} elseif (TYPO3_MODE === 'BE' && tx_igldapssoauth_config::is_enable('BEfailsafe')) {
+				return 100;
+			} else {
 				// Failed login attempt (wrong password) - write that to the log!
-
 				if ($this->writeAttemptLog) {
 					$this->writelog(255, 3, 3, 1,
 						"Login-attempt from %s (%s), username '%s', password not accepted!",
@@ -187,9 +190,8 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 				if ($this->writeDevLog) {
 					t3lib_div::devLog('Password not accepted: ' . $this->login['uident'], 'tx_igldapssoauth_sv1', 2);
 				}
-			}
-			else {
-				$OK = 200;
+
+				$OK = FALSE;
 			}
 
 			// Checking the domain (lockToDomain)
@@ -205,10 +207,6 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 			}
 		}
 
-		// Make sure $OK returns the right value which must either 100 (login KO) or 200 (login OK)
-		if ($OK === FALSE) {
-			$OK = 100;
-		}
 		return $OK;
 	}
 

@@ -36,6 +36,8 @@ if ($EXT_CONFIG['enableFELDAPAuthentication']) {
 if ($EXT_CONFIG['enableBELDAPAuthentication']) {
 	$subTypesArr[] = 'getUserBE';
 	$subTypesArr[] = 'authUserBE';
+
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/setup/mod/index.php']['modifyUserDataBeforeSave'][] = 'EXT:' . $_EXTKEY . '/Classes/Hooks/SetupModuleController.php:Tx_IgLdapSsoAuth_Hooks_SetupModuleController->preprocessData';
 }
 if ($EXT_CONFIG['enableFECASAuthentication']) {
 	$subTypesArr[] = 'getUserFE';

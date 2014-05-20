@@ -47,6 +47,15 @@ class tx_igldapssoauth_ldap {
 		return TRUE;
 	}
 
+	/**
+	 * Returns the corresponding DN if a given user is provided, otherwise FALSE.
+	 *
+	 * @param string $username
+	 * @param string $password
+	 * @param string $basedn
+	 * @param string $filter
+	 * @return bool|string
+	 */
 	static public function valid_user($username = NULL, $password = NULL, $basedn = NULL, $filter = NULL) {
 
 		// If user found on ldap server.
@@ -67,7 +76,7 @@ class tx_igldapssoauth_ldap {
 					return $dn;
 				}
 				else {
-					return TRUE;
+					return FALSE;	// Password does not match
 				}
 
 				// If enable, SSO authentication without password.

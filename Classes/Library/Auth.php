@@ -108,8 +108,13 @@ class tx_igldapssoauth_auth {
 		// Get user pid from user mapping.
 		$typo3_users_pid = tx_igldapssoauth_config::get_pid(self::$config['users']['mapping']);
 		//$typo3_users_pid = tx_igldapssoauth_config::get_pid($this->config['users']['mapping']) ? tx_igldapssoauth_config::get_pid($this->config['users']['mapping']) : $this->authInfo['db_user']['checkPidList'];
+
 		// Get TYPO3 user from username, DN and pid.
 		$typo3_user = self::get_typo3_user($username, $userdn, $typo3_users_pid);
+		if (!$typo3_user) {
+			// Non-existing local users are not allowed to authenticate
+			return FALSE;
+		}
 
 		// User is valid only if exist in TYPO3.
 		// Get LDAP groups from LDAP user.
@@ -359,8 +364,22 @@ class tx_igldapssoauth_auth {
 	 */
 	static protected function get_typo3_user($username = NULL, $userdn = NULL, $pid = 0) {
 		if ($typo3_user = tx_igldapssoauth_typo3_user::select(self::$pObj->authInfo['db_user']['table'], 0, $pid, $username, $userdn)) {
+			if (tx_igldapssoauth_config::is_enable('IfUserExist')) {
+				// Ensure every returned record is active
+				$numberOfUsers = count($typo3_user);
+				for ($i = 0; $i < $numberOfUsers; $i++) {
+					if (!empty($typo3_user[$i]['deleted'])) {
+						// User is deleted => behave as if it did not exist at all!
+						// Note: if user is inactive (disable=1), this will be catched by TYPO3 automatically
+						unset($typo3_user[$i]);
+					}
+				}
+
+				// Reset the array's indices
+				$typo3_user = array_values($typo3_user);
+			}
 			return $typo3_user;
-		} else {
+		} elseif (!tx_igldapssoauth_config::is_enable('IfUserExist')) {
 			$typo3_user = tx_igldapssoauth_typo3_user::init(self::$pObj->authInfo['db_user']['table']);
 
 			$typo3_user[0]['pid'] = $pid;

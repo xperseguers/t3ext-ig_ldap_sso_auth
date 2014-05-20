@@ -51,6 +51,7 @@ class tx_igldapssoauth_typo3_user {
 	}
 
 	static public function select($table = NULL, $uid = 0, $pid = 0, $username = NULL, $dn = NULL) {
+		$user = NULL;
 
 		// Search with uid and pid.
 		if ($uid) {
@@ -61,21 +62,20 @@ class tx_igldapssoauth_typo3_user {
 			);
 
 			// Search with DN, username and pid.
-		} else {
+		} elseif (!empty($dn)) {
 			$user = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 				'*',
 				$table,
 				'tx_igldapssoauth_dn=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($dn, $table)
 					. ($pid ? ' AND pid IN (' . intval($pid) . ')' : '')
 			);
-			if (!$user) {
-				$user = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
-					'*',
-					$table,
-					'username=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($username, $table)
-						. ($pid ? ' AND pid IN (' . intval($pid) . ')' : '')
-				);
-			}
+		} elseif (!empty($username)) {
+			$user = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+				'*',
+				$table,
+				'username=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($username, $table)
+					. ($pid ? ' AND pid IN (' . intval($pid) . ')' : '')
+			);
 		}
 
 		// Return TYPO3 user.

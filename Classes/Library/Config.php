@@ -75,7 +75,7 @@ class tx_igldapssoauth_config {
 		self::$be['forceLowerCaseUsername'] = $config['forceLowerCaseUsername'] ? $config['forceLowerCaseUsername'] : 0;
 		self::$be['evaluateGroupsFromMembership'] = $config['evaluateGroupsFromMembership'];
 		self::$be['IfUserExist'] = $config['TYPO3BEUserExist'];
-		self::$be['IfGroupExist'] = 0;
+		self::$be['IfGroupExist'] = $config['TYPO3BEGroupExist'];
 		self::$be['BEfailsafe'] = $config['BEfailsafe'];
 		self::$be['DeleteUserIfNoLDAPGroups'] = 0;
 		self::$be['DeleteUserIfNoTYPO3Groups'] = 0;

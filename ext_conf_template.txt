@@ -13,6 +13,9 @@ evaluateGroupsFromMembership = 0
 # cat=backend/enable/1; type=boolean; label=Backend LDAP authentication: Enable LDAP authentication for the backend.
 enableBELDAPAuthentication = 0
 
+# cat=backend/enable; type=boolean; label=Backend user group must exist: If no groups are found locally, the user may not log on.
+TYPO3BEGroupExist = 0
+
 # cat=backend/enable; type=boolean; label=Backend user must exist: If checked, users that are not already present in TYPO3 may not log on.
 TYPO3BEUserExist = 0
 

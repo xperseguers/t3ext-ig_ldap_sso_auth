@@ -55,7 +55,7 @@ class tx_igldapssoauth_ldap_group {
 	}
 
 	static public function select_from_userdn($userdn = NULL, $basedn = NULL, $filter = NULL, $attributes = array()) {
-		return tx_igldapssoauth_ldap::search($basedn, str_replace('{USERDN}', $userdn, $filter), $attributes);
+		return tx_igldapssoauth_ldap::search($basedn, str_replace('{USERDN}', tx_igldapssoauth_ldap::escapeDnForFilter($userdn), $filter), $attributes);
 	}
 
 	static public function get_membership($ldap_user = array(), $mapping = array()) {

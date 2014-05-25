@@ -112,6 +112,33 @@ class tx_igldapssoauth_ldap {
 		tx_igldapssoauth_utility_Ldap::disconnect();
 	}
 
+	/**
+	 * Escapes a string for use in a LDAP filter statement.
+	 *
+	 * To find the groups of a user by filtering the groups where the
+	 * authenticated user is in the members list some characters
+	 * in the users distinguished name can make the filter expression
+	 * invalid.
+	 *
+	 * At the moment this problem was experienced with brackets which
+	 * are also used in the filter, e.g.:
+	 * (&(objectClass=group)(member={USERDN}))
+	 *
+	 * Additionally a single backslash (that is used for escaping special
+	 * characters like commas) needs to be escaped. E.g.:
+	 * CN=Lastname\, Firstname,DC=company,DC=tld needs to be escaped like:
+	 * CN=Lastname\\, Firstname,DC=company,DC=tld
+	 *
+	 * @param string $dn
+	 * @return string Escaped $dn
+	 */
+	static public function escapeDnForFilter($dn) {
+		$escapeCharacters = array('(', ')', '\\');
+		foreach ($escapeCharacters as $escapeCharacter) {
+			$dn = str_replace($escapeCharacter, '\\' . $escapeCharacter, $dn);
+		}
+		return $dn;
+	}
 }
 
 if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/lib/class.tx_igldapssoauth_ldap.php'])) {

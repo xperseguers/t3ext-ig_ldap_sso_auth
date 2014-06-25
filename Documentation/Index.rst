@@ -59,11 +59,23 @@ LDAP / SSO Authentication
 
 	**Table of Contents**
 
-.. toctree::
-	:maxdepth: 5
-	:titlesonly:
+	.. toctree::
+		:maxdepth: 5
+		:titlesonly:
 
-	Introduction/Index
-	UsersManual/Index
-	AdministratorManual/Index
-	Targets
+		Introduction/Index
+		UsersManual/Index
+		AdministratorManual/Index
+		Links
+		Targets
+
+.. only:: latex
+
+	.. toctree::
+		:maxdepth: 5
+		:titlesonly:
+
+		Introduction/Index
+		UsersManual/Index
+		AdministratorManual/Index
+		Targets

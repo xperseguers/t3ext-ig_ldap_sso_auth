@@ -12,6 +12,8 @@
 			<label index="mlang_labels_tablabel">LDAP configuration</label>
 
 			<label index="title">LDAP / SSO service configuration</label>
+			<label index="configuration_missing.title">No Configuration Records</label>
+			<label index="configuration_missing.message"><![CDATA[This module cannot be used until you create at least one configuration record. Please refer to the <a href="%s" target="_blank">administrator manual</a> for further information.]]></label>
 
 			<label index="view_configuration">Status</label>
 			<label index="wizard_search">Search wizard</label>
@@ -65,6 +67,8 @@
 			<label index="mlang_labels_tablabel">Configuration LDAP</label>
 
 			<label index="title">LDAP / SSO service configuration</label>
+			<label index="configuration_missing.title">Aucun enregistrement de configuration</label>
+			<label index="configuration_missing.message"><![CDATA[Ce module ne peut pas être utilisé tant que vous n'avez pas créé au moins un enregistrement de configuration. Veuillez vous référer au <a href="%s" target="_blank">manuel de l'administrateur</a> pour plus d'informations.]]></label>
 
 			<label index="view_configuration">Statut</label>
 			<label index="wizard_search">Assistant de recherche</label>

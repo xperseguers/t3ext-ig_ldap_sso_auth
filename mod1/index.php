@@ -155,13 +155,29 @@ CSS;
 	 * @return void
 	 */
 	protected function moduleContent() {
-		$this->content .= $this->doc->header($GLOBALS['LANG']->getLL('title'));
-
 		$configurationRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'uid',
 			'tx_igldapssoauth_config',
 			'deleted=0 AND hidden=0'
 		);
+
+		if (count($configurationRecords) === 0) {
+			$message = sprintf(
+				$GLOBALS['LANG']->getLL('configuration_missing.message'),
+				'http://docs.typo3.org/typo3cms/extensions/ig_ldap_sso_auth/AdministratorManual/Index.html'
+			);
+			$flashMessage = t3lib_div::makeInstance(
+				't3lib_FlashMessage',
+				$message,
+				$GLOBALS['LANG']->getLL('configuration_missing.title'),
+				t3lib_FlashMessage::WARNING,
+				TRUE
+			);
+			t3lib_FlashMessageQueue::addMessage($flashMessage);
+			return;
+		}
+
+		$this->content .= $this->doc->header($GLOBALS['LANG']->getLL('title'));
 
 		foreach ($configurationRecords as $configurationRecord) {
 			tx_igldapssoauth_config::init(TYPO3_MODE, $configurationRecord['uid']);

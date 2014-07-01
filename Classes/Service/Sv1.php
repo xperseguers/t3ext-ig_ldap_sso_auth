@@ -58,7 +58,7 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 	public function __construct() {
 		$config = $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey];
 		$this->config = $config ? unserialize($config) : array();
-		tx_igldapssoauth_auth::init($this);
+		tx_igldapssoauth_auth::setAuthenticationService($this);
 	}
 
 	/**

@@ -75,13 +75,18 @@ class tx_igldapssoauth_scheduler_synchroniseusers extends tx_scheduler_Task {
 
 			// Valid user only if username and connect to LDAP server.
 			if (tx_igldapssoauth_ldap::connect(tx_igldapssoauth_config::getLdapConfiguration())) {
-				$this->config = tx_igldapssoauth_config::getFeConfiguration();
+				$this->config = tx_igldapssoauth_auth::initializeConfiguration();
 
 				$search = tx_igldapssoauth_utility_Ldap::search($this->config['users']['basedn'], str_replace('{USERNAME}', '*', $this->config['users']['filter']), array('dn'));
 				$userList = tx_igldapssoauth_utility_Ldap::get_entries();
 
 				$this->authInfo['db_user']['table'] = $this->table;
 				$this->authInfo['db_groups']['table'] = 'fe_groups';
+
+				/** @var tx_igldapssoauth_sv1 $sv1 */
+				$sv1 = t3lib_div::makeInstance('tx_igldapssoauth_sv1');
+				$sv1->authInfo = $this->authInfo;
+
 				$nbres = $userList['count'];
 				unset($userList['count']);
 

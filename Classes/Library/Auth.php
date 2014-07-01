@@ -101,6 +101,10 @@ class tx_igldapssoauth_auth {
 		// User is valid. Get it from DN.
 		$ldap_user = self::get_ldap_user($userdn);
 
+		if (!is_array($ldap_user[0])) {
+			return FALSE;
+		}
+
 		if (!$username) {
 			$userAttribute = tx_igldapssoauth_config::get_username_attribute(self::$config['users']['filter']);
 			$username = $ldap_user[0][$userAttribute][0];

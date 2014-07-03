@@ -268,7 +268,11 @@ class tx_igldapssoauth_utility_Ldap {
 		self::$ldap_charset = $csObj->parse_charset($charset ? $charset : 'utf-8');
 
 		// TYPO3 charset
-		self::$local_charset = $csObj->parse_charset($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'] ? $GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'] : 'iso-8859-1');
+		if (version_compare(TYPO3_version, '4.7.0', '<')) {
+			self::$local_charset = $csObj->parse_charset($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'] ? $GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'] : 'iso-8859-1');
+		} else {
+			self::$local_charset = 'utf-8';
+		}
 	}
 
 	static public function convert_charset_array($arr, $char1, $char2) {

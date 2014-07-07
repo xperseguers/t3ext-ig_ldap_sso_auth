@@ -531,8 +531,7 @@ CSS;
 						$typo3_group = tx_igldapssoauth_auth::merge($ldap_group, $typo3_groups[$index], $config['groups']['mapping']);
 						if (isset($import_groups[$typo3_mode]) && in_array($typo3_group['tx_igldapssoauth_dn'], $import_groups[$typo3_mode])) {
 							unset($typo3_group['parentGroup']);
-							$typo3_group = tx_igldapssoauth_typo3_group::insert($typo3_mode . '_groups', $typo3_group);
-							$typo3_group = $typo3_group[0];
+							$typo3_group = tx_igldapssoauth_typo3_group::create($typo3_mode . '_groups', $typo3_group);
 
 							$fieldParent = $config['groups']['mapping']['parentGroup'];
 							preg_match("`<([^$]*)>`", $fieldParent, $attribute);
@@ -583,7 +582,7 @@ CSS;
 
 	function setParentGroup($parentsLDAPGroups, $feildParent, $childUid, $typo3_group_pid, $typo3_mode) {
 		foreach ($parentsLDAPGroups as $parentDn) {
-			$typo3ParentGroup = tx_igldapssoauth_typo3_group::select($typo3_mode . '_groups', FALSE, $typo3_group_pid, '', $parentDn);
+			$typo3ParentGroup = tx_igldapssoauth_typo3_group::fetch($typo3_mode . '_groups', FALSE, $typo3_group_pid, $parentDn);
 
 			if (is_array($typo3ParentGroup[0])) {
 				if (!empty($typo3ParentGroup[0]['subgroup'])) {
@@ -609,8 +608,7 @@ CSS;
 							$typo3_group = tx_igldapssoauth_auth::merge($ldap_group, $typo3_groups[$index], $config['groups']['mapping']);
 							unset($typo3_group['parentGroup']);
 							$typo3_group['subgroup'] = $childUid;
-							$typo3_group = tx_igldapssoauth_typo3_group::insert($typo3_mode . '_groups', $typo3_group);
-							$typo3_group = $typo3_group[0];
+							$typo3_group = tx_igldapssoauth_typo3_group::create($typo3_mode . '_groups', $typo3_group);
 
 							if (is_array($ldap_group[$feildParent])) {
 								unset($ldap_group[$feildParent]['count']);

@@ -139,6 +139,6 @@ if (TYPO3_MODE === 'BE') {
 // Initialize "context sensitive help" (csh)
 t3lib_extMgm::addLLrefForTCAdescr('tx_igldapssoauth_config', 'EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_csh_db.xml');
 
-// Initialize static extension templates
+// Initialize static extension templates (remove deprecated TS in version 1.4)
 t3lib_extMgm::addStaticFile($_EXTKEY, 'static/', 'ig_ldap_sso_auth [DEPRECATED]');
 t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/', 'ig_ldap_sso_auth');

@@ -33,45 +33,101 @@
  */
 class tx_igldapssoauth_typo3_user {
 
+	/**
+	 * Initializes a new BE/FE user record.
+	 *
+	 * @param string $table Either 'be_users' or 'fe_users'
+	 * @return array
+	 * @deprecated since version 1.3, this method will be removed in version 1.5, use tx_igldapssoauth_typo3_user::create() instead.
+	 */
 	static public function init($table = NULL) {
-		$typo3_user = array();
+		t3lib_div::logDeprecatedFunction();
+		return array(self::create($table));
+	}
 
-		// Get users table structure.
-		$typo3_user_default = self::getDatabaseConnection()->admin_get_fields($table);
+	/**
+	 * Creates a fresh BE/FE user record.
+	 *
+	 * @param string $table Either 'be_users' or 'fe_users'
+	 * @return array
+	 * @throws RuntimeException
+	 */
+	static public function create($table) {
+		if (!t3lib_div::inList('be_users,fe_users', $table)) {
+			throw new RuntimeException('Invalid table "' . $table . '"', 1404891582);
+		}
 
-		foreach ($typo3_user_default as $field => $configuration) {
+		$newUser = array();
+		$fieldsConfiguration = self::getDatabaseConnection()->admin_get_fields($table);
+
+		foreach ($fieldsConfiguration as $field => $configuration) {
 			if ($configuration['Null'] === 'NO' && $configuration['Default'] === NULL) {
-				$typo3_user[0][$field] = '';
+				$newUser[$field] = '';
 			} else {
-				$typo3_user[0][$field] = $configuration['Default'];
+				$newUser[$field] = $configuration['Default'];
 			}
 		}
 
-		return $typo3_user;
+		return $newUser;
 	}
 
+	/**
+	 * Searches BE/FE users either by uid or by DN (or username)
+	 * in a given storage folder (pid).
+	 *
+	 * @param string $table Either 'be_users' or 'fe_users'
+	 * @param int $uid
+	 * @param int $pid
+	 * @param string $username
+	 * @param string $dn
+	 * @return array|NULL
+	 * @deprecated since version 1.3, this method will be removed in version 1.5, use tx_igldapssoauth_typo3_user::fetch() instead.
+	 */
 	static public function select($table = NULL, $uid = 0, $pid = 0, $username = NULL, $dn = NULL) {
-		$user = NULL;
+		t3lib_div::logDeprecatedFunction();
+		$users = self::fetch($table, $uid, $pid, $username, $dn);
+		return count($users) > 0 ? $users : NULL;
+	}
+
+	/**
+	 * Searches BE/FE users either by uid or by DN (or username)
+	 * in a given storage folder (pid).
+	 *
+	 * @param string $table Either 'be_users' or 'fe_users'
+	 * @param int $uid
+	 * @param int $pid
+	 * @param string $username
+	 * @param string $dn
+	 * @return array Array of user records
+	 * @throws RuntimeException
+	 */
+	static public function fetch($table, $uid = 0, $pid = 0, $username = NULL, $dn = NULL) {
+		if (!t3lib_div::inList('be_users,fe_users', $table)) {
+			throw new RuntimeException('Invalid table "' . $table . '"', 1404891636);
+		}
+
+		$users = array();
 		$databaseConnection = self::getDatabaseConnection();
 
-		// Search with uid and pid.
+			// Search with uid
 		if ($uid) {
-			$user = $databaseConnection->exec_SELECTgetRows(
+			$users = $databaseConnection->exec_SELECTgetRows(
 				'*',
 				$table,
 				'uid=' . intval($uid)
 			);
 
-			// Search with DN, username and pid.
+			// Search with DN and pid.
 		} elseif (!empty($dn)) {
-			$user = $databaseConnection->exec_SELECTgetRows(
+			$users = $databaseConnection->exec_SELECTgetRows(
 				'*',
 				$table,
 				'tx_igldapssoauth_dn=' . $databaseConnection->fullQuoteStr($dn, $table)
 					. ($pid ? ' AND pid IN (' . intval($pid) . ')' : '')
 			);
+			// Search with username and pid
 		} elseif (!empty($username)) {
-			$user = $databaseConnection->exec_SELECTgetRows(
+			$users = $databaseConnection->exec_SELECTgetRows(
 				'*',
 				$table,
 				'username=' . $databaseConnection->fullQuoteStr($username, $table)
@@ -79,43 +135,84 @@ class tx_igldapssoauth_typo3_user {
 			);
 		}
 
-		// Return TYPO3 user.
-		return $user;
+		// Return TYPO3 users.
+		return $users;
 	}
 
-	static public function insert($table = NULL, $typo3_user = array()) {
+	/**
+	 * Adds a new BE/FE user to the database and returns the new record
+	 * with all columns.
+	 *
+	 * @param string $table Either 'be_users' or 'fe_users'
+	 * @param array $data
+	 * @return array The new record
+	 * @deprecated since version 1.3, this method will be removed in version 1.5, use tx_igldapssoauth_typo3_user::add() instead.
+	 */
+	static public function insert($table = NULL, $data = array()) {
+		t3lib_div::logDeprecatedFunction();
+		return array(self::add($table, $data));
+	}
+
+	/**
+	 * Adds a new BE/FE user to the database and returns the new record
+	 * with all columns.
+	 *
+	 * @param string $table Either 'be_users' or 'fe_users'
+	 * @param array $data
+	 * @return array The new record
+	 * @throws RuntimeException
+	 */
+	static public function add($table, array $data = array()) {
+		if (!t3lib_div::inList('be_users,fe_users', $table)) {
+			throw new RuntimeException('Invalid table "' . $table . '"', 1404891712);
+		}
+
 		$databaseConnection = self::getDatabaseConnection();
 
 		$databaseConnection->exec_INSERTquery(
 			$table,
-			$typo3_user,
+			$data,
 			FALSE
 		);
 		$uid = $databaseConnection->sql_insert_id();
 
-		return $databaseConnection->exec_SELECTgetRows(
+		$newRow = $databaseConnection->exec_SELECTgetSingleRow(
 			'*',
 			$table,
 			'uid=' . intval($uid)
 		);
+
+		return $newRow;
 	}
 
-	static public function update($table = NULL, $typo3_user = array()) {
+	/**
+	 * Updates a BE/FE user in the database and returns a success flag.
+	 *
+	 * @param string $table Either 'be_users' or 'fe_users'
+	 * @param array $data
+	 * @return bool TRUE on success, otherwise FALSE
+	 * @throws Exception
+	 */
+	static public function update($table, array $data = array()) {
+		if (!t3lib_div::inList('be_users,fe_users', $table)) {
+			throw new RuntimeException('Invalid table "' . $table . '"', 1404891732);
+		}
+
 		$databaseConnection = self::getDatabaseConnection();
 
 		$databaseConnection->exec_UPDATEquery(
 			$table,
-			'uid=' . intval($typo3_user['uid']),
-			$typo3_user,
+			'uid=' . intval($data['uid']),
+			$data,
 			FALSE
 		);
-		$ret = $databaseConnection->sql_affected_rows();
+		$success = $databaseConnection->sql_affected_rows() == 1;
 
 		// Hook for post-processing the user
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['processUpdateUser'])) {
 			$params = array(
 				'table' => $table,
-				'typo3_user' => $typo3_user,
+				'typo3_user' => $data,
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['processUpdateUser'] as $funcRef) {
 				$null = NULL;
@@ -123,31 +220,27 @@ class tx_igldapssoauth_typo3_user {
 			}
 		}
 
-		return $ret;
+		return $success;
 	}
 
-	static public function set_usergroup($typo3_groups = array(), $typo3_user = array(), tx_igldapssoauth_sv1 $pObj) {
-		$required = TRUE;
+	static public function set_usergroup(array $typo3_groups = array(), array $typo3_user = array(), tx_igldapssoauth_sv1 $pObj) {
 		$group_uid = array();
 
-		if ($typo3_groups) {
-			foreach ($typo3_groups as $typo3_group) {
-				if ($typo3_group['uid']) {
-					$group_uid[] = $typo3_group['uid'];
-				}
+		foreach ($typo3_groups as $typo3_group) {
+			if ($typo3_group['uid']) {
+				$group_uid[] = $typo3_group['uid'];
 			}
 		}
 
-		if ($assignGroups = t3lib_div::intExplode(',', tx_igldapssoauth_config::is_enable('assignGroups'), TRUE)) {
-			foreach ($assignGroups as $uid) {
-				if (tx_igldapssoauth_typo3_group::select($pObj->authInfo['db_groups']['table'], $uid) && !in_array($uid, $group_uid)) {
-					$group_uid[] = $uid;
-				}
+		$assignGroups = t3lib_div::intExplode(',', tx_igldapssoauth_config::is_enable('assignGroups'), TRUE);
+		foreach ($assignGroups as $uid) {
+			if (tx_igldapssoauth_typo3_group::fetch($pObj->authInfo['db_groups']['table'], $uid) && !in_array($uid, $group_uid)) {
+				$group_uid[] = $uid;
 			}
 		}
 
-		if (tx_igldapssoauth_config::is_enable('keepTYPO3Groups') && $typo3_user[0]['usergroup']) {
-			$usergroup = t3lib_div::intExplode(',', $typo3_user[0]['usergroup'], TRUE);
+		if (tx_igldapssoauth_config::is_enable('keepTYPO3Groups') && $typo3_user['usergroup']) {
+			$usergroup = t3lib_div::intExplode(',', $typo3_user['usergroup'], TRUE);
 
 			foreach ($usergroup as $uid) {
 				if (!in_array($uid, $group_uid)) {
@@ -156,23 +249,21 @@ class tx_igldapssoauth_typo3_user {
 			}
 		}
 
-		if ($updateAdminAttribForGroups = tx_igldapssoauth_config::is_enable('updateAdminAttribForGroups')) {
+		$updateAdminAttribForGroups = tx_igldapssoauth_config::is_enable('updateAdminAttribForGroups');
+		if ($updateAdminAttribForGroups) {
 			$updateAdminAttribForGroups = t3lib_div::trimExplode(',', $updateAdminAttribForGroups);
-			$typo3_user[0]['admin'] = 0;
+			$typo3_user['admin'] = 0;
 			foreach ($updateAdminAttribForGroups as $uid) {
 				if (in_array($uid, $group_uid)) {
-					$typo3_user[0]['admin'] = 1;
+					$typo3_user['admin'] = 1;
+					break;
 				}
 			}
 		}
 
-		$typo3_user[0]['usergroup'] = implode(',', $group_uid);
+		$typo3_user['usergroup'] = implode(',', $group_uid);
 
-		if ($required) {
-			return $typo3_user;
-		} else {
-			return FALSE;
-		}
+		return $typo3_user;
 	}
 
 	/**

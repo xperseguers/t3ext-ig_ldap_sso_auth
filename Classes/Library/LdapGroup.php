@@ -1,9 +1,8 @@
 <?php
-
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2007 Michael Gagnon <mgagnon@infoglobe.ca>
+ *  (c) 2007-2013 Michael Gagnon <mgagnon@infoglobe.ca>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -26,9 +25,9 @@
 /**
  * Class tx_igldapssoauth_typo3_group for the 'ig_ldap_sso_auth' extension.
  *
- * @author	Michael Gagnon <mgagnon@infoglobe.ca>
- * @package	TYPO3
- * @subpackage	tx_igldapssoauth_ldap_group
+ * @author     Michael Gagnon <mgagnon@infoglobe.ca>
+ * @package    TYPO3
+ * @subpackage ig_ldap_sso_auth
  */
 class tx_igldapssoauth_ldap_group {
 
@@ -47,7 +46,7 @@ class tx_igldapssoauth_ldap_group {
 		foreach ($membership as $groupdn) {
 			$ldap_group = tx_igldapssoauth_ldap::search($groupdn, $filter, $attributes);
 
-			$ldap_groups['count'] = $ldap_groups['count'] + 1;
+			$ldap_groups['count']++;
 			$ldap_groups[] = $ldap_group[0];
 		}
 
@@ -59,7 +58,7 @@ class tx_igldapssoauth_ldap_group {
 	}
 
 	static public function get_membership($ldap_user = array(), $mapping = array()) {
-		if (array_key_exists('usergroup', $mapping) && preg_match("`<([^$]*)>`", $mapping['usergroup'], $attribute)) {
+		if (isset($mapping['usergroup']) && preg_match("`<([^$]*)>`", $mapping['usergroup'], $attribute)) {
 			return $ldap_user[strtolower($attribute[1])];
 		}
 

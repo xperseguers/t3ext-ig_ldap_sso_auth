@@ -70,6 +70,17 @@ class tx_igldapssoauth_scheduler_synchroniseusers extends tx_scheduler_Task {
 			'deleted=0 AND hidden=0'
 		);
 
+		if (count($configurationRecords) > 0) {
+			// Disable every local frontend user bound to LDAP
+			$this->getDatabaseConnection()->exec_UPDATEquery(
+				$this->table,
+				'disable=0 AND tx_igldapssoauth_dn IS NOT NULL AND tx_igldapssoauth_dn <> \'\'',
+				array(
+					'disable' => 1
+				)
+			);
+		}
+
 		foreach ($configurationRecords as $configurationRecord) {
 			tx_igldapssoauth_config::init('fe', $configurationRecord['uid']);
 
@@ -79,6 +90,7 @@ class tx_igldapssoauth_scheduler_synchroniseusers extends tx_scheduler_Task {
 
 				$search = tx_igldapssoauth_utility_Ldap::search($this->config['users']['basedn'], str_replace('{USERNAME}', '*', $this->config['users']['filter']), array('dn'));
 				$userList = tx_igldapssoauth_utility_Ldap::get_entries();
+				unset($userList['count']);
 
 				$this->authInfo['db_user']['table'] = $this->table;
 				$this->authInfo['db_groups']['table'] = 'fe_groups';
@@ -87,23 +99,21 @@ class tx_igldapssoauth_scheduler_synchroniseusers extends tx_scheduler_Task {
 				$sv1 = t3lib_div::makeInstance('tx_igldapssoauth_sv1');
 				$sv1->authInfo = $this->authInfo;
 
-				$nbres = $userList['count'];
-				unset($userList['count']);
-
-				if (is_array($userList)) {
-					foreach ($userList as $userInfo) {
-						if (!empty($userInfo['dn'])) {
-							$user = tx_igldapssoauth_auth::synchroniseUser($userInfo['dn']);
-						}
-						$typoActivUsersList[] = $user['uid'];
+				$activeUsers = array();
+				foreach ($userList as $userInfo) {
+					if (empty($userInfo['dn'])) {
+						continue;
 					}
+					$user = tx_igldapssoauth_auth::synchroniseUser($userInfo['dn']);
+					$activeUsers[] = (int)$user['uid'];
 				}
-				if (is_array($typoActivUsersList)) {
+				if (count($activeUsers) > 0) {
 					$this->getDatabaseConnection()->exec_UPDATEquery(
 						$this->table,
-						'disable=0 AND uid NOT IN (\'' . implode("','", $typoActivUsersList) . '\') AND tx_igldapssoauth_dn IS NOT NULL AND tx_igldapssoauth_dn <> \'\'',
+						'disable=1 AND uid IN (' . implode(',', $activeUsers) . ')',
 						array(
-							'disable' => 1
+							'disable' => 0,
+							'tstamp' => $GLOBALS['EXEC_TIME'],
 						)
 					);
 				}

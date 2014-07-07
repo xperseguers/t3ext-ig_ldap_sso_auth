@@ -176,7 +176,7 @@ class tx_igldapssoauth_config {
 		// Default fields : title, tx_igldapssoauth_dn
 
 		$group_mapping = self::make_mapping($mapping);
-		if (!array_key_exists('title', $group_mapping)) {
+		if (!isset($group_mapping['title'])) {
 			$group_mapping['title'] = '<dn>';
 		}
 		$group_mapping['tx_igldapssoauth_dn'] = '<dn>';

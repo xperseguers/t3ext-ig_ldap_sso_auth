@@ -1,5 +1,4 @@
 <?php
-
 /***************************************************************
  *  Copyright notice
  *
@@ -29,6 +28,7 @@
  * @author	Michael Gagnon <mgagnon@infoglobe.ca>
  * @package	TYPO3
  * @subpackage	tx_igldapssoauth_ldap_user
+ * @deprecated since version 1.3, this class will be removed in version 1.5, use methods from tx_igldapssoauth_ldap instead.
  */
 class tx_igldapssoauth_ldap_user {
 

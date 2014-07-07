@@ -124,38 +124,35 @@ class tx_igldapssoauth_auth {
 		// User is valid. Get it from DN.
 		$ldap_user = self::get_ldap_user($userdn);
 
-		if (!is_array($ldap_user[0])) {
+		if ($ldap_user === NULL) {
 			return FALSE;
 		}
 
 		if (!$username) {
 			$userAttribute = tx_igldapssoauth_config::get_username_attribute(self::$config['users']['filter']);
-			$username = $ldap_user[0][$userAttribute][0];
+			$username = $ldap_user[$userAttribute][0];
 		}
 		// Get user pid from user mapping.
 		$typo3_users_pid = tx_igldapssoauth_config::get_pid(self::$config['users']['mapping']);
-		//$typo3_users_pid = tx_igldapssoauth_config::get_pid($this->config['users']['mapping']) ? tx_igldapssoauth_config::get_pid($this->config['users']['mapping']) : $this->authInfo['db_user']['checkPidList'];
 
 		// Get TYPO3 user from username, DN and pid.
 		$typo3_user = self::get_typo3_user($username, $userdn, $typo3_users_pid);
-		if (!$typo3_user) {
+		if ($typo3_user === NULL) {
 			// Non-existing local users are not allowed to authenticate
 			return FALSE;
 		}
 
 		// User is valid only if exist in TYPO3.
 		// Get LDAP groups from LDAP user.
+		$typo3_groups = array();
 		$ldap_groups = self::get_ldap_groups($ldap_user);
 		if ($ldap_groups) {
-
 			// Get pid from group mapping.
 			$typo3_group_pid = tx_igldapssoauth_config::get_pid(self::$config['groups']['mapping']);
-			//$typo3_group_pid = tx_igldapssoauth_config::get_pid($this->config['groups']['mapping']) ? tx_igldapssoauth_config::get_pid($this->config['groups']['mapping']) : $this->authInfo['db_user']['checkPidList'];
 
 			$typo3_groups_tmp = tx_igldapssoauth_auth::get_typo3_groups($ldap_groups, self::$config['groups']['mapping'], self::$authenticationService->authInfo['db_groups']['table'], $typo3_group_pid);
 
 			if (tx_igldapssoauth_config::is_enable('IfGroupExist') && $typo3_groups_tmp['count'] == 0) {
-
 				return FALSE;
 			}
 			unset($typo3_groups_tmp['count']);
@@ -176,31 +173,31 @@ class tx_igldapssoauth_auth {
 					return FALSE;
 				}
 			}
+
 			$i = 0;
 			foreach ($typo3_groups_tmp as $typo3_group) {
-
 				if (tx_igldapssoauth_config::is_enable('GroupsNotSynchronize') && !$typo3_group['uid']) {
-					$typo3_groups[] = NULL;
-				} elseif (tx_igldapssoauth_config::is_enable('GroupsNotSynchronize')) {
+					// Groups should not get synchronized and the current group is invalid
+					continue;
+				}
+				if (tx_igldapssoauth_config::is_enable('GroupsNotSynchronize')) {
 					$typo3_groups[] = $typo3_group;
 				} elseif (!$typo3_group['uid']) {
-					$typo3_group = tx_igldapssoauth_typo3_group::insert(self::$authenticationService->authInfo['db_groups']['table'], $typo3_group);
+					$newGroup = tx_igldapssoauth_typo3_group::add(self::$authenticationService->authInfo['db_groups']['table'], $typo3_group);
 
-					$typo3_group_merged = tx_igldapssoauth_auth::merge($ldap_groups[$i], $typo3_group[0], self::$config['groups']['mapping']);
+					$typo3_group_merged = tx_igldapssoauth_auth::merge($ldap_groups[$i], $newGroup, self::$config['groups']['mapping']);
 
-					$typo3_group_updated = tx_igldapssoauth_typo3_group::update(self::$authenticationService->authInfo['db_groups']['table'], $typo3_group_merged);
+					tx_igldapssoauth_typo3_group::update(self::$authenticationService->authInfo['db_groups']['table'], $typo3_group_merged);
 
-					$typo3_group = tx_igldapssoauth_typo3_group::select(self::$authenticationService->authInfo['db_groups']['table'], $typo3_group_merged['uid']);
-
+					$typo3_group = tx_igldapssoauth_typo3_group::fetch(self::$authenticationService->authInfo['db_groups']['table'], $typo3_group_merged['uid']);
 					$typo3_groups[] = $typo3_group[0];
 				} else {
 
 					$typo3_group_merged = tx_igldapssoauth_auth::merge($ldap_groups[$i], $typo3_group, self::$config['groups']['mapping']);
 
-					$typo3_group_updated = tx_igldapssoauth_typo3_group::update(self::$authenticationService->authInfo['db_groups']['table'], $typo3_group_merged);
+					tx_igldapssoauth_typo3_group::update(self::$authenticationService->authInfo['db_groups']['table'], $typo3_group_merged);
 
-					$typo3_group = tx_igldapssoauth_typo3_group::select(self::$authenticationService->authInfo['db_groups']['table'], $typo3_group_merged['uid']);
-
+					$typo3_group = tx_igldapssoauth_typo3_group::fetch(self::$authenticationService->authInfo['db_groups']['table'], $typo3_group_merged['uid']);
 					$typo3_groups[] = $typo3_group[0];
 				}
 
@@ -212,10 +209,10 @@ class tx_igldapssoauth_auth {
 			}
 		}
 
-		if (tx_igldapssoauth_config::is_enable('IfUserExist') && !$typo3_user[0]['uid']) {
+		if (tx_igldapssoauth_config::is_enable('IfUserExist') && !$typo3_user['uid']) {
 			return FALSE;
 			// User does not exist in TYPO3.
-		} elseif (!$typo3_user[0]['uid'] && (!empty($typo3_groups) || !tx_igldapssoauth_config::is_enable('DeleteUserIfNoTYPO3Groups'))) {
+		} elseif (!$typo3_user['uid'] && (!empty($typo3_groups) || !tx_igldapssoauth_config::is_enable('DeleteUserIfNoTYPO3Groups'))) {
 
 			if (empty($GLOBALS['TCA'])) {
 				/** @var $tslibFe tslib_fe */
@@ -229,21 +226,21 @@ class tx_igldapssoauth_auth {
 				foreach ($GLOBALS['TCA'][$table]['columns'] as $column => $columnConfig) {
 					if (isset($columnConfig['config']['default'])) {
 						$defaultValue = $columnConfig['config']['default'];
-						$typo3_user[0][$column] = $defaultValue;
+						$typo3_user[$column] = $defaultValue;
 					}
 				}
 			}
 
 			if (tx_igldapssoauth_config::is_enable('forceLowerCaseUsername')) {
 				// Possible enhancement: use t3lib_cs::conv_case instead
-				$typo3_user[0]['username'] = strtolower($typo3_user[0]['username']);
+				$typo3_user['username'] = strtolower($typo3_user['username']);
 			}
 
-			$typo3_user = tx_igldapssoauth_typo3_user::insert($table, $typo3_user[0]);
+			$typo3_user = tx_igldapssoauth_typo3_user::add($table, $typo3_user);
 		}
 
-		if (!empty($typo3_user[0]['uid'])) {
-			$typo3_user[0]['deleted'] = 0;
+		if (!empty($typo3_user['uid'])) {
+			$typo3_user['deleted'] = 0;
 
 			// Set random password
 			/** @var tx_saltedpasswords_salts $instance */
@@ -252,15 +249,15 @@ class tx_igldapssoauth_auth {
 				$instance = tx_saltedpasswords_salts_factory::getSaltingInstance(NULL, TYPO3_MODE);
 			}
 			$password = t3lib_div::generateRandomBytes(16);
-			$typo3_user[0]['password'] = $instance ? $instance->getHashedPassword($password) : md5($password);
+			$typo3_user['password'] = $instance ? $instance->getHashedPassword($password) : md5($password);
 
 			if ((empty($typo3_groups) && tx_igldapssoauth_config::is_enable('DeleteUserIfNoTYPO3Groups'))) {
-				$typo3_user[0]['deleted'] = 1;
+				$typo3_user['deleted'] = 1;
 			}
 			// Delete user if no LDAP groups found.
 			if (tx_igldapssoauth_config::is_enable('DeleteUserIfNoLDAPGroups') && !$ldap_groups) {
 
-				$typo3_user[0]['deleted'] = 1;
+				$typo3_user['deleted'] = 1;
 
 				// If LDAP groups found.
 			}
@@ -268,7 +265,7 @@ class tx_igldapssoauth_auth {
 			$typo3_user = tx_igldapssoauth_typo3_user::set_usergroup($typo3_groups, $typo3_user, self::$authenticationService);
 			// Merge LDAP user with TYPO3 user from mapping.
 			if ($typo3_user) {
-				$typo3_user = tx_igldapssoauth_auth::merge($ldap_user[0], $typo3_user[0], self::$config['users']['mapping']);
+				$typo3_user = tx_igldapssoauth_auth::merge($ldap_user, $typo3_user, self::$config['users']['mapping']);
 
 				if (tx_igldapssoauth_config::is_enable('forceLowerCaseUsername')) {
 					// Possible enhancement: use t3lib_cs::conv_case instead
@@ -276,7 +273,7 @@ class tx_igldapssoauth_auth {
 				}
 
 				// Update TYPO3 user.
-				$typo3_user_updated = tx_igldapssoauth_typo3_user::update(self::$authenticationService->authInfo['db_user']['table'], $typo3_user);
+				tx_igldapssoauth_typo3_user::update(self::$authenticationService->authInfo['db_user']['table'], $typo3_user);
 
 				$typo3_user['tx_igldapssoauth_from'] = 'LDAP';
 			}
@@ -328,7 +325,8 @@ class tx_igldapssoauth_auth {
 			if (tx_igldapssoauth_config::is_enable('LDAPAuthentication')) {
 				$typo3_user = self::ldap_auth(phpCAS::getUser());
 			} else {
-				$typo3_user = tx_igldapssoauth_typo3_user::select(self::$authenticationService->authInfo['db_user']['table'], 0, 0, phpCAS::getUser());
+				$typo3_users = tx_igldapssoauth_typo3_user::fetch(self::$authenticationService->authInfo['db_user']['table'], 0, 0, phpCAS::getUser());
+				$typo3_user = count($typo3_users) > 0 ? $typo3_users[0] : NULL;
 			}
 			if ($typo3_user) {
 				return $typo3_user;
@@ -344,12 +342,18 @@ class tx_igldapssoauth_auth {
 	/**
 	 * Returns a LDAP user.
 	 *
-	 * @param string $userdn
+	 * @param string $dn
 	 * @return array
 	 */
-	static protected function get_ldap_user($userdn = NULL) {
-		// Get user from LDAP server with DN.
-		return tx_igldapssoauth_ldap_user::select($userdn, self::$config['users']['filter'], tx_igldapssoauth_config::get_ldap_attributes(self::$config['users']['mapping']));
+	static protected function get_ldap_user($dn = NULL) {
+		$attributes = tx_igldapssoauth_config::get_ldap_attributes(self::$config['users']['mapping']);
+		$users = tx_igldapssoauth_ldap::search(
+			$dn,
+			str_replace('{USERNAME}', '*', self::$config['users']['filter']),
+			$attributes
+		);
+
+		return is_array($users[0]) ? $users[0] : NULL;
 	}
 
 	/**
@@ -367,7 +371,7 @@ class tx_igldapssoauth_auth {
 		// Get LDAP groups from membership attribute.
 		if (tx_igldapssoauth_config::is_enable('evaluateGroupsFromMembership')) {
 
-			if ($membership = tx_igldapssoauth_ldap_group::get_membership($ldap_user[0], self::$config['users']['mapping'])) {
+			if ($membership = tx_igldapssoauth_ldap_group::get_membership($ldap_user, self::$config['users']['mapping'])) {
 
 				$ldap_groups = tx_igldapssoauth_ldap_group::select_from_membership($membership, self::$config['groups']['filter'], $ldap_group_attributes);
 			}
@@ -375,7 +379,7 @@ class tx_igldapssoauth_auth {
 			// Get LDAP groups from DN of user.
 		} else {
 
-			$ldap_groups = tx_igldapssoauth_ldap_group::select_from_userdn($ldap_user[0]['dn'], self::$config['groups']['basedn'], self::$config['groups']['filter'], $ldap_group_attributes);
+			$ldap_groups = tx_igldapssoauth_ldap_group::select_from_userdn($ldap_user['dn'], self::$config['groups']['basedn'], self::$config['groups']['filter'], $ldap_group_attributes);
 		}
 
 		return $ldap_groups;
@@ -390,33 +394,39 @@ class tx_igldapssoauth_auth {
 	 * @return array
 	 */
 	static protected function get_typo3_user($username = NULL, $userdn = NULL, $pid = 0) {
-		if ($typo3_user = tx_igldapssoauth_typo3_user::select(self::$authenticationService->authInfo['db_user']['table'], 0, $pid, $username, $userdn)) {
+		$user = NULL;
+
+		$typo3_users = tx_igldapssoauth_typo3_user::fetch(self::$authenticationService->authInfo['db_user']['table'], 0, $pid, $username, $userdn);
+		if ($typo3_users) {
 			if (tx_igldapssoauth_config::is_enable('IfUserExist')) {
 				// Ensure every returned record is active
-				$numberOfUsers = count($typo3_user);
+				$numberOfUsers = count($typo3_users);
 				for ($i = 0; $i < $numberOfUsers; $i++) {
-					if (!empty($typo3_user[$i]['deleted'])) {
+					if (!empty($typo3_users[$i]['deleted'])) {
 						// User is deleted => behave as if it did not exist at all!
 						// Note: if user is inactive (disable=1), this will be catched by TYPO3 automatically
-						unset($typo3_user[$i]);
+						unset($typo3_users[$i]);
 					}
 				}
 
 				// Reset the array's indices
-				$typo3_user = array_values($typo3_user);
+				$typo3_users = array_values($typo3_users);
 			}
-			return $typo3_user;
+
+			// We want to return only first user in any case, if more than one are returned (e.g.,
+			// same username/DN twice) actual authentication will fail anyway later on
+			$user = is_array($typo3_users[0]) ? $typo3_users[0] : NULL;
 		} elseif (!tx_igldapssoauth_config::is_enable('IfUserExist')) {
-			$typo3_user = tx_igldapssoauth_typo3_user::init(self::$authenticationService->authInfo['db_user']['table']);
+			$user = tx_igldapssoauth_typo3_user::create(self::$authenticationService->authInfo['db_user']['table']);
 
-			$typo3_user[0]['pid'] = $pid;
-			$typo3_user[0]['crdate'] = $GLOBALS['EXEC_TIME'];
-			$typo3_user[0]['tstamp'] = $GLOBALS['EXEC_TIME'];
-			$typo3_user[0]['username'] = $username;
-			$typo3_user[0]['tx_igldapssoauth_dn'] = $userdn;
-
-			return $typo3_user;
+			$user['pid'] = $pid;
+			$user['crdate'] = $GLOBALS['EXEC_TIME'];
+			$user['tstamp'] = $GLOBALS['EXEC_TIME'];
+			$user['username'] = $username;
+			$user['tx_igldapssoauth_dn'] = $userdn;
 		}
+
+		return $user;
 	}
 
 	/**
@@ -439,12 +449,12 @@ class tx_igldapssoauth_auth {
 
 		$i = 0;
 		foreach ($ldap_groups as $ldap_group) {
-			$typo3_group_title = tx_igldapssoauth_typo3_group::get_title($ldap_group, $mapping);
-			if ($typo3_group = tx_igldapssoauth_typo3_group::select($table, 0, $pid, $typo3_group_title, $ldap_group['dn'])) {
+			$typo3_group = tx_igldapssoauth_typo3_group::fetch($table, 0, $pid, $ldap_group['dn']);
+			if ($typo3_group) {
 				$typo3_groups[] = $typo3_group[0];
 				$i++;
 			} else {
-				$typo3_group = tx_igldapssoauth_typo3_group::init($table);
+				$typo3_group = tx_igldapssoauth_typo3_group::create($table);
 				$typo3_group['pid'] = $pid;
 				$typo3_group['tstamp'] = time();
 				$typo3_groups[] = $typo3_group;
@@ -468,7 +478,7 @@ class tx_igldapssoauth_auth {
 		foreach ($mapping as $field => $value) {
 
 			// If field exist in TYPO3.
-			if (array_key_exists($field, $typo3) && $field != 'usergroup') {
+			if (isset($typo3[$field]) && $field !== 'usergroup') {
 
 				// Constant.
 				if (preg_match("`{([^$]*)}`", $value, $match)) {

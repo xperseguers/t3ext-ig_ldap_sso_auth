@@ -65,7 +65,7 @@ class tx_igldapssoauth_config {
 		self::$domains = array();
 		$domainUids = t3lib_div::intExplode(',', $config['domains'], TRUE);
 		foreach ($domainUids as $domainUid) {
-			$row = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow('domainName', 'sys_domain', 'uid=' . intval($domainUid));
+			$row = self::getDatabaseConnection()->exec_SELECTgetSingleRow('domainName', 'sys_domain', 'uid=' . intval($domainUid));
 			self::$domains[] = $row['domainName'];
 		}
 
@@ -347,7 +347,7 @@ class tx_igldapssoauth_config {
 	 * @return array
 	 */
 	static protected function select($uid = 0) {
-		$config = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+		$config = self::getDatabaseConnection()->exec_SELECTgetRows(
 			'*',
 			'tx_igldapssoauth_config',
 			'deleted=0 AND hidden=0 AND uid=' . intval($uid)
@@ -356,16 +356,13 @@ class tx_igldapssoauth_config {
 		return count($config) == 1 ? $config[0] : array();
 	}
 
-	/*
-	function update($config = array()) {
-		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
-			'tx_igldapssoauth_config',
-			'tx_igldapssoauth_config.uid=' . intval($config['uid']),
-			$config,
-			FALSE
-		);
-
-		self::init(tx_igldapssoauth_config::select($config['uid']));
+	/**
+	 * Returns the database connection.
+	 *
+	 * @return t3lib_DB
+	 */
+	static protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
-	*/
+
 }

@@ -37,7 +37,7 @@ class tx_igldapssoauth_typo3_user {
 		$typo3_user = array();
 
 		// Get users table structure.
-		$typo3_user_default = $GLOBALS['TYPO3_DB']->admin_get_fields($table);
+		$typo3_user_default = self::getDatabaseConnection()->admin_get_fields($table);
 
 		foreach ($typo3_user_default as $field => $configuration) {
 			if ($configuration['Null'] === 'NO' && $configuration['Default'] === NULL) {
@@ -52,10 +52,11 @@ class tx_igldapssoauth_typo3_user {
 
 	static public function select($table = NULL, $uid = 0, $pid = 0, $username = NULL, $dn = NULL) {
 		$user = NULL;
+		$databaseConnection = self::getDatabaseConnection();
 
 		// Search with uid and pid.
 		if ($uid) {
-			$user = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			$user = $databaseConnection->exec_SELECTgetRows(
 				'*',
 				$table,
 				'uid=' . intval($uid)
@@ -63,17 +64,17 @@ class tx_igldapssoauth_typo3_user {
 
 			// Search with DN, username and pid.
 		} elseif (!empty($dn)) {
-			$user = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			$user = $databaseConnection->exec_SELECTgetRows(
 				'*',
 				$table,
-				'tx_igldapssoauth_dn=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($dn, $table)
+				'tx_igldapssoauth_dn=' . $databaseConnection->fullQuoteStr($dn, $table)
 					. ($pid ? ' AND pid IN (' . intval($pid) . ')' : '')
 			);
 		} elseif (!empty($username)) {
-			$user = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+			$user = $databaseConnection->exec_SELECTgetRows(
 				'*',
 				$table,
-				'username=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($username, $table)
+				'username=' . $databaseConnection->fullQuoteStr($username, $table)
 					. ($pid ? ' AND pid IN (' . intval($pid) . ')' : '')
 			);
 		}
@@ -83,14 +84,16 @@ class tx_igldapssoauth_typo3_user {
 	}
 
 	static public function insert($table = NULL, $typo3_user = array()) {
-		$GLOBALS['TYPO3_DB']->exec_INSERTquery(
+		$databaseConnection = self::getDatabaseConnection();
+
+		$databaseConnection->exec_INSERTquery(
 			$table,
 			$typo3_user,
 			FALSE
 		);
-		$uid = $GLOBALS['TYPO3_DB']->sql_insert_id();
+		$uid = $databaseConnection->sql_insert_id();
 
-		return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+		return $databaseConnection->exec_SELECTgetRows(
 			'*',
 			$table,
 			'uid=' . intval($uid)
@@ -98,13 +101,15 @@ class tx_igldapssoauth_typo3_user {
 	}
 
 	static public function update($table = NULL, $typo3_user = array()) {
-		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+		$databaseConnection = self::getDatabaseConnection();
+
+		$databaseConnection->exec_UPDATEquery(
 			$table,
 			'uid=' . intval($typo3_user['uid']),
 			$typo3_user,
 			FALSE
 		);
-		$ret = $GLOBALS['TYPO3_DB']->sql_affected_rows();
+		$ret = $databaseConnection->sql_affected_rows();
 
 		// Hook for post-processing the user
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['processUpdateUser'])) {
@@ -168,6 +173,15 @@ class tx_igldapssoauth_typo3_user {
 		} else {
 			return FALSE;
 		}
+	}
+
+	/**
+	 * Returns the database connection.
+	 *
+	 * @return t3lib_DB
+	 */
+	static protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 
 }

@@ -155,7 +155,7 @@ CSS;
 	 * @return void
 	 */
 	protected function moduleContent() {
-		$configurationRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+		$configurationRecords = $this->getDatabaseConnection()->exec_SELECTgetRows(
 			'uid',
 			'tx_igldapssoauth_config',
 			'deleted=0 AND hidden=0'
@@ -314,7 +314,7 @@ CSS;
 					$table = $typo3_mode === 'BE' ? 'be_groups' : 'fe_groups';
 					if ($value != '0') {
 						$uids = t3lib_div::intExplode(',', $value, TRUE);
-						$rows = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+						$rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
 							'uid, title',
 							$table,
 							'uid IN (' . implode(',', $uids) . ')'
@@ -631,8 +631,17 @@ CSS;
 	 *
 	 * @return string HTML content
 	 */
-	function printContent() {
+	public function printContent() {
 		echo $this->content;
+	}
+
+	/**
+	 * Returns the database connection.
+	 *
+	 * @return t3lib_DB
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 
 }

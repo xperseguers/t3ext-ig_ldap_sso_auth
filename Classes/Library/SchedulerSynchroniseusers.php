@@ -64,7 +64,7 @@ class tx_igldapssoauth_scheduler_synchroniseusers extends tx_scheduler_Task {
 		$auth = t3lib_div::makeInstance('tx_igldapssoauth_auth');
 		$this->table = 'fe_users';
 
-		$configurationRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+		$configurationRecords = $this->getDatabaseConnection()->exec_SELECTgetRows(
 			'uid',
 			'tx_igldapssoauth_config',
 			'deleted=0 AND hidden=0'
@@ -94,7 +94,13 @@ class tx_igldapssoauth_scheduler_synchroniseusers extends tx_scheduler_Task {
 					}
 				}
 				if (is_array($typoActivUsersList)) {
-					$GLOBALS['TYPO3_DB']->exec_UPDATEquery($this->table, 'disable=0 and uid not in (\'' . implode("','", $typoActivUsersList) . '\') and tx_igldapssoauth_dn  IS NOT NULL  and tx_igldapssoauth_dn not like \'\'', array('disable' => 1));
+					$this->getDatabaseConnection()->exec_UPDATEquery(
+						$this->table,
+						'disable=0 AND uid NOT IN (\'' . implode("','", $typoActivUsersList) . '\') AND tx_igldapssoauth_dn IS NOT NULL AND tx_igldapssoauth_dn <> \'\'',
+						array(
+							'disable' => 1
+						)
+					);
 				}
 			}
 		}
@@ -121,4 +127,14 @@ class tx_igldapssoauth_scheduler_synchroniseusers extends tx_scheduler_Task {
 			$this->countInARun
 		);
 	}
+
+	/**
+	 * Returns the database connection.
+	 *
+	 * @return t3lib_DB
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
+	}
+
 }

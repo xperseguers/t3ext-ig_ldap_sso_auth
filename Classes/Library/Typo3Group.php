@@ -36,7 +36,7 @@ class tx_igldapssoauth_typo3_group {
 		$typo3_group = array();
 
 		// Get users table structure.
-		$typo3_group_default = $GLOBALS['TYPO3_DB']->admin_get_fields($table);
+		$typo3_group_default = self::getDatabaseConnection()->admin_get_fields($table);
 
 		foreach ($typo3_group_default as $field => $configuration) {
 			if ($configuration['Null'] === 'NO' && $configuration['Default'] === NULL) {
@@ -50,17 +50,19 @@ class tx_igldapssoauth_typo3_group {
 	}
 
 	static public function select($table = NULL, $uid = 0, $pid = NULL, $title = NULL, $dn = NULL) {
+		$databaseConnection = self::getDatabaseConnection();
+
 			// Search with uid and pid.
 		if ($uid) {
 			$where = 'uid=' . intval($uid);
 
 			// Search with DN, title and pid.
 		} else {
-			$where = 'tx_igldapssoauth_dn=' . $GLOBALS['TYPO3_DB']->fullQuoteStr($dn, $table) . ' AND pid IN (' . intval($pid) . ')';
+			$where = 'tx_igldapssoauth_dn=' . $databaseConnection->fullQuoteStr($dn, $table) . ' AND pid IN (' . intval($pid) . ')';
 		}
 
 		// Return TYPO3 group.
-		return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+		return $databaseConnection->exec_SELECTgetRows(
 			'*',
 			$table,
 			$where
@@ -68,14 +70,16 @@ class tx_igldapssoauth_typo3_group {
 	}
 
 	static public function insert($table = NULL, $typo3_group = array()) {
-		$GLOBALS['TYPO3_DB']->exec_INSERTquery(
+		$databaseConnection = self::getDatabaseConnection();
+
+		$databaseConnection->exec_INSERTquery(
 			$table,
 			$typo3_group,
 			FALSE
 		);
-		$uid = $GLOBALS['TYPO3_DB']->sql_insert_id();
+		$uid = $databaseConnection->sql_insert_id();
 
-		return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+		return $databaseConnection->exec_SELECTgetRows(
 			'*',
 			$table,
 			'uid=' . intval($uid)
@@ -83,13 +87,15 @@ class tx_igldapssoauth_typo3_group {
 	}
 
 	static public function update($table = NULL, $typo3_group = array()) {
-		$GLOBALS['TYPO3_DB']->exec_UPDATEquery(
+		$databaseConnection = self::getDatabaseConnection();
+
+		$databaseConnection->exec_UPDATEquery(
 			$table,
 			'uid=' . intval($typo3_group['uid']),
 			$typo3_group,
 			FALSE
 		);
-		$ret = $GLOBALS['TYPO3_DB']->sql_affected_rows();
+		$ret = $databaseConnection->sql_affected_rows();
 
 		// Hook for post-processing the group
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['processUpdateGroup'])) {
@@ -121,4 +127,14 @@ class tx_igldapssoauth_typo3_group {
 
 		return NULL;
 	}
+
+	/**
+	 * Returns the database connection.
+	 *
+	 * @return t3lib_DB
+	 */
+	static protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
+	}
+
 }

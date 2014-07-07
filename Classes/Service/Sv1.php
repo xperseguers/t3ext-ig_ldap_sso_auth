@@ -64,12 +64,12 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 	/**
 	 * Find a user (eg. look up the user record in database when a login is sent)
 	 *
-	 * @return	mixed		user array or FALSE
+	 * @return mixed user array or FALSE
 	 */
 	public function getUser() {
 		$user = FALSE;
 
-		$configurationRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+		$configurationRecords = $this->getDatabaseConnection()->exec_SELECTgetRows(
 			'uid',
 			'tx_igldapssoauth_config',
 			'deleted=0 AND hidden=0'
@@ -208,6 +208,15 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 		}
 
 		return $OK;
+	}
+
+	/**
+	 * Returns the database connection.
+	 *
+	 * @return t3lib_DB
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 
 }

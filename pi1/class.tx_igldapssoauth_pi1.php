@@ -47,7 +47,7 @@ class tx_igldapssoauth_pi1 extends tslib_pibase {
 	 * @return	The content that is displayed on the website
 	 */
 	public function main($content, array $conf) {
-		$configurationRecords = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+		$configurationRecords = $this->getDatabaseConnection()->exec_SELECTgetRows(
 			'uid',
 			'tx_igldapssoauth_config',
 			'deleted=0 AND hidden=0'
@@ -141,6 +141,15 @@ class tx_igldapssoauth_pi1 extends tslib_pibase {
 		}
 
 		$this->LOCAL_LANG_loaded = 1;
+	}
+
+	/**
+	 * Returns the database connection.
+	 *
+	 * @return t3lib_DB
+	 */
+	protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
 	}
 
 }

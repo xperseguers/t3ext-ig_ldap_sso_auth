@@ -637,10 +637,6 @@ CSS;
 
 }
 
-if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/mod1/index.php'])) {
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/mod1/index.php']);
-}
-
 // Make instance:
 /** @var $SOBE tx_igldapssoauth_module1 */
 $SOBE = t3lib_div::makeInstance('tx_igldapssoauth_module1');

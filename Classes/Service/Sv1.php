@@ -211,7 +211,3 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 	}
 
 }
-
-if (defined('TYPO3_MODE') && isset($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/sv1/class.tx_igldapssoauth_sv1.php'])) {
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/ig_ldap_sso_auth/sv1/class.tx_igldapssoauth_sv1.php']);
-}

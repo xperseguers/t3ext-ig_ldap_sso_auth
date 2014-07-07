@@ -21,6 +21,10 @@ if ($EXT_CONFIG['enableFECASAuthentication']) {
 	}
 }
 
+// Visually change the record icon for FE/BE users and groups
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_iconworks.php']['overrideIconOverlay'][] = 'EXT:' . $_EXTKEY . '/Classes/Hooks/DatabaseRecordListIconUtility.php:Tx_IgLdapSsoAuth_Hooks_DatabaseRecordListIconUtility';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['getTable'][] = 'EXT:' . $_EXTKEY . '/Classes/Hooks/DatabaseRecordListIconUtility.php:Tx_IgLdapSsoAuth_Hooks_DatabaseRecordListIconUtility';
+
 //extend t3lib_beUserAuth
 //if ($EXT_CONFIG['enableBECASAuthentication']) {
     //$TYPO3_CONF_VARS['BE']['XCLASS']['t3lib/class.t3lib_beuserauth.php'] = t3lib_extMgm::extPath($_EXTKEY)."sv1/class.ux_t3lib_beuserauth.php";

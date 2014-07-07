@@ -49,7 +49,7 @@ t3lib_extMgm::addTCAcolumns('be_groups', $tempColumns, 1);
 t3lib_extMgm::addToAllTCAtypes('be_groups', 'tx_igldapssoauth_dn;;;;1-1-1');
 
 //// Add fields tx_igldapssoauth_dn to be_users TCA.
-//$tempColumns = Array (
+//$tempColumns = array(
 //	'tx_igldapssoauth_dn' => array(
 //		'exclude' => 1,
 //		'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:be_users.tx_igldapssoauth_dn',
@@ -59,7 +59,6 @@ t3lib_extMgm::addToAllTCAtypes('be_groups', 'tx_igldapssoauth_dn;;;;1-1-1');
 //		)
 //	),
 //);
-//
 //
 //if (version_compare(TYPO3_version, '6.1.0', '<')) {
 //	t3lib_div::loadTCA('be_users');
@@ -97,15 +96,21 @@ t3lib_extMgm::addToAllTCAtypes('fe_groups', 'tx_igldapssoauth_dn');
 //	),
 //);
 //
-//
 //if (version_compare(TYPO3_version, '6.1.0', '<')) {
 //	t3lib_div::loadTCA('fe_users');
 //}
 //t3lib_extMgm::addTCAcolumns('fe_users', $tempColumns, 1);
 //t3lib_extMgm::addToAllTCAtypes('fe_users', 'tx_igldapssoauth_dn;;;;1-1-1');
 
-// Alter users TCA
+$icons = array(
+	'overlay-ldap-record' => t3lib_extMgm::extRelPath($_EXTKEY) . 'Resources/Public/Icons/overlay-ldap-record.png',
+);
+t3lib_SpriteManager::addSingleIcons($icons, $_EXTKEY);
 
+$GLOBALS['TBE_STYLES']['spriteIconApi']['spriteIconRecordOverlayPriorities'][] = 'is_ldap_record';
+$GLOBALS['TBE_STYLES']['spriteIconApi']['spriteIconRecordOverlayNames']['is_ldap_record'] = 'extensions-' . $_EXTKEY . '-overlay-ldap-record';
+
+// Alter users TCA
 $GLOBALS['EXT_CONFIG']['enableBELDAPAuthentication'] ? $GLOBALS['TCA']['be_users']['columns']['password']['config']['eval'] = 'md5,password' : null;
 $GLOBALS['EXT_CONFIG']['enableFELDAPAuthentication'] ? $GLOBALS['TCA']['fe_users']['columns']['password']['config']['eval'] = 'password': null;
 // Load TCA.

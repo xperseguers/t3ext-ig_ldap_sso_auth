@@ -177,9 +177,9 @@ $TCA['tx_igldapssoauth_config'] = array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.be_users_filter',
 			'config' => array(
-				'type' => 'input',
-				'size' => '30',
-				'eval' => 'trim',
+				'type' => 'text',
+				'rows' => 3,
+				'cols' => 30,
 			)
 		),
 		'be_users_mapping' => array(
@@ -187,7 +187,8 @@ $TCA['tx_igldapssoauth_config'] = array(
 			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.be_users_mapping',
 			'config' => array(
 				'type' => 'text',
-				'eval' => 'trim',
+				'rows' => 8,
+				'cols' => 30,
 			)
 		),
 		'be_groups_basedn' => array(
@@ -203,9 +204,9 @@ $TCA['tx_igldapssoauth_config'] = array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.be_groups_filter',
 			'config' => array(
-				'type' => 'input',
-				'size' => '30',
-				'eval' => 'trim',
+				'type' => 'text',
+				'rows' => 3,
+				'cols' => 30,
 			)
 		),
 		'be_groups_mapping' => array(
@@ -213,7 +214,8 @@ $TCA['tx_igldapssoauth_config'] = array(
 			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.be_groups_mapping',
 			'config' => array(
 				'type' => 'text',
-				'eval' => 'trim',
+				'rows' => 8,
+				'cols' => 30,
 			)
 		),
 		'be_groups_required' => array(
@@ -283,9 +285,9 @@ $TCA['tx_igldapssoauth_config'] = array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.fe_users_filter',
 			'config' => array(
-				'type' => 'input',
-				'size' => '30',
-				'eval' => 'trim',
+				'type' => 'text',
+				'rows' => 3,
+				'cols' => 30,
 			)
 		),
 		'fe_users_mapping' => array(
@@ -293,7 +295,8 @@ $TCA['tx_igldapssoauth_config'] = array(
 			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.fe_users_mapping',
 			'config' => array(
 				'type' => 'text',
-				'eval' => 'trim',
+				'rows' => 8,
+				'cols' => 30,
 			)
 		),
 		'fe_groups_basedn' => array(
@@ -309,9 +312,9 @@ $TCA['tx_igldapssoauth_config'] = array(
 			'exclude' => 1,
 			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.fe_groups_filter',
 			'config' => array(
-				'type' => 'input',
-				'size' => '30',
-				'eval' => 'trim',
+				'type' => 'text',
+				'rows' => 3,
+				'cols' => 30,
 			)
 		),
 		'fe_groups_mapping' => array(
@@ -319,7 +322,8 @@ $TCA['tx_igldapssoauth_config'] = array(
 			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.fe_groups_mapping',
 			'config' => array(
 				'type' => 'text',
-				'eval' => 'trim',
+				'rows' => 8,
+				'cols' => 30,
 			)
 		),
 		'fe_groups_required' => array(

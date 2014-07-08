@@ -446,9 +446,9 @@ CSS;
 				</div>';
 			$this->content .= '<br />';
 
-			$this->content .= '<div><strong>' . $GLOBALS['LANG']->getLL('wizard_search_input_base_dn') . '</strong>&nbsp;<input type="text" name="search[basedn]" value="' . $search['basedn'] . '" size="50" /></div><br />';
-			$this->content .= '<div><strong>' . $GLOBALS['LANG']->getLL('wizard_search_input_filter') . '</strong>&nbsp;<input type="text" name="search[filter]" value="' . $search['filter'] . '" size="50" /></div><br />';
-			$this->content .= $search['attributes'] ? '<div><strong>' . $GLOBALS['LANG']->getLL('wizard_search_input_attributes') . '</strong>&nbsp;<input type="text" name="search[attributes]" value="' . $search['attributes'] . '" size="50" /></div><br />' : '';
+			$this->content .= '<div><strong>' . $GLOBALS['LANG']->getLL('wizard_search_input_base_dn') . '</strong>&nbsp;<input type="text" name="search[basedn]" value="' . htmlspecialchars($search['basedn']) . '" size="50" /></div><br />';
+			$this->content .= '<div><strong>' . $GLOBALS['LANG']->getLL('wizard_search_input_filter') . '</strong>&nbsp;<textarea name="search[filter]" cols="50" rows="3">' . htmlspecialchars($search['filter']) . '</textarea></div><br />';
+			$this->content .= $search['attributes'] ? '<div><strong>' . $GLOBALS['LANG']->getLL('wizard_search_input_attributes') . '</strong>&nbsp;<input type="text" name="search[attributes]" value="' . htmlspecialchars($search['attributes']) . '" size="50" /></div><br />' : '';
 
 			$this->content .= '<input type="hidden" name="search[action]" value="' . $search['action'] . '" />';
 			$this->content .= '<input type="submit" value="' . $GLOBALS['LANG']->getLL('wizard_search_submit_search') . '" onclick="this.form.elements[\'search[action]\'].value=\'search\';" />';

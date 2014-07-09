@@ -155,10 +155,10 @@ CSS;
 	 * @return void
 	 */
 	protected function moduleContent() {
-		$thisUrl = t3lib_BEfunc::getModuleUrl($GLOBALS['MCONF']['name']);
+		$thisUrl = t3lib_BEfunc::getModuleUrl($this->MCONF['name']);
 
 		$configurationRecords = $this->getDatabaseConnection()->exec_SELECTgetRows(
-			'uid',
+			'uid, name',
 			'tx_igldapssoauth_config',
 			'deleted=0 AND hidden=0'
 		);
@@ -184,40 +184,58 @@ CSS;
 
 		$this->content .= $this->doc->header($GLOBALS['LANG']->getLL('title'));
 
-		foreach ($configurationRecords as $configurationRecord) {
-			tx_igldapssoauth_config::init(TYPO3_MODE, $configurationRecord['uid']);
+		$config = t3lib_div::_GET('config');
+		$currentConfiguration = NULL;
 
-			$titleLabel = htmlspecialchars(sprintf(
-				$GLOBALS['LANG']->getLL('view_configuration_title'),
-				tx_igldapssoauth_config::getName()
-			));
+		if (count($configurationRecords) === 1) {
+			$configurationSelector = htmlspecialchars($configurationRecords[0]['name']);
+		} else {
+			$thisFullUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL') . 'typo3/' . $thisUrl;
+			$configurationSelector = '<select onchange="document.location=this.value;">';
 
-			$uid = tx_igldapssoauth_config::getUid();
-			$editUrl = 'alt_doc.php?returnUrl=' . urlencode($thisUrl) . '&amp;edit[tx_igldapssoauth_config][' . $uid . ']=edit';
-
-			$titleLabel .= sprintf(
-				' <a href="%s" title="uid=%s">' . t3lib_iconWorks::getSpriteIcon('actions-document-open') . '</a>',
-				$editUrl,
-				$uid
-			);
-
-			$this->content .= '<h2>' . $titleLabel . '</h2>';
-			$this->content .= '<hr />';
-
-			switch ((string)$this->MOD_SETTINGS['function']) {
-				case self::FUNCTION_VIEW_CONFIGURATION:
-					$this->view_configuration();
-					break;
-				case self::FUNCTION_WIZARD_SEARCH:
-					$this->wizard_search(t3lib_div::_GP('search'));
-					break;
-				case self::FUNCTION_WIZARD_AUTHENTICATION:
-					//$this->wizard_authentication(t3lib_div::_GP('authentication'));
-					break;
-				case self::FUNCTION_IMPORT_GROUPS:
-					$this->import_groups();
-					break;
+			foreach ($configurationRecords as $configurationRecord) {
+				$configurationSelector .= '<option value="' . htmlspecialchars($thisFullUrl . '&config=' . $configurationRecord['uid']) . '"';
+				if ($config == $configurationRecord['uid']) {
+					$currentConfiguration = $configurationRecord;
+					$configurationSelector .= ' selected="selected"';
+				}
+				$configurationSelector .= '>' . htmlspecialchars($configurationRecord['name']) . '</option>';
 			}
+
+			$configurationSelector .= '</select>';
+		}
+		if ($currentConfiguration === NULL) {
+			$currentConfiguration = $configurationRecords[0];
+		}
+
+		$uid = $currentConfiguration['uid'];
+		tx_igldapssoauth_config::init(TYPO3_MODE, $uid);
+
+		$thisUrl .= '&config=' . $uid;
+		$editUrl = 'alt_doc.php?returnUrl=' . urlencode($thisUrl) . '&amp;edit[tx_igldapssoauth_config][' . $uid . ']=edit';
+		$editLink .= sprintf(
+			' <a href="%s" title="uid=%s">' . t3lib_iconWorks::getSpriteIcon('actions-document-open') . '</a>',
+			$editUrl,
+			$uid
+		);
+
+		$this->content .= '<h2>' . $GLOBALS['LANG']->getLL('view_configuration_title', TRUE) . ' ' . $configurationSelector . ' ' . $editLink . '</h2>';
+
+		$this->content .= '<hr />';
+
+		switch ((string)$this->MOD_SETTINGS['function']) {
+			case self::FUNCTION_VIEW_CONFIGURATION:
+				$this->view_configuration();
+				break;
+			case self::FUNCTION_WIZARD_SEARCH:
+				$this->wizard_search(t3lib_div::_GP('search'));
+				break;
+			case self::FUNCTION_WIZARD_AUTHENTICATION:
+				//$this->wizard_authentication(t3lib_div::_GP('authentication'));
+				break;
+			case self::FUNCTION_IMPORT_GROUPS:
+				$this->import_groups();
+				break;
 		}
 	}
 

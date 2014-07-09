@@ -17,6 +17,9 @@ Links
 :Bug Tracker:
 	http://forge.typo3.org/projects/extension-ig_ldap_sso_auth/issues
 
+:Release Notes:
+	http://forge.typo3.org/projects/extension-ig_ldap_sso_auth/wiki
+
 :Git Repository:
 	https://git.typo3.org/TYPO3CMS/Extensions/igLdapSsoAuth.git
 

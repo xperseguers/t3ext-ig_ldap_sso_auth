@@ -72,7 +72,9 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 		$configurationRecords = $this->getDatabaseConnection()->exec_SELECTgetRows(
 			'uid',
 			'tx_igldapssoauth_config',
-			'deleted=0 AND hidden=0'
+			'deleted=0 AND hidden=0',
+			'',
+			'sorting'
 		);
 
 		foreach ($configurationRecords as $configurationRecord) {

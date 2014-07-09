@@ -6,28 +6,22 @@ if (!defined ('TYPO3_MODE')) {
 // Init table configuration array for tx_igldapssoauth_config.
 $GLOBALS['TCA']['tx_igldapssoauth_config'] = array(
 	'ctrl' => array(
-		'title'     => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config',
-		'label'     => 'name',
+		'title' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config',
+		'label' => 'name',
+		'sortby' => 'sorting',
 		'adminOnly' => 1,
 		'rootLevel' => 1,
 		'dividers2tabs'=> TRUE,
-		'tstamp'    => 'tstamp',
-		'crdate'    => 'crdate',
+		'tstamp' => 'tstamp',
+		'crdate' => 'crdate',
 		'cruser_id' => 'cruser_id',
-		//'type' => 'name',
-		'default_sortby' => 'ORDER BY name',
 		'delete' => 'deleted',
 		'enablecolumns' => array(
 			'disabled' => 'hidden',
 		),
 		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY) . 'Configuration/TCA/Config.php',
-		'iconfile'          => t3lib_extMgm::extRelPath($_EXTKEY) . 'Resources/Public/Icons/icon_tx_igldapssoauth_config.png',
+		'iconfile' => t3lib_extMgm::extRelPath($_EXTKEY) . 'Resources/Public/Icons/icon_tx_igldapssoauth_config.png',
 	),
-
-	'feInterface' => array(
-		'fe_admin_fieldList' => 'hidden, name, cas_host,cas_uri, cas_port, ldap_server, ldap_protocol, ldap_host, ldap_port, ldap_basedn, ldap_password, be_users_basedn, be_users_filter, be_users_mapping, be_groups_basedn, be_groups_filter, be_groups_mapping, fe_users_basedn, fe_users_filter, fe_users_mapping, fe_groups_basedn, fe_groups_filter, fe_groups_mapping',
-	)
-
 );
 
 // Add fields tx_igldapssoauth_dn to be_groups TCA.

@@ -50,7 +50,9 @@ class tx_igldapssoauth_pi1 extends tslib_pibase {
 		$configurationRecords = $this->getDatabaseConnection()->exec_SELECTgetRows(
 			'uid',
 			'tx_igldapssoauth_config',
-			'deleted=0 AND hidden=0'
+			'deleted=0 AND hidden=0',
+			'',
+			'sorting'
 		);
 
 		if (count($configurationRecords) > 0) {

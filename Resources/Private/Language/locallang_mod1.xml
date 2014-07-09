@@ -13,14 +13,14 @@
 
 			<label index="title">LDAP / SSO service configuration</label>
 			<label index="configuration_missing.title">No Configuration Records</label>
-			<label index="configuration_missing.message"><![CDATA[This module cannot be used until you create at least one configuration record. Please refer to the <a href="%s" target="_blank">administrator manual</a> for further information.]]></label>
+			<label index="configuration_missing.message"><![CDATA[This module cannot be used until you create at least one configuration record. Please refer to the <a href="%s" target="_blank">administrator manual</a> for further information.<br /><br /><a href="%s">Click here</a> to create a configuration record.]]></label>
 
 			<label index="view_configuration">Status</label>
 			<label index="wizard_search">Search wizard</label>
 			<label index="import_groups">Import LDAP groups</label>
 			<label index="wizard_authentication">Authentication wizard</label>
 
-			<label index="view_configuration_title">View configuration</label>
+			<label index="view_configuration_title">Configuration "%s"</label>
 			<label index="view_configuration_ldap_domains">Restricted to domain(s):</label>
 			<label index="view_configuration_ldap">LDAP</label>
 			<label index="view_configuration_ldap_disable">No host name specified.</label>
@@ -68,14 +68,14 @@
 
 			<label index="title">LDAP / SSO service configuration</label>
 			<label index="configuration_missing.title">Aucun enregistrement de configuration</label>
-			<label index="configuration_missing.message"><![CDATA[Ce module ne peut pas être utilisé tant que vous n'avez pas créé au moins un enregistrement de configuration. Veuillez vous référer au <a href="%s" target="_blank">manuel de l'administrateur</a> pour plus d'informations.]]></label>
+			<label index="configuration_missing.message"><![CDATA[Ce module ne peut pas être utilisé tant que vous n'avez pas créé au moins un enregistrement de configuration. Veuillez vous référer au <a href="%s" target="_blank">manuel de l'administrateur</a> pour plus d'informations.<br /><br /><a href="%s">Cliquer ici</a> pour créer un enregistrement de configuration.]]></label>
 
 			<label index="view_configuration">Statut</label>
 			<label index="wizard_search">Assistant de recherche</label>
 			<label index="import_groups">Importer des groupes LDAP</label>
 			<label index="wizard_authentication">Assistant d'authentification</label>
 
-			<label index="view_configuration_title">Montrer la configuration</label>
+			<label index="view_configuration_title">Configuration « %s »</label>
 			<label index="view_configuration_ldap_domains">Limité au(x) domaine(s) :</label>
 			<label index="view_configuration_ldap">LDAP</label>
 			<label index="view_configuration_ldap_disable">Aucun serveur spécifié.</label>

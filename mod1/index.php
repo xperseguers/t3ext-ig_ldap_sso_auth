@@ -155,6 +155,8 @@ CSS;
 	 * @return void
 	 */
 	protected function moduleContent() {
+		$thisUrl = t3lib_BEfunc::getModuleUrl($GLOBALS['MCONF']['name']);
+
 		$configurationRecords = $this->getDatabaseConnection()->exec_SELECTgetRows(
 			'uid',
 			'tx_igldapssoauth_config',
@@ -162,9 +164,12 @@ CSS;
 		);
 
 		if (count($configurationRecords) === 0) {
+			$newUrl = 'alt_doc.php?returnUrl=' . urlencode($thisUrl) . '&amp;edit[tx_igldapssoauth_config][0]=new';
+
 			$message = sprintf(
 				$GLOBALS['LANG']->getLL('configuration_missing.message'),
-				'http://docs.typo3.org/typo3cms/extensions/ig_ldap_sso_auth/AdministratorManual/Index.html'
+				'http://docs.typo3.org/typo3cms/extensions/ig_ldap_sso_auth/AdministratorManual/Index.html',
+				$newUrl
 			);
 			$flashMessage = t3lib_div::makeInstance(
 				't3lib_FlashMessage',
@@ -181,7 +186,22 @@ CSS;
 
 		foreach ($configurationRecords as $configurationRecord) {
 			tx_igldapssoauth_config::init(TYPO3_MODE, $configurationRecord['uid']);
-			$this->content .= '<h2>' . $GLOBALS['LANG']->getLL('view_configuration_title') . ' ' . tx_igldapssoauth_config::getName() . ' (' . tx_igldapssoauth_config::getUid() . ')</h2>';
+
+			$titleLabel = htmlspecialchars(sprintf(
+				$GLOBALS['LANG']->getLL('view_configuration_title'),
+				tx_igldapssoauth_config::getName()
+			));
+
+			$uid = tx_igldapssoauth_config::getUid();
+			$editUrl = 'alt_doc.php?returnUrl=' . urlencode($thisUrl) . '&amp;edit[tx_igldapssoauth_config][' . $uid . ']=edit';
+
+			$titleLabel .= sprintf(
+				' <a href="%s" title="uid=%s">' . t3lib_iconWorks::getSpriteIcon('actions-document-open') . '</a>',
+				$editUrl,
+				$uid
+			);
+
+			$this->content .= '<h2>' . $titleLabel . '</h2>';
 			$this->content .= '<hr />';
 
 			switch ((string)$this->MOD_SETTINGS['function']) {

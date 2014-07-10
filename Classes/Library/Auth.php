@@ -146,19 +146,30 @@ class tx_igldapssoauth_auth {
 		// Get LDAP groups from LDAP user.
 		$typo3_groups = array();
 		$ldap_groups = self::get_ldap_groups($ldap_user);
-		if ($ldap_groups) {
+		unset($ldap_groups['count']);
+
+		$requiredLDAPGroups = tx_igldapssoauth_config::is_enable('requiredLDAPGroups');
+		if ($requiredLDAPGroups) {
+			$requiredLDAPGroups = t3lib_div::trimExplode(',', $requiredLDAPGroups);
+		} else {
+			$requiredLDAPGroups = array();
+		}
+
+		if (count($ldap_groups) === 0) {
+			if (count($requiredLDAPGroups) > 0) {
+				return FALSE;
+			}
+		} else {
 			// Get pid from group mapping.
 			$typo3_group_pid = tx_igldapssoauth_config::get_pid(self::$config['groups']['mapping']);
 
 			$typo3_groups_tmp = tx_igldapssoauth_auth::get_typo3_groups($ldap_groups, self::$config['groups']['mapping'], self::$authenticationService->authInfo['db_groups']['table'], $typo3_group_pid);
 
-			if (tx_igldapssoauth_config::is_enable('IfGroupExist') && $typo3_groups_tmp['count'] == 0) {
+			if (tx_igldapssoauth_config::is_enable('IfGroupExist') && count($typo3_groups_tmp) === 0) {
 				return FALSE;
 			}
-			unset($typo3_groups_tmp['count']);
 
-			if ($requiredLDAPGroups = tx_igldapssoauth_config::is_enable('requiredLDAPGroups')) {
-				$requiredLDAPGroups = t3lib_div::trimExplode(',', $requiredLDAPGroups);
+			if (count($requiredLDAPGroups) > 0) {
 				$required = FALSE;
 				$group_Listuid = array();
 				foreach ($typo3_groups_tmp as $typo3_group) {
@@ -202,10 +213,6 @@ class tx_igldapssoauth_auth {
 				}
 
 				$i++;
-			}
-		} else {
-			if ($requiredLDAPGroups = tx_igldapssoauth_config::is_enable('requiredLDAPGroups')) {
-				return FALSE;
 			}
 		}
 
@@ -430,7 +437,8 @@ class tx_igldapssoauth_auth {
 	}
 
 	/**
-	 * Returns TYPO3 groups.
+	 * Returns TYPO3 groups associated to $ldap_groups or create fresh records
+	 * if they don't exist yet.
 	 *
 	 * @param array $ldap_groups
 	 * @param array $mapping
@@ -439,31 +447,28 @@ class tx_igldapssoauth_auth {
 	 * @return array
 	 */
 	static public function get_typo3_groups(array $ldap_groups = array(), array $mapping = array(), $table = NULL, $pid = 0) {
-		$typo3_groups = array();
-
-		if (!$ldap_groups) {
-			return $typo3_groups;
+		if (count($ldap_groups) === 0) {
+			// Early return
+			return array();
 		}
 
-		unset($ldap_groups['count']);
+		$typo3Groups = array();
 
-		$i = 0;
 		foreach ($ldap_groups as $ldap_group) {
-			$typo3_group = tx_igldapssoauth_typo3_group::fetch($table, 0, $pid, $ldap_group['dn']);
-			if ($typo3_group) {
-				$typo3_groups[] = $typo3_group[0];
-				$i++;
+			$existingTypo3Groups = tx_igldapssoauth_typo3_group::fetch($table, 0, $pid, $ldap_group['dn']);
+
+			if (count($existingTypo3Groups) > 0) {
+				$typo3Group = $existingTypo3Groups[0];
 			} else {
-				$typo3_group = tx_igldapssoauth_typo3_group::create($table);
-				$typo3_group['pid'] = $pid;
-				$typo3_group['tstamp'] = time();
-				$typo3_groups[] = $typo3_group;
+				$typo3Group = tx_igldapssoauth_typo3_group::create($table);
+				$typo3Group['pid'] = $pid;
+				$typo3Group['tstamp'] = $GLOBALS['EXEC_TIME'];
 			}
+
+			$typo3Groups[] = $typo3Group;
 		}
 
-		$typo3_groups['count'] = $i;
-
-		return $typo3_groups;
+		return $typo3Groups;
 	}
 
 	/**

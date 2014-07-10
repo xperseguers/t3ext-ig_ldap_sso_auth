@@ -583,23 +583,44 @@ CSS;
 
 			$this->content .= '<caption><h2>' . $GLOBALS['LANG']->getLL('import_groups_' . $typo3_mode . '_title') . '</h2></caption>';
 
+			// Populate an array of TYPO3 group records corresponding to the LDAP groups
+			// If a given LDAP group has no associated group in TYPO3, a fresh record
+			// will be created so that $ldap_groups[i] <=> $typo3_groups[i]
 			$typo3_group_pid = tx_igldapssoauth_config::get_pid($config['groups']['mapping']);
-			$typo3_groups = tx_igldapssoauth_auth::get_typo3_groups($ldap_groups, $config['groups']['mapping'], $typo3_mode . '_groups', $typo3_group_pid);
+			$table = $typo3_mode === 'be' ? 'be_groups' : 'fe_groups';
+			$typo3_groups = tx_igldapssoauth_auth::get_typo3_groups(
+				$ldap_groups,
+				$config['groups']['mapping'],
+				$table,
+				$typo3_group_pid
+			);
 
 			foreach ($ldap_groups as $index => $ldap_group) {
 				$typo3_group = tx_igldapssoauth_auth::merge($ldap_group, $typo3_groups[$index], $config['groups']['mapping']);
-				if (isset($import_groups[$typo3_mode]) && in_array($typo3_group['tx_igldapssoauth_dn'], $import_groups[$typo3_mode])) {
-					unset($typo3_group['parentGroup']);
-					$typo3_group = tx_igldapssoauth_typo3_group::create($typo3_mode . '_groups', $typo3_group);
 
-					$fieldParent = $config['groups']['mapping']['parentGroup'];
-					preg_match("`<([^$]*)>`", $fieldParent, $attribute);
-					$fieldParent = $attribute[1];
+				if (isset($import_groups[$typo3_mode])) {
+					// Import or update the group using information from LDAP
+					if (t3lib_div::inArray($import_groups[$typo3_mode], $typo3_group['tx_igldapssoauth_dn'])) {
+						unset($typo3_group['parentGroup']);
+						$typo3_group = tx_igldapssoauth_typo3_group::add($table, $typo3_group);
 
-					if (is_array($ldap_group[$fieldParent])) {
-						unset($ldap_group[$fieldParent]['count']);
-						if (is_array($ldap_group[$fieldParent])) {
-							$this->setParentGroup($ldap_group[$fieldParent], $fieldParent, $typo3_group['uid'], $typo3_group_pid, $typo3_mode);
+						if (!empty($config['groups']['mapping']['parentGroup'])) {
+							$fieldParent = $config['groups']['mapping']['parentGroup'];
+							if (preg_match("`<([^$]*)>`", $fieldParent, $attribute)) {
+								$fieldParent = $attribute[1];
+
+								if (is_array($ldap_group[$fieldParent])) {
+									unset($ldap_group[$fieldParent]['count']);
+
+									$this->setParentGroup(
+										$ldap_group[$fieldParent],
+										$fieldParent,
+										$typo3_group['uid'],
+										$typo3_group_pid,
+										$typo3_mode
+									);
+								}
+							}
 						}
 					}
 				}
@@ -626,9 +647,12 @@ CSS;
 		tx_igldapssoauth_ldap::disconnect();
 	}
 
-	protected function setParentGroup($parentsLDAPGroups, $feildParent, $childUid, $typo3_group_pid, $typo3_mode) {
+	protected function setParentGroup($parentsLDAPGroups, $fieldParent, $childUid, $typo3_group_pid, $typo3_mode) {
+		$subGroupList = array();
+		$table = $typo3_mode === 'be' ? 'be_groups' : 'fe_groups';
+
 		foreach ($parentsLDAPGroups as $parentDn) {
-			$typo3ParentGroup = tx_igldapssoauth_typo3_group::fetch($typo3_mode . '_groups', FALSE, $typo3_group_pid, $parentDn);
+			$typo3ParentGroup = tx_igldapssoauth_typo3_group::fetch($table, FALSE, $typo3_group_pid, $parentDn);
 
 			if (is_array($typo3ParentGroup[0])) {
 				if (!empty($typo3ParentGroup[0]['subgroup'])) {
@@ -638,31 +662,47 @@ CSS;
 				$subGroupList[] = $childUid;
 				$subGroupList = array_unique($subGroupList);
 				$typo3ParentGroup[0]['subgroup'] = implode(',', $subGroupList);
-				tx_igldapssoauth_typo3_group::update($typo3_mode . '_groups', $typo3ParentGroup[0]);
+				tx_igldapssoauth_typo3_group::update($table, $typo3ParentGroup[0]);
 				//}
 			} else {
-				$config = ($typo3_mode === 'be') ? tx_igldapssoauth_config::getBeConfiguration() : tx_igldapssoauth_config::getFeConfiguration();
-				if ($ldap_groups = tx_igldapssoauth_ldap::search($config['groups']['basedn'], '(&' . tx_igldapssoauth_config::replace_filter_markers($config['groups']['filter']) . '&(distinguishedName=' . $parentDn . '))', tx_igldapssoauth_config::get_ldap_attributes($config['groups']['mapping']))) {
-					if (is_array($ldap_groups)) {
-						$typo3_group_pid = tx_igldapssoauth_config::get_pid($config['groups']['mapping']);
+				$config = ($typo3_mode === 'be')
+					? tx_igldapssoauth_config::getBeConfiguration()
+					: tx_igldapssoauth_config::getFeConfiguration();
 
-						$typo3_groups = tx_igldapssoauth_auth::get_typo3_groups($ldap_groups, $config['groups']['mapping'], $typo3_mode . '_groups', $typo3_group_pid);
+				$filter = '(&' . tx_igldapssoauth_config::replace_filter_markers($config['groups']['filter']) . '&(distinguishedName=' . $parentDn . '))';
+				$attributes = tx_igldapssoauth_config::get_ldap_attributes($config['groups']['mapping']);
+				$ldap_groups = tx_igldapssoauth_ldap::search($config['groups']['basedn'], $filter, $attributes);
+				unset($ldap_groups['count']);
 
-						unset($ldap_groups['count']);
+				if (count($ldap_groups) > 0) {
+					$typo3_group_pid = tx_igldapssoauth_config::get_pid($config['groups']['mapping']);
 
-						foreach ($ldap_groups as $index => $ldap_group) {
-							$typo3_group = tx_igldapssoauth_auth::merge($ldap_group, $typo3_groups[$index], $config['groups']['mapping']);
-							unset($typo3_group['parentGroup']);
-							$typo3_group['subgroup'] = $childUid;
-							$typo3_group = tx_igldapssoauth_typo3_group::create($typo3_mode . '_groups', $typo3_group);
+					// Populate an array of TYPO3 group records corresponding to the LDAP groups
+					// If a given LDAP group has no associated group in TYPO3, a fresh record
+					// will be created so that $ldap_groups[i] <=> $typo3_groups[i]
+					$typo3_groups = tx_igldapssoauth_auth::get_typo3_groups(
+						$ldap_groups,
+						$config['groups']['mapping'],
+						$table,
+						$typo3_group_pid
+					);
 
-							if (is_array($ldap_group[$feildParent])) {
-								unset($ldap_group[$feildParent]['count']);
-								if (is_array($ldap_group[$feildParent])) {
-									$this->setParentGroup($ldap_group[$feildParent], $feildParent, $typo3_group['uid'], $typo3_group_pid, $typo3_mode);
-								}
+					foreach ($ldap_groups as $index => $ldap_group) {
+						$typo3_group = tx_igldapssoauth_auth::merge($ldap_group, $typo3_groups[$index], $config['groups']['mapping']);
+						unset($typo3_group['parentGroup']);
+						$typo3_group['subgroup'] = $childUid;
+						$typo3_group = tx_igldapssoauth_typo3_group::add($table, $typo3_group);
 
-							}
+						if (is_array($ldap_group[$fieldParent])) {
+							unset($ldap_group[$fieldParent]['count']);
+
+							$this->setParentGroup(
+								$ldap_group[$fieldParent],
+								$fieldParent,
+								$typo3_group['uid'],
+								$typo3_group_pid,
+								$typo3_mode
+							);
 						}
 					}
 				}

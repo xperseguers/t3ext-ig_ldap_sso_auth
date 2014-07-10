@@ -41,7 +41,7 @@
 			<label index="be_groups_mapping.description">Assign LDAP attribute to a field of the user group.</label>
 			<label index="be_groups_required.description">List of backend user groups (previously imported from LDAP) required to authorize authentication of LDAP users.</label>
 			<label index="be_groups_assigned.description">List of backend user groups to be assigned automatically when authenticating LDAP users.</label>
-			<label index="be_groups_admin.description">List of backend user groups to be promoted as TYPO3 administrators.</label>
+			<label index="be_groups_admin.description">List of backend user groups whose members should be promoted as TYPO3 administrators (valid only as part of LDAP authentication).</label>
 
 			<label index="fe_users_basedn.description">DN (Distinguished Name) to be used to look for FE users in the LDAP server.</label>
 			<label index="fe_users_basedn.syntax">E.g., ou=USERS,dc=infoglobe,dc=ca</label>
@@ -89,7 +89,7 @@
 			<label index="be_groups_mapping.description">Assigner la valeur d'un attribut LDAP à un champ de la table de l'usager.</label>
 			<label index="be_groups_required.description">Liste de groupes utilisateurs backend (précédemment importés depuis LDAP) requis pour autoriser l'authentification d'utilisateurs LDAP.</label>
 			<label index="be_groups_assigned.description">Liste de groupes utilisateurs backend à assigner lors de l'authentification d'utilisateurs LDAP.</label>
-			<label index="be_groups_admin.description">Liste de groupes utilisateurs backend à promouvoir administrateurs TYPO3.</label>
+			<label index="be_groups_admin.description">Liste de groupes utilisateurs backend dont les membres doivent être promus administrateurs TYPO3 (valable uniquement lors d'une authentication par LDAP).</label>
 
 			<label index="fe_users_basedn.description">DN (Distinguished Name) de base pour la recherche des usagers FE sur le serveur LDAP.</label>
 			<label index="fe_users_basedn.syntax">Ex.: ou=USERS,dc=infoglobe,dc=ca</label>

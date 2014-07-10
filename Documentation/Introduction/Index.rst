@@ -35,13 +35,14 @@ Screenshots
 .. figure:: ../Images/configuration-be-groups.png
 	:alt: Configuration of backend groups
 
-	Configuration of the retrieval of backend user groups and which ones to assign automatically to authenticated users
+	Configuration of the retrieval of backend user groups
 
 
 .. figure:: ../Images/configuration-fe-users.png
 	:alt: Configuration of the frontend users
 
-	Configuration of the frontend authentication and how to map LDAP attributes to TYPO3 fields
+	Configuration of the frontend authentication, how to map LDAP attributes to TYPO3 fields and which groups are
+	required or should be automatically assigned
 
 
 .. figure:: ../Images/status.png

@@ -408,35 +408,46 @@ CSS;
 	protected function search_wizard($search = array()) {
 
 		switch ($search['action']) {
+			case 'select':
 
-			case 'select' :
+				list($typo3_mode, $type) = explode('_', $search['table']);
+				$config = ($typo3_mode === 'be')
+					? tx_igldapssoauth_config::getBeConfiguration()
+					: tx_igldapssoauth_config::getFeConfiguration();
 
-				list($typo3_mode, $table) = explode('_', $search['table']);
-				$config = ($typo3_mode === 'be') ? tx_igldapssoauth_config::getBeConfiguration() : tx_igldapssoauth_config::getFeConfiguration();
-
-				$search['basedn'] = $config[$table]['basedn'];
-				$search['filter'] = tx_igldapssoauth_config::replace_filter_markers($config[$table]['filter']);
-				$search['attributes'] = $search['first_entry'] ? '' : implode(',', tx_igldapssoauth_config::get_ldap_attributes($config[$table]['mapping']));
-
+				$search['basedn'] = $config[$type]['basedn'];
+				$search['filter'] = tx_igldapssoauth_config::replace_filter_markers($config[$type]['filter']);
+				$attributes = tx_igldapssoauth_config::get_ldap_attributes($config[$type]['mapping']);
+				if ($type === 'users') {
+					if (strpos($config['groups']['filter'], '{USERUID}') !== FALSE) {
+						$attributes[] = 'uid';
+						$attributes = array_unique($attributes);
+					}
+				}
+				$search['attributes'] = $search['first_entry'] ? '' : implode(',', $attributes);
 				break;
 
-			case 'search' :
-
+			case 'search':
 				break;
 
-			default :
-
+			default:
 				$search['table'] = 'be_users';
 
-				list($typo3_mode, $table) = explode('_', $search['table']);
-				$config = ($typo3_mode === 'be') ? tx_igldapssoauth_config::getBeConfiguration() : tx_igldapssoauth_config::getFeConfiguration();
+				list($typo3_mode, $type) = explode('_', $search['table']);
+				$config = ($typo3_mode === 'be')
+					? tx_igldapssoauth_config::getBeConfiguration()
+					: tx_igldapssoauth_config::getFeConfiguration();
 
 				$search['first_entry'] = TRUE;
 				$search['see_status'] = FALSE;
-				$search['basedn'] = $config[$table]['basedn'];
-				$search['filter'] = tx_igldapssoauth_config::replace_filter_markers($config[$table]['filter']);
-				$search['attributes'] = $search['first_entry'] ? '' : implode(',', tx_igldapssoauth_config::get_ldap_attributes($config[$table]['mapping']));
-
+				$search['basedn'] = $config[$type]['basedn'];
+				$search['filter'] = tx_igldapssoauth_config::replace_filter_markers($config[$type]['filter']);
+				$attributes = tx_igldapssoauth_config::get_ldap_attributes($config['users']['mapping']);
+				if (strpos($config['groups']['filter'], '{USERUID}') !== FALSE) {
+					$attributes[] = 'uid';
+					$attributes = array_unique($attributes);
+				}
+				$search['attributes'] = $search['first_entry'] ? '' : implode(',', $attributes);
 				break;
 		}
 

@@ -36,7 +36,7 @@
 
 			<label index="be_groups_basedn.description">DN (Distinguished Name) to be used to look for BE groups in the LDAP server.</label>
 			<label index="be_groups_basedn.syntax">Ex.: ou=GROUPS,dc=infoglobe,dc=ca</label>
-			<label index="be_groups_filter.description">Filter to search for BE groups in the LDAP server.</label>
+			<label index="be_groups_filter.description">Filter to search for BE groups in the LDAP server. Example: (objectClass=posixGroup)</label>
 			<label index="be_groups_filter.syntax">Sample if option "Relation between groups and users" is set to "Group contains the list of its members": (memberuid={USERDN})</label>
 			<label index="be_groups_mapping.description">Assign LDAP attribute to a field of the user group.</label>
 			<label index="be_groups_required.description">List of backend user groups (previously imported from LDAP) required to authorize authentication of LDAP users.</label>
@@ -51,7 +51,7 @@
 
 			<label index="fe_groups_basedn.description">DN (Distinguished Name) to be used to look for FE groups in the LDAP server..</label>
 			<label index="fe_groups_basedn.syntax">E.g., ou=GROUPS,dc=infoglobe,dc=ca</label>
-			<label index="fe_groups_filter.description">Filter to search for FE groups in the LDAP server.</label>
+			<label index="fe_groups_filter.description">Filter to search for FE groups in the LDAP server. Example: (objectClass=posixGroup)</label>
 			<label index="fe_groups_filter.syntax">Sample if option "Relation between groups and users" is set to "Group contains the list of its members": (memberuid={USERDN})</label>
 			<label index="fe_groups_mapping.description">Assign LDAP attribute to a field of the group record.</label>
 			<label index="fe_groups_required.description">List of frontend user groups (previously imported from LDAP) required to authorize authentication of LDAP users.</label>
@@ -84,7 +84,7 @@
 
 			<label index="be_groups_basedn.description">DN (Distinguished Name) de base pour la recherche des groupes BE sur le serveur LDAP.</label>
 			<label index="be_groups_basedn.syntax">Ex.: ou=GROUPS,dc=infoglobe,dc=ca</label>
-			<label index="be_groups_filter.description">Filtre de recherche des groupes BE sur le serveur LDAP.</label>
+			<label index="be_groups_filter.description">Filtre de recherche des groupes BE sur le serveur LDAP. Exemple: (objectClass=posixGroup)</label>
 			<label index="be_groups_filter.syntax">Exemple si l'option "Relation entres les groupes et les utilisateurs" est définie à "L'utilisateur contient la liste des groupes associés" : (memberuid={USERDN})</label>
 			<label index="be_groups_mapping.description">Assigner la valeur d'un attribut LDAP à un champ de la table de l'usager.</label>
 			<label index="be_groups_required.description">Liste de groupes utilisateurs backend (précédemment importés depuis LDAP) requis pour autoriser l'authentification d'utilisateurs LDAP.</label>
@@ -99,7 +99,7 @@
 
 			<label index="fe_groups_basedn.description">DN (Distinguished Name) de base pour la recherche des groupes FE sur le serveur LDAP.</label>
 			<label index="fe_groups_basedn.syntax">Ex.: ou=GROUPS,dc=infoglobe,dc=ca</label>
-			<label index="fe_groups_filter.description">Filtre de recherche des groupes FE sur le serveur LDAP.</label>
+			<label index="fe_groups_filter.description">Filtre de recherche des groupes FE sur le serveur LDAP. Exemple: (objectClass=posixGroup)</label>
 			<label index="fe_groups_filter.syntax">Exemple si l'option "Relation entres les groupes et les utilisateurs" est définie à "L'utilisateur contient la liste des groupes associés" : (memberuid={USERDN})</label>
 			<label index="fe_groups_mapping.description">Assigner la valeur d'un attribut LDAP à un champ de la table de l'usager.</label>
 			<label index="fe_groups_required.description">Liste de groupes utilisateurs frontend (précédemment importés depuis LDAP) requis pour autoriser l'authentification d'utilisateurs LDAP.</label>

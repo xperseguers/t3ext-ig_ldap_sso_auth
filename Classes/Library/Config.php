@@ -330,7 +330,7 @@ class tx_igldapssoauth_config {
 			}
 		}
 
-		return $ldap_attributes;
+		return array_unique($ldap_attributes);
 	}
 
 	static public function get_server_name($uid = NULL) {
@@ -349,11 +349,18 @@ class tx_igldapssoauth_config {
 		return $server;
 	}
 
-	static public function replace_filter_markers($filter = NULL) {
-		$filter = str_replace('{USERNAME}', '*', $filter);
-		preg_match("'([^$]*)\\(([^$]*)={USERDN}\\)'", $filter, $member_attribute);
-		//return str_replace('('.$member_attribute[2].'={USERDN})', '', $filter);
-		return str_replace('{USERDN}', '*', $filter);
+	/**
+	 * Replaces following markers with a wildcard in a LDAP filter:
+	 * - {USERNAME}
+	 * - {USERDN}
+	 * - {USERUID}
+	 *
+	 * @param string $filter
+	 * @return string
+	 */
+	static public function replace_filter_markers($filter) {
+		$filter = str_replace(array('{USERNAME}', '{USERDN}', '{USERUID}'), '*', $filter);
+		return $filter;
 	}
 
 	/**

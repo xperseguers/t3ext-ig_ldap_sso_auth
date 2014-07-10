@@ -359,7 +359,19 @@ class tx_igldapssoauth_auth {
 	 * @return array
 	 */
 	static protected function get_ldap_user($dn = NULL) {
+		// Restricting the list of returned attributes sometimes
+		// makes the ldap_search() method issue a PHP warning:
+		// Warning: ldap_search(): Array initialization wrong
+		/*
 		$attributes = tx_igldapssoauth_config::get_ldap_attributes(self::$config['users']['mapping']);
+		if (strpos(self::$config['groups']['filter'], '{USERUID}') !== FALSE) {
+			$attributes[] = 'uid';
+			$attributes = array_unique($attributes);
+		}
+		*/
+		// so we just ask for every attribute!
+		$attributes = array();
+
 		$users = tx_igldapssoauth_ldap::search(
 			$dn,
 			str_replace('{USERNAME}', '*', self::$config['users']['filter']),
@@ -385,18 +397,24 @@ class tx_igldapssoauth_auth {
 		$ldap_group_attributes = tx_igldapssoauth_config::get_ldap_attributes(self::$config['groups']['mapping']);
 		$ldap_groups = array('count' => 0);
 
-		// Get LDAP groups from membership attribute.
 		if (tx_igldapssoauth_config::is_enable('evaluateGroupsFromMembership')) {
-
+			// Get LDAP groups from membership attribute
 			if ($membership = tx_igldapssoauth_ldap_group::get_membership($ldap_user, self::$config['users']['mapping'])) {
-
-				$ldap_groups = tx_igldapssoauth_ldap_group::select_from_membership($membership, self::$config['groups']['filter'], $ldap_group_attributes);
+				$ldap_groups = tx_igldapssoauth_ldap_group::select_from_membership(
+					$membership,
+					self::$config['groups']['filter'],
+					$ldap_group_attributes
+				);
 			}
-
-			// Get LDAP groups from DN of user.
 		} else {
-
-			$ldap_groups = tx_igldapssoauth_ldap_group::select_from_userdn($ldap_user['dn'], self::$config['groups']['basedn'], self::$config['groups']['filter'], $ldap_group_attributes);
+			// Get LDAP groups from DN of user.
+			$ldap_groups = tx_igldapssoauth_ldap_group::selectFromUser(
+				self::$config['groups']['basedn'],
+				self::$config['groups']['filter'],
+				$ldap_user['dn'],
+				!empty($ldap_user['uid'][0]) ? $ldap_user['uid'][0] : '',
+				$ldap_group_attributes
+			);
 		}
 
 		Tx_IgLdapSsoAuth_Utility_Debug::debug(sprintf('Retrieving LDAP groups for user "%s"', $ldap_user['dn']), $ldap_groups);

@@ -45,7 +45,9 @@ class tx_igldapssoauth_ldap_group {
 
 		foreach ($membership as $groupdn) {
 			$ldap_group = tx_igldapssoauth_ldap::search($groupdn, $filter, $attributes);
-
+			if ($ldap_group['count'] == 0) {
+				continue;
+			}
 			$ldap_groups['count']++;
 			$ldap_groups[] = $ldap_group[0];
 		}
@@ -53,8 +55,29 @@ class tx_igldapssoauth_ldap_group {
 		return $ldap_groups;
 	}
 
+	/**
+	 * @deprecated since version 1.3, this method will be removed in version 1.5, use tx_igldapssoauth_ldap_group::selectFromUser() instead.
+	 */
 	static public function select_from_userdn($userdn = NULL, $basedn = NULL, $filter = NULL, $attributes = array()) {
+		t3lib_div::logDeprecatedFunction();
 		return tx_igldapssoauth_ldap::search($basedn, str_replace('{USERDN}', tx_igldapssoauth_ldap::escapeDnForFilter($userdn), $filter), $attributes);
+	}
+
+	/**
+	 * Returns groups associated to a given user (identified either by his DN or his uid attribute).
+	 *
+	 * @param string $baseDn
+	 * @param string $filter
+	 * @param string $userDn
+	 * @param string $userUid
+	 * @param array $attributes
+	 */
+	static public function selectFromUser($baseDn, $filter = '', $userDn = '', $userUid = '', array $attributes = array()) {
+		$filter = str_replace('{USERDN}', tx_igldapssoauth_ldap::escapeDnForFilter($userDn), $filter);
+		$filter = str_replace('{USERUID}', tx_igldapssoauth_ldap::escapeDnForFilter($userUid), $filter);
+
+		$groups = tx_igldapssoauth_ldap::search($baseDn, $filter, $attributes);
+		return $groups;
 	}
 
 	static public function get_membership($ldap_user = array(), $mapping = array()) {

@@ -40,6 +40,9 @@ TYPO3FEDeleteUserIfNoTYPO3Groups = 0
 # cat=frontend/enable; type=boolean; label=Frontend user group must exist: If no groups are found locally, the user may not log on.
 TYPO3FEGroupExist = 0
 
+# cat=frontend/enable; type=boolean; label=Frontend user must exist: If checked, users that are not already present in TYPO3 may not log on.
+TYPO3FEUserExist = 0
+
 # cat=frontend/enable; type=boolean; label=Disable Frontend group synchronization: If checked, TYPO3 Frontend user groups will not get updated.
 TYPO3FEGroupsNotSynchronize = 0
 

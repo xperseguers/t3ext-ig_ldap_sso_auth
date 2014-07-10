@@ -96,7 +96,7 @@ class tx_igldapssoauth_config {
 		self::$fe['CASAuthentication'] = $config['enableFECASAuthentication'];
 		self::$fe['forceLowerCaseUsername'] = $config['forceLowerCaseUsername'] ? $config['forceLowerCaseUsername'] : 0;
 		self::$fe['evaluateGroupsFromMembership'] = $config['evaluateGroupsFromMembership'];
-		self::$fe['IfUserExist'] = 0;
+		self::$fe['IfUserExist'] = $config['TYPO3FEUserExist'];
 		self::$fe['IfGroupExist'] = $config['TYPO3FEGroupExist'];
 		self::$fe['BEfailsafe'] = 0;
 		self::$fe['updateAdminAttribForGroups'] = 0;

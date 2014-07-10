@@ -20,7 +20,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 					--div--;GENERAL,
 						name, domains,
 					--div--;LDAP,
-						ldap_server, ldap_protocol, ldap_charset,
+						ldap_server;;1,
 					--palette--;LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:palette.connection;connection,
 						ldap_binddn, ldap_password,
 					--div--;BE_USERS,
@@ -36,7 +36,9 @@ $TCA['tx_igldapssoauth_config'] = array(
 		),
 	),
 	'palettes' => array(
-		'1' => array('showitem' => ''),
+		'1' => array(
+			'showitem' => 'ldap_protocol, ldap_charset'
+		),
 		'connection' => array(
 			'showitem' => 'ldap_host, ldap_port, ldap_tls',
 			'canNotCollapse' => 1,

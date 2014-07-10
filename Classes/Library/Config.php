@@ -128,6 +128,15 @@ class tx_igldapssoauth_config {
 	}
 
 	/**
+	 * Returns TRUE if configuration has been initialized, otherwise FALSE.
+	 *
+	 * @return bool
+	 */
+	static public function isInitialized() {
+		return self::$typo3_mode !== NULL;
+	}
+
+	/**
 	 * Returns TRUE if this configuration is enabled for current host.
 	 *
 	 * @return bool

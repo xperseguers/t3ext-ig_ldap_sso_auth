@@ -77,6 +77,11 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 			'sorting'
 		);
 
+		if (count($configurationRecords) === 0) {
+			// Early return since LDAP is not configured
+			return FALSE;
+		}
+
 		foreach ($configurationRecords as $configurationRecord) {
 			tx_igldapssoauth_config::init(TYPO3_MODE, $configurationRecord['uid']);
 			if (!tx_igldapssoauth_config::isEnabledForCurrentHost()) {
@@ -160,14 +165,21 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 	 * Authenticates a user (Check various conditions for the user that might invalidate its
 	 * authentication, eg. password match, domain, IP, etc.).
 	 *
+	 * The return value is defined like that:
+	 *
+	 * FALSE -> login failed and authentication should stop
+	 * 100 -> login failed but authentication should try next service
+	 * 200 -> login succeeded
+	 *
 	 * @param array $user Data of user.
 	 * @return int|FALSE
 	 */
 	public function authUser($user) {
+		if (!tx_igldapssoauth_config::isInitialized()) {
+			// Early return since LDAP is not configured
+			return 100;
+		}
 
-		// FALSE -> login failed and authentication should stop
-		// 100 -> login failed but authentication should try next service
-		// 200 -> login succeeded
 		if (TYPO3_MODE === 'BE') {
 			$OK = tx_igldapssoauth_config::is_enable('BEfailsafe') ? 100 : FALSE;
 		} else {

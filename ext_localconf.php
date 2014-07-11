@@ -52,6 +52,9 @@ if (is_array($subTypesArr)) {
 	$subTypes = implode(',',$subTypesArr);
 }
 
+// Register hook for \TYPO3\CMS\Core\DataHandling\DataHandler
+$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:' . $_EXTKEY . '/Classes/Hooks/DataHandler.php:Tx_IgLdapSsoAuth_Hooks_DataHandler';
+
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_igldapssoauth_scheduler_synchroniseusers'] = array(
 	'extension'   => $_EXTKEY,
 	'title'       => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:synchro.name',

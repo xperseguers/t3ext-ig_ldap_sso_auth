@@ -33,6 +33,9 @@
  */
 class tx_igldapssoauth_config {
 
+	const GROUP_MEMBERSHIP_FROM_GROUP = 1;
+	const GROUP_MEMBERSHIP_FROM_MEMBER = 2;
+
 	static protected $uid;
 	static protected $name;
 	static protected $typo3_mode;
@@ -77,7 +80,7 @@ class tx_igldapssoauth_config {
 		self::$be['CASAuthentication'] = 0;
 		self::$be['DeleteCookieLogout'] = 0;
 		self::$be['forceLowerCaseUsername'] = $config['forceLowerCaseUsername'] ? $config['forceLowerCaseUsername'] : 0;
-		self::$be['evaluateGroupsFromMembership'] = $config['group_membership'] == 2;
+		self::$be['evaluateGroupsFromMembership'] = $config['group_membership'] == self::GROUP_MEMBERSHIP_FROM_MEMBER;
 		self::$be['IfUserExist'] = $config['TYPO3BEUserExist'];
 		self::$be['IfGroupExist'] = $config['TYPO3BEGroupExist'];
 		self::$be['BEfailsafe'] = $config['BEfailsafe'];
@@ -99,7 +102,7 @@ class tx_igldapssoauth_config {
 		self::$fe['DeleteCookieLogout'] = $config['DeleteCookieLogout'];
 		self::$fe['CASAuthentication'] = $config['enableFECASAuthentication'];
 		self::$fe['forceLowerCaseUsername'] = $config['forceLowerCaseUsername'] ? $config['forceLowerCaseUsername'] : 0;
-		self::$fe['evaluateGroupsFromMembership'] = $config['group_membership'] == 2;
+		self::$fe['evaluateGroupsFromMembership'] = $config['group_membership'] == self::GROUP_MEMBERSHIP_FROM_MEMBER;
 		self::$fe['IfUserExist'] = $config['TYPO3FEUserExist'];
 		self::$fe['IfGroupExist'] = $config['TYPO3FEGroupExist'];
 		self::$fe['BEfailsafe'] = 0;
@@ -203,7 +206,7 @@ class tx_igldapssoauth_config {
 	 * @param string $mapping
 	 * @return array
 	 */
-	static protected function make_mapping($mapping = '') {
+	static public function make_mapping($mapping = '') {
 		$config_mapping = array();
 		$mapping_array = explode(LF, $mapping);
 

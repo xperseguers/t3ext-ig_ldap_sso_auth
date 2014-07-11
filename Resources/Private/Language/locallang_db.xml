@@ -34,6 +34,8 @@
 			<label index="tx_igldapssoauth_config.group_membership">Relation between groups and users:</label>
 			<label index="tx_igldapssoauth_config.group_membership.I.1">Group contains the list of its members</label>
 			<label index="tx_igldapssoauth_config.group_membership.I.2">User contains the list of its associated groups</label>
+			<label index="tx_igldapssoauth_config.group_membership.fe.missingUsergroupMapping"><![CDATA[Mapping for field "usergroup" is missing in the configuration of frontend users. You may end up importing ALL groups in LDAP into TYPO3 and get users associated to wrong groups. Suggestion: usergroup = <memberOf>]]></label>
+			<label index="tx_igldapssoauth_config.group_membership.be.missingUsergroupMapping"><![CDATA[Mapping for field "usergroup" is missing in the configuration of backend users. You may end up importing ALL groups in LDAP into TYPO3 and get users associated to wrong groups. Suggestion: usergroup = <memberOf>]]></label>
 
 			<label index="tx_igldapssoauth_config.be_users_basedn">Base DN:</label>
 			<label index="tx_igldapssoauth_config.be_users_filter">Filter:</label>
@@ -90,6 +92,8 @@
 			<label index="tx_igldapssoauth_config.group_membership">Relation entres les groupes et les utilisateurs :</label>
 			<label index="tx_igldapssoauth_config.group_membership.I.1">Le groupe contient la liste des membres</label>
 			<label index="tx_igldapssoauth_config.group_membership.I.2">L'utilisateur contient la liste des groupes associés</label>
+			<label index="tx_igldapssoauth_config.group_membership.fe.missingUsergroupMapping"><![CDATA[La correspondance pour le champ "usergroup" n'est pas définie dans la configuration des utilisateurs frontend. Vous risquez de provoquer l'importation de TOUS les groupes de LDAP dans TYPO3 et d'associer vos utilisateurs à des groupes invalides. Suggestion : usergroup = <memberOf>]]></label>
+			<label index="tx_igldapssoauth_config.group_membership.be.missingUsergroupMapping"><![CDATA[La correspondance pour le champ "usergroup" n'est pas définie dans la configuration des utilisateurs backend. Vous risquez de provoquer l'importation de TOUS les groupes de LDAP dans TYPO3 et d'associer vos utilisateurs à des groupes invalides. Suggestion : usergroup = <memberOf>]]></label>
 
 			<label index="tx_igldapssoauth_config.be_users_basedn">Base DN :</label>
 			<label index="tx_igldapssoauth_config.be_users_filter">Filtre :</label>

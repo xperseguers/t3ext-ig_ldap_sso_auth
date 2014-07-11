@@ -171,11 +171,13 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'type' => 'select',
 				'items' => array(
 					array(
-						'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.group_membership.I.1', '1',
+						'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.group_membership.I.1',
+						tx_igldapssoauth_config::GROUP_MEMBERSHIP_FROM_GROUP,
 						t3lib_extMgm::extRelPath('ig_ldap_sso_auth') . 'Resources/Public/Icons/selicon_group_membership_1.png'
 					),
 					array(
-						'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.group_membership.I.2', '2',
+						'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.group_membership.I.2',
+						tx_igldapssoauth_config::GROUP_MEMBERSHIP_FROM_MEMBER,
 						t3lib_extMgm::extRelPath('ig_ldap_sso_auth') . 'Resources/Public/Icons/selicon_group_membership_2.png'
 					),
 				),

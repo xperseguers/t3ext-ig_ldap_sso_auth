@@ -7,9 +7,6 @@ throwExceptionAtLogin = 1
 # cat=basic//3; type=boolean; label=Force lower-case user name: If checked, user names will be always be stored in lower-cases. Useful for case-sensitive databases.
 forceLowerCaseUsername = 0
 
-# cat=basic/enable; type=boolean; label=Extract groups from membership: If checked, obtain groups from user using the membership attribute. Otherwise, gather groups object indirectly using the user's DN.
-evaluateGroupsFromMembership = 0
-
 # cat=backend/enable/1; type=boolean; label=Backend LDAP authentication: Enable LDAP authentication for the backend.
 enableBELDAPAuthentication = 0
 

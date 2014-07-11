@@ -52,6 +52,10 @@ class tx_igldapssoauth_config {
 	static public function init($typo3_mode = NULL, $uid) {
 		$globalConfig = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']);
 		if (!is_array($globalConfig)) $globalConfig = array();
+
+		// Legacy configuration options
+		unset($globalConfig['evaluateGroupsFromMembership']);
+
 		self::$uid = $uid;
 
 		// Default TYPO3_MODE is BE
@@ -73,7 +77,7 @@ class tx_igldapssoauth_config {
 		self::$be['CASAuthentication'] = 0;
 		self::$be['DeleteCookieLogout'] = 0;
 		self::$be['forceLowerCaseUsername'] = $config['forceLowerCaseUsername'] ? $config['forceLowerCaseUsername'] : 0;
-		self::$be['evaluateGroupsFromMembership'] = $config['evaluateGroupsFromMembership'];
+		self::$be['evaluateGroupsFromMembership'] = $config['group_membership'] == 2;
 		self::$be['IfUserExist'] = $config['TYPO3BEUserExist'];
 		self::$be['IfGroupExist'] = $config['TYPO3BEGroupExist'];
 		self::$be['BEfailsafe'] = $config['BEfailsafe'];
@@ -95,7 +99,7 @@ class tx_igldapssoauth_config {
 		self::$fe['DeleteCookieLogout'] = $config['DeleteCookieLogout'];
 		self::$fe['CASAuthentication'] = $config['enableFECASAuthentication'];
 		self::$fe['forceLowerCaseUsername'] = $config['forceLowerCaseUsername'] ? $config['forceLowerCaseUsername'] : 0;
-		self::$fe['evaluateGroupsFromMembership'] = $config['evaluateGroupsFromMembership'];
+		self::$fe['evaluateGroupsFromMembership'] = $config['group_membership'] == 2;
 		self::$fe['IfUserExist'] = $config['TYPO3FEUserExist'];
 		self::$fe['IfGroupExist'] = $config['TYPO3FEGroupExist'];
 		self::$fe['BEfailsafe'] = 0;

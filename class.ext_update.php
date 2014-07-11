@@ -43,6 +43,12 @@ class ext_update extends t3lib_SCbase {
 	/** @var array */
 	protected $configuration;
 
+	/** @var array */
+	protected $operations = array();
+
+	/** @var string */
+	protected $table = 'tx_igldapssoauth_config';
+
 	/**
 	 * Default constructor.
 	 */
@@ -57,9 +63,23 @@ class ext_update extends t3lib_SCbase {
 	 * @return boolean
 	 */
 	public function access() {
-		$updateNeeded = FALSE;
+		if ($this->checkV1xToV12()) {
+			$this->operations[] = 'upgradeV1xToV12';
+		}
+		if ($this->checkV12ToV13()) {
+			$this->operations[] = 'upgradeV12ToV13';
+		}
 
-		$table = 'tx_igldapssoauth_config';
+		return count($this->operations) > 0;
+	}
+
+	/**
+	 * Returns TRUE if upgrade wizard from v1.x to v1.2 should be run.
+	 *
+	 * @return bool
+	 */
+	protected function checkV1xToV12() {
+		$updateNeeded = FALSE;
 		$mapping = $this->getMapping();
 
 		$where = array();
@@ -68,17 +88,32 @@ class ext_update extends t3lib_SCbase {
 				// Global setting present => should be migrated if not already done
 				$updateNeeded = TRUE;
 			}
-			$where[] = $field . '=' . $this->getDatabaseConnection()->fullQuoteStr('', $table);
+			$where[] = $field . '=' . $this->getDatabaseConnection()->fullQuoteStr('', $this->table);
 		}
 		if ($updateNeeded) {
 			$oldConfigurationRecords = $this->getDatabaseConnection()->exec_SELECTcountRows(
 				'*',
-				$table,
+				$this->table,
 				implode(' AND ', $where)
 			);
 			$updateNeeded = ($oldConfigurationRecords > 0);
 		}
+
 		return $updateNeeded;
+	}
+
+	/**
+	 * Returns TRUE if upgrade wizard from v1.2 to v1.3 should be run.
+	 *
+	 * @return bool
+	 */
+	protected function checkV12ToV13() {
+		$oldConfigurationRecords = $this->getDatabaseConnection()->exec_SELECTcountRows(
+			'*',
+			$this->table,
+			'group_membership=0'
+		);
+		return $oldConfigurationRecords > 0;
 	}
 
 	/**
@@ -88,7 +123,21 @@ class ext_update extends t3lib_SCbase {
 	 * @return string HTML to display
 	 */
 	public function main() {
-		$table = 'tx_igldapssoauth_config';
+		$out = array();
+
+		foreach ($this->operations as $operation) {
+			$out[] = call_user_func(array($this, $operation));
+		}
+
+		return implode(LF, $out);
+	}
+
+	/**
+	 * Upgrades configuration from v1.x to v1.2.
+	 *
+	 * @return string
+	 */
+	protected function upgradeV1xToV12() {
 		$mapping = $this->getMapping();
 
 		$fieldValues = array(
@@ -100,18 +149,18 @@ class ext_update extends t3lib_SCbase {
 				// Global setting present => should be migrated
 				$fieldValues[$field] = $this->configuration[$configKey];
 			}
-			$where[] = $field . '=' . $this->getDatabaseConnection()->fullQuoteStr('', $table);
+			$where[] = $field . '=' . $this->getDatabaseConnection()->fullQuoteStr('', $this->table);
 		}
 		$oldConfigurationRecords = $this->getDatabaseConnection()->exec_SELECTgetRows(
 			'uid',
-			$table,
+			$this->table,
 			implode(' AND ', $where)
 		);
 
 		$i = 0;
 		foreach ($oldConfigurationRecords as $oldConfigurationRecord) {
 			$this->getDatabaseConnection()->exec_UPDATEquery(
-				$table,
+				$this->table,
 				'uid=' . $oldConfigurationRecord['uid'],
 				$fieldValues
 			);
@@ -119,6 +168,23 @@ class ext_update extends t3lib_SCbase {
 		}
 
 		return $this->formatOk('Successfully updated ' . $i . ' configuration record' . ($i > 1 ? 's' : ''));
+	}
+
+	/**
+	 * Upgrades configuration from v1.2 to v1.3.
+	 *
+	 * @return string
+	 */
+	protected function upgradeV12ToV13() {
+		$this->getDatabaseConnection()->exec_UPDATEquery(
+			$this->table,
+			'1=1',
+			array(
+				'group_membership' => (bool) $this->configuration['evaluateGroupsFromMembership'] ? 2 : 1,
+			)
+		);
+
+		return $this->formatOk('Successfully transferred how the group membership should be extracted from LDAP from global configuration to the configuration records.');
 	}
 
 	/**

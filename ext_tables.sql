@@ -26,6 +26,7 @@ CREATE TABLE tx_igldapssoauth_config (
 	ldap_tls tinyint(4) DEFAULT '0' NOT NULL,
 	ldap_binddn tinytext NOT NULL,
 	ldap_password varchar(255) DEFAULT '' NOT NULL,
+	group_membership tinyint(4) DEFAULT '0' NOT NULL,
 	be_users_basedn tinytext NOT NULL,
 	be_users_filter text NOT NULL,
 	be_users_mapping text NOT NULL,

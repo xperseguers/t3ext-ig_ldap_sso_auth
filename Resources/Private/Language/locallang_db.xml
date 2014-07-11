@@ -31,6 +31,10 @@
 			<label index="tx_igldapssoauth_config.ldap_binddn">Bind DN:</label>
 			<label index="tx_igldapssoauth_config.ldap_password">Password:</label>
 
+			<label index="tx_igldapssoauth_config.group_membership">Relation between groups and users:</label>
+			<label index="tx_igldapssoauth_config.group_membership.I.1">Group contains the list of its members</label>
+			<label index="tx_igldapssoauth_config.group_membership.I.2">User contains the list of its associated groups</label>
+
 			<label index="tx_igldapssoauth_config.be_users_basedn">Base DN:</label>
 			<label index="tx_igldapssoauth_config.be_users_filter">Filter:</label>
 			<label index="tx_igldapssoauth_config.be_users_mapping">Mapping:</label>
@@ -82,6 +86,10 @@
 			<label index="tx_igldapssoauth_config.ldap_tls">Utiliser TLS:</label>
 			<label index="tx_igldapssoauth_config.ldap_binddn">Bind DN :</label>
 			<label index="tx_igldapssoauth_config.ldap_password">Mot de passe :</label>
+
+			<label index="tx_igldapssoauth_config.group_membership">Relation entres les groupes et les utilisateurs :</label>
+			<label index="tx_igldapssoauth_config.group_membership.I.1">Le groupe contient la liste des membres</label>
+			<label index="tx_igldapssoauth_config.group_membership.I.2">L'utilisateur contient la liste des groupes associés</label>
 
 			<label index="tx_igldapssoauth_config.be_users_basedn">Base DN :</label>
 			<label index="tx_igldapssoauth_config.be_users_filter">Filtre :</label>

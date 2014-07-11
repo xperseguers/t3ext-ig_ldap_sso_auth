@@ -6,7 +6,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 	'interface' => array(
 		'showRecordFieldList' => 'hidden, name, domains,
 						ldap_server, ldap_protocol, ldap_charset, ldap_host, ldap_port, ldap_tls, ldap_binddn,
-						ldap_password,
+						ldap_password, group_membership,
 						be_users_basedn, be_users_filter, be_users_mapping,
 						be_groups_basedn, be_groups_filter, be_groups_mapping, be_groups_required, be_groups_assigned,
 						be_groups_admin,
@@ -22,7 +22,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 					--div--;LDAP,
 						ldap_server;;1,
 					--palette--;LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:palette.connection;connection,
-						ldap_binddn, ldap_password,
+						ldap_binddn, ldap_password, group_membership,
 					--div--;BE_USERS,
 						be_users_basedn, be_users_filter, be_users_mapping, be_groups_required, be_groups_assigned,
 					--div--;BE_GROUPS,
@@ -164,6 +164,25 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'max' => '255',
 				'eval' => 'password',
 			)
+		),
+		'group_membership' => array(
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.group_membership',
+			'config' => array(
+				'type' => 'select',
+				'items' => array(
+					array(
+						'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.group_membership.I.1', '1',
+						t3lib_extMgm::extRelPath('ig_ldap_sso_auth') . 'Resources/Public/Icons/selicon_group_membership_1.png'
+					),
+					array(
+						'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.group_membership.I.2', '2',
+						t3lib_extMgm::extRelPath('ig_ldap_sso_auth') . 'Resources/Public/Icons/selicon_group_membership_2.png'
+					),
+				),
+				'minitems' => 1,
+				'maxitems' => 1,
+				'default' => 1,
+			),
 		),
 		'be_users_basedn' => array(
 			'exclude' => 1,

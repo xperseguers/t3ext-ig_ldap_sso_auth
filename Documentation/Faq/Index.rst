@@ -40,6 +40,19 @@ LDAP authentication will fail, it will automatically fall back to the standard T
 
 -------
 
+.. question
+
+**I have a local user with the same username than a LDAP user but which has been manually created in TYPO3. Which
+password will be taken into account?**
+
+.. answer
+
+*When you manually create a user in TYPO3, it is not related to LDAP. This local user may authenticate with the
+password you set. However is the user matches a LDAP user* **and the password provided** *results into a successful
+LDAP authentication, the manually created user will be automatically linked to the LDAP user. Afterwards,* **only
+the LDAP password will be valid**.
+
+-------
 
 .. _faq-groups:
 

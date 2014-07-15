@@ -109,29 +109,37 @@ class tx_igldapssoauth_typo3_user {
 		$users = array();
 		$databaseConnection = self::getDatabaseConnection();
 
-			// Search with uid
 		if ($uid) {
+			// Search with uid
 			$users = $databaseConnection->exec_SELECTgetRows(
 				'*',
 				$table,
 				'uid=' . intval($uid)
 			);
-
-			// Search with DN and pid.
 		} elseif (!empty($dn)) {
+			// Search with DN (or fall back to username) and pid
+			$where = '(' . 'tx_igldapssoauth_dn=' . $databaseConnection->fullQuoteStr($dn, $table);
+			if (!empty($username)) {
+				// This additional condition will automatically add the mapping between
+				// a local user unrelated to LDAP and a corresponding LDAP user
+				$where .= ' OR username=' . $databaseConnection->fullQuoteStr($username, $table);
+			}
+			$where .= ')' . ($pid ? ' AND pid=' . intval($pid) : '');
+
 			$users = $databaseConnection->exec_SELECTgetRows(
 				'*',
 				$table,
-				'tx_igldapssoauth_dn=' . $databaseConnection->fullQuoteStr($dn, $table)
-					. ($pid ? ' AND pid IN (' . intval($pid) . ')' : '')
+				$where,
+				'',
+				'tx_igldapssoauth_dn DESC'	// rows from LDAP first
 			);
-			// Search with username and pid
 		} elseif (!empty($username)) {
+			// Search with username and pid
 			$users = $databaseConnection->exec_SELECTgetRows(
 				'*',
 				$table,
 				'username=' . $databaseConnection->fullQuoteStr($username, $table)
-					. ($pid ? ' AND pid IN (' . intval($pid) . ')' : '')
+					. ($pid ? ' AND pid=' . intval($pid) : '')
 			);
 		}
 

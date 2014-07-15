@@ -76,10 +76,9 @@ The second tab is the global configurations about a single LDAP server.
 
   .. note:: More information on TLS may be found at http://www.openldap.org/doc/admin24/tls.html.
 
-- **Bind DN:** :abbr:`DN (Distinguished Name)` of the LDAP user you will use to connect to the LDAP server. The DN is
-  composed of a series of :abbr:`RDN (Relative Distinguished Names)`'s which are the unique (or unique'ish) attributes at
-  each level in the :abbr:`DIT (Directory Information Tree, a.k.a the naming-context)`. The following diagram
-  illustrates building up the DN from the RDN's.
+- **Bind DN:** :term:`DN` of the LDAP user you will use to connect to the LDAP server. The :term:`DN` is composed of a
+  series of :abbr:`RDN (Relative Distinguished Names)`'s which are the unique (or unique'ish) attributes at each level
+  in the :term:`DIT`. The following diagram illustrates building up the DN from the RDN's.
 
   .. figure:: ../Images/dit-dn-rdn.png
       :alt: DN is the sum of all RDNs

@@ -521,6 +521,10 @@ CSS;
 			}
 
 			$title = $GLOBALS['LANG']->getLL('search_wizard_result');
+
+			// With PHP 5.4 and above this could be renamed as
+			// ksort_recursive($result, SORT_NATURAL)
+			$this->uksort_recursive($result, 'strnatcmp');
 			$this->content .= $this->exportArrayAsTable($result, $title);
 
 			tx_igldapssoauth_ldap::disconnect();
@@ -531,6 +535,25 @@ CSS;
 
 		}
 
+	}
+
+	/**
+	 * Sort recursively an array by keys using a user-defined comparison function.
+	 *
+	 * @param array $array The input array
+	 * @param callable $key_compare_func The comparison function must return an integer less than, equal to, or greater than zero if the first argument is considered to be respectively less than, equal to, or greater than the second
+	 * @return bool Returns TRUE on success or FALSE on failure
+	 */
+	protected function uksort_recursive(array &$array, $key_compare_func) {
+		$ret = uksort($array, $key_compare_func);
+		if ($ret) {
+			foreach ($array as &$arr) {
+				if (is_array($arr) && !$this->uksort_recursive($arr, $key_compare_func)) {
+					break;
+				}
+			}
+		}
+		return $ret;
 	}
 
 	/**

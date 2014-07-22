@@ -202,6 +202,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'type' => 'text',
 				'rows' => 3,
 				'cols' => 30,
+				'eval' => 'trim',
 			)
 		),
 		'be_users_mapping' => array(
@@ -211,6 +212,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'type' => 'text',
 				'rows' => 8,
 				'cols' => 30,
+				'eval' => 'trim',
 			)
 		),
 		'be_groups_basedn' => array(
@@ -229,6 +231,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'type' => 'text',
 				'rows' => 3,
 				'cols' => 30,
+				'eval' => 'trim',
 			)
 		),
 		'be_groups_mapping' => array(
@@ -238,6 +241,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'type' => 'text',
 				'rows' => 8,
 				'cols' => 30,
+				'eval' => 'trim',
 			)
 		),
 		'be_groups_required' => array(
@@ -313,6 +317,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'type' => 'text',
 				'rows' => 3,
 				'cols' => 30,
+				'eval' => 'trim',
 			)
 		),
 		'fe_users_mapping' => array(
@@ -322,6 +327,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'type' => 'text',
 				'rows' => 8,
 				'cols' => 30,
+				'eval' => 'trim',
 			)
 		),
 		'fe_groups_basedn' => array(
@@ -340,6 +346,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'type' => 'text',
 				'rows' => 3,
 				'cols' => 30,
+				'eval' => 'trim',
 			)
 		),
 		'fe_groups_mapping' => array(
@@ -349,6 +356,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'type' => 'text',
 				'rows' => 8,
 				'cols' => 30,
+				'eval' => 'trim',
 			)
 		),
 		'fe_groups_required' => array(

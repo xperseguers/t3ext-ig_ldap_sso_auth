@@ -32,18 +32,39 @@
  */
 class tx_igldapssoauth_ldap {
 
+	/**
+	 * Initializes a connection to the LDAP server.
+	 *
+	 * @param array $config
+	 * @return bool
+	 */
 	static public function connect(array $config = array()) {
+		$debugConfiguration = array(
+			'host' => $config['host'],
+			'port' => $config['port'],
+			'protocol' => $config['protocol'],
+			'charset' => $config['charset'],
+			'server' => $config['server'],
+			'tls' => $config['tls'],
+		);
+
 		// Connect to ldap server.
 		if (!tx_igldapssoauth_utility_Ldap::connect($config['host'], $config['port'], $config['protocol'], $config['charset'], $config['server'], $config['tls'])) {
+			Tx_IgLdapSsoAuth_Utility_Debug::error('Cannot connect', $debugConfiguration);
 			return FALSE;
 		}
+
+		$debugConfiguration['binddn'] = $config['binddn'];
+		$debugConfiguration['password'] = $config['password'] !== '' ? '********' : '';
 
 		// Bind to ldap server.
 		if (!tx_igldapssoauth_utility_Ldap::bind($config['binddn'], $config['password'])) {
-			tx_igldapssoauth_ldap::disconnect();
+			Tx_IgLdapSsoAuth_Utility_Debug::error('Cannot bind to LDAP', $debugConfiguration);
+			self::disconnect();
 			return FALSE;
 		}
 
+		Tx_IgLdapSsoAuth_Utility_Debug::info('Successfully connected', $debugConfiguration);
 		return TRUE;
 	}
 

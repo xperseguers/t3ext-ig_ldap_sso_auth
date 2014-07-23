@@ -91,12 +91,13 @@ class tx_igldapssoauth_auth {
 
 		// Valid user only if username and connect to LDAP server.
 		if ($username && tx_igldapssoauth_ldap::connect(tx_igldapssoauth_config::getLdapConfiguration())) {
-
 			// Set extension configuration from TYPO3 mode (BE/FE).
 			self::initializeConfiguration();
 
 			// Valid user from LDAP server.
 			if ($userdn = tx_igldapssoauth_ldap::valid_user($username, $password, self::$config['users']['basedn'], self::$config['users']['filter'])) {
+				Tx_IgLdapSsoAuth_Utility_Debug::info(sprintf('Successfully authenticated user "%s" with LDAP', $username));
+
 				if ($userdn === TRUE) {
 					return TRUE;
 				}
@@ -105,10 +106,15 @@ class tx_igldapssoauth_auth {
 
 			// LDAP authentication failed.
 			tx_igldapssoauth_ldap::disconnect();
+
+			// This is a notice because it is fine to fallback to standard TYPO3 authentication
+			Tx_IgLdapSsoAuth_Utility_Debug::notice(sprintf('Could not authenticate user "%s" with LDAP', $username));
+
 			return FALSE;
 		}
 
 		// LDAP authentication failed.
+		Tx_IgLdapSsoAuth_Utility_Debug::warning('Cannot connect to LDAP or username is empty', array('username' => $username));
 		tx_igldapssoauth_ldap::disconnect();
 		return FALSE;
 	}
@@ -360,7 +366,11 @@ class tx_igldapssoauth_auth {
 			$attributes
 		);
 
-		return is_array($users[0]) ? $users[0] : NULL;
+		$user = is_array($users[0]) ? $users[0] : NULL;
+
+		Tx_IgLdapSsoAuth_Utility_Debug::debug(sprintf('Retrieving LDAP user from DN "%s"', $dn), $user);
+
+		return $user;
 	}
 
 	/**
@@ -388,6 +398,8 @@ class tx_igldapssoauth_auth {
 
 			$ldap_groups = tx_igldapssoauth_ldap_group::select_from_userdn($ldap_user['dn'], self::$config['groups']['basedn'], self::$config['groups']['filter'], $ldap_group_attributes);
 		}
+
+		Tx_IgLdapSsoAuth_Utility_Debug::debug(sprintf('Retrieving LDAP groups for user "%s"', $ldap_user['dn']), $ldap_groups);
 
 		return $ldap_groups;
 	}

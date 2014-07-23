@@ -2,7 +2,7 @@
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2007-2011 Michaël Gagnon <mgagnon@infoglobe.ca>
+ *  (c) 2014 Xavier Perseguers <xavier@typo3.org>
  *  All rights reserved
  *
  *  Is free software; you can redistribute it and/or modify
@@ -22,75 +22,93 @@
  ***************************************************************/
 
 /**
- * Class tx_igldapssoauth_utility_Debug.
+ * Debugging class.
  *
- * Debug TYPO3 variables.
- *
- * @access public
- * @package TYPO3
- * @subpackage iglib
- * @author	   Michael Gagnon <mgagnon@infoglobe.ca>
- * @copyright Copyright (c) Infoglobe 2007
- * @version $Id: tx_igldapssoauth_utility_Debug
- *
- * $BE_USER
- * $LANG
- * $BACK_PATH
- * $TCA_DESCR
- * $TCA
- * $CLIENT
- * $TYPO3_CONF_VARS
+ * @author     Xavier Perseguers <xavier@typo3.org>
+ * @package    TYPO3
+ * @subpackage ig_ldap_sso_auth
  */
-class tx_igldapssoauth_utility_Debug {
+class Tx_IgLdapSsoAuth_Utility_Debug {
 
-	function print_this($value = NULL, $comment = NULL, $var_dump = FALSE) {
+	// Severity constants used by \TYPO3\CMS\Core\Utility\GeneralUtility::devLog()
+	// but adapted from RFC 3164 (http://www.ietf.org/rfc/rfc3164.txt)
+	const SEVERITY_DEBUG = -1;		// aka 'OK', debug-level message
+	const SEVERITY_INFO = 0;		// informational message
+	const SEVERITY_NOTICE = 1;		// normal but significant condition
+	const SEVERITY_WARNING = 2;		// warning condition
+	const SEVERITY_ERROR = 3;		// error condition
 
-		echo '<hr />';
-
-		echo $comment ? '<h2>' . $comment . '</h2>' : NULL;
-
-		if ($var_dump) {
-
-			echo '<strong>var_dump: </strong><br /><br />';
-
-			//var_export($to_print);
-
-			print_r("<code>");
-			print_r(var_dump($value));
-			print_r("</code>");
-
-			echo '<br /><br /><strong>print_r: </strong>';
-		}
-
-		print_r("<code>");
-		print_r($value);
-		print_r("</code>");
-
-		echo '<hr />';
+	/**
+	 * Wrapper for a log message with severity SEVERITY_DEBUG (debug-level message).
+	 *
+	 * @param string $message Message (in English)
+	 * @param mixed $dataVar Additional data you want to pass to the logger
+	 * @return void
+	 * @api
+	 */
+	static public function debug($message, $dataVar = FALSE) {
+		self::log($message, self::SEVERITY_DEBUG, $dataVar);
 	}
 
-	function session($comment = NULL) {
-		tx_igldapssoauth_utility_Debug::print_this($_SESSION, $comment ? $comment : 'SESSION');
+	/**
+	 * Wrapper for a log message with severity SEVERITY_INFO (informational message).
+	 *
+	 * @param string $message Message (in English)
+	 * @param mixed $dataVar Additional data you want to pass to the logger
+	 * @return void
+	 * @api
+	 */
+	static public function info($message, $dataVar = FALSE) {
+		self::log($message, self::SEVERITY_INFO, $dataVar);
 	}
 
-	function post($comment = NULL) {
-		tx_igldapssoauth_utility_Debug::print_this($_POST, $comment ? $comment : 'POST');
+	/**
+	 * Wrapper for a log message with severity SEVERITY_NOTICE (normal but significant condition).
+	 *
+	 * @param string $message Message (in English)
+	 * @param mixed $dataVar Additional data you want to pass to the logger
+	 * @return void
+	 * @api
+	 */
+	static public function notice($message, $dataVar = FALSE) {
+		self::log($message, self::SEVERITY_NOTICE, $dataVar);
 	}
 
-	function get($comment = NULL) {
-		tx_igldapssoauth_utility_Debug::print_this($_GET, $comment ? $comment : 'GET');
+	/**
+	 * Wrapper for a log message with severity SEVERITY_WARNING (warning condition).
+	 *
+	 * @param string $message Message (in English)
+	 * @param mixed $dataVar Additional data you want to pass to the logger
+	 * @return void
+	 * @api
+	 */
+	static public function warning($message, $dataVar = FALSE) {
+		self::log($message, self::SEVERITY_WARNING, $dataVar);
 	}
 
-	function be_user($comment = NULL) {
-		tx_igldapssoauth_utility_Debug::print_this($GLOBALS['BE_USER'], $comment ? $comment : 'BE_USER');
+	/**
+	 * Wrapper for a log message with severity SEVERITY_ERROR (error condition).
+	 *
+	 * @param string $message Message (in English)
+	 * @param mixed $dataVar Additional data you want to pass to the logger
+	 * @return void
+	 * @api
+	 */
+	static public function error($message, $dataVar = FALSE) {
+		self::log($message, self::SEVERITY_ERROR, $dataVar);
 	}
 
-	function lang($comment = NULL) {
-		tx_igldapssoauth_utility_Debug::print_this($GLOBALS['LANG'], $comment ? $comment : 'LANG');
-	}
-
-	function tca($comment = NULL) {
-		tx_igldapssoauth_utility_Debug::print_this($GLOBALS['TCA'], $comment ? $comment : 'TCA');
+	/**
+	 * Wrapper for dev log, in order to ease testing.
+	 *
+	 * @param string $message Message (in English)
+	 * @param integer $severity Severity, one of the Tx_IgLdapSsoAuth_Utility_Debug::SEVERITY_* constants
+	 * @param mixed $dataVar Additional data you want to pass to the logger
+	 * @return void
+	 * @api
+	 */
+	static public function log($message, $severity, $dataVar = FALSE) {
+		t3lib_div::devLog($message, 'ig_ldap_sso_auth', $severity, $dataVar);
 	}
 
 }

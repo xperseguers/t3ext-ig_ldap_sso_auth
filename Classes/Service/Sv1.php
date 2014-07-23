@@ -79,12 +79,19 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 
 		if (count($configurationRecords) === 0) {
 			// Early return since LDAP is not configured
+			Tx_IgLdapSsoAuth_Utility_Debug::warning('Skipping LDAP authentication as extension is not yet configured');
 			return FALSE;
 		}
 
 		foreach ($configurationRecords as $configurationRecord) {
 			tx_igldapssoauth_config::init(TYPO3_MODE, $configurationRecord['uid']);
 			if (!tx_igldapssoauth_config::isEnabledForCurrentHost()) {
+				$msg = sprintf(
+					'Configuration record #%s is not enabled for domain %s',
+					$configurationRecord['uid'],
+					t3lib_div::getIndpEnv('TYPO3_HOST_ONLY')
+				);
+				Tx_IgLdapSsoAuth_Utility_Debug::info($msg);
 				continue;
 			}
 
@@ -151,11 +158,9 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 			$this->writelog(255, 3, 3, 2,
 				"Login-attempt from %s (%s), username '%s' not found!!",
 				array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $this->login['uname'])); // Logout written to log
-			// User found
 		} else {
-			if ($this->writeDevLog) {
-				t3lib_div::devLog('User found: ' . t3lib_div::arrayToLogString($user, array($this->db_user['userid_column'], $this->db_user['username_column'])), 'tx_igldapssoauth_sv1');
-			}
+			// User found
+			Tx_IgLdapSsoAuth_Utility_Debug::info('User found', $this->db_user);
 		}
 
 		return $user;
@@ -201,10 +206,7 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 						Array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $this->login['uname']));
 				}
 
-				if ($this->writeDevLog) {
-					t3lib_div::devLog('Password not accepted: ' . $this->login['uident'], 'tx_igldapssoauth_sv1', 2);
-				}
-
+				Tx_IgLdapSsoAuth_Utility_Debug::warning('Password not accepted: ' . $this->login['uident']);
 				$OK = FALSE;
 			}
 

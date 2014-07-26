@@ -524,7 +524,9 @@ CSS;
 
 			// With PHP 5.4 and above this could be renamed as
 			// ksort_recursive($result, SORT_NATURAL)
-			$this->uksort_recursive($result, 'strnatcmp');
+			if (is_array($result)) {
+				$this->uksort_recursive($result, 'strnatcmp');
+			}
 			$this->content .= $this->exportArrayAsTable($result, $title);
 
 			tx_igldapssoauth_ldap::disconnect();

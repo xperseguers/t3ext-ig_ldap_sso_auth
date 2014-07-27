@@ -119,11 +119,11 @@ CSS;
 		if (($this->id && $access) || ($GLOBALS['BE_USER']->user['admin'] && !$this->id)) {
 			$this->doc->form = '<form action="" method="post">';
 
-			if (version_compare(TYPO3_branch, '6.0', '<')) {
+			if (version_compare(TYPO3_branch, '6.2', '<')) {
 				// override the default jumpToUrl
 				$this->doc->JScodeArray['jumpToUrl'] = '
 					function jumpToUrl(URL) {
-						document.location = URL;
+						window.location.href = URL;
 					}
 				';
 			}

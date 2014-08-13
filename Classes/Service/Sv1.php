@@ -69,6 +69,15 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 	public function getUser() {
 		$user = FALSE;
 
+		// This simple check is the key to prevent your log being filled up with warnings
+		// due to the AJAX calls to maintain the session active if your configuration forces
+		// the authentication stack to always fetch the user:
+		// $TYPO3_CONF_VARS['SVCONF']['auth']['setup']['BE_alwaysFetchUser'] = true;
+		// This is the case, e.g., when using EXT:crawler.
+		if ($this->login['status'] !== 'login') {
+			return $user;
+		}
+
 		$configurationRecords = $this->getDatabaseConnection()->exec_SELECTgetRows(
 			'uid',
 			'tx_igldapssoauth_config',

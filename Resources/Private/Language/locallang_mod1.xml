@@ -51,12 +51,13 @@
 
 			<label index="import_groups_be_no_groups_found">No backend groups found.</label>
 			<label index="import_groups_fe_no_groups_found">No frontend groups found.</label>
+			<label index="import_groups_status">%s group(s) added, %s group(s) updated.</label>
 			<label index="import_groups_table_th_uid">uid</label>
 			<label index="import_groups_table_th_pid">pid</label>
 			<label index="import_groups_table_th_title">title</label>
 			<label index="import_groups_table_th_dn">tx_igldapssoauth_dn</label>
-			<label index="import_groups_table_th_import">import</label>
-			<label index="import_groups_form_submit_value">Import groups</label>
+			<label index="import_groups_table_th_import">import/update</label>
+			<label index="import_groups_form_submit_value">Import or update groups</label>
 		</languageKey>
 
 		<languageKey index="fr" type="array">
@@ -104,12 +105,13 @@
 
 			<label index="import_groups_be_no_groups_found">Aucun groupe backend trouvé.</label>
 			<label index="import_groups_fe_no_groups_found">Aucun groupe frontend trouvé.</label>
+			<label index="import_groups_status">%s groupe(s) ajouté(s), %s groupe(s) mis à jour.</label>
 			<label index="import_groups_table_th_uid">uid</label>
 			<label index="import_groups_table_th_pid">pid</label>
 			<label index="import_groups_table_th_title">titre</label>
 			<label index="import_groups_table_th_dn">tx_igldapssoauth_dn</label>
-			<label index="import_groups_table_th_import">importer</label>
-			<label index="import_groups_form_submit_value">Importer les groupes</label>
+			<label index="import_groups_table_th_import">importer/mettre à jour</label>
+			<label index="import_groups_form_submit_value">Importer ou mettre à jour les groupes</label>
 		</languageKey>
 
 	</data>

@@ -635,13 +635,26 @@ CSS;
 			$typo3_group_pid
 		);
 
+		$groupsAdded = 0;
+		$groupsUpdated = 0;
+
 		foreach ($ldap_groups as $index => $ldap_group) {
 			$typo3_group = tx_igldapssoauth_auth::merge($ldap_group, $typo3_groups[$index], $config['groups']['mapping']);
 
 			// Import the group using information from LDAP
 			if (t3lib_div::inArray($import_groups, $typo3_group['tx_igldapssoauth_dn'])) {
 				unset($typo3_group['parentGroup']);
-				$typo3_group = tx_igldapssoauth_typo3_group::add($table, $typo3_group);
+				if ($typo3_group['uid'] == 0) {
+					$typo3_group = tx_igldapssoauth_typo3_group::add($table, $typo3_group);
+					$groupsAdded++;
+				} else {
+					// Restore group that may have been previously deleted
+					$typo3_group['deleted'] = 0;
+					$success = tx_igldapssoauth_typo3_group::update($table, $typo3_group);
+					if ($success) {
+						$groupsUpdated++;
+					}
+				}
 
 				if (!empty($config['groups']['mapping']['parentGroup'])) {
 					$fieldParent = $config['groups']['mapping']['parentGroup'];
@@ -663,12 +676,26 @@ CSS;
 				}
 			}
 
-			$this->content .= '<tr>' .
+			if ($typo3_group['uid'] == 0) {
+				// LDAP group is not yet imported
+				$rowStyle = '';
+				$isChecked = FALSE;
+			} elseif ($typo3_group['deleted'] == 1) {
+				// LDAP group has been manually deleted
+				$rowStyle = 'background-color:#f00; color:#fff;';
+				$isChecked = FALSE;
+			} else {
+				// LDAP group has already been imported
+				$rowStyle = 'background-color:#093; color:#fff;';
+				$isChecked = TRUE;
+			}
+
+			$this->content .= '<tr style="' . $rowStyle . '">' .
 				'<td>' . ($typo3_group['title'] ? $typo3_group['title'] : '&nbsp;') . '</td>' .
 				'<td>' . $typo3_group['tx_igldapssoauth_dn'] . '</td>' .
 				'<td>' . ($typo3_group['pid'] ? $typo3_group['pid'] : 0) . '</td>' .
 				'<td>' . ($typo3_group['uid'] ? $typo3_group['uid'] : 0) . '</td>' .
-				'<td align="center"><input type="checkbox" name="import_groups[]" value="' . $typo3_group['tx_igldapssoauth_dn'] . '" ' . ($typo3_group['uid'] ? 'checked="checked" disabled="disabled"' : NULL) . ' /></td>' .
+				'<td align="center"><input type="checkbox" name="import_groups[]" value="' . $typo3_group['tx_igldapssoauth_dn'] . '" ' . ($isChecked ? 'checked="checked"' : '') . ' /></td>' .
 				'</tr>';
 		}
 
@@ -681,6 +708,17 @@ CSS;
 		$this->content .= '</form>';
 
 		tx_igldapssoauth_ldap::disconnect();
+
+		if ($groupsAdded > 0 || $groupsUpdated > 0) {
+			$flashMessage = t3lib_div::makeInstance(
+				't3lib_FlashMessage',
+				sprintf($GLOBALS['LANG']->getLL('import_groups_status'), $groupsAdded, $groupsUpdated),
+				$GLOBALS['LANG']->getLL('import_groups_' . $typo3_mode),
+				t3lib_FlashMessage::INFO,
+				TRUE
+			);
+			t3lib_FlashMessageQueue::addMessage($flashMessage);
+		}
 	}
 
 	protected function setParentGroup($parentsLDAPGroups, $fieldParent, $childUid, $typo3_group_pid, $typo3_mode) {

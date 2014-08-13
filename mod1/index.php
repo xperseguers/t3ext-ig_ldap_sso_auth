@@ -699,6 +699,26 @@ CSS;
 				'</tr>';
 		}
 
+		if (count($ldap_groups) > 0) {
+			$toggleAllLabel = $GLOBALS['LANG']->getLL('import_groups_table_select_all', TRUE);
+			$this->content .= <<<HTML
+<tr>
+	<td colspan="5" style="text-align:right">
+		<input type="checkbox" onclick="toggleImport(this)" id="selectAll" />
+		<label for="selectAll">$toggleAllLabel</label>
+		<script type="text/javascript">
+		function toggleImport(source) {
+			checkboxes = document.getElementsByName('import_groups[]');
+			for (var i=0, n=checkboxes.length; i<n; i++) {
+				checkboxes[i].checked = source.checked;
+			}
+		}
+		</script>
+	</td>
+</tr>
+HTML;
+		}
+
 		$this->content .= '</table>';
 		$this->content .= '<br />';
 

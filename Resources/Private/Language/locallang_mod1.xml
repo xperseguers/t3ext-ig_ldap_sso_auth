@@ -57,6 +57,7 @@
 			<label index="import_groups_table_th_title">title</label>
 			<label index="import_groups_table_th_dn">tx_igldapssoauth_dn</label>
 			<label index="import_groups_table_th_import">import/update</label>
+			<label index="import_groups_table_select_all">Select All</label>
 			<label index="import_groups_form_submit_value">Import or update groups</label>
 		</languageKey>
 
@@ -111,6 +112,7 @@
 			<label index="import_groups_table_th_title">titre</label>
 			<label index="import_groups_table_th_dn">tx_igldapssoauth_dn</label>
 			<label index="import_groups_table_th_import">importer/mettre à jour</label>
+			<label index="import_groups_table_select_all">Tout sélectionner</label>
 			<label index="import_groups_form_submit_value">Importer ou mettre à jour les groupes</label>
 		</languageKey>
 

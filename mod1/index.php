@@ -44,7 +44,8 @@ class tx_igldapssoauth_module1 extends t3lib_SCbase {
 
 	const FUNCTION_SHOW_STATUS = 1;
 	const FUNCTION_SEARCH_WIZARD = 2;
-	const FUNCTION_IMPORT_GROUPS = 3;
+	const FUNCTION_IMPORT_GROUPS_BE = 3;
+	const FUNCTION_IMPORT_GROUPS_FE = 4;
 
 	var $pageinfo;
 	var $lang;
@@ -70,14 +71,15 @@ class tx_igldapssoauth_module1 extends t3lib_SCbase {
 	/**
 	 * Adds items to the ->MOD_MENU array. Used for the function menu selector.
 	 *
-	 * @return	void
+	 * @return void
 	 */
 	public function menuConfig() {
 		$this->MOD_MENU = array(
 			'function' => array(
 				self::FUNCTION_SHOW_STATUS => $GLOBALS['LANG']->getLL('show_status'),
 				self::FUNCTION_SEARCH_WIZARD => $GLOBALS['LANG']->getLL('search_wizard'),
-				self::FUNCTION_IMPORT_GROUPS => $GLOBALS['LANG']->getLL('import_groups'),
+				self::FUNCTION_IMPORT_GROUPS_BE => $GLOBALS['LANG']->getLL('import_groups_be'),
+				self::FUNCTION_IMPORT_GROUPS_FE => $GLOBALS['LANG']->getLL('import_groups_fe'),
 			)
 		);
 
@@ -231,8 +233,11 @@ CSS;
 			case self::FUNCTION_SEARCH_WIZARD:
 				$this->search_wizard(t3lib_div::_GP('search'));
 				break;
-			case self::FUNCTION_IMPORT_GROUPS:
-				$this->import_groups();
+			case self::FUNCTION_IMPORT_GROUPS_BE:
+				$this->import_groups('be');
+				break;
+			case self::FUNCTION_IMPORT_GROUPS_FE:
+				$this->import_groups('fe');
 				break;
 		}
 	}
@@ -570,12 +575,13 @@ CSS;
 	}
 
 	/**
-	 * FUNCTION MENU: Import LDAP groups
+	 * FUNCTION MENU: Import LDAP groups (BE/FE)
 	 *
+	 * @param string $typo3_mode Either 'be' or 'fe'
 	 * @return void
 	 */
-	protected function import_groups() {
-		$this->content .= '<h2>' . $GLOBALS['LANG']->getLL('import_groups_title') . '</h2>';
+	protected function import_groups($typo3_mode) {
+		$this->content .= '<h2>' . $GLOBALS['LANG']->getLL('import_groups_' . $typo3_mode) . '</h2>';
 		$this->content .= '<hr />';
 
 		$success = tx_igldapssoauth_ldap::connect(tx_igldapssoauth_config::getLdapConfiguration());
@@ -584,101 +590,95 @@ CSS;
 			return;
 		}
 
-		$import_groups = t3lib_div::_GP('import');
-		$typo3_modes = array('fe', 'be');
+		$import_groups = t3lib_div::_GP('import_groups');
+		if (!is_array($import_groups)) {
+			$import_groups = array();
+		}
 
-		foreach ($typo3_modes as $typo3_mode) {
-			$config = ($typo3_mode === 'be')
-				? tx_igldapssoauth_config::getBeConfiguration()
-				: tx_igldapssoauth_config::getFeConfiguration();
+		$config = ($typo3_mode === 'be')
+			? tx_igldapssoauth_config::getBeConfiguration()
+			: tx_igldapssoauth_config::getFeConfiguration();
 
-			$ldap_groups = array();
-			if (!empty($config['groups']['basedn'])) {
-				$filter = tx_igldapssoauth_config::replace_filter_markers($config['groups']['filter']);
-				$attributes = tx_igldapssoauth_config::get_ldap_attributes($config['groups']['mapping']);
-				$ldap_groups = tx_igldapssoauth_ldap::search($config['groups']['basedn'], $filter, $attributes);
-				unset($ldap_groups['count']);
-			}
+		$ldap_groups = array();
+		if (!empty($config['groups']['basedn'])) {
+			$filter = tx_igldapssoauth_config::replace_filter_markers($config['groups']['filter']);
+			$attributes = tx_igldapssoauth_config::get_ldap_attributes($config['groups']['mapping']);
+			$ldap_groups = tx_igldapssoauth_ldap::search($config['groups']['basedn'], $filter, $attributes);
+			unset($ldap_groups['count']);
+		}
 
-			if (count($ldap_groups) === 0) {
-				$this->content .= '<h3>' . $GLOBALS['LANG']->getLL('import_groups_' . $typo3_mode . '_no_groups_found') . '</h3>';
-				continue;
-			}
+		if (count($ldap_groups) === 0) {
+			$this->content .= '<h3>' . $GLOBALS['LANG']->getLL('import_groups_' . $typo3_mode . '_no_groups_found') . '</h3>';
+			return;
+		}
 
-			$this->content .= '<form action="" method="post" name="import_' . $typo3_mode . '_groups">';
-			$this->content .= '<fieldset>';
-			$this->content .= '<table border="1">';
+		$this->content .= '<form action="" method="post">';
+		$this->content .= '<table border="1">';
 
-			$this->content .= '<tr>' .
-				'<th>' . $GLOBALS['LANG']->getLL('import_groups_table_th_title') . '</th>' .
-				'<th>' . $GLOBALS['LANG']->getLL('import_groups_table_th_dn') . '</th>' .
-				'<th>' . $GLOBALS['LANG']->getLL('import_groups_table_th_pid') . '</th>' .
-				'<th>' . $GLOBALS['LANG']->getLL('import_groups_table_th_uid') . '</th>' .
-				'<th>' . $GLOBALS['LANG']->getLL('import_groups_table_th_import') . '</th>' .
-				'</tr>';
+		$this->content .= '<tr>' .
+			'<th>' . $GLOBALS['LANG']->getLL('import_groups_table_th_title') . '</th>' .
+			'<th>' . $GLOBALS['LANG']->getLL('import_groups_table_th_dn') . '</th>' .
+			'<th>' . $GLOBALS['LANG']->getLL('import_groups_table_th_pid') . '</th>' .
+			'<th>' . $GLOBALS['LANG']->getLL('import_groups_table_th_uid') . '</th>' .
+			'<th>' . $GLOBALS['LANG']->getLL('import_groups_table_th_import') . '</th>' .
+			'</tr>';
 
-			$this->content .= '<caption><h2>' . $GLOBALS['LANG']->getLL('import_groups_' . $typo3_mode . '_title') . '</h2></caption>';
+		// Populate an array of TYPO3 group records corresponding to the LDAP groups
+		// If a given LDAP group has no associated group in TYPO3, a fresh record
+		// will be created so that $ldap_groups[i] <=> $typo3_groups[i]
+		$typo3_group_pid = tx_igldapssoauth_config::get_pid($config['groups']['mapping']);
+		$table = $typo3_mode === 'be' ? 'be_groups' : 'fe_groups';
+		$typo3_groups = tx_igldapssoauth_auth::get_typo3_groups(
+			$ldap_groups,
+			$config['groups']['mapping'],
+			$table,
+			$typo3_group_pid
+		);
 
-			// Populate an array of TYPO3 group records corresponding to the LDAP groups
-			// If a given LDAP group has no associated group in TYPO3, a fresh record
-			// will be created so that $ldap_groups[i] <=> $typo3_groups[i]
-			$typo3_group_pid = tx_igldapssoauth_config::get_pid($config['groups']['mapping']);
-			$table = $typo3_mode === 'be' ? 'be_groups' : 'fe_groups';
-			$typo3_groups = tx_igldapssoauth_auth::get_typo3_groups(
-				$ldap_groups,
-				$config['groups']['mapping'],
-				$table,
-				$typo3_group_pid
-			);
+		foreach ($ldap_groups as $index => $ldap_group) {
+			$typo3_group = tx_igldapssoauth_auth::merge($ldap_group, $typo3_groups[$index], $config['groups']['mapping']);
 
-			foreach ($ldap_groups as $index => $ldap_group) {
-				$typo3_group = tx_igldapssoauth_auth::merge($ldap_group, $typo3_groups[$index], $config['groups']['mapping']);
+			// Import the group using information from LDAP
+			if (t3lib_div::inArray($import_groups, $typo3_group['tx_igldapssoauth_dn'])) {
+				unset($typo3_group['parentGroup']);
+				$typo3_group = tx_igldapssoauth_typo3_group::add($table, $typo3_group);
 
-				if (isset($import_groups[$typo3_mode])) {
-					// Import or update the group using information from LDAP
-					if (t3lib_div::inArray($import_groups[$typo3_mode], $typo3_group['tx_igldapssoauth_dn'])) {
-						unset($typo3_group['parentGroup']);
-						$typo3_group = tx_igldapssoauth_typo3_group::add($table, $typo3_group);
+				if (!empty($config['groups']['mapping']['parentGroup'])) {
+					$fieldParent = $config['groups']['mapping']['parentGroup'];
+					if (preg_match("`<([^$]*)>`", $fieldParent, $attribute)) {
+						$fieldParent = $attribute[1];
 
-						if (!empty($config['groups']['mapping']['parentGroup'])) {
-							$fieldParent = $config['groups']['mapping']['parentGroup'];
-							if (preg_match("`<([^$]*)>`", $fieldParent, $attribute)) {
-								$fieldParent = $attribute[1];
+						if (is_array($ldap_group[$fieldParent])) {
+							unset($ldap_group[$fieldParent]['count']);
 
-								if (is_array($ldap_group[$fieldParent])) {
-									unset($ldap_group[$fieldParent]['count']);
-
-									$this->setParentGroup(
-										$ldap_group[$fieldParent],
-										$fieldParent,
-										$typo3_group['uid'],
-										$typo3_group_pid,
-										$typo3_mode
-									);
-								}
-							}
+							$this->setParentGroup(
+								$ldap_group[$fieldParent],
+								$fieldParent,
+								$typo3_group['uid'],
+								$typo3_group_pid,
+								$typo3_mode
+							);
 						}
 					}
 				}
-
-				$this->content .= '<tr>' .
-					'<td>' . ($typo3_group['title'] ? $typo3_group['title'] : '&nbsp;') . '</td>' .
-					'<td>' . $typo3_group['tx_igldapssoauth_dn'] . '</td>' .
-					'<td>' . ($typo3_group['pid'] ? $typo3_group['pid'] : 0) . '</td>' .
-					'<td>' . ($typo3_group['uid'] ? $typo3_group['uid'] : 0) . '</td>' .
-					'<td align="center"><input type="checkbox" name="import[' . $typo3_mode . '][]" value="' . $typo3_group['tx_igldapssoauth_dn'] . '" ' . ($typo3_group['uid'] ? 'checked="checked" disabled="disabled"' : NULL) . ' /></td>' .
-					'</tr>';
 			}
 
-			$this->content .= '</table>';
-			$this->content .= '<br />';
-
-			$this->content .= '<input type="hidden" name="import[action]" value="update" />';
-			$this->content .= '<input type="submit" value="' . $GLOBALS['LANG']->getLL('import_groups_form_submit_value') . '" onclick="this.form.elements[\'import[action]\'].value=\'update\';" />';
-
-			$this->content .= '</fieldset>';
-			$this->content .= '</form>';
+			$this->content .= '<tr>' .
+				'<td>' . ($typo3_group['title'] ? $typo3_group['title'] : '&nbsp;') . '</td>' .
+				'<td>' . $typo3_group['tx_igldapssoauth_dn'] . '</td>' .
+				'<td>' . ($typo3_group['pid'] ? $typo3_group['pid'] : 0) . '</td>' .
+				'<td>' . ($typo3_group['uid'] ? $typo3_group['uid'] : 0) . '</td>' .
+				'<td align="center"><input type="checkbox" name="import_groups[]" value="' . $typo3_group['tx_igldapssoauth_dn'] . '" ' . ($typo3_group['uid'] ? 'checked="checked" disabled="disabled"' : NULL) . ' /></td>' .
+				'</tr>';
 		}
+
+		$this->content .= '</table>';
+		$this->content .= '<br />';
+
+		$this->content .= '<input type="hidden" name="import[action]" value="update" />';
+		$this->content .= '<input type="submit" value="' . $GLOBALS['LANG']->getLL('import_groups_form_submit_value') . '" onclick="this.form.elements[\'import[action]\'].value=\'update\';" />';
+
+		$this->content .= '</form>';
 
 		tx_igldapssoauth_ldap::disconnect();
 	}

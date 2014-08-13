@@ -493,6 +493,7 @@ class tx_igldapssoauth_auth {
 			} else {
 				$typo3Group = tx_igldapssoauth_typo3_group::create($table);
 				$typo3Group['pid'] = $pid;
+				$typo3Group['crdate'] = $GLOBALS['EXEC_TIME'];
 				$typo3Group['tstamp'] = $GLOBALS['EXEC_TIME'];
 			}
 

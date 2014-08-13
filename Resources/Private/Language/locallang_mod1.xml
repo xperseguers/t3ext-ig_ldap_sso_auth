@@ -17,7 +17,8 @@
 
 			<label index="show_status">Status</label>
 			<label index="search_wizard">Search wizard</label>
-			<label index="import_groups">Import LDAP groups</label>
+			<label index="import_groups_be">Import LDAP groups (Backend)</label>
+			<label index="import_groups_fe">Import LDAP groups (Frontend)</label>
 			<label index="wizard_authentication">Authentication wizard</label>
 
 			<label index="show_status_title">Configuration:</label>
@@ -48,10 +49,7 @@
 			<label index="search_wizard_result">Result</label>
 			<label index="search_wizard_no_result">No results</label>
 
-			<label index="import_groups_title">Import LDAP groups</label>
-			<label index="import_groups_be_title">Import backend groups</label>
 			<label index="import_groups_be_no_groups_found">No backend groups found.</label>
-			<label index="import_groups_fe_title">Import frontend groups</label>
 			<label index="import_groups_fe_no_groups_found">No frontend groups found.</label>
 			<label index="import_groups_table_th_uid">uid</label>
 			<label index="import_groups_table_th_pid">pid</label>
@@ -72,7 +70,8 @@
 
 			<label index="show_status">Statut</label>
 			<label index="search_wizard">Assistant de recherche</label>
-			<label index="import_groups">Importer des groupes LDAP</label>
+			<label index="import_groups_be">Importer des groupes LDAP (Backend)</label>
+			<label index="import_groups_fe">Importer des groupes LDAP (Frontend)</label>
 			<label index="wizard_authentication">Assistant d'authentification</label>
 
 			<label index="show_status_title">Configuration :</label>
@@ -103,10 +102,7 @@
 			<label index="search_wizard_result">Résultat</label>
 			<label index="search_wizard_no_result">Aucun résultat</label>
 
-			<label index="import_groups_title">Importer des groupes LDAP</label>
-			<label index="import_groups_be_title">Importer des groupes backend</label>
 			<label index="import_groups_be_no_groups_found">Aucun groupe backend trouvé.</label>
-			<label index="import_groups_fe_title">Importer des groupes frontend</label>
 			<label index="import_groups_fe_no_groups_found">Aucun groupe frontend trouvé.</label>
 			<label index="import_groups_table_th_uid">uid</label>
 			<label index="import_groups_table_th_pid">pid</label>

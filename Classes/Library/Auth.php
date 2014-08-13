@@ -209,7 +209,8 @@ class tx_igldapssoauth_auth {
 					$typo3_group = tx_igldapssoauth_typo3_group::fetch(self::$authenticationService->authInfo['db_groups']['table'], $typo3_group_merged['uid']);
 					$typo3_groups[] = $typo3_group[0];
 				} else {
-
+					// Restore group that may have been previously deleted
+					$typo3_group['deleted'] = 0;
 					$typo3_group_merged = tx_igldapssoauth_auth::merge($ldap_groups[$i], $typo3_group, self::$config['groups']['mapping']);
 
 					tx_igldapssoauth_typo3_group::update(self::$authenticationService->authInfo['db_groups']['table'], $typo3_group_merged);

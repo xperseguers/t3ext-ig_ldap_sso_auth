@@ -296,6 +296,16 @@ class tx_igldapssoauth_config {
 	}
 
 	/**
+	 * Sets the TYPO3 mode.
+	 *
+	 * @param string $typo3_mode
+	 * @return void
+	 */
+	static public function setTypo3Mode($typo3_mode) {
+		self::$typo3_mode = $typo3_mode;
+	}
+
+	/**
 	 * Gets the uid.
 	 *
 	 * @return mixed

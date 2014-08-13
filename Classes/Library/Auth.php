@@ -255,6 +255,7 @@ class tx_igldapssoauth_auth {
 
 		if (!empty($typo3_user['uid'])) {
 			$typo3_user['deleted'] = 0;
+			$typo3_user['endtime'] = 0;
 
 			// Set random password
 			/** @var tx_saltedpasswords_salts $instance */
@@ -267,13 +268,12 @@ class tx_igldapssoauth_auth {
 
 			if ((empty($typo3_groups) && tx_igldapssoauth_config::is_enable('DeleteUserIfNoTYPO3Groups'))) {
 				$typo3_user['deleted'] = 1;
+				$typo3_user['endtime'] = $GLOBALS['EXEC_TIME'];
 			}
 			// Delete user if no LDAP groups found.
 			if (tx_igldapssoauth_config::is_enable('DeleteUserIfNoLDAPGroups') && !$ldap_groups) {
-
 				$typo3_user['deleted'] = 1;
-
-				// If LDAP groups found.
+				$typo3_user['endtime'] = $GLOBALS['EXEC_TIME'];
 			}
 			// Set groups to user.
 			$typo3_user = tx_igldapssoauth_typo3_user::set_usergroup($typo3_groups, $typo3_user, self::$authenticationService);

@@ -78,7 +78,8 @@ class tx_igldapssoauth_scheduler_synchroniseusers extends tx_scheduler_Task {
 				$this->table,
 				'disable=0 AND tx_igldapssoauth_dn IS NOT NULL AND tx_igldapssoauth_dn <> \'\'',
 				array(
-					'disable' => 1
+					'disable' => 1,
+					'endtime' => $GLOBALS['EXEC_TIME'],
 				)
 			);
 		}
@@ -115,6 +116,7 @@ class tx_igldapssoauth_scheduler_synchroniseusers extends tx_scheduler_Task {
 						'disable=1 AND uid IN (' . implode(',', $activeUsers) . ')',
 						array(
 							'disable' => 0,
+							'endtime' => 0,
 							'tstamp' => $GLOBALS['EXEC_TIME'],
 						)
 					);

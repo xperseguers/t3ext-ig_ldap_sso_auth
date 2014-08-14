@@ -5,7 +5,6 @@
 		<description>Language labels for module &quot;tools_txigldapssoauthM1&quot;</description>
 	</meta>
 	<data type="array">
-
 		<languageKey index="default" type="array">
 			<label index="mlang_tabs_tab">LDAP / SSO</label>
 			<label index="mlang_labels_tabdescr">LDAP configuration module.</label>
@@ -62,61 +61,5 @@
 			<label index="import_groups_table_select_all">Select All</label>
 			<label index="import_groups_form_submit_value">Import or update groups</label>
 		</languageKey>
-
-		<languageKey index="fr" type="array">
-			<label index="mlang_tabs_tab">LDAP / SSO</label>
-			<label index="mlang_labels_tabdescr">Module de configuration LDAP.</label>
-			<label index="mlang_labels_tablabel">Configuration LDAP</label>
-
-			<label index="title">LDAP / SSO service configuration</label>
-			<label index="configuration_missing.title">Aucun enregistrement de configuration</label>
-			<label index="configuration_missing.message"><![CDATA[Ce module ne peut pas être utilisé tant que vous n'avez pas créé au moins un enregistrement de configuration. Veuillez vous référer au <a href="%s" target="_blank">manuel de l'administrateur</a> pour plus d'informations.<br /><br /><a href="%s">Cliquer ici</a> pour créer un enregistrement de configuration.]]></label>
-
-			<label index="show_status">Statut</label>
-			<label index="search_wizard">Assistant de recherche</label>
-			<label index="import_groups_be">Importer des groupes LDAP (Backend)</label>
-			<label index="import_groups_fe">Importer des groupes LDAP (Frontend)</label>
-			<label index="wizard_authentication">Assistant d'authentification</label>
-
-			<label index="show_status_title">Configuration :</label>
-			<label index="show_status_ldap_domains">Limité au(x) domaine(s) :</label>
-			<label index="show_status_ldap">LDAP</label>
-			<label index="show_status_ldap_disable">Aucun serveur spécifié.</label>
-			<label index="show_status_ldap_connection_status">Statut de connexion</label>
-			<label index="show_status_cas">CAS</label>
-			<label index="show_status_cas_disable">Authentification CAS désactivée.</label>
-			<label index="show_status_backend_authentication">Authentification backend</label>
-			<label index="show_status_backend_authentication_disable">Authentification backend désactivée.</label>
-			<label index="show_status_frontend_authentication">Authentification frontend</label>
-			<label index="show_status_frontend_authentication_disable">Authentification frontend désactivée.</label>
-			<label index="show_status_title_no_group">aucun</label>
-
-			<label index="search_wizard_title">Assistant de recherche</label>
-			<label index="search_wizard_radio_be_users">be_users</label>
-			<label index="search_wizard_radio_fe_users">fe_users</label>
-			<label index="search_wizard_radio_be_groups">be_groups</label>
-			<label index="search_wizard_radio_fe_groups">fe_groups</label>
-			<label index="search_wizard_checkbox_first_entry">Seulement le première entrée</label>
-			<label index="search_wizard_checkbox_see_status">Montrer le statut</label>
-			<label index="search_wizard_ldap_status">Statut de la recherche LDAP</label>
-			<label index="search_wizard_input_base_dn">Base DN :</label>
-			<label index="search_wizard_input_filter">Filtre :</label>
-			<label index="search_wizard_input_attributes">Attributs :</label>
-			<label index="search_wizard_submit_search">rechercher</label>
-			<label index="search_wizard_result">Résultat</label>
-			<label index="search_wizard_no_result">Aucun résultat</label>
-
-			<label index="import_groups_be_no_groups_found">Aucun groupe backend trouvé.</label>
-			<label index="import_groups_fe_no_groups_found">Aucun groupe frontend trouvé.</label>
-			<label index="import_groups_status">%s groupe(s) ajouté(s), %s groupe(s) mis à jour.</label>
-			<label index="import_groups_table_th_uid">uid</label>
-			<label index="import_groups_table_th_pid">pid</label>
-			<label index="import_groups_table_th_title">titre</label>
-			<label index="import_groups_table_th_dn">tx_igldapssoauth_dn</label>
-			<label index="import_groups_table_th_import">importer/mettre à jour</label>
-			<label index="import_groups_table_select_all">Tout sélectionner</label>
-			<label index="import_groups_form_submit_value">Importer ou mettre à jour les groupes</label>
-		</languageKey>
-
 	</data>
 </T3locallang>

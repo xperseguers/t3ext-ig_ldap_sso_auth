@@ -5,7 +5,6 @@
 		<description>Language labels for plugin &quot;tx_igldapssoauth_pi1&quot;</description>
 	</meta>
 	<data type="array">
-
 		<languageKey index="default" type="array">
 			<label index="pi1_title">Central Authentication Service</label>
 			<label index="pi1_plus_wiz_description">Authenticate user by CAS server.</label>
@@ -13,14 +12,5 @@
 			<label index="logout">Logout</label>
 			<label index="disable">The CAS authentication service is disabled.</label>
 		</languageKey>
-
-		<languageKey index="fr" type="array">
-			<label index="pi1_title">Central Authentication Service</label>
-			<label index="pi1_plus_wiz_description">Authentification par un serveur CAS.</label>
-			<label index="login">Connexion</label>
-			<label index="logout">Déconnexion</label>
-			<label index="disable">Le service d'authentification CAS est inactif.</label>
-		</languageKey>
-
 	</data>
 </T3locallang>

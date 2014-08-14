@@ -162,13 +162,7 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 			$user = $this->fetchUserRecord($this->login['uname']);
 		}
 
-		// Failed login attempt (no username found)
-		if (!is_array($user)) {
-			$this->writelog(255, 3, 3, 2,
-				"Login-attempt from %s (%s), username '%s' not found!!",
-				array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $this->login['uname'])); // Logout written to log
-		} else {
-			// User found
+		if (is_array($user)) {
 			Tx_IgLdapSsoAuth_Utility_Debug::info('User found', $this->db_user);
 		}
 
@@ -212,7 +206,7 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 				if ($this->writeAttemptLog) {
 					$this->writelog(255, 3, 3, 1,
 						"Login-attempt from %s (%s), username '%s', password not accepted!",
-						Array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $this->login['uname']));
+						array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $this->login['uname']));
 				}
 
 				Tx_IgLdapSsoAuth_Utility_Debug::warning('Password not accepted: ' . $this->login['uident']);

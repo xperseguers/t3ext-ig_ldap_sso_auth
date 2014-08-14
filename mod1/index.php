@@ -114,6 +114,14 @@ table.typo3-dblist td > ul {
 	margin: 0;
 	padding-left: 1.4em;
 }
+table.typo3-dblist tr.deleted-ldap-group td {
+	background-color: #f00 !important;
+	color: #fff;
+}
+table.typo3-dblist tr.local-ldap-group td {
+	background-color: #093 !important;
+	color: #fff;
+}
 CSS;
 
 		$docHeaderButtons = $this->getButtons();
@@ -581,9 +589,6 @@ CSS;
 	 * @return void
 	 */
 	protected function import_groups($typo3_mode) {
-		$this->content .= '<h2>' . $GLOBALS['LANG']->getLL('import_groups_' . $typo3_mode) . '</h2>';
-		$this->content .= '<hr />';
-
 		$success = tx_igldapssoauth_ldap::connect(tx_igldapssoauth_config::getLdapConfiguration());
 		if (!$success) {
 			// Early return
@@ -613,15 +618,24 @@ CSS;
 		}
 
 		$this->content .= '<form action="" method="post">';
-		$this->content .= '<table border="1">';
 
-		$this->content .= '<tr>' .
-			'<th>' . $GLOBALS['LANG']->getLL('import_groups_table_th_title') . '</th>' .
-			'<th>' . $GLOBALS['LANG']->getLL('import_groups_table_th_dn') . '</th>' .
-			'<th>' . $GLOBALS['LANG']->getLL('import_groups_table_th_pid') . '</th>' .
-			'<th>' . $GLOBALS['LANG']->getLL('import_groups_table_th_uid') . '</th>' .
-			'<th>' . $GLOBALS['LANG']->getLL('import_groups_table_th_import') . '</th>' .
-			'</tr>';
+		$out = array();
+		$out[] = '<table cellspacing="0" cellpadding="0" border="0" class="typo3-dblist">';
+		$out[] = '<tbody>';
+		$out[] = '<tr class="c-table-row-spacer">';
+		$out[] = '<td nowrap="nowrap" class=""></td>';
+		$out[] = '</tr>';
+		$out[] = '<tr class="t3-row-header">';
+		$out[] = '<td nowrap="nowrap" colspan="5"><span class="c-table">' . $GLOBALS['LANG']->getLL('import_groups_' . $typo3_mode, TRUE) . '</span></td>';
+		$out[] = '</tr>';
+
+		$out[] = '<tr class="c-headLine">';
+		$out[] = '<td nowrap="nowrap">' . $GLOBALS['LANG']->getLL('import_groups_table_th_title') . '</td>';
+		$out[] = '<td nowrap="nowrap">' . $GLOBALS['LANG']->getLL('import_groups_table_th_dn') . '</td>';
+		$out[] = '<td nowrap="nowrap">' . $GLOBALS['LANG']->getLL('import_groups_table_th_pid') . '</td>';
+		$out[] = '<td nowrap="nowrap">' . $GLOBALS['LANG']->getLL('import_groups_table_th_uid') . '</td>';
+		$out[] = '<td nowrap="nowrap">' . $GLOBALS['LANG']->getLL('import_groups_table_th_import') . '</td>';
+		$out[] = '</tr>';
 
 		// Populate an array of TYPO3 group records corresponding to the LDAP groups
 		// If a given LDAP group has no associated group in TYPO3, a fresh record
@@ -678,48 +692,52 @@ CSS;
 
 			if ($typo3_group['uid'] == 0) {
 				// LDAP group is not yet imported
-				$rowStyle = '';
+				$rowClass = '';
 				$isChecked = FALSE;
 			} elseif ($typo3_group['deleted'] == 1) {
 				// LDAP group has been manually deleted
-				$rowStyle = 'background-color:#f00; color:#fff;';
+				$rowClass = 'deleted-ldap-group';
 				$isChecked = FALSE;
 			} else {
 				// LDAP group has already been imported
-				$rowStyle = 'background-color:#093; color:#fff;';
+				$rowClass = 'local-ldap-group';
 				$isChecked = TRUE;
 			}
 
-			$this->content .= '<tr style="' . $rowStyle . '">' .
-				'<td>' . ($typo3_group['title'] ? $typo3_group['title'] : '&nbsp;') . '</td>' .
-				'<td>' . $typo3_group['tx_igldapssoauth_dn'] . '</td>' .
-				'<td>' . ($typo3_group['pid'] ? $typo3_group['pid'] : 0) . '</td>' .
-				'<td>' . ($typo3_group['uid'] ? $typo3_group['uid'] : 0) . '</td>' .
-				'<td align="center"><input type="checkbox" name="import_groups[]" value="' . $typo3_group['tx_igldapssoauth_dn'] . '" ' . ($isChecked ? 'checked="checked"' : '') . ' /></td>' .
-				'</tr>';
+			$out[] = '<tr class="db_list_normal ' . $rowClass . '">';
+			$out[] = '<td>' . ($typo3_group['title'] ? htmlspecialchars($typo3_group['title']) : '&nbsp;') . '</td>';
+			$out[] = '<td>' . $typo3_group['tx_igldapssoauth_dn'] . '</td>';
+			$out[] = '<td>' . ($typo3_group['pid'] ? $typo3_group['pid'] : 0) . '</td>';
+			$out[] = '<td>' . ($typo3_group['uid'] ? $typo3_group['uid'] : 0) . '</td>';
+			$out[] = '<td><input type="checkbox" name="import_groups[]" value="' . htmlspecialchars($typo3_group['tx_igldapssoauth_dn']) . '" ' . ($isChecked ? 'checked="checked"' : '') . ' /></td>';
+			$out[] = '</tr>';
 		}
 
 		if (count($ldap_groups) > 0) {
+			$out[] = '<tr class="db_list_normal">';
+			$out[] = '<td colspan="4"></td>';
 			$toggleAllLabel = $GLOBALS['LANG']->getLL('import_groups_table_select_all', TRUE);
-			$this->content .= <<<HTML
-<tr>
-	<td colspan="5" style="text-align:right">
-		<input type="checkbox" onclick="toggleImport(this)" id="selectAll" />
-		<label for="selectAll">$toggleAllLabel</label>
-		<script type="text/javascript">
-		function toggleImport(source) {
-			checkboxes = document.getElementsByName('import_groups[]');
-			for (var i=0, n=checkboxes.length; i<n; i++) {
-				checkboxes[i].checked = source.checked;
-			}
-		}
-		</script>
-	</td>
-</tr>
+			$out[] = <<<HTML
+				<td>
+					<input type="checkbox" onclick="toggleImport(this)" id="selectAll" />
+					<label for="selectAll">$toggleAllLabel</label>
+					<script type="text/javascript">
+					function toggleImport(source) {
+						checkboxes = document.getElementsByName('import_groups[]');
+						for (var i=0, n=checkboxes.length; i<n; i++) {
+							checkboxes[i].checked = source.checked;
+						}
+					}
+					</script>
+				</td>
 HTML;
+			$out[] = '</tr>';
 		}
 
-		$this->content .= '</table>';
+		$out[] = '</tbody>';
+		$out[] = '</table>';
+		$this->content .= implode(LF, $out);
+
 		$this->content .= '<br />';
 
 		$this->content .= '<input type="hidden" name="import[action]" value="update" />';

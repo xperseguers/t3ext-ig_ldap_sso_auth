@@ -182,7 +182,7 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 	 * @param array $user Data of user.
 	 * @return int|FALSE
 	 */
-	public function authUser($user) {
+	public function authUser(array $user) {
 		if (!tx_igldapssoauth_config::isInitialized()) {
 			// Early return since LDAP is not configured
 			return 100;

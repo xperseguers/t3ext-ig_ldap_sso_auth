@@ -35,7 +35,7 @@ with LDAP?**
 .. answer
 
 *Yes. Both for frontend and backend authentication it is possible to manually define users unrelated to your LDAP
-server(s). When a user is manually defined, the record's column ``tx_igldapssoauth_dn`` is empty and thus, since the
+server(s). When a user is manually defined, the record's column* ``tx_igldapssoauth_dn`` *is empty and thus, since the
 LDAP authentication will fail, it will automatically fall back to the standard TYPO3 authentication service.*
 
 -------
@@ -49,7 +49,7 @@ password will be taken into account?**
 
 *When you manually create a user in TYPO3, it is not related to LDAP. This local user may authenticate with the
 password you set. However is the user matches a LDAP user* **and the password provided** *results into a successful
-LDAP authentication, the manually created user will be automatically linked to the LDAP user. Afterwards,* **only
+LDAP authentication, the manually created user will be automatically linked to the LDAP user.* **Afterwards, only
 the LDAP password will be valid**.
 
 -------
@@ -95,7 +95,19 @@ Security
 
 .. answer
 
-*Yes. This extension is supporting SSL-encrypted connection to the LDAP server (typically on port 636) as well as TLS
--based connection.*
+*Yes. This extension is supporting SSL-encrypted connection to the LDAP server as well as TLS-based connection.*
+
+-------
+
+.. question
+
+**Which port number is my LDAP server listening on?**
+
+.. answer
+
+*It is not possible to answer without knowing your infrastructure but it is worth to mention that*
+
+- **389** *is the industry standard port for LDAP connections over TCP/IP, and*
+- **636** *is the industry standard port for LDAP connections over SSL.*
 
 -------

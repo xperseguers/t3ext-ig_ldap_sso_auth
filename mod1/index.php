@@ -114,13 +114,27 @@ table.typo3-dblist td > ul {
 	margin: 0;
 	padding-left: 1.4em;
 }
-table.typo3-dblist tr.deleted-ldap-group td {
+table.typo3-dblist caption {
+	caption-side: bottom;
+	text-align: left;
+	margin-top: .5em;
+}
+table.typo3-dblist caption ul {
+	list-style: none;
+	padding-left: 0;
+}
+table.typo3-dblist tr.deleted-ldap-group td, .square-deleted {
 	background-color: #f00 !important;
 	color: #fff;
 }
-table.typo3-dblist tr.local-ldap-group td {
+table.typo3-dblist tr.local-ldap-group td, .square-local {
 	background-color: #093 !important;
 	color: #fff;
+}
+.square-deleted, .square-local {
+	display: inline-block;
+	width: 12px;
+	height: 12px;
 }
 CSS;
 
@@ -624,6 +638,12 @@ CSS;
 
 		$out = array();
 		$out[] = '<table cellspacing="0" cellpadding="0" border="0" class="typo3-dblist">';
+		$out[] = '<caption>';
+		$out[] = '<ul>';
+		$out[] = '<li><span class="square-local"></span> ' . $GLOBALS['LANG']->getLL('import_groups_caption_local', TRUE) . '</li>';
+		$out[] = '<li><span class="square-deleted"></span> ' . $GLOBALS['LANG']->getLL('import_groups_caption_deleted', TRUE) . '</li>';
+		$out[] = '</ul>';
+		$out[] = '</caption>';
 		$out[] = '<tbody>';
 		$out[] = '<tr class="c-table-row-spacer">';
 		$out[] = '<td nowrap="nowrap" class=""></td>';

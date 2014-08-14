@@ -52,6 +52,8 @@
 			<label index="import_groups_be_no_groups_found">No backend groups found.</label>
 			<label index="import_groups_fe_no_groups_found">No frontend groups found.</label>
 			<label index="import_groups_status">%s group(s) added, %s group(s) updated.</label>
+			<label index="import_groups_caption_local">LDAP group is available locally</label>
+			<label index="import_groups_caption_deleted">LDAP group has been imported but then manually deleted</label>
 			<label index="import_groups_table_th_uid">uid</label>
 			<label index="import_groups_table_th_pid">pid</label>
 			<label index="import_groups_table_th_title">title</label>

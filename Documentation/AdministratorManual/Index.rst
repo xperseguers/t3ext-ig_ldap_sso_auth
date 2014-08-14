@@ -45,3 +45,4 @@ The form to edit such a record is split in 7 tabs that we will describe separate
 	Users
 	Groups
 	Cas
+	SampleConfiguration

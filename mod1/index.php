@@ -613,7 +613,10 @@ CSS;
 		}
 
 		if (count($ldap_groups) === 0) {
-			$this->content .= '<h3>' . $GLOBALS['LANG']->getLL('import_groups_' . $typo3_mode . '_no_groups_found') . '</h3>';
+			$this->content .= $this->exportArrayAsTable(
+				$GLOBALS['LANG']->getLL('import_groups_' . $typo3_mode . '_no_groups_found'),
+				$GLOBALS['LANG']->getLL('import_groups_' . $typo3_mode)
+			);
 			return;
 		}
 

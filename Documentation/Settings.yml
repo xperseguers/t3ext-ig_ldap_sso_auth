@@ -19,4 +19,14 @@ conf.py:
     pointsize: 10pt
     preamble: \usepackage{typo3}
   latex_show_pagerefs: True
+  extensions:
+    - sphinx.ext.intersphinx
+    - sphinx.ext.extlinks
+  extlinks:
+    forge:
+    - https://forge.typo3.org/issues/%s
+    - 'Forge ticket #'
+    ter:
+    - http://www.typo3.org/extensions/repository/view/%s
+    - 'EXT:'
 ...

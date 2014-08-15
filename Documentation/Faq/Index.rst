@@ -25,8 +25,6 @@ Frequently Asked Questions
 Users
 -----
 
--------
-
 .. question
 
 **Is it possible to have both users manually defined (thus authenticated with a TYPO3 password) and users authenticated
@@ -54,12 +52,24 @@ the LDAP password will be valid**.
 
 -------
 
+.. question
+
+**I would like to silently and automatically authenticate my users in frontend (Single Sign On). Since Apache is
+configured to restrict access using Kerberos, no login form should be needed in my website. Is this possible with this
+extension?**
+
+.. answer
+
+*Not currently, despite the label "SSO" in this extension's title. At the moment Single Sign On (SSO) is possible
+solely with CAS. You may have a look at* :ter:`woehrl_sso_intranet`.
+
+-------
+
+
 .. _faq-groups:
 
 Groups
 ------
-
--------
 
 .. question
 
@@ -73,7 +83,7 @@ Groups
 
 .. question
 
-**Which servers support the "memberOf/groupMembership" attribute?**
+**Which servers support the "memberOf" / "groupMembership" attribute?**
 
 .. answer
 
@@ -86,8 +96,6 @@ Groups
 
 Security
 --------
-
--------
 
 .. question
 
@@ -111,3 +119,18 @@ Security
 - **636** *is the industry standard port for LDAP connections over SSL.*
 
 -------
+
+
+.. _faq-migration:
+
+Migration
+---------
+
+.. question
+
+**I am currently using another LDAP extension to authenticate my users, namely** :ter:`eu_ldap`. **Does this extension
+at least provide the same feature set?**
+
+.. answer
+
+*Yes. Please see* :forge:`60990` *for details.*

@@ -146,4 +146,7 @@ at least provide the same feature set?**
 
 .. answer
 
-*Yes. Please see* :forge:`60990` *for details.*
+*Yes. And in order to ease the migration, this extension is able to migrate your legacy eu_ldap configuration records
+to be compatible with ig_ldap_sso_auth using the "UPDATE!" script in Extension Manager (EM). You should first configure
+global options for ig_ldap_sso_auth in EM and only then migrate your legacy eu_ldap configuration records. This will
+ensure possible configuration issues to be detected.*

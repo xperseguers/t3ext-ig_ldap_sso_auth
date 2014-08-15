@@ -83,6 +83,19 @@ Groups
 
 .. question
 
+**My server is providing a hierarchy of groups. Is it possible to automatically mirror this structure in TYPO3?**
+
+.. answer
+
+*Yes. You should provide a be_groups and/or fe_groups mapping instruction for the LDAP attribute holding the reference
+to the parent group. E.g.,* ::
+
+	parentGroup = <memberOf>
+
+-------
+
+.. question
+
 **Which servers support the "memberOf" / "groupMembership" attribute?**
 
 .. answer

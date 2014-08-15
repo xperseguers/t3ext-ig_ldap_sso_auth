@@ -153,6 +153,13 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 			} elseif ($userRecordOrIsValid) {
 				// Authentication is valid
 				break;
+			} else {
+				$diagnostic = tx_igldapssoauth_auth::getLastAuthenticationDiagnostic();
+				if (!empty($diagnostic)) {
+					$this->writelog(255, 3, 3, 1,
+						"Login-attempt from %s (%s), username '%s': " . $diagnostic,
+						array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $this->login['uname']));
+				}
 			}
 
 			// Continue and try with next configuration record...
@@ -203,11 +210,9 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 				return 100;
 			} else {
 				// Failed login attempt (wrong password) - write that to the log!
-				if ($this->writeAttemptLog) {
-					$this->writelog(255, 3, 3, 1,
-						"Login-attempt from %s (%s), username '%s', password not accepted!",
-						array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $this->login['uname']));
-				}
+				$this->writelog(255, 3, 3, 1,
+					"Login-attempt from %s (%s), username '%s', password not accepted!",
+					array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $this->login['uname']));
 
 				Tx_IgLdapSsoAuth_Utility_Debug::warning('Password not accepted: ' . $this->login['uident']);
 				$OK = FALSE;
@@ -217,11 +222,9 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 			if ($OK && $user['lockToDomain'] && $user['lockToDomain'] != $this->authInfo['HTTP_HOST']) {
 
 				// Lock domain didn't match, so error:
-				if ($this->writeAttemptLog) {
-					$this->writelog(255, 3, 3, 1,
-						"Login-attempt from %s (%s), username '%s', locked domain '%s' did not match '%s'!",
-						array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $user[$this->db_user['username_column']], $user['lockToDomain'], $this->authInfo['HTTP_HOST']));
-				}
+				$this->writelog(255, 3, 3, 1,
+					"Login-attempt from %s (%s), username '%s', locked domain '%s' did not match '%s'!",
+					array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $user[$this->db_user['username_column']], $user['lockToDomain'], $this->authInfo['HTTP_HOST']));
 				$OK = FALSE;
 			}
 		}

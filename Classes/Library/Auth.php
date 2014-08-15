@@ -32,6 +32,7 @@
 class tx_igldapssoauth_auth {
 
 	static protected $config;
+	static protected $lastAuthenticationDiagnostic;
 
 	/**
 	 * @var tx_igldapssoauth_sv1
@@ -84,6 +85,8 @@ class tx_igldapssoauth_auth {
 	 * @return bool|array TRUE or array of user info on success, otherwise FALSE
 	 */
 	static public function ldap_auth($username = NULL, $password = NULL) {
+		self::$lastAuthenticationDiagnostic = '';
+
 		if ($username && tx_igldapssoauth_config::is_enable('forceLowerCaseUsername')) {
 			// Possible enhancement: use t3lib_cs::conv_case instead
 			$username = strtolower($username);
@@ -102,6 +105,11 @@ class tx_igldapssoauth_auth {
 					return TRUE;
 				}
 				return self::synchroniseUser($userdn, $username);
+			} else {
+				self::$lastAuthenticationDiagnostic = tx_igldapssoauth_ldap::getLastBindDiagnostic();
+				if (!empty(self::$lastAuthenticationDiagnostic)) {
+					Tx_IgLdapSsoAuth_Utility_Debug::notice(self::$lastAuthenticationDiagnostic);
+				}
 			}
 
 			// LDAP authentication failed.
@@ -117,6 +125,15 @@ class tx_igldapssoauth_auth {
 		Tx_IgLdapSsoAuth_Utility_Debug::warning('Cannot connect to LDAP or username is empty', array('username' => $username));
 		tx_igldapssoauth_ldap::disconnect();
 		return FALSE;
+	}
+
+	/**
+	 * Returns the last self::ldap_auth() diagnostic (may be empty).
+	 *
+	 * @return string
+	 */
+	static public function getLastAuthenticationDiagnostic() {
+		return self::$lastAuthenticationDiagnostic;
 	}
 
 	/**

@@ -57,6 +57,7 @@ class tx_igldapssoauth_utility_Ldap {
 	static protected $sid; // LDAP Server Search ID
 	static protected $feid; // LDAP First Entry ID
 	static protected $status; // LDAP server status.
+	static protected $serverType; // 0 = OpenLDAP, 1 = Active Directory / Novell eDirectory
 
 	/**
 	 * Connects to LDAP Server and sets the cid.
@@ -65,11 +66,11 @@ class tx_igldapssoauth_utility_Ldap {
 	 * @param integer $port
 	 * @param integer $protocol Either 2 or 3
 	 * @param string $charset
-	 * @param integer $type (0 = OpenLDAP, 1 = Novell eDirectory)
+	 * @param integer $serverType 0 = OpenLDAP, 1 = Active Directory / Novell eDirectory
 	 * @param bool $tls
 	 * @return bool TRUE if connection succeeded.
 	 */
-	static public function connect($host = NULL, $port = NULL, $protocol = NULL, $charset = NULL, $type = 0, $tls = FALSE) {
+	static public function connect($host = NULL, $port = NULL, $protocol = NULL, $charset = NULL, $serverType = 0, $tls = FALSE) {
 		// Valid if php load ldap module.
 		if (!extension_loaded('ldap')) {
 			echo 'Your PHP version seems to lack LDAP support. Please install.';
@@ -79,6 +80,7 @@ class tx_igldapssoauth_utility_Ldap {
 		// Connect to ldap server.
 		self::$status['connect']['host'] = $host;
 		self::$status['connect']['port'] = $port;
+		self::$serverType = $serverType;
 
 		if (!(self::$cid = @ldap_connect($host, $port))) {
 			// Could not connect to ldap server.
@@ -95,7 +97,7 @@ class tx_igldapssoauth_utility_Ldap {
 		@ldap_set_option(self::$cid, LDAP_OPT_PROTOCOL_VERSION, $protocol);
 
 		// Active Directory (User@Domain) configuration.
-		if ($type == 1) {
+		if ($serverType == 1) {
 			@ldap_set_option(self::$cid, LDAP_OPT_REFERRALS, 0);
 		}
 
@@ -121,19 +123,76 @@ class tx_igldapssoauth_utility_Ldap {
 	 * @return bool TRUE if bind succeeded.
 	 */
 	static public function bind($dn = NULL, $password = NULL) {
+		// LDAP_OPT_DIAGNOSTIC_MESSAGE gets the extended error output
+		// from the ldap_get_option() function
+		if (!defined('LDAP_OPT_DIAGNOSTIC_MESSAGE')) {
+			define('LDAP_OPT_DIAGNOSTIC_MESSAGE', 0x0032);
+		}
+
 		self::$status['bind']['dn'] = $dn;
 		self::$status['bind']['password'] = $password ? '********' : NULL;
+		self::$status['bind']['diagnostic'] = '';
 
 		if (!(self::$bid = @ldap_bind(self::$cid, $dn, $password))) {
-			// Could not bind to server.
+			// Could not bind to server
 			self::$bid = FALSE;
 			self::$status['bind']['status'] = ldap_error(self::$cid);
+
+			if (self::$serverType == 1) {
+				// We need to get the diagnostic message right after the call to ldap_bind(),
+				// before any other LDAP operation
+				ldap_get_option(self::$cid, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extended_error);
+				if (!empty($extended_error)) {
+					self::$status['bind']['diagnostic'] = self::extractDiagnosticMessage($extended_error);
+				}
+			}
+
 			return FALSE;
 		}
 
-		// Bind successful.
+		// Bind successful
 		self::$status['bind']['status'] = ldap_error(self::$cid);
 		return TRUE;
+	}
+
+	/**
+	 * Extracts the diagnostic message returned by an Active Directory server
+	 * when ldap_bind() failed.
+	 *
+	 * The format of the diagnostic message is (actual examples from W2003 and W2008):
+	 * "80090308: LdapErr: DSID-0C090334, comment: AcceptSecurityContext error, data 52e, vece"  (WS 2003)
+	 * "80090308: LdapErr: DSID-0C090334, comment: AcceptSecurityContext error, data 773, vece"  (WS 2003)
+	 * "80090308: LdapErr: DSID-0C0903AA, comment: AcceptSecurityContext error, data 52e, v1771" (WS 2008)
+	 * "80090308: LdapErr: DSID-0C0903AA, comment: AcceptSecurityContext error, data 773, v1771" (WS 2008)
+	 *
+	 * @param string $message
+	 * @return string Diagnostic message, in English
+	 * @see http://www-01.ibm.com/support/docview.wss?uid=swg21290631
+	 */
+	static protected function extractDiagnosticMessage($message) {
+		$diagnostic = '';
+		$codeMessages = array(
+			'525' => 'The specified account does not exist.',
+			'52e' => 'Logon failure: unknown user name or bad password.',
+			'530' => 'Logon failure: account logon time restriction violation.',
+			'531' => 'Logon failure: user not allowed to log on to this computer.',
+			'532' => 'Logon failure: the specified account password has expired.',
+			'533' => 'Logon failure: account currently disabled.',
+			'534' => 'The user has not been granted the requested logon type at this machine.',
+			'701' => 'The user\'s account has expired.',
+			'773' => 'The user\'s password must be changed before logging on the first time.',
+			'775' => 'The referenced account is currently locked out and may not be logged on to.',
+		);
+
+		$parts = explode(',', $message);
+		if (preg_match('/data ([0-9a-f]+)/i', trim($parts[2]), $matches)) {
+			$code = $matches[1];
+			$diagnostic = isset($codeMessages[$code])
+				? sprintf('%s (%s)', $codeMessages[$code], $code)
+				: sprintf('Unknown reason. (%s)', $code);
+		}
+
+		return $diagnostic;
 	}
 
 	/**

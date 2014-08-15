@@ -32,6 +32,8 @@
  */
 class tx_igldapssoauth_ldap {
 
+	static protected $lastBindDiagnostic = '';
+
 	/**
 	 * Initializes a connection to the LDAP server.
 	 *
@@ -59,7 +61,15 @@ class tx_igldapssoauth_ldap {
 
 		// Bind to ldap server.
 		if (!tx_igldapssoauth_utility_Ldap::bind($config['binddn'], $config['password'])) {
-			Tx_IgLdapSsoAuth_Utility_Debug::error('Cannot bind to LDAP', $debugConfiguration);
+			$status = tx_igldapssoauth_utility_Ldap::get_status();
+			self::$lastBindDiagnostic = $status['bind']['diagnostic'];
+
+			$message = 'Cannot bind to LDAP';
+			if (!empty(self::$lastBindDiagnostic)) {
+				$message .= ': ' . self::$lastBindDiagnostic;
+			}
+			Tx_IgLdapSsoAuth_Utility_Debug::error($message, $debugConfiguration);
+
 			self::disconnect();
 			return FALSE;
 		}
@@ -87,16 +97,18 @@ class tx_igldapssoauth_ldap {
 
 				// Bind DN of user with password.
 				if (tx_igldapssoauth_utility_Ldap::bind(tx_igldapssoauth_utility_Ldap::get_dn(), $password)) {
-
 					$dn = tx_igldapssoauth_utility_Ldap::get_dn();
 
 					// Restore last LDAP binding
 					$config = tx_igldapssoauth_config::getLdapConfiguration();
 					tx_igldapssoauth_utility_Ldap::bind($config['binddn'], $config['password']);
+					self::$lastBindDiagnostic = '';
 
 					return $dn;
 				}
 				else {
+					$status = tx_igldapssoauth_utility_Ldap::get_status();
+					self::$lastBindDiagnostic = $status['bind']['diagnostic'];
 					return FALSE;	// Password does not match
 				}
 
@@ -143,6 +155,15 @@ class tx_igldapssoauth_ldap {
 	}
 
 	/**
+	 * Returns the last ldap_bind() diagnostic (may be empty).
+	 *
+	 * @return string
+	 */
+	static public function getLastBindDiagnostic() {
+		return self::$lastBindDiagnostic;
+	}
+
+	/**
 	 * Escapes a string for use in a LDAP filter statement.
 	 *
 	 * To find the groups of a user by filtering the groups where the
@@ -169,4 +190,5 @@ class tx_igldapssoauth_ldap {
 		}
 		return $dn;
 	}
+
 }

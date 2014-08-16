@@ -160,6 +160,15 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 						"Login-attempt from %s (%s), username '%s': " . $diagnostic,
 						array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $this->login['uname']));
 				}
+				Tx_IgLdapSsoAuth_Utility_Notification::dispatch(
+					__CLASS__,
+					'authenticationFailed',
+					array(
+						'username' => $this->login['uname'],
+						'diagnostic' => $diagnostic,
+						'configUid' => $configurationRecord['uid'],
+					)
+				);
 			}
 
 			// Continue and try with next configuration record...

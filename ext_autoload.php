@@ -15,6 +15,7 @@ $autoload = array(
 	'tx_igldapssoauth_typo3_user'		=>	$extensionPath . 'Classes/Library/Typo3User.php',
 	'tx_igldapssoauth_utility_debug'	=>	$extensionPath . 'Classes/Utility/Debug.php',
 	'tx_igldapssoauth_utility_ldap'		=>	$extensionPath . 'Classes/Utility/Ldap.php',
+	'tx_igldapssoauth_utility_notification' => $extensionPath . 'Classes/Utility/Notification.php',
 	'tx_igldapssoauth_sv1'				=>	$extensionPath . 'Classes/Service/Sv1.php',
 );
 

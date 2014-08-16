@@ -164,6 +164,15 @@ class tx_igldapssoauth_typo3_group {
 			'uid=' . intval($uid)
 		);
 
+		Tx_IgLdapSsoAuth_Utility_Notification::dispatch(
+			__CLASS__,
+			'groupAdded',
+			array(
+				'table' => $table,
+				'group' => $newRow,
+			)
+		);
+
 		return $newRow;
 	}
 
@@ -192,6 +201,9 @@ class tx_igldapssoauth_typo3_group {
 
 		// Hook for post-processing the group
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['processUpdateGroup'])) {
+			if (version_compare(TYPO3_version, '6.0.0', '>=')) {
+				t3lib_div::deprecationLog('Hook processUpdateGroup has been deprecated for users of TYPO3 6.x since version 1.3.0 and will be removed in version 1.5.0');
+			}
 			$params = array(
 				'table' => $table,
 				'typo3_group' => $data,
@@ -200,6 +212,17 @@ class tx_igldapssoauth_typo3_group {
 				$null = NULL;
 				t3lib_div::callUserFunction($funcRef, $params, $null);
 			}
+		}
+
+		if ($success) {
+			Tx_IgLdapSsoAuth_Utility_Notification::dispatch(
+				__CLASS__,
+				'groupUpdated',
+				array(
+					'table' => $table,
+					'group' => $data,
+				)
+			);
 		}
 
 		return $success;

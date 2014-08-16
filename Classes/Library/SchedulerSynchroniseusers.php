@@ -161,6 +161,28 @@ class tx_igldapssoauth_scheduler_synchroniseusers extends tx_scheduler_Task {
 			$this->getDatabaseConnection()->sql_query('COMMIT');
 		}
 
+		foreach ($typo3_modes as $typo3_mode) {
+			$users = $this->getDatabaseConnection()->exec_SELECTgetRows(
+				'uid',
+				$typo3_mode . '_users',
+				'tx_igldapssoauth_dn IS NOT NULL AND tx_igldapssoauth_dn<>\'\' AND disabled=1 AND endtime=' . $GLOBALS['EXEC_TIME'],
+				'',
+				'',
+				'',
+				'uid'
+			);
+			if (count($users) > 0) {
+				Tx_IgLdapSsoAuth_Utility_Notification::dispatch(
+					__CLASS__,
+					'usersDeactivated',
+					array(
+						'table' => $table,
+						'userUids' => array_keys($users),
+					)
+				);
+			}
+		}
+
 		// Task is supposed to always execute properly
 		return TRUE;
 	}

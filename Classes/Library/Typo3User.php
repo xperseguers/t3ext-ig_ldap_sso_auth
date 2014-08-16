@@ -190,6 +190,15 @@ class tx_igldapssoauth_typo3_user {
 			'uid=' . intval($uid)
 		);
 
+		Tx_IgLdapSsoAuth_Utility_Notification::dispatch(
+			__CLASS__,
+			'userAdded',
+			array(
+				'table' => $table,
+				'user' => $newRow,
+			)
+		);
+
 		return $newRow;
 	}
 
@@ -218,6 +227,9 @@ class tx_igldapssoauth_typo3_user {
 
 		// Hook for post-processing the user
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['processUpdateUser'])) {
+			if (version_compare(TYPO3_version, '6.0.0', '>=')) {
+				t3lib_div::deprecationLog('Hook processUpdateUser has been deprecated for users of TYPO3 6.x since version 1.3.0 and will be removed in version 1.5.0');
+			}
 			$params = array(
 				'table' => $table,
 				'typo3_user' => $data,
@@ -226,6 +238,17 @@ class tx_igldapssoauth_typo3_user {
 				$null = NULL;
 				t3lib_div::callUserFunction($funcRef, $params, $null);
 			}
+		}
+
+		if ($success) {
+			Tx_IgLdapSsoAuth_Utility_Notification::dispatch(
+				__CLASS__,
+				'userUpdated',
+				array(
+					'table' => $table,
+					'user' => $data,
+				)
+			);
 		}
 
 		return $success;

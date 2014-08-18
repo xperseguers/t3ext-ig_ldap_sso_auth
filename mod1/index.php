@@ -755,16 +755,22 @@ CSS;
 				</td>
 HTML;
 			$out[] = '</tr>';
+
+			$out[] = '<tr class="db_list_normal">';
+			$out[] = '<td colspan="4"></td>';
+			$importLabel = $GLOBALS['LANG']->getLL('import_groups_form_submit_value', TRUE);
+			$out[] = <<<HTML
+				<td>
+					<input type="hidden" name="import[action]" value="update" />
+					<input type="submit" value="$importLabel" />
+				</td>
+HTML;
+			$out[] = '</tr>';
 		}
 
 		$out[] = '</tbody>';
 		$out[] = '</table>';
 		$this->content .= implode(LF, $out);
-
-		$this->content .= '<br />';
-
-		$this->content .= '<input type="hidden" name="import[action]" value="update" />';
-		$this->content .= '<input type="submit" value="' . $GLOBALS['LANG']->getLL('import_groups_form_submit_value') . '" onclick="this.form.elements[\'import[action]\'].value=\'update\';" />';
 
 		$this->content .= '</form>';
 

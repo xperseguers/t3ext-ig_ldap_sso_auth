@@ -1,0 +1,16 @@
+pid = [i]your storage folder[/i]
+tstamp = {DATE}
+email = <mail>
+name = <cn>
+usergroup = <memberOf>
+first_name = <givenName>
+last_name = <sn>
+title = <title>
+company = <company>
+address = <streetAddress>
+zip = <postalCode>
+city = <l>
+country = <countryCode>
+telephone = <telephoneNumber>
+fax = <facsimileTelephoneNumber>
+www = <wWWHomePage>

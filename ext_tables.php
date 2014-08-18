@@ -19,6 +19,7 @@ $GLOBALS['TCA']['tx_igldapssoauth_config'] = array(
 		'enablecolumns' => array(
 			'disabled' => 'hidden',
 		),
+		'requestUpdate' => 'ldap_server',
 		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY) . 'Configuration/TCA/Config.php',
 		'iconfile' => t3lib_extMgm::extRelPath($_EXTKEY) . 'Resources/Public/Icons/icon_tx_igldapssoauth_config.png',
 	),

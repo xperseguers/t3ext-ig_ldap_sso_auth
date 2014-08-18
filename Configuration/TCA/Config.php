@@ -193,6 +193,12 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'type' => 'input',
 				'size' => '30',
 				'eval' => 'trim',
+				'wizards' => array(
+					'suggest' => array(
+						'type' => 'userFunc',
+						'userFunc' => 'Tx_IgLdapSsoAuth_Tca_Form_Suggest->render',
+					),
+				),
 			)
 		),
 		'be_users_filter' => array(
@@ -203,6 +209,12 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'rows' => 3,
 				'cols' => 30,
 				'eval' => 'trim',
+				'wizards' => array(
+					'suggest' => array(
+						'type' => 'userFunc',
+						'userFunc' => 'Tx_IgLdapSsoAuth_Tca_Form_Suggest->render',
+					),
+				),
 			)
 		),
 		'be_users_mapping' => array(
@@ -213,6 +225,12 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'rows' => 8,
 				'cols' => 30,
 				'eval' => 'trim',
+				'wizards' => array(
+					'suggest' => array(
+						'type' => 'userFunc',
+						'userFunc' => 'Tx_IgLdapSsoAuth_Tca_Form_Suggest->render',
+					),
+				),
 			)
 		),
 		'be_groups_basedn' => array(
@@ -222,6 +240,12 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'type' => 'input',
 				'size' => '30',
 				'eval' => 'trim',
+				'wizards' => array(
+					'suggest' => array(
+						'type' => 'userFunc',
+						'userFunc' => 'Tx_IgLdapSsoAuth_Tca_Form_Suggest->render',
+					),
+				),
 			)
 		),
 		'be_groups_filter' => array(
@@ -232,6 +256,12 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'rows' => 3,
 				'cols' => 30,
 				'eval' => 'trim',
+				'wizards' => array(
+					'suggest' => array(
+						'type' => 'userFunc',
+						'userFunc' => 'Tx_IgLdapSsoAuth_Tca_Form_Suggest->render',
+					),
+				),
 			)
 		),
 		'be_groups_mapping' => array(
@@ -242,6 +272,12 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'rows' => 8,
 				'cols' => 30,
 				'eval' => 'trim',
+				'wizards' => array(
+					'suggest' => array(
+						'type' => 'userFunc',
+						'userFunc' => 'Tx_IgLdapSsoAuth_Tca_Form_Suggest->render',
+					),
+				),
 			)
 		),
 		'be_groups_required' => array(
@@ -308,6 +344,12 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'type' => 'input',
 				'size' => '30',
 				'eval' => 'trim',
+				'wizards' => array(
+					'suggest' => array(
+						'type' => 'userFunc',
+						'userFunc' => 'Tx_IgLdapSsoAuth_Tca_Form_Suggest->render',
+					),
+				),
 			)
 		),
 		'fe_users_filter' => array(
@@ -318,6 +360,12 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'rows' => 3,
 				'cols' => 30,
 				'eval' => 'trim',
+				'wizards' => array(
+					'suggest' => array(
+						'type' => 'userFunc',
+						'userFunc' => 'Tx_IgLdapSsoAuth_Tca_Form_Suggest->render',
+					),
+				),
 			)
 		),
 		'fe_users_mapping' => array(
@@ -328,6 +376,12 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'rows' => 8,
 				'cols' => 30,
 				'eval' => 'trim',
+				'wizards' => array(
+					'suggest' => array(
+						'type' => 'userFunc',
+						'userFunc' => 'Tx_IgLdapSsoAuth_Tca_Form_Suggest->render',
+					),
+				),
 			)
 		),
 		'fe_groups_basedn' => array(
@@ -337,6 +391,12 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'type' => 'input',
 				'size' => '30',
 				'eval' => 'trim',
+				'wizards' => array(
+					'suggest' => array(
+						'type' => 'userFunc',
+						'userFunc' => 'Tx_IgLdapSsoAuth_Tca_Form_Suggest->render',
+					),
+				),
 			)
 		),
 		'fe_groups_filter' => array(
@@ -347,6 +407,12 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'rows' => 3,
 				'cols' => 30,
 				'eval' => 'trim',
+				'wizards' => array(
+					'suggest' => array(
+						'type' => 'userFunc',
+						'userFunc' => 'Tx_IgLdapSsoAuth_Tca_Form_Suggest->render',
+					),
+				),
 			)
 		),
 		'fe_groups_mapping' => array(
@@ -357,6 +423,12 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'rows' => 8,
 				'cols' => 30,
 				'eval' => 'trim',
+				'wizards' => array(
+					'suggest' => array(
+						'type' => 'userFunc',
+						'userFunc' => 'Tx_IgLdapSsoAuth_Tca_Form_Suggest->render',
+					),
+				),
 			)
 		),
 		'fe_groups_required' => array(

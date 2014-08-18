@@ -1,0 +1,11 @@
+pid = [i]your storage folder[/i]
+tstamp = {DATE}
+email = <mail>
+name = <sn>, <givenName>
+first_name = <givenName>
+last_name = <sn>
+title = <title>
+address = <street>
+zip = <postalCode>
+city = <l>
+telephone = <telephoneNumber>

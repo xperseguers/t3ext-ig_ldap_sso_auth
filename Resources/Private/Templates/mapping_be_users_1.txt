@@ -1,0 +1,4 @@
+tstamp = {DATE}
+realName = <cn>
+email = <mail>
+usergroup = <memberOf>

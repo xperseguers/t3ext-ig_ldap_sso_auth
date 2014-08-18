@@ -1,0 +1,3 @@
+tstamp = {DATE}
+realName = <cn>
+email = <mail>

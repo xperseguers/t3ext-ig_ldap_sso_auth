@@ -10,6 +10,7 @@ $autoload = array(
 	'tx_igldapssoauth_ldap_group'		=>	$extensionPath . 'Classes/Library/LdapGroup.php',
 	'tx_igldapssoauth_ldap_user'		=>	$extensionPath . 'Classes/Library/LdapUser.php',
 	'tx_igldapssoauth_ldap'				=>	$extensionPath . 'Classes/Library/Ldap.php',
+	'tx_igldapssoauth_tca_form_suggest'	=>	$extensionPath . 'Classes/Tca/Form/Suggest.php',
 	'tx_igldapssoauth_typo3_group'		=>	$extensionPath . 'Classes/Library/Typo3Group.php',
 	'tx_igldapssoauth_typo3_user'		=>	$extensionPath . 'Classes/Library/Typo3User.php',
 	'tx_igldapssoauth_utility_debug'	=>	$extensionPath . 'Classes/Utility/Debug.php',

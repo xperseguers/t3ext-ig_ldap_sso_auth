@@ -1,0 +1,2 @@
+pid = [i]your storage folder[/i]
+title = <cn>

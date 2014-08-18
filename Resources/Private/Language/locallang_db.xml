@@ -61,6 +61,10 @@
 			<label index="tt_content.list_type_pi1">Central Authentication Service</label>
 
 			<label index="palette.connection">Connection</label>
+
+			<label index="suggestion.server.0">Suggestion for OpenLDAP:</label>
+			<label index="suggestion.server.1">Suggestion for Novell eDirectory / Active Directory:</label>
+			<label index="suggestion.copy">copy and use</label>
 		</languageKey>
 	</data>
 </T3locallang>

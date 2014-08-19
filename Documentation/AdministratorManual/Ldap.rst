@@ -50,4 +50,9 @@ The second tab is the global configurations about a single LDAP server.
     Your LDAP user needs to be granted access to the directory where users and groups are stored and full read
     access to users and groups for all attributes you plan to fetch.
 
-- **Password:** Password of the user used to connect to the LDAP server.
+    When connecting to an Active Directory, this corresponds to a user account that has privileges to search for users.
+    E.g., ``CN=Administrator,CN=Users,DC=mycompany,DC=com``. This user account must have at least domain user
+    privileges.
+
+- **Password:** This password is the same password used in association with the :term:`Bind DN` user account to connect
+  to the LDAP server.

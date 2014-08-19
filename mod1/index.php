@@ -131,6 +131,10 @@ table.typo3-dblist tr.local-ldap-group td, .square-local {
 	background-color: #093 !important;
 	color: #fff;
 }
+table.typo3-dblist tr.deleted-ldap-group td,
+table.typo3-dblist tr.local-ldap-group td {
+	border-bottom: 1px solid;
+}
 .square-deleted, .square-local {
 	display: inline-block;
 	width: 12px;

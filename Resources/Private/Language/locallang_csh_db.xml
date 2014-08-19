@@ -17,7 +17,7 @@
 			<label index="cas_port.description">Port used by the CAS server.</label>
 			<label index="cas_logout_url.description">Return URL after the the user has been logged out.</label>
 
-			<label index="ldap_server.description">Type of LDAP server used by the authentication (OpenLDAP, eDirectory).</label>
+			<label index="ldap_server.description">Type of LDAP server used by the authentication (OpenLDAP, Active Directory / Novell eDirectory).</label>
 			<label index="ldap_protocol.description">Version of the protocol used by the LDAP server.</label>
 			<label index="ldap_charset.description">Character set used by the LDAP server. Usually: utf-8.</label>
 			<label index="ldap_host.description">Address of the LDAP server.</label>

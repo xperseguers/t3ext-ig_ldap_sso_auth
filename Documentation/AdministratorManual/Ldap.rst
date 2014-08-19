@@ -13,9 +13,7 @@ LDAP
 
 The second tab is the global configurations about a single LDAP server.
 
-- **Server:** Choose your LDAP type (OpenLDAP or Novell eDirectory).
-
-  .. note:: If you are using Active directory, your LDAP type is Novell eDirectory.
+- **Server:** Choose your LDAP type (OpenLDAP or Active Directory / Novell eDirectory).
 
 - **Protocol:** Choose the LDAP protocol version (2 or 3). Recent LDAP use version 3
 

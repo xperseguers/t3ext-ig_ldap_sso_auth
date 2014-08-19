@@ -18,7 +18,7 @@
 
 			<label index="tx_igldapssoauth_config.ldap_server">Server Type:</label>
 			<label index="tx_igldapssoauth_config.ldap_server.I.0">OpenLDAP</label>
-			<label index="tx_igldapssoauth_config.ldap_server.I.1">Novell eDirectory</label>
+			<label index="tx_igldapssoauth_config.ldap_server.I.1">Active Directory / Novell eDirectory</label>
 			<label index="tx_igldapssoauth_config.ldap_protocol">Protocol:</label>
 			<label index="tx_igldapssoauth_config.ldap_protocol.I.0">Version 3</label>
 			<label index="tx_igldapssoauth_config.ldap_protocol.I.1">Version 2</label>
@@ -63,7 +63,7 @@
 			<label index="palette.connection">Connection</label>
 
 			<label index="suggestion.server.0">Suggestion for OpenLDAP:</label>
-			<label index="suggestion.server.1">Suggestion for Novell eDirectory / Active Directory:</label>
+			<label index="suggestion.server.1">Suggestion for Active Directory / Novell eDirectory:</label>
 			<label index="suggestion.copy">copy and use</label>
 		</languageKey>
 	</data>

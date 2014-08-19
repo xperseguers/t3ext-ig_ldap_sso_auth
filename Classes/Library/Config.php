@@ -349,7 +349,7 @@ class tx_igldapssoauth_config {
 				$server = 'OpenLDAP';
 				break;
 			case 1:
-				$server = 'Novell eDirectory';
+				$server = 'Active Directory / Novell eDirectory';
 				break;
 			default:
 				$server = NULL;

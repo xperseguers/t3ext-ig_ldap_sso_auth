@@ -342,7 +342,7 @@ class ext_update extends t3lib_SCbase {
 				'ldap_server'        => $legacy['servertype'] == 3 ? 0 : 1,
 				'ldap_charset'       => $legacy['characterset'],
 				'ldap_protocol'      => $legacy['version'],
-				'ldap_host'          => preg_replace('#ldaps?://#', '', $legacy['server']),
+				'ldap_host'          => $legacy['server'],
 				'ldap_port'          => $legacy['port'],
 				'ldap_tls'           => 0,
 				'ldap_binddn'        => $legacy['servertype'] == 2 || $legacy['servertype'] == 3

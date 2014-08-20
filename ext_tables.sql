@@ -42,8 +42,8 @@ CREATE TABLE tx_igldapssoauth_config (
 	fe_groups_basedn tinytext NOT NULL,
 	fe_groups_filter text NOT NULL,
 	fe_groups_mapping text NOT NULL,
-	fe_groups_required varchar(100) DEFAULT '' NOT NULL,
-	fe_groups_assigned varchar(100) DEFAULT '' NOT NULL,
+	fe_groups_required text DEFAULT '' NOT NULL,
+	fe_groups_assigned text DEFAULT '' NOT NULL,
 	sorting int(11) unsigned DEFAULT '0' NOT NULL,
 
 	PRIMARY KEY (uid),

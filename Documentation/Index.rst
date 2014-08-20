@@ -64,9 +64,9 @@ LDAP / SSO Authentication
 		:titlesonly:
 
 		Introduction/Index
+		Faq/Index
 		UsersManual/Index
 		AdministratorManual/Index
-		Faq/Index
 		Glossary/Index
 		Links
 		Targets
@@ -78,8 +78,8 @@ LDAP / SSO Authentication
 		:titlesonly:
 
 		Introduction/Index
+		Faq/Index
 		UsersManual/Index
 		AdministratorManual/Index
-		Faq/Index
 		Glossary/Index
 		Targets

@@ -20,6 +20,8 @@ This extension enables import/update/deletion of users and groups (frontend, bac
 This way, TYPO3 can be used as an intranet CMS. Multiple LDAP server configurations are allowed. Works with OpenLDAP,
 Active Directory and Novell eDirectory. You can also use a CAS server to implement :abbr:`SSO (Single Sign-On)`.
 
+Please consult the :ref:`faq` for additional information.
+
 
 .. _screenshots:
 
@@ -62,13 +64,14 @@ Screenshots
 Sponsorship
 -----------
 
-This extension has been developped by Infoglobe, a Canadian company specialized in open-source software.
+This extension has been initially developped by Infoglobe, a Canadian company specialized in open-source software and
+has now been taken over by Causal Sàrl, a Swiss company actively contributing to TYPO3.
 
-Support for TYPO3 6.2 LTS has been sponsored by the "Centre électronique de gestion (CEG)", technically the
-IT department of the Swiss city Neuchâtel and realized by Causal Sàrl.
+Support for TYPO3 6.2 LTS and some further enhancements have been sponsored by the "Centre électronique de gestion
+(CEG)", technically the IT department of the Swiss city Neuchâtel.
 
 Further information:
 
-- Infoglobe: http://www.infoglobe.ca/
-- Centre électronique de gestion (CEG): `http://www.neuchatelville.ch/ <http://www.neuchatelville.ch/ceg>`_
 - Causal Sàrl: https://www.causal.ch/
+- Centre électronique de gestion (CEG): `http://www.neuchatelville.ch/ <http://www.neuchatelville.ch/ceg>`_
+- Infoglobe: http://www.infoglobe.ca/

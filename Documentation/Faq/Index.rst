@@ -60,8 +60,9 @@ extension?**
 
 .. answer
 
-*Not currently, despite the label "SSO" in this extension's title. At the moment Single Sign On (SSO) is possible
-solely with CAS. You may have a look at* :ter:`woehrl_sso_intranet`.
+*Not currently, despite the label "SSO" in this extension's title. At the moment, Single Sign On (SSO) is possible
+solely with CAS. This feature is currently in the backlog for a future version. In the mean time, you may have a look
+at* :ter:`woehrl_sso_intranet`.
 
 -------
 
@@ -100,7 +101,7 @@ to the parent group. E.g.,* ::
 
 .. answer
 
-*Windows 2000 and above Active Directory and Novell e-directory definitely support this attribute.*
+*Windows 2000 and above Active Directory and Novell eDirectory definitely support this attribute.*
 
 -------
 
@@ -150,3 +151,6 @@ at least provide the same feature set?**
 to be compatible with ig_ldap_sso_auth using the "UPDATE!" script in Extension Manager (EM). You should first configure
 global options for ig_ldap_sso_auth in EM and only then migrate your legacy eu_ldap configuration records. This will
 ensure possible configuration issues to be detected.*
+
+*The migration wizard does not require extension eu_ldap to be* **loaded** *but only expects the corresponding database
+table to be present.*

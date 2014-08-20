@@ -131,7 +131,7 @@ class tx_igldapssoauth_typo3_user {
 				$table,
 				$where,
 				'',
-				'tx_igldapssoauth_dn DESC'	// rows from LDAP first
+				'tx_igldapssoauth_dn DESC, deleted ASC'	// rows from LDAP first, then privilege active records
 			);
 		} elseif (!empty($username)) {
 			// Search with username and pid

@@ -34,7 +34,8 @@ with LDAP?**
 
 *Yes. Both for frontend and backend authentication it is possible to manually define users unrelated to your LDAP
 server(s). When a user is manually defined, the record's column* ``tx_igldapssoauth_dn`` *is empty and thus, since the
-LDAP authentication will fail, it will automatically fall back to the standard TYPO3 authentication service.*
+LDAP authentication will fail, it will automatically fall back to the standard TYPO3 authentication service. This
+behaviour may be enabled/disabled globally for backend and/or frontend within Extension Manager.*
 
 -------
 
@@ -79,6 +80,18 @@ Groups
 .. answer
 
 *Yes you can.*
+
+-------
+
+.. question
+
+**May I manually tweak the name or configuration of imported user groups?**
+
+.. answer
+
+*Yes. To do so, you should enable the global option in Extension Manager preventing the automatic synchronization of
+groups (may be configured separately for backend and frontend). In order to import new groups manually, use the LDAP /
+SSO backend module. Once imported, you may change their name to fit your needs and conventions.*
 
 -------
 

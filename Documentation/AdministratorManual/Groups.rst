@@ -58,7 +58,7 @@ authentication and do not want to use groups from LDAP.
 
       Example::
 
-          usergroup=<memberOf>
+          usergroup = <memberOf>
 
       **Important:** This is a user mapping instruction.
 

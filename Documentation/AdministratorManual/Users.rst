@@ -28,10 +28,10 @@ frontend authentication.
 
       ou=people,dc=example,dc=com
 
-- **Filter:** is used to precise which LDAP attribute contain the username of your users.
+- **Filter:** is used to precise which LDAP attribute contains the username of your users.
 
-  Example: ``(uid={USERNAME})`` uid is the most common attribute used to keep the username in LDAP but if you are in an
-  Active directory, the field where the username is stored is usually ``sAMAccountName`` instead.
+  Example: ``(uid={USERNAME})`` uid is the most common attribute used to keep the username in LDAP but if you are in
+  Active Directory, the field where the username is stored is usually ``sAMAccountName`` instead.
 
   You will also be able to add restrictions that allow you to exclude user from specific properties. The syntax used in
   this field is the standard LDAP search syntax.
@@ -63,7 +63,7 @@ frontend authentication.
     This will set the field email of the TYPO3 user to the value of the attributes mail of the user fetch from the LDAP
     server.
 
-  - a custom marker: custom markers are markers create by the extension to assign specific type of values. There are
+  - a custom marker: custom markers are markers created by the extension to assign specific type of values. There are
     only four markers available at the moment:
 
     - ``{DATE}``: the current timestamp
@@ -74,7 +74,7 @@ frontend authentication.
       automatically fill the needed field. This markers is only used if you
       want to put the username in an other field than the one by default )
 
-    - ``{hook parameters}``: will only be useful if an extension is hooked on ig_ldap_sso_auth
+    - ``{hook parameters}``: will only be useful if an extension hooks into ig_ldap_sso_auth
 
   **Example (BE_USERS):**
 

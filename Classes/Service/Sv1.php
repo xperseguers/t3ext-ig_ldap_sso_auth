@@ -133,17 +133,17 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 				// normal case
 				$password = $this->login['uident_text'];
 
-				//if ($loginSecurityLevel === 'rsa') {
-				//	$password = $this->login['uident'];
-				//	/* @var $storage tx_rsaauth_abstract_storage */
-				//	$storage = tx_rsaauth_storagefactory::getStorage();
-				//
-				//	// Preprocess the password
-				//	$key = $storage->get();
+				if (version_compare(TYPO3_branch, '4.7', '<') && $loginSecurityLevel === 'rsa') {
+					$password = $this->login['uident'];
+					/* @var $storage tx_rsaauth_abstract_storage */
+					$storage = tx_rsaauth_storagefactory::getStorage();
 
-				//	$this->backend = tx_rsaauth_backendfactory::getBackend();
-				//	$password = $this->backend->decrypt($key, substr($password, 4));
-				//}
+					// Preprocess the password
+					$key = $storage->get();
+
+					$this->backend = tx_rsaauth_backendfactory::getBackend();
+					$password = $this->backend->decrypt($key, substr($password, 4));
+				}
 
 				$userRecordOrIsValid = tx_igldapssoauth_auth::ldap_auth($this->login['uname'], $password);
 			}

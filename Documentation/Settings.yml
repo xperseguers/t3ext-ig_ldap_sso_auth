@@ -21,6 +21,9 @@ conf.py:
   latex_show_pagerefs: True
   extensions:
     - sphinx.ext.intersphinx
+    - t3sphinx.ext.t3extras
+    - t3sphinx.ext.t3tablerows
+    - t3sphinx.ext.targets
     - sphinx.ext.extlinks
   extlinks:
     forge:

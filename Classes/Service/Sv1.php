@@ -145,7 +145,12 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 					$password = $this->backend->decrypt($key, substr($password, 4));
 				}
 
-				$userRecordOrIsValid = tx_igldapssoauth_auth::ldap_auth($this->login['uname'], $password);
+				try {
+					$userRecordOrIsValid = tx_igldapssoauth_auth::ldap_auth($this->login['uname'], $password);
+				} catch (Exception $e) {
+					// Possible known exception: 1409566275, LDAP extension is not available for PHP
+					$userRecordOrIsValid = FALSE;
+				}
 			}
 			if (is_array($userRecordOrIsValid)) {
 				$user = $userRecordOrIsValid;

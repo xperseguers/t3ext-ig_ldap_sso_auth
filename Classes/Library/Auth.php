@@ -83,6 +83,7 @@ class tx_igldapssoauth_auth {
 	 * @param string $username
 	 * @param string $password
 	 * @return bool|array TRUE or array of user info on success, otherwise FALSE
+	 * @throws Exception when LDAP extension for PHP is not available
 	 */
 	static public function ldap_auth($username = NULL, $password = NULL) {
 		self::$lastAuthenticationDiagnostic = '';

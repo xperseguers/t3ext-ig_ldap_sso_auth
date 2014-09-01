@@ -69,12 +69,12 @@ class tx_igldapssoauth_utility_Ldap {
 	 * @param integer $serverType 0 = OpenLDAP, 1 = Active Directory / Novell eDirectory
 	 * @param bool $tls
 	 * @return bool TRUE if connection succeeded.
+	 * @throws Exception when LDAP extension for PHP is not available
 	 */
 	static public function connect($host = NULL, $port = NULL, $protocol = NULL, $charset = NULL, $serverType = 0, $tls = FALSE) {
 		// Valid if php load ldap module.
 		if (!extension_loaded('ldap')) {
-			echo 'Your PHP version seems to lack LDAP support. Please install.';
-			return FALSE;
+			throw new Exception('Your PHP version seems to lack LDAP support. Please install/activate the extension.', 1409566275);
 		}
 
 		// Connect to ldap server.

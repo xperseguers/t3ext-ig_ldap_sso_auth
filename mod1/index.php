@@ -314,7 +314,20 @@ CSS;
 
 			$ldapConfiguration['server'] = tx_igldapssoauth_config::get_server_name($ldapConfiguration['server']);
 
-			tx_igldapssoauth_ldap::connect($ldapConfiguration);
+			try {
+				tx_igldapssoauth_ldap::connect($ldapConfiguration);
+			} catch (Exception $e) {
+				// Possible known exception: 1409566275, LDAP extension is not available for PHP
+				$flashMessage = t3lib_div::makeInstance(
+					't3lib_FlashMessage',
+					$e->getMessage(),
+					'Error ' . $e->getCode(),
+					t3lib_FlashMessage::ERROR,
+					TRUE
+				);
+				t3lib_FlashMessageQueue::addMessage($flashMessage);
+			}
+
 			$ldapConfiguration['password'] = $ldapConfiguration['password'] ? '********' : NULL;
 
 			$this->content .= $this->exportArrayAsTable($ldapConfiguration, $title);
@@ -485,7 +498,21 @@ CSS;
 		$this->content .= '<h2>' . $GLOBALS['LANG']->getLL('search_wizard_title') . '</h2>';
 		$this->content .= '<hr />';
 
-		if (tx_igldapssoauth_ldap::connect(tx_igldapssoauth_config::getLdapConfiguration())) {
+		try {
+			$success = tx_igldapssoauth_ldap::connect(tx_igldapssoauth_config::getLdapConfiguration());
+		} catch (Exception $e) {
+			// Possible known exception: 1409566275, LDAP extension is not available for PHP
+			$flashMessage = t3lib_div::makeInstance(
+				't3lib_FlashMessage',
+				$e->getMessage(),
+				'Error ' . $e->getCode(),
+				t3lib_FlashMessage::ERROR,
+				TRUE
+			);
+			t3lib_FlashMessageQueue::addMessage($flashMessage);
+			$success = FALSE;
+		}
+		if ($success) {
 			if (is_array($search['basedn'])) {
 				$search['basedn'] = implode('||', $search['basedn']);
 			}
@@ -607,7 +634,20 @@ CSS;
 	 * @return void
 	 */
 	protected function import_groups($typo3_mode) {
-		$success = tx_igldapssoauth_ldap::connect(tx_igldapssoauth_config::getLdapConfiguration());
+		try {
+			$success = tx_igldapssoauth_ldap::connect(tx_igldapssoauth_config::getLdapConfiguration());
+		} catch (Exception $e) {
+			// Possible known exception: 1409566275, LDAP extension is not available for PHP
+			$flashMessage = t3lib_div::makeInstance(
+				't3lib_FlashMessage',
+				$e->getMessage(),
+				'Error ' . $e->getCode(),
+				t3lib_FlashMessage::ERROR,
+				TRUE
+			);
+			t3lib_FlashMessageQueue::addMessage($flashMessage);
+			return;
+		}
 		if (!$success) {
 			// Early return
 			return;

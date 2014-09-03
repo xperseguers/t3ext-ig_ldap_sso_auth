@@ -165,7 +165,7 @@ class tx_igldapssoauth_scheduler_synchroniseusers extends tx_scheduler_Task {
 			$users = $this->getDatabaseConnection()->exec_SELECTgetRows(
 				'uid',
 				$typo3_mode . '_users',
-				'tx_igldapssoauth_dn IS NOT NULL AND tx_igldapssoauth_dn<>\'\' AND disabled=1 AND endtime=' . $GLOBALS['EXEC_TIME'],
+				'tx_igldapssoauth_dn IS NOT NULL AND tx_igldapssoauth_dn<>\'\' AND disable=1 AND endtime=' . $GLOBALS['EXEC_TIME'],
 				'',
 				'',
 				'',

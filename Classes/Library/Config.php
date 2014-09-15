@@ -178,6 +178,7 @@ class tx_igldapssoauth_config {
 		$user_mapping = self::make_mapping($mapping);
 		$user_mapping['username'] = '<' . self::get_username_attribute($filter) . '>';
 		$user_mapping['tx_igldapssoauth_dn'] = '<dn>';
+		$user_mapping['tx_igldapssoauth_id'] = self::getUid();
 
 		return $user_mapping;
 	}

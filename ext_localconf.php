@@ -55,10 +55,18 @@ if (is_array($subTypesArr)) {
 // Register hook for \TYPO3\CMS\Core\DataHandling\DataHandler
 $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:' . $_EXTKEY . '/Classes/Hooks/DataHandler.php:Tx_IgLdapSsoAuth_Hooks_DataHandler';
 
+// Register the synchronize users Scheduler task
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_igldapssoauth_scheduler_synchroniseusers'] = array(
 	'extension'   => $_EXTKEY,
 	'title'       => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:synchro.name',
 	'description' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:synchro.description'
+);
+// Register the import users Scheduler task
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_IgLdapSsoAuth_Task_ImportUsers'] = array(
+	'extension'			=> $_EXTKEY,
+	'title'				=> 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:task.import_users.title',
+	'description'		=> 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:task.import_users.description',
+	'additionalFields'	=> 'Tx_IgLdapSsoAuth_Task_ImportUsersAdditionalFields'
 );
 
 t3lib_extMgm::addService($_EXTKEY,  'auth' /* sv type */,  'tx_igldapssoauth_sv1' /* sv key */,

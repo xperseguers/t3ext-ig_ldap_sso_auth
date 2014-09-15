@@ -255,7 +255,75 @@ class tx_igldapssoauth_typo3_user {
 		return $success;
 	}
 
-	static public function set_usergroup(array $typo3_groups = array(), array $typo3_user = array(), tx_igldapssoauth_sv1 $pObj) {
+	/**
+	 * Disables all users for a given LDAP configuration.
+	 *
+	 * This method is meant to be called before a full synchronization, so that existing users which are not
+	 * updated will be marked as disabled.
+	 *
+	 * @param $table
+	 * @param $uid
+	 */
+	static public function disableForConfiguration($table, $uid) {
+		if (isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled'])) {
+			$fields = array(
+				$GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled'] => 1
+			);
+			if (isset($GLOBALS['TCA'][$table]['ctrl']['tstamp'])) {
+				$fields[$GLOBALS['TCA'][$table]['ctrl']['tstamp']] = $GLOBALS['EXEC_TIME'];
+			}
+			self::getDatabaseConnection()->exec_UPDATEquery(
+				$table,
+				'tx_igldapssoauth_id = ' . intval($uid),
+				$fields
+			);
+
+			Tx_IgLdapSsoAuth_Utility_Notification::dispatch(
+				__CLASS__,
+				'userDisabled',
+				array(
+					'table' => $table,
+					'configuration' => $uid,
+				)
+			);
+		}
+	}
+
+	/**
+	 * Deletes all users for a given LDAP configuration.
+	 *
+	 * This method is meant to be called before a full synchronization, so that existing users which are not
+	 * updated will be marked as deleted.
+	 *
+	 * @param $table
+	 * @param $uid
+	 */
+	static public function deleteForConfiguration($table, $uid) {
+		if (isset($GLOBALS['TCA'][$table]['ctrl']['delete'])) {
+			$fields = array(
+				$GLOBALS['TCA'][$table]['ctrl']['delete'] => 1
+			);
+			if (isset($GLOBALS['TCA'][$table]['ctrl']['tstamp'])) {
+				$fields[$GLOBALS['TCA'][$table]['ctrl']['tstamp']] = $GLOBALS['EXEC_TIME'];
+			}
+			self::getDatabaseConnection()->exec_UPDATEquery(
+				$table,
+				'tx_igldapssoauth_id = ' . intval($uid),
+				$fields
+			);
+
+			Tx_IgLdapSsoAuth_Utility_Notification::dispatch(
+				__CLASS__,
+				'userDeleted',
+				array(
+					'table' => $table,
+					'configuration' => $uid,
+				)
+			);
+		}
+	}
+
+	static public function set_usergroup(array $typo3_groups = array(), array $typo3_user = array(), tx_igldapssoauth_sv1 $pObj = NULL, $groupTable = '') {
 		$group_uid = array();
 
 		foreach ($typo3_groups as $typo3_group) {
@@ -264,9 +332,21 @@ class tx_igldapssoauth_typo3_user {
 			}
 		}
 
+		// If group table is not explicitly defined, try to get it from context
+		if (empty($groupTable)) {
+			if (isset($pObj)) {
+				$groupTable = $pObj->authInfo['db_groups']['table'];
+			} else {
+				if (TYPO3_MODE === 'BE') {
+					$groupTable = 'be_groups';
+				} else {
+					$groupTable = 'fe_groups';
+				}
+			}
+		}
 		$assignGroups = t3lib_div::intExplode(',', tx_igldapssoauth_config::is_enable('assignGroups'), TRUE);
 		foreach ($assignGroups as $uid) {
-			if (tx_igldapssoauth_typo3_group::fetch($pObj->authInfo['db_groups']['table'], $uid) && !in_array($uid, $group_uid)) {
+			if (tx_igldapssoauth_typo3_group::fetch($groupTable, $uid) && !in_array($uid, $group_uid)) {
 				$group_uid[] = $uid;
 			}
 		}
@@ -296,6 +376,36 @@ class tx_igldapssoauth_typo3_user {
 		$typo3_user['usergroup'] = implode(',', $group_uid);
 
 		return $typo3_user;
+	}
+
+	/**
+	 * Processes the username according to current configuration.
+	 *
+	 * @param $username
+	 * @return string
+	 */
+	static public function setUsername($username) {
+		if (tx_igldapssoauth_config::is_enable('forceLowerCaseUsername')) {
+			// Possible enhancement: use t3lib_cs::conv_case instead
+			$username = strtolower($username);
+		}
+		return $username;
+	}
+
+	/**
+	 * Defines a random password.
+	 *
+	 * @return string
+	 */
+	static public function setRandomPassword() {
+		/** @var tx_saltedpasswords_salts $instance */
+		$instance = NULL;
+		if (t3lib_extMgm::isLoaded('saltedpasswords')) {
+			$instance = tx_saltedpasswords_salts_factory::getSaltingInstance(NULL, TYPO3_MODE);
+		}
+		$password = t3lib_div::generateRandomBytes(16);
+		$password = $instance ? $instance->getHashedPassword($password) : md5($password);
+		return $password;
 	}
 
 	/**

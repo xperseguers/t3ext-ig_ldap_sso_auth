@@ -28,7 +28,8 @@ frontend authentication.
 
       ou=people,dc=example,dc=com
 
-- **Filter:** is used to precise which LDAP attribute contains the username of your users.
+- **Filter:** is used to precise which LDAP attribute contains the username of your users and which filter to apply when
+  selecting users to import, either from the backend module or from the Scheduler task.
 
   Example: ``(uid={USERNAME})`` uid is the most common attribute used to keep the username in LDAP but if you are in
   Active Directory, the field where the username is stored is usually ``sAMAccountName`` instead.
@@ -42,7 +43,10 @@ frontend authentication.
 
       (&(uid={USERNAME})(objectClass=posixAccount)
 
-  .. note:: The string ``{USERNAME}`` will be substituted by the username entered in the login form.
+  .. note::
+      The string ``{USERNAME}`` will be substituted by the username entered in the login form. In case the filter is
+      used in the context of importing users, any placeholder will be replaced by an asterisk, thus effectively
+      returning any record matching the filter.
 
 - **Mapping:** Used to fetch other attributes from the LDAP server that we would like users to have. It is quite simple,
   each line is a new command. Each command has two parts separated by a ``=`` (equal sign). the first part is the field

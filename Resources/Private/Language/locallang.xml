@@ -9,8 +9,26 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
-			<label index="synchro.name">Synchronisation of LDAP users</label>
+			<label index="synchro.name">Synchronisation of LDAP users (DEPRECATED)</label>
 			<label index="synchro.description">Imports and updates all users information who can connect to the site.</label>
+			<label index="task.import_users.title">Import LDAP users</label>
+			<label index="task.import_users.description">Import LDAP for one or all configurations, for FE, BE or both. Users missing on the LDAP side will be disabled.</label>
+			<label index="task.import_users.field.context">Context</label>
+			<label index="task.import_users.field.context.both">Both</label>
+			<label index="task.import_users.field.context.fe">Frontend</label>
+			<label index="task.import_users.field.context.be">Backend</label>
+			<label index="task.import_users.field.configuration">Configuration</label>
+			<label index="task.import_users.field.configuration.all">All</label>
+			<label index="task.import_users.additional_information">Context: %s, Configuration: %s</label>
+			<label index="task.import_users.field.missinguserhandling">Handling of missing users</label>
+			<label index="task.import_users.field.missinguserhandling.disable">Disable</label>
+			<label index="task.import_users.field.missinguserhandling.delete">Delete</label>
+			<label index="task.import_users.field.missinguserhandling.nothing">Do nothing</label>
+			<label index="task.import_users.field.restoreduserhandling">Handling of restored users</label>
+			<label index="task.import_users.field.restoreduserhandling.enable">Re-enable</label>
+			<label index="task.import_users.field.restoreduserhandling.undelete">Undelete</label>
+			<label index="task.import_users.field.restoreduserhandling.both">Re-enable and undelete</label>
+			<label index="task.import_users.field.restoreduserhandling.nothing">Do nothing</label>
 		</languageKey>
 	</data>
 </T3locallang>

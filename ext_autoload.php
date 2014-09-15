@@ -5,6 +5,9 @@
 $extensionPath = t3lib_extMgm::extPath('ig_ldap_sso_auth');
 $autoload = array(
 	'tx_igldapssoauth_scheduler_synchroniseusers' => $extensionPath . 'Classes/Library/SchedulerSynchroniseusers.php',
+	'tx_igldapssoauth_task_importusers' => $extensionPath . 'Classes/Task/ImportUsers.php',
+	'tx_igldapssoauth_task_importusersadditionalfields' => $extensionPath . 'Classes/Task/ImportUsersAdditionalFields.php',
+	'tx_igldapssoauth_domain_repository_configurationrepository' => $extensionPath . 'Classes/Domain/Repository/ConfigurationRepository.php',
 	'tx_igldapssoauth_auth'				=>	$extensionPath . 'Classes/Library/Auth.php',
 	'tx_igldapssoauth_config'			=>	$extensionPath . 'Classes/Library/Config.php',
 	'tx_igldapssoauth_ldap_group'		=>	$extensionPath . 'Classes/Library/LdapGroup.php',
@@ -16,6 +19,7 @@ $autoload = array(
 	'tx_igldapssoauth_utility_debug'	=>	$extensionPath . 'Classes/Utility/Debug.php',
 	'tx_igldapssoauth_utility_ldap'		=>	$extensionPath . 'Classes/Utility/Ldap.php',
 	'tx_igldapssoauth_utility_notification' => $extensionPath . 'Classes/Utility/Notification.php',
+	'tx_igldapssoauth_utility_userimport' => $extensionPath . 'Classes/Utility/UserImport.php',
 	'tx_igldapssoauth_sv1'				=>	$extensionPath . 'Classes/Service/Sv1.php',
 );
 

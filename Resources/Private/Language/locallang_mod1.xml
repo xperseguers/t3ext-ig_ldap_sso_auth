@@ -18,6 +18,8 @@
 			<label index="search_wizard">Search wizard</label>
 			<label index="import_groups_be">Import LDAP groups (Backend)</label>
 			<label index="import_groups_fe">Import LDAP groups (Frontend)</label>
+			<label index="import_users_be">Import LDAP users (Backend)</label>
+			<label index="import_users_fe">Import LDAP users (Frontend)</label>
 			<label index="wizard_authentication">Authentication wizard</label>
 
 			<label index="show_status_title">Configuration:</label>
@@ -60,6 +62,19 @@
 			<label index="import_groups_table_th_import">import/update</label>
 			<label index="import_groups_table_select_all">Select All</label>
 			<label index="import_groups_form_submit_value">Import or update groups</label>
+
+			<label index="import_users_be_no_users_found">No backend users found.</label>
+			<label index="import_users_fe_no_users_found">No frontend users found.</label>
+			<label index="import_users_status">%s user(s) added, %s user(s) updated.</label>
+			<label index="import_users_caption_local">LDAP user is available locally</label>
+			<label index="import_users_caption_deleted">LDAP user has been imported but then manually deleted</label>
+			<label index="import_users_table_th_uid">uid</label>
+			<label index="import_users_table_th_pid">pid</label>
+			<label index="import_users_table_th_title">title</label>
+			<label index="import_users_table_th_dn">tx_igldapssoauth_dn</label>
+			<label index="import_users_table_th_import">import/update</label>
+			<label index="import_users_table_select_all">Select All</label>
+			<label index="import_users_form_submit_value">Import or update users</label>
 		</languageKey>
 	</data>
 </T3locallang>

@@ -46,6 +46,8 @@ class tx_igldapssoauth_module1 extends t3lib_SCbase {
 	const FUNCTION_SEARCH_WIZARD = 2;
 	const FUNCTION_IMPORT_GROUPS_BE = 3;
 	const FUNCTION_IMPORT_GROUPS_FE = 4;
+	const FUNCTION_IMPORT_USERS_BE = 5;
+	const FUNCTION_IMPORT_USERS_FE = 6;
 
 	var $pageinfo;
 	var $lang;
@@ -59,6 +61,11 @@ class tx_igldapssoauth_module1 extends t3lib_SCbase {
 	 * @var array
 	 */
 	protected $config;
+
+	/**
+	 * @var array Currently selected LDAP configuration
+	 */
+	protected $ldapConfiguration;
 
 	/**
 	 * Default constructor
@@ -78,7 +85,9 @@ class tx_igldapssoauth_module1 extends t3lib_SCbase {
 			'function' => array(
 				self::FUNCTION_SHOW_STATUS => $GLOBALS['LANG']->getLL('show_status'),
 				self::FUNCTION_SEARCH_WIZARD => $GLOBALS['LANG']->getLL('search_wizard'),
+				self::FUNCTION_IMPORT_USERS_BE => $GLOBALS['LANG']->getLL('import_users_be'),
 				self::FUNCTION_IMPORT_GROUPS_BE => $GLOBALS['LANG']->getLL('import_groups_be'),
+				self::FUNCTION_IMPORT_USERS_FE => $GLOBALS['LANG']->getLL('import_users_fe'),
 				self::FUNCTION_IMPORT_GROUPS_FE => $GLOBALS['LANG']->getLL('import_groups_fe'),
 			)
 		);
@@ -184,13 +193,9 @@ CSS;
 	protected function moduleContent() {
 		$thisUrl = t3lib_BEfunc::getModuleUrl($this->MCONF['name']);
 
-		$configurationRecords = $this->getDatabaseConnection()->exec_SELECTgetRows(
-			'uid, name',
-			'tx_igldapssoauth_config',
-			'deleted=0 AND hidden=0',
-			'',
-			'sorting'
-		);
+		/** @var Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository $configurationRepository */
+		$configurationRepository = t3lib_div::makeInstance('Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository');
+		$configurationRecords = $configurationRepository->fetchAll();
 
 		if (count($configurationRecords) === 0) {
 			$newUrl = 'alt_doc.php?returnUrl=' . urlencode($thisUrl) . '&amp;edit[tx_igldapssoauth_config][0]=new';
@@ -214,7 +219,8 @@ CSS;
 		$this->content .= $this->doc->header($GLOBALS['LANG']->getLL('title'));
 
 		$config = t3lib_div::_GET('config');
-		$currentConfiguration = NULL;
+		// Reset selected configuration
+		$this->ldapConfiguration = NULL;
 
 		if (count($configurationRecords) === 1) {
 			$configurationSelector = htmlspecialchars($configurationRecords[0]['name']);
@@ -225,7 +231,7 @@ CSS;
 			foreach ($configurationRecords as $configurationRecord) {
 				$configurationSelector .= '<option value="' . htmlspecialchars($thisFullUrl . '&config=' . $configurationRecord['uid']) . '"';
 				if ($config == $configurationRecord['uid']) {
-					$currentConfiguration = $configurationRecord;
+					$this->ldapConfiguration = $configurationRecord;
 					$configurationSelector .= ' selected="selected"';
 				}
 				$configurationSelector .= '>' . htmlspecialchars($configurationRecord['name']) . '</option>';
@@ -233,11 +239,11 @@ CSS;
 
 			$configurationSelector .= '</select>';
 		}
-		if ($currentConfiguration === NULL) {
-			$currentConfiguration = $configurationRecords[0];
+		if ($this->ldapConfiguration === NULL) {
+			$this->ldapConfiguration = $configurationRecords[0];
 		}
 
-		$uid = $currentConfiguration['uid'];
+		$uid = $this->ldapConfiguration['uid'];
 		tx_igldapssoauth_config::init(TYPO3_MODE, $uid);
 
 		$thisUrl .= '&config=' . $uid;
@@ -264,6 +270,12 @@ CSS;
 				break;
 			case self::FUNCTION_IMPORT_GROUPS_FE:
 				$this->import_groups('fe');
+				break;
+			case self::FUNCTION_IMPORT_USERS_BE:
+				$this->importUsers('be');
+				break;
+			case self::FUNCTION_IMPORT_USERS_FE:
+				$this->importUsers('fe');
 				break;
 		}
 	}
@@ -634,22 +646,8 @@ CSS;
 	 * @return void
 	 */
 	protected function import_groups($typo3_mode) {
-		try {
-			$success = tx_igldapssoauth_ldap::connect(tx_igldapssoauth_config::getLdapConfiguration());
-		} catch (Exception $e) {
-			// Possible known exception: 1409566275, LDAP extension is not available for PHP
-			$flashMessage = t3lib_div::makeInstance(
-				't3lib_FlashMessage',
-				$e->getMessage(),
-				'Error ' . $e->getCode(),
-				t3lib_FlashMessage::ERROR,
-				TRUE
-			);
-			t3lib_FlashMessageQueue::addMessage($flashMessage);
-			return;
-		}
-		if (!$success) {
-			// Early return
+		// Early return if LDAP connection is not available
+		if (!$this->checkLdapConnection()) {
 			return;
 		}
 
@@ -896,6 +894,162 @@ HTML;
 	}
 
 	/**
+	 * Displays all users corresponding to the current LDAP configuration.
+	 * Imports those users if selected.
+	 *
+	 * @param string $typo3Mode Current mode. Should be either "fe" or "be".
+	 * @return void
+	 */
+	protected function importUsers($typo3Mode) {
+		// Early return if LDAP connection is not available
+		if (!$this->checkLdapConnection()) {
+			return;
+		}
+
+		// Get list of users to import
+		$importUsers = t3lib_div::_GP('import_users');
+		if (!is_array($importUsers)) {
+			$importUsers = array();
+		}
+
+		/** @var Tx_IgLdapSsoAuth_Utility_UserImport $importUtility */
+		$importUtility = t3lib_div::makeInstance(
+			'Tx_IgLdapSsoAuth_Utility_UserImport',
+			$this->ldapConfiguration['uid'],
+			$typo3Mode
+		);
+		$ldapUsers = $importUtility->fetchLdapUsers();
+		if (count($ldapUsers) === 0) {
+			$this->content .= $this->exportArrayAsTable(
+				$GLOBALS['LANG']->getLL('import_users_' . $typo3Mode . '_no_users_found'),
+				$GLOBALS['LANG']->getLL('import_users_' . $typo3Mode)
+			);
+			return;
+		}
+
+		$this->content .= '<form action="" method="post">';
+
+		// Assemble the table header
+		$out = array();
+		$out[] = '<table cellspacing="0" cellpadding="0" border="0" class="typo3-dblist">';
+		$out[] = '<caption>';
+		$out[] = '<ul>';
+		$out[] = '<li><span class="square-local"></span> ' . $GLOBALS['LANG']->getLL('import_users_caption_local', TRUE) . '</li>';
+		$out[] = '<li><span class="square-deleted"></span> ' . $GLOBALS['LANG']->getLL('import_users_caption_deleted', TRUE) . '</li>';
+		$out[] = '</ul>';
+		$out[] = '</caption>';
+		$out[] = '<tbody>';
+		$out[] = '<tr class="c-table-row-spacer">';
+		$out[] = '<td nowrap="nowrap" class=""></td>';
+		$out[] = '</tr>';
+		$out[] = '<tr class="t3-row-header">';
+		$out[] = '<td nowrap="nowrap" colspan="5"><span class="c-table">' . $GLOBALS['LANG']->getLL('import_users_' . $typo3Mode, TRUE) . '</span></td>';
+		$out[] = '</tr>';
+
+		$out[] = '<tr class="c-headLine">';
+		$out[] = '<td nowrap="nowrap">' . $GLOBALS['LANG']->getLL('import_users_table_th_title') . '</td>';
+		$out[] = '<td nowrap="nowrap">' . $GLOBALS['LANG']->getLL('import_users_table_th_dn') . '</td>';
+		$out[] = '<td nowrap="nowrap">' . $GLOBALS['LANG']->getLL('import_users_table_th_pid') . '</td>';
+		$out[] = '<td nowrap="nowrap">' . $GLOBALS['LANG']->getLL('import_users_table_th_uid') . '</td>';
+		$out[] = '<td nowrap="nowrap">' . $GLOBALS['LANG']->getLL('import_users_table_th_import') . '</td>';
+		$out[] = '</tr>';
+
+		$typo3Users = $importUtility->fetchTypo3Users($ldapUsers);
+		$config = $importUtility->getConfiguration();
+
+		// Loop on all users and display them
+		// If a user was selected import if from LDAP
+		foreach ($ldapUsers as $index => $aUser) {
+			// Merge LDAP and TYPO3 information
+			$user = tx_igldapssoauth_auth::merge($aUser, $typo3Users[$index], $config['users']['mapping']);
+
+			// Import the user using information from LDAP
+			if (in_array($user['tx_igldapssoauth_dn'], $importUsers, TRUE)) {
+				$user = $importUtility->import($user, $aUser);
+			}
+
+			if ($user['uid'] == 0) {
+				// LDAP user is not yet imported
+				$rowClass = '';
+				$isChecked = FALSE;
+			} elseif ($user['deleted'] == 1) {
+				// LDAP user has been manually deleted
+				$rowClass = 'deleted-ldap-group';
+				$isChecked = FALSE;
+			} else {
+				// LDAP user has already been imported
+				$rowClass = 'local-ldap-group';
+				$isChecked = TRUE;
+			}
+
+			$out[] = '<tr class="db_list_normal ' . $rowClass . '">';
+			$out[] = '<td>' . ($user['title'] ? htmlspecialchars($user['title']) : '&nbsp;') . '</td>';
+			$out[] = '<td>' . $user['tx_igldapssoauth_dn'] . '</td>';
+			$out[] = '<td>' . ($user['pid'] ? $user['pid'] : 0) . '</td>';
+			$out[] = '<td>' . ($user['uid'] ? $user['uid'] : 0) . '</td>';
+			$out[] = '<td><input type="checkbox" name="import_users[]" value="' . htmlspecialchars($user['tx_igldapssoauth_dn']) . '" ' . ($isChecked ? 'checked="checked"' : '') . ' /></td>';
+			$out[] = '</tr>';
+		}
+
+		if (count($ldapUsers) > 0) {
+			$out[] = '<tr class="db_list_normal">';
+			$out[] = '<td colspan="4"></td>';
+			$toggleAllLabel = $GLOBALS['LANG']->getLL('import_users_table_select_all', TRUE);
+			$out[] = <<<HTML
+				<td>
+					<input type="checkbox" onclick="toggleImport(this)" id="selectAll" />
+					<label for="selectAll">$toggleAllLabel</label>
+					<script type="text/javascript">
+					function toggleImport(source) {
+						checkboxes = document.getElementsByName('import_users[]');
+						for (var i=0, n=checkboxes.length; i<n; i++) {
+							checkboxes[i].checked = source.checked;
+						}
+					}
+					</script>
+				</td>
+HTML;
+			$out[] = '</tr>';
+
+			$out[] = '<tr class="db_list_normal">';
+			$out[] = '<td colspan="4"></td>';
+			$importLabel = $GLOBALS['LANG']->getLL('import_users_form_submit_value', TRUE);
+			$out[] = <<<HTML
+				<td>
+					<input type="hidden" name="import[action]" value="update" />
+					<input type="submit" value="$importLabel" />
+				</td>
+HTML;
+			$out[] = '</tr>';
+		}
+
+		$out[] = '</tbody>';
+		$out[] = '</table>';
+		$this->content .= implode(LF, $out);
+
+		$this->content .= '</form>';
+
+		tx_igldapssoauth_ldap::disconnect();
+
+		$usersAdded = $importUtility->getUsersAdded();
+		$usersUpdated = $importUtility->getUsersUpdated();
+		if ($usersAdded > 0 || $usersUpdated > 0) {
+			$flashMessage = t3lib_div::makeInstance(
+				't3lib_FlashMessage',
+				sprintf(
+					$GLOBALS['LANG']->getLL('import_users_status'),
+					$usersAdded,
+					$usersUpdated
+				),
+				$GLOBALS['LANG']->getLL('import_users_' . $typo3Mode),
+				t3lib_FlashMessage::INFO,
+				TRUE
+			);
+			t3lib_FlashMessageQueue::addMessage($flashMessage);
+		}
+	}
+
+	/**
 	 * Prints out the module HTML
 	 *
 	 * @return string HTML content
@@ -913,6 +1067,28 @@ HTML;
 		return $GLOBALS['TYPO3_DB'];
 	}
 
+	/**
+	 * Checks the LDAP connection and prepares a Flash message if unavailable.
+	 *
+	 * @return bool
+	 */
+	protected function checkLdapConnection() {
+		try {
+			$success = tx_igldapssoauth_ldap::connect(tx_igldapssoauth_config::getLdapConfiguration());
+		} catch (Exception $e) {
+			// Possible known exception: 1409566275, LDAP extension is not available for PHP
+			$flashMessage = t3lib_div::makeInstance(
+				't3lib_FlashMessage',
+				$e->getMessage(),
+				'Error ' . $e->getCode(),
+				t3lib_FlashMessage::ERROR,
+				TRUE
+			);
+			t3lib_FlashMessageQueue::addMessage($flashMessage);
+			return FALSE;
+		}
+		return $success;
+	}
 }
 
 // Make instance:

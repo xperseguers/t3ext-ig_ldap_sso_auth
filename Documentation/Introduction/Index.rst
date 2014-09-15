@@ -70,8 +70,11 @@ has now been taken over by Causal Sàrl, a Swiss company actively contributing t
 Support for TYPO3 6.2 LTS and some further enhancements have been sponsored by the "Centre électronique de gestion
 (CEG)", technically the IT department of the Swiss city Neuchâtel.
 
+Full user import was sponsored by the Ecole d'Etudes Sociales et Pédagogiques, in Lausanne, Switzerland.
+
 Further information:
 
 - Causal Sàrl: https://www.causal.ch/
 - Centre électronique de gestion (CEG): `http://www.neuchatelville.ch/ <http://www.neuchatelville.ch/ceg>`_
+- Ecole d'Etudes Sociales et Pédagogiques (EESP): http://www.eesp.ch/
 - Infoglobe: http://www.infoglobe.ca/

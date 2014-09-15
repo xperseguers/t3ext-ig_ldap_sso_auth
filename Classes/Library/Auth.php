@@ -35,6 +35,13 @@ class tx_igldapssoauth_auth {
 	static protected $lastAuthenticationDiagnostic;
 
 	/**
+	 * Temporary storage for LDAP groups (should be removed after some refactoring).
+	 *
+	 * @var array|NULL
+	 */
+	static protected $ldapGroups = NULL;
+
+	/**
 	 * @var tx_igldapssoauth_sv1
 	 */
 	static protected $authenticationService;
@@ -166,80 +173,10 @@ class tx_igldapssoauth_auth {
 			return FALSE;
 		}
 
-		// User is valid only if exist in TYPO3.
-		// Get LDAP groups from LDAP user.
-		$typo3_groups = array();
-		$ldap_groups = self::get_ldap_groups($ldap_user);
-		unset($ldap_groups['count']);
-
-		$requiredLDAPGroups = tx_igldapssoauth_config::is_enable('requiredLDAPGroups');
-		if ($requiredLDAPGroups) {
-			$requiredLDAPGroups = t3lib_div::trimExplode(',', $requiredLDAPGroups);
-		} else {
-			$requiredLDAPGroups = array();
-		}
-
-		if (count($ldap_groups) === 0) {
-			if (count($requiredLDAPGroups) > 0) {
-				return FALSE;
-			}
-		} else {
-			// Get pid from group mapping.
-			$typo3_group_pid = tx_igldapssoauth_config::get_pid(self::$config['groups']['mapping']);
-
-			$typo3_groups_tmp = tx_igldapssoauth_auth::get_typo3_groups($ldap_groups, self::$config['groups']['mapping'], self::$authenticationService->authInfo['db_groups']['table'], $typo3_group_pid);
-
-			if (tx_igldapssoauth_config::is_enable('IfGroupExist') && count($typo3_groups_tmp) === 0) {
-				return FALSE;
-			}
-
-			if (count($requiredLDAPGroups) > 0) {
-				$required = FALSE;
-				$group_Listuid = array();
-				foreach ($typo3_groups_tmp as $typo3_group) {
-					$group_Listuid[] = $typo3_group['uid'];
-				}
-				foreach ($requiredLDAPGroups as $uid) {
-					if (in_array($uid, $group_Listuid)) {
-						$required = TRUE;
-					}
-				}
-				if (!$required) {
-					return FALSE;
-				}
-			}
-
-			$i = 0;
-			foreach ($typo3_groups_tmp as $typo3_group) {
-				if (tx_igldapssoauth_config::is_enable('GroupsNotSynchronize') && !$typo3_group['uid']) {
-					// Groups should not get synchronized and the current group is invalid
-					continue;
-				}
-				if (tx_igldapssoauth_config::is_enable('GroupsNotSynchronize')) {
-					$typo3_groups[] = $typo3_group;
-				} elseif (!$typo3_group['uid']) {
-					$newGroup = tx_igldapssoauth_typo3_group::add(self::$authenticationService->authInfo['db_groups']['table'], $typo3_group);
-
-					$typo3_group_merged = tx_igldapssoauth_auth::merge($ldap_groups[$i], $newGroup, self::$config['groups']['mapping']);
-
-					tx_igldapssoauth_typo3_group::update(self::$authenticationService->authInfo['db_groups']['table'], $typo3_group_merged);
-
-					$typo3_group = tx_igldapssoauth_typo3_group::fetch(self::$authenticationService->authInfo['db_groups']['table'], $typo3_group_merged['uid']);
-					$typo3_groups[] = $typo3_group[0];
-				} else {
-					// Restore group that may have been previously deleted
-					$typo3_group['deleted'] = 0;
-					$typo3_group_merged = tx_igldapssoauth_auth::merge($ldap_groups[$i], $typo3_group, self::$config['groups']['mapping']);
-
-					tx_igldapssoauth_typo3_group::update(self::$authenticationService->authInfo['db_groups']['table'], $typo3_group_merged);
-
-					$typo3_group = tx_igldapssoauth_typo3_group::fetch(self::$authenticationService->authInfo['db_groups']['table'], $typo3_group_merged['uid']);
-					$typo3_groups[] = $typo3_group[0];
-				}
-
-				$i++;
-			}
-		}
+		// Get LDAP and TYPO3 user groups for user
+		// First reset the LDAP groups
+		self::$ldapGroups = NULL;
+		$typo3_groups = self::get_user_groups($ldap_user);
 
 		if (tx_igldapssoauth_config::is_enable('IfUserExist') && !$typo3_user['uid']) {
 			return FALSE;
@@ -263,10 +200,7 @@ class tx_igldapssoauth_auth {
 				}
 			}
 
-			if (tx_igldapssoauth_config::is_enable('forceLowerCaseUsername')) {
-				// Possible enhancement: use t3lib_cs::conv_case instead
-				$typo3_user['username'] = strtolower($typo3_user['username']);
-			}
+			$typo3_user['username'] = tx_igldapssoauth_typo3_user::setUsername($typo3_user['username']);
 
 			$typo3_user = tx_igldapssoauth_typo3_user::add($table, $typo3_user);
 		}
@@ -275,21 +209,14 @@ class tx_igldapssoauth_auth {
 			$typo3_user['deleted'] = 0;
 			$typo3_user['endtime'] = 0;
 
-			// Set random password
-			/** @var tx_saltedpasswords_salts $instance */
-			$instance = NULL;
-			if (t3lib_extMgm::isLoaded('saltedpasswords')) {
-				$instance = tx_saltedpasswords_salts_factory::getSaltingInstance(NULL, TYPO3_MODE);
-			}
-			$password = t3lib_div::generateRandomBytes(16);
-			$typo3_user['password'] = $instance ? $instance->getHashedPassword($password) : md5($password);
+			$typo3_user['password'] = tx_igldapssoauth_typo3_user::setRandomPassword();
 
 			if ((empty($typo3_groups) && tx_igldapssoauth_config::is_enable('DeleteUserIfNoTYPO3Groups'))) {
 				$typo3_user['deleted'] = 1;
 				$typo3_user['endtime'] = $GLOBALS['EXEC_TIME'];
 			}
 			// Delete user if no LDAP groups found.
-			if (tx_igldapssoauth_config::is_enable('DeleteUserIfNoLDAPGroups') && !$ldap_groups) {
+			if (tx_igldapssoauth_config::is_enable('DeleteUserIfNoLDAPGroups') && !self::$ldapGroups) {
 				$typo3_user['deleted'] = 1;
 				$typo3_user['endtime'] = $GLOBALS['EXEC_TIME'];
 			}
@@ -405,6 +332,135 @@ class tx_igldapssoauth_auth {
 	}
 
 	/**
+	 * Gets the LDAP and TYPO3 user groups for the given user.
+	 *
+	 * @param array $ldapUser LDAP user data
+	 * @param array|null $configuration Current LDAP configuration
+	 * @param string $groupTable Name of the group table (should normally be either "be_groups" or "fe_groups")
+	 * @return array|bool
+	 */
+	static public function get_user_groups($ldapUser, $configuration = NULL, $groupTable = '') {
+		if (!isset($configuration)) {
+			$configuration = self::$config;
+		}
+		if (empty($groupTable)) {
+			if (isset(self::$authenticationService)) {
+				$groupTable = self::$authenticationService->authInfo['db_groups']['table'];
+			} else {
+				if (TYPO3_MODE === 'BE') {
+					$groupTable = 'be_groups';
+				} else {
+					$groupTable = 'fe_groups';
+				}
+			}
+		}
+
+		// User is valid only if exist in TYPO3.
+		// Get LDAP groups from LDAP user.
+		$typo3_groups = array();
+		$ldapGroups = self::get_ldap_groups($ldapUser);
+		unset($ldapGroups['count']);
+
+		$requiredLDAPGroups = tx_igldapssoauth_config::is_enable('requiredLDAPGroups');
+		if ($requiredLDAPGroups) {
+			$requiredLDAPGroups = t3lib_div::trimExplode(',', $requiredLDAPGroups);
+		} else {
+			$requiredLDAPGroups = array();
+		}
+
+		if (count($ldapGroups) === 0) {
+			if (count($requiredLDAPGroups) > 0) {
+				return FALSE;
+			}
+		} else {
+			// Get pid from group mapping.
+			$typo3_group_pid = tx_igldapssoauth_config::get_pid($configuration['groups']['mapping']);
+
+			$typo3_groups_tmp = tx_igldapssoauth_auth::get_typo3_groups(
+				$ldapGroups,
+				$configuration['groups']['mapping'],
+				$groupTable,
+				$typo3_group_pid
+			);
+
+			if (tx_igldapssoauth_config::is_enable('IfGroupExist') && count($typo3_groups_tmp) === 0) {
+				return FALSE;
+			}
+
+			if (count($requiredLDAPGroups) > 0) {
+				$required = FALSE;
+				$group_Listuid = array();
+				foreach ($typo3_groups_tmp as $typo3_group) {
+					$group_Listuid[] = $typo3_group['uid'];
+				}
+				foreach ($requiredLDAPGroups as $uid) {
+					if (in_array($uid, $group_Listuid)) {
+						$required = TRUE;
+					}
+				}
+				if (!$required) {
+					return FALSE;
+				}
+			}
+
+			$i = 0;
+			foreach ($typo3_groups_tmp as $typo3_group) {
+				if (tx_igldapssoauth_config::is_enable('GroupsNotSynchronize') && !$typo3_group['uid']) {
+					// Groups should not get synchronized and the current group is invalid
+					continue;
+				}
+				if (tx_igldapssoauth_config::is_enable('GroupsNotSynchronize')) {
+					$typo3_groups[] = $typo3_group;
+				} elseif (!$typo3_group['uid']) {
+					$newGroup = tx_igldapssoauth_typo3_group::add(
+						$groupTable,
+						$typo3_group
+					);
+
+					$typo3_group_merged = tx_igldapssoauth_auth::merge(
+						$ldapGroups[$i],
+						$newGroup,
+						$configuration['groups']['mapping']
+					);
+
+					tx_igldapssoauth_typo3_group::update(
+						$groupTable,
+						$typo3_group_merged
+					);
+
+					$typo3_group = tx_igldapssoauth_typo3_group::fetch(
+						$groupTable,
+						$typo3_group_merged['uid']
+					);
+					$typo3_groups[] = $typo3_group[0];
+				} else {
+					// Restore group that may have been previously deleted
+					$typo3_group['deleted'] = 0;
+					$typo3_group_merged = tx_igldapssoauth_auth::merge(
+						$ldapGroups[$i],
+						$typo3_group,
+						$configuration['groups']['mapping']
+					);
+
+					tx_igldapssoauth_typo3_group::update(
+						$groupTable,
+						$typo3_group_merged
+					);
+
+					$typo3_group = tx_igldapssoauth_typo3_group::fetch(
+						$groupTable,
+						$typo3_group_merged['uid']
+					);
+					$typo3_groups[] = $typo3_group[0];
+				}
+
+				$i++;
+			}
+		}
+		return $typo3_groups;
+	}
+
+	/**
 	 * Returns LDAP groups.
 	 *
 	 * @param array $ldap_user
@@ -438,6 +494,8 @@ class tx_igldapssoauth_auth {
 
 		Tx_IgLdapSsoAuth_Utility_Debug::debug(sprintf('Retrieving LDAP groups for user "%s"', $ldap_user['dn']), $ldap_groups);
 
+		// Store for later usage and return
+		self::$ldapGroups = $ldap_groups;
 		return $ldap_groups;
 	}
 
@@ -522,6 +580,42 @@ class tx_igldapssoauth_auth {
 	}
 
 	/**
+	 * Returns TYPO3 users associated to $ldap_users or create fresh records
+	 * if they don't exist yet.
+	 *
+	 * @param array $ldap_users
+	 * @param array $mapping
+	 * @param string $table
+	 * @param integer $pid
+	 * @return array
+	 */
+	static public function get_typo3_users(array $ldap_users = array(), array $mapping = array(), $table = NULL, $pid = 0) {
+		if (count($ldap_users) === 0) {
+			// Early return
+			return array();
+		}
+
+		$typo3Users = array();
+
+		foreach ($ldap_users as $ldap_user) {
+			$existingTypo3Users = tx_igldapssoauth_typo3_user::fetch($table, 0, $pid, NULL, $ldap_user['dn']);
+
+			if (count($existingTypo3Users) > 0) {
+				$typo3User = $existingTypo3Users[0];
+			} else {
+				$typo3User = tx_igldapssoauth_typo3_user::create($table);
+				$typo3User['pid'] = $pid;
+				$typo3User['crdate'] = $GLOBALS['EXEC_TIME'];
+				$typo3User['tstamp'] = $GLOBALS['EXEC_TIME'];
+			}
+
+			$typo3Users[] = $typo3User;
+		}
+
+		return $typo3Users;
+	}
+
+	/**
 	 * Merges a user from LDAP and from TYPO3.
 	 *
 	 * @param array $ldap
@@ -539,7 +633,7 @@ class tx_igldapssoauth_auth {
 				if (preg_match("`{([^$]*)}`", $value, $match)) {
 					switch ($value) {
 						case '{DATE}' :
-							$typo3[$field] = time();
+							$typo3[$field] = $GLOBALS['EXEC_TIME'];
 							break;
 						case '{RAND}' :
 							$typo3[$field] = rand();

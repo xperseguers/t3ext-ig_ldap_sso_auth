@@ -41,8 +41,8 @@ class Tx_IgLdapSsoAuth_Utility_Notification {
 	 * @throws TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
 	 */
 	static public function dispatch($signalClassName, $signalName, array $signalArguments = array()) {
-		if (version_compare(TYPO3_version, '6.0.0', '<')) {
-			// Observer design pattern with signal/slot is not available in TYPO3 4.x
+		if (version_compare(TYPO3_branch, '4.6', '<')) {
+			// Observer design pattern with signal/slot is not available prior to TYPO3 4.6
 			return;
 		}
 

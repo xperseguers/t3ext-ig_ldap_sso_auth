@@ -181,6 +181,11 @@ class Tx_IgLdapSsoAuth_Utility_UserImport {
 	 * @return array Modified user data
 	 */
 	public function import($user, $ldapUser, $restoreBehavior = 'both') {
+		// Store the extra data for later restore and remove it
+		if (isset($user['__extraData'])) {
+			$extraData = $user['__extraData'];
+			unset($user['__extraData']);
+		}
 
 		if ($user['uid'] == 0) {
 			// Set other necessary information for a new user
@@ -214,6 +219,31 @@ class Tx_IgLdapSsoAuth_Utility_UserImport {
 				$this->usersUpdated++;
 			}
 		}
+
+		// Restore the extra data and trigger a signal
+		if (isset($extraData)) {
+			$user['__extraData'] = $extraData;
+
+			// Hook for processing the extra data
+			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'])) {
+				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'] as $className) {
+					/** @var $postProcessor Tx_IgLdapSsoAuth_Utility_ExtraDataProcessorInterface */
+					$postProcessor = t3lib_div::getUserObj($className);
+					if ($postProcessor instanceof Tx_IgLdapSsoAuth_Utility_ExtraDataProcessorInterface) {
+						$postProcessor->processExtraData($this->userTable, $user);
+					} else {
+						throw new Exception(
+							sprintf(
+								'Invalid post-processing class %s. It must implement the Tx_IgLdapSsoAuth_Utility_ExtraDataProcessorInterface interface',
+								$className
+							),
+							1414136057
+						);
+					}
+				}
+			}
+		}
+
 		return $user;
 	}
 

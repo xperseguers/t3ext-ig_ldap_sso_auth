@@ -325,7 +325,7 @@ class tx_igldapssoauth_config {
 			}
 		}
 
-		return array_unique($ldap_attributes);
+		return array_values(array_unique($ldap_attributes));
 	}
 
 	static public function get_server_name($uid = NULL) {

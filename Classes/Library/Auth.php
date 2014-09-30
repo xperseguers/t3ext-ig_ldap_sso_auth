@@ -570,19 +570,20 @@ class tx_igldapssoauth_auth {
 	static public function merge(array $ldap = array(), array $typo3 = array(), array $mapping = array()) {
 		foreach ($mapping as $field => $value) {
 
-			// If field exist in TYPO3.
-			if (isset($typo3[$field]) && $field !== 'usergroup') {
+			// Process every field, except "usergroup"
+			if ($field !== 'usergroup') {
 
 				// Constant.
 				if (preg_match("`{([^$]*)}`", $value, $match)) {
 					switch ($value) {
 						case '{DATE}' :
-							$typo3[$field] = $GLOBALS['EXEC_TIME'];
+							$mappedValue = $GLOBALS['EXEC_TIME'];
 							break;
 						case '{RAND}' :
-							$typo3[$field] = rand();
+							$mappedValue = rand();
 							break;
 						default:
+							$mappedValue = '';
 							$params = explode(';', $match[1]);
 
 							foreach ($params as $param) {
@@ -597,7 +598,7 @@ class tx_igldapssoauth_auth {
 							) {
 
 								$_procObj = & t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'][$newVal]);
-								$typo3[$field] = $_procObj->extraMerge($field, $typo3, $ldap, $ldapAttr, $passParams);
+								$mappedValue = $_procObj->extraMerge($field, $typo3, $ldap, $ldapAttr, $passParams);
 							}
 							break;
 					}
@@ -605,12 +606,25 @@ class tx_igldapssoauth_auth {
 					// LDAP attribute.
 				} elseif (preg_match("`<([^$]*)>`", $value, $attribute)) {
 					if ($field === 'tx_igldapssoauth_dn' || ($field === 'title' && $value === '<dn>')) {
-						$typo3[$field] = $ldap[strtolower($attribute[1])];
+						$mappedValue = $ldap[strtolower($attribute[1])];
 					} else {
-						$typo3[$field] = self::replaceLdapMarkers($value, $ldap);
+						$mappedValue = self::replaceLdapMarkers($value, $ldap);
 					}
 				} else {
-					$typo3[$field] = $value;
+					$mappedValue = $value;
+				}
+
+				// If field exists in TYPO3, set it to the mapped value
+				if (isset($typo3[$field])) {
+					$typo3[$field] = $mappedValue;
+
+				// Otherwise, it is some extra value, which we store in a special sub-array
+				// This may be data that is meant to be mapped onto other database tables
+				} else {
+					if (!isset($typo3['__extraData'])) {
+						$typo3['__extraData'] = array();
+					}
+					$typo3['__extraData'][$field] = $mappedValue;
 				}
 			}
 		}

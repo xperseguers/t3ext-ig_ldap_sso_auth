@@ -223,7 +223,7 @@ class tx_igldapssoauth_typo3_user {
 			$data,
 			FALSE
 		);
-		$success = $databaseConnection->sql_affected_rows() == 1;
+		$success = $databaseConnection->sql_errno() == 0;
 
 		// Hook for post-processing the user
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['processUpdateUser'])) {

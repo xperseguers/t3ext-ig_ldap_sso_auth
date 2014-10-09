@@ -3,9 +3,6 @@
 	<meta type="array">
 		<description>Labels for ig_ldap_sso_auth Scheduler</description>
 		<type>module</type>
-		<csh_table></csh_table>
-		<labelContext type="array">
-		</labelContext>
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">

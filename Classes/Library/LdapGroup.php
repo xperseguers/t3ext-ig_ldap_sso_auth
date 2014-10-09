@@ -71,6 +71,7 @@ class tx_igldapssoauth_ldap_group {
 	 * @param string $userDn
 	 * @param string $userUid
 	 * @param array $attributes
+	 * @return array
 	 */
 	static public function selectFromUser($baseDn, $filter = '', $userDn = '', $userUid = '', array $attributes = array()) {
 		$filter = str_replace('{USERDN}', tx_igldapssoauth_ldap::escapeDnForFilter($userDn), $filter);

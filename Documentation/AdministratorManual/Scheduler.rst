@@ -42,6 +42,6 @@ The options are the following:
   left as is.
 
 - **Handling of restored users:** If user has been deleted or disabled
-  locallly, it may be automatically restored upon import. Each user may
+  locally, it may be automatically restored upon import. Each user may
   be either un-deleted, re-enabled or both. It can be also left as is by
-  choosing to do nothing
+  choosing to do nothing.

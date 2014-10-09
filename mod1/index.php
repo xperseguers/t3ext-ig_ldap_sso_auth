@@ -153,7 +153,7 @@ CSS;
 
 		$docHeaderButtons = $this->getButtons();
 
-		if (($this->id && $access) || ($GLOBALS['BE_USER']->user['admin'] && !$this->id)) {
+		if ($GLOBALS['BE_USER']->user['admin']) {
 			$this->doc->form = '<form action="" method="post">';
 
 			if (version_compare(TYPO3_branch, '6.2', '<')) {
@@ -248,7 +248,7 @@ CSS;
 
 		$thisUrl .= '&config=' . $uid;
 		$editUrl = 'alt_doc.php?returnUrl=' . urlencode($thisUrl) . '&amp;edit[tx_igldapssoauth_config][' . $uid . ']=edit';
-		$editLink .= sprintf(
+		$editLink = sprintf(
 			' <a href="%s" title="uid=%s">' . t3lib_iconWorks::getSpriteIcon('actions-document-open') . '</a>',
 			$editUrl,
 			$uid
@@ -348,7 +348,7 @@ CSS;
 			$this->content .= $this->exportArrayAsTable(tx_igldapssoauth_ldap::get_status(), $title);
 		} else {
 			$this->content .= $this->exportArrayAsTable($GLOBALS['LANG']->getLL('show_status_ldap_disable'), $title);
-			return FALSE;
+			return;
 		}
 
 		// CAS
@@ -459,6 +459,7 @@ CSS;
 	/**
 	 * FUNCTION MENU: Search wizard
 	 *
+	 * @param array $search
 	 * @return void
 	 */
 	protected function search_wizard($search = array()) {

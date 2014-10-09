@@ -65,6 +65,7 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 	 * Find a user (eg. look up the user record in database when a login is sent)
 	 *
 	 * @return mixed user array or FALSE
+	 * @throws RuntimeException
 	 */
 	public function getUser() {
 		$user = FALSE;
@@ -120,13 +121,12 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 				// normal case
 				// Check if $loginSecurityLevel is set to "challenged" or "superchallenged" and throw an error if the configuration allows it
 				// By default, it will not throw an Exception
-				$throwExceptionAtLogin = 0;
 				if (isset($this->config['throwExceptionAtLogin']) && $this->config['throwExceptionAtLogin'] == 1) {
 					if ($loginSecurityLevel === 'challenged' || $loginSecurityLevel === 'superchallenged') {
 						$message = "ig_ldap_sso_auth error: current login security level '" . $loginSecurityLevel . "' is not supported.";
-						$message .= " Try to use 'normal' or 'rsa' (recommanded but would need more settings): ";
+						$message .= " Try to use 'normal' or 'rsa' (recommended but would need more settings): ";
 						$message .= "\$TYPO3_CONF_VARS['BE']['loginSecurityLevel'] = 'normal';";
-						throw new Exception($message, 1324313489);
+						throw new RuntimeException($message, 1324313489);
 					}
 				}
 
@@ -216,8 +216,6 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 		}
 
 		if ($this->login['uident'] && $this->login['uname'] && (!empty($user['tx_igldapssoauth_dn']) || tx_igldapssoauth_config::is_enable('CASAuthentication'))) {
-			$uidentComp = FALSE;
-
 			if (isset($user['tx_igldapssoauth_from'])) {
 				$OK = 200;
 			} elseif (TYPO3_MODE === 'BE' && tx_igldapssoauth_config::is_enable('BEfailsafe')) {

@@ -235,6 +235,7 @@ class tx_igldapssoauth_typo3_user {
 				'typo3_user' => $data,
 			);
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['processUpdateUser'] as $funcRef) {
+				Tx_IgLdapSsoAuth_Utility_Debug::debug('[HOOK] processUpdateUser: ' . $funcRef, $params);
 				$null = NULL;
 				t3lib_div::callUserFunction($funcRef, $params, $null);
 			}

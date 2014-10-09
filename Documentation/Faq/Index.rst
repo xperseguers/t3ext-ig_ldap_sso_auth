@@ -55,14 +55,13 @@ the LDAP password will be valid**.
 
 .. question
 
-**I would like to silently and automatically authenticate my users in frontend (Single Sign On). Since Apache is
+**I would like to silently and automatically authenticate my users in frontend (Single Sign On / SSO). Since Apache is
 configured to restrict access using Kerberos, no login form should be needed in my website. Is this possible with this
 extension?**
 
 .. answer
 
-*Not currently, despite the label "SSO" in this extension's title. At the moment, Single Sign On (SSO) is possible
-solely with CAS. This feature is currently in the backlog for a future version. In the mean time, you may have a look
+*Not currently. This feature is currently in the backlog for a future version. In the mean time, you may have a look
 at* :ter:`woehrl_sso_intranet`.
 
 -------

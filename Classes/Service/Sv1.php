@@ -108,13 +108,8 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 			// Enable feature
 			$userRecordOrIsValid = FALSE;
 
-			// CAS authentication
-			if (tx_igldapssoauth_config::is_enable('CASAuthentication')) {
-
-				$userRecordOrIsValid = tx_igldapssoauth_auth::cas_auth();
-
-				// Authenticate user from LDAP
-			} elseif ($this->login['status'] === 'login' && $this->login['uident']) {
+			// Authenticate user from LDAP
+			if ($this->login['status'] === 'login' && $this->login['uident']) {
 
 				// Configuration of authentication service.
 				$loginSecurityLevel = $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['loginSecurityLevel'];
@@ -215,7 +210,7 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 			$OK = 100;
 		}
 
-		if ($this->login['uident'] && $this->login['uname'] && (!empty($user['tx_igldapssoauth_dn']) || tx_igldapssoauth_config::is_enable('CASAuthentication'))) {
+		if ($this->login['uident'] && $this->login['uname'] && !empty($user['tx_igldapssoauth_dn'])) {
 			if (isset($user['tx_igldapssoauth_from'])) {
 				$OK = 200;
 			} elseif (TYPO3_MODE === 'BE' && tx_igldapssoauth_config::is_enable('BEfailsafe')) {

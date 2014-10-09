@@ -27,8 +27,6 @@
 			<label index="show_status_ldap">LDAP</label>
 			<label index="show_status_ldap_disable">No host name specified.</label>
 			<label index="show_status_ldap_connection_status">Connection Status</label>
-			<label index="show_status_cas">CAS</label>
-			<label index="show_status_cas_disable">CAS authentication disable.</label>
 			<label index="show_status_backend_authentication">Backend Authentication</label>
 			<label index="show_status_backend_authentication_disable">Backend authentication disable.</label>
 			<label index="show_status_frontend_authentication">Frontend Authentication</label>

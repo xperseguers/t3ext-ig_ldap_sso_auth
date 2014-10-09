@@ -110,30 +110,11 @@ $GLOBALS['EXT_CONFIG']['enableBELDAPAuthentication'] ? $GLOBALS['TCA']['be_users
 $GLOBALS['EXT_CONFIG']['enableFELDAPAuthentication'] ? $GLOBALS['TCA']['fe_users']['columns']['password']['config']['eval'] = 'password': null;
 // Load TCA.
 
-if (version_compare(TYPO3_version, '6.1.0', '<')) {
-	t3lib_div::loadTCA('tt_content');
-}
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$_EXTKEY . '_pi1']='layout,select_key';
-
-// Add plugin in list_type
-
-t3lib_extMgm::addPlugin(array('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tt_content.list_type_pi1', $_EXTKEY . '_pi1'), 'list_type');
-
-// Add plugin to content wizard
-
-if (TYPO3_MODE === 'BE') {
-	$GLOBALS['TBE_MODULES_EXT']['xMOD_db_new_content_el']['addElClasses']['tx_igldapssoauth_pi1_wizicon'] = t3lib_extMgm::extPath($_EXTKEY) . 'pi1/class.tx_igldapssoauth_pi1_wizicon.php';
-}
 
 // Add BE module on top of tools main module
-
 if (TYPO3_MODE === 'BE') {
 	t3lib_extMgm::addModule('tools', 'txigldapssoauthM1', 'top', t3lib_extMgm::extPath($_EXTKEY) . 'mod1/');
 }
 
 // Initialize "context sensitive help" (csh)
 t3lib_extMgm::addLLrefForTCAdescr('tx_igldapssoauth_config', 'EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_csh_db.xml');
-
-// Initialize static extension templates (remove deprecated TS in version 1.4)
-t3lib_extMgm::addStaticFile($_EXTKEY, 'static/', 'ig_ldap_sso_auth [DEPRECATED]');
-t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/', 'ig_ldap_sso_auth');

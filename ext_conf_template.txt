@@ -45,12 +45,3 @@ TYPO3FEGroupsNotSynchronize = 0
 
 # cat=frontend/enable; type=boolean; label=Keep Frontend groups: Keep the Frontend user groups assigned locally.
 keepFEGroups = 0
-
-# cat=cas/enable/1; type=boolean; label=Frontend CAS authentication: If checked, enable the Single Sign On feature with a CAS server.
-enableFECASAuthentication = 0
-
-# cat=cas/enable; type=boolean; label=CAS User fetching: If checked, fetch only user information when the current session is empty else always fetch user information.
-enableFetchUserIfNoSession = 0
-
-# cat=cas/enable; type=boolean; label=Delete cookie domain: If checked, clean all cookie domain on CAS logout.
-DeleteCookieLogout = 0

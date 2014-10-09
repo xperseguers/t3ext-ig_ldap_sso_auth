@@ -11,8 +11,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 						be_groups_basedn, be_groups_filter, be_groups_mapping, be_groups_required, be_groups_assigned,
 						be_groups_admin,
 						fe_users_basedn, fe_users_filter, fe_users_mapping,
-						fe_groups_basedn, fe_groups_filter, fe_groups_mapping, fe_groups_required, fe_groups_assigned,
-						cas_host, cas_port, cas_logout_url',
+						fe_groups_basedn, fe_groups_filter, fe_groups_mapping, fe_groups_required, fe_groups_assigned',
 	),
 	'types' => array(
 		'1' => array(
@@ -30,9 +29,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 					--div--;FE_USERS,
 						fe_users_basedn, fe_users_filter, fe_users_mapping, fe_groups_required, fe_groups_assigned,
 					--div--;FE_GROUPS,
-						fe_groups_basedn, fe_groups_filter, fe_groups_mapping,
-					--div--;CAS,
-						cas_host,cas_uri,cas_service_url, cas_port,cas_logout_url'
+						fe_groups_basedn, fe_groups_filter, fe_groups_mapping'
 		),
 	),
 	'palettes' => array(
@@ -467,56 +464,6 @@ $TCA['tx_igldapssoauth_config'] = array(
 						'type' => 'suggest'
 					),
 				),
-			)
-		),
-		'cas_host' => array(
-			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.cas_host',
-			'config' => array(
-				'type' => 'input',
-				'size' => '30',
-				'max' => '255',
-				'eval' => 'trim',
-			)
-		),
-		'cas_uri' => array(
-			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.cas_uri',
-			'config' => array(
-				'type' => 'input',
-				'size' => '30',
-				'max' => '255',
-				'eval' => 'trim',
-			)
-		),
-		'cas_service_url' => array(
-			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.cas_service_url',
-			'config' => array(
-				'type' => 'input',
-				'size' => '30',
-				'max' => '255',
-				'eval' => 'trim',
-			)
-		),
-		'cas_port' => array(
-			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.cas_port',
-			'config' => array(
-				'type' => 'input',
-				'size' => '5',
-				'max' => '5',
-				'eval' => 'int,trim',
-			)
-		),
-		'cas_logout_url' => array(
-			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.cas_logout_url',
-			'config' => array(
-				'type' => 'input',
-				'size' => '30',
-				'max' => '255',
-				'eval' => 'trim',
 			)
 		),
 	),

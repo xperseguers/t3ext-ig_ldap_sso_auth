@@ -243,62 +243,6 @@ class tx_igldapssoauth_auth {
 	}
 
 	/**
-	 * Authenticates with CAS.
-	 *
-	 * @return boolean
-	 */
-	static public function cas_auth() {
-
-		$cas = tx_igldapssoauth_config::getCasConfiguration();
-		phpCAS::client(CAS_VERSION_2_0, (string)$cas['host'], (integer)$cas['port'], (string)$cas['uri']);
-		if (!empty($cas['service_url'])) {
-			phpCAS::setFixedServiceURL((string)$cas['service_url']);
-		}
-
-		switch (self::$authenticationService->login['status']) {
-			case 'login' :
-				if (phpCAS::isAuthenticated()) {
-					phpCAS::logout($cas['logout_url']);
-				}
-				phpCAS::forceAuthentication();
-				break;
-
-			case 'logout' :
-				if (tx_igldapssoauth_config::is_enable('DeleteCookieLogout')) {
-					if (isset($_SERVER['HTTP_COOKIE'])) {
-						$cookies = explode(';', $_SERVER['HTTP_COOKIE']);
-						foreach ($cookies as $cookie) {
-							$parts = explode('=', $cookie);
-							$name = trim($parts[0]);
-							setcookie($name, '', time() - 1000);
-							setcookie($name, '', time() - 1000, '/');
-						}
-					}
-				}
-				phpCAS::logout($cas['logout_url']);
-				return FALSE;
-				break;
-		}
-
-		if (phpCAS::isAuthenticated()) {
-			if (tx_igldapssoauth_config::is_enable('LDAPAuthentication')) {
-				$typo3_user = self::ldap_auth(phpCAS::getUser());
-			} else {
-				$typo3_users = tx_igldapssoauth_typo3_user::fetch(self::$authenticationService->authInfo['db_user']['table'], 0, 0, phpCAS::getUser());
-				$typo3_user = count($typo3_users) > 0 ? $typo3_users[0] : NULL;
-			}
-			if ($typo3_user) {
-				return $typo3_user;
-			} else {
-				phpCAS::logout($cas['logout_url']);
-				return FALSE;
-			}
-		}
-
-		return FALSE;
-	}
-
-	/**
 	 * Returns a LDAP user.
 	 *
 	 * @param string $dn

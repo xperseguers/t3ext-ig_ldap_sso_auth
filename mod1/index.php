@@ -351,15 +351,6 @@ CSS;
 			return;
 		}
 
-		// CAS
-		$title = $GLOBALS['LANG']->getLL('show_status_cas');
-		if ($feConfiguration['LDAPAuthentication'] && $feConfiguration['CASAuthentication']) {
-			$configuration = tx_igldapssoauth_config::getCasConfiguration();
-		} else {
-			$configuration = $GLOBALS['LANG']->getLL('show_status_cas_disable');
-		}
-		$this->content .= $this->exportArrayAsTable($configuration, $title);
-
 		// BE
 		$title = $GLOBALS['LANG']->getLL('show_status_backend_authentication');
 		if ($beConfiguration['LDAPAuthentication']) {

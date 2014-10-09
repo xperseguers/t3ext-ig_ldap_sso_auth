@@ -12,7 +12,7 @@
 
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'LDAP / SSO Authentication',
-	'description' => 'Authenticate frontend and/or backend users using LDAP or Central Authentication Service (CAS). Provide SSO authentication service. Support for OpenLDAP, Active Directory and Novell eDirectory. Handle TLS and SSL (ldaps://).',
+	'description' => 'Authenticate frontend and/or backend users using LDAP. Support for OpenLDAP, Active Directory and Novell eDirectory. Handle TLS and SSL (ldaps://)',
 	'category' => 'services',
 	'shy' => 0,
 	'version' => '2.0.0-dev',

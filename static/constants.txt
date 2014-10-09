@@ -1,3 +1,0 @@
-# BEWARE: This file is deprecated since 1.2.0 and will be removed in 1.4.0
-
-<INCLUDE_TYPOSCRIPT: source="FILE: EXT:ig_ldap_sso_auth/Configuration/TypoScript/constants.txt">

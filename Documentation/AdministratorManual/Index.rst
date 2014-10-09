@@ -24,7 +24,7 @@ use module Web > List and create a record "Configuration LDAP / SSO" on the root
 
 	When creating a new record at the root of your website, choose "Configuration LDAP / SSO".
 
-The form to edit such a record is split in 7 tabs that we will describe separately in the next few sections.
+The form to edit such a record is split in 6 tabs that we will describe separately in the next few sections.
 
 .. figure:: ../Images/blank-record.png
  	:alt: Edit mask for a record "Configuration LDAP / SSO"
@@ -44,6 +44,5 @@ The form to edit such a record is split in 7 tabs that we will describe separate
 	Ldap
 	Users
 	Groups
-	Cas
 	Scheduler
 	SampleConfiguration

@@ -13,10 +13,6 @@
 			<label index="name.description">Name used to distinguish each configuration.</label>
 			<label index="domains.description">Domains for which this configuration should be used. Leave empty to use it with any domain.</label>
 
-			<label index="cas_host.description">Address or URL of the CAS server.</label>
-			<label index="cas_port.description">Port used by the CAS server.</label>
-			<label index="cas_logout_url.description">Return URL after the the user has been logged out.</label>
-
 			<label index="ldap_server.description">Type of LDAP server used by the authentication (OpenLDAP, Active Directory / Novell eDirectory).</label>
 			<label index="ldap_protocol.description">Version of the protocol used by the LDAP server.</label>
 			<label index="ldap_charset.description">Character set used by the LDAP server. Usually: utf-8.</label>

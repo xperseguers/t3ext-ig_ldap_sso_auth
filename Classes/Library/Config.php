@@ -42,7 +42,6 @@ class tx_igldapssoauth_config {
 	static protected $be = array();
 	static protected $fe = array();
 	static protected $ldap = array();
-	static protected $cas = array();
 	static protected $domains = array();
 
 	/**
@@ -77,7 +76,6 @@ class tx_igldapssoauth_config {
 		}
 
 		self::$be['LDAPAuthentication'] = $config['enableBELDAPAuthentication'];
-		self::$be['CASAuthentication'] = 0;
 		self::$be['DeleteCookieLogout'] = 0;
 		self::$be['forceLowerCaseUsername'] = $config['forceLowerCaseUsername'] ? $config['forceLowerCaseUsername'] : 0;
 		self::$be['evaluateGroupsFromMembership'] = $config['group_membership'] == self::GROUP_MEMBERSHIP_FROM_MEMBER;
@@ -100,7 +98,6 @@ class tx_igldapssoauth_config {
 
 		self::$fe['LDAPAuthentication'] = $config['enableFELDAPAuthentication'];
 		self::$fe['DeleteCookieLogout'] = $config['DeleteCookieLogout'];
-		self::$fe['CASAuthentication'] = $config['enableFECASAuthentication'];
 		self::$fe['forceLowerCaseUsername'] = $config['forceLowerCaseUsername'] ? $config['forceLowerCaseUsername'] : 0;
 		self::$fe['evaluateGroupsFromMembership'] = $config['group_membership'] == self::GROUP_MEMBERSHIP_FROM_MEMBER;
 		self::$fe['IfUserExist'] = $config['TYPO3FEUserExist'];
@@ -122,10 +119,6 @@ class tx_igldapssoauth_config {
 
 		foreach ($config as $key => $value) {
 			switch (TRUE) {
-				case (substr($key, 0, 4) === 'cas_'):
-					self::$cas[substr($key, 4)] = $value;
-					break;
-
 				case (substr($key, 0, 5) === 'ldap_'):
 					self::$ldap[substr($key, 5)] = $value;
 					break;
@@ -249,15 +242,6 @@ class tx_igldapssoauth_config {
 		}
 
 		return '';
-	}
-
-	/**
-	 * Gets the CAS configuration.
-	 *
-	 * @return array
-	 */
-	static public function getCasConfiguration() {
-		return self::$cas;
 	}
 
 	/**

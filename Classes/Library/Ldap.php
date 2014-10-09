@@ -112,10 +112,10 @@ class tx_igldapssoauth_ldap {
 					return FALSE;	// Password does not match
 				}
 
-				// If enable, SSO authentication without password.
-			} elseif (!$password && tx_igldapssoauth_config::is_enable('CASAuthentication')) {
-
-				return tx_igldapssoauth_utility_Ldap::get_dn();
+			// If enable, SSO authentication without password
+			//} elseif (!$password && tx_igldapssoauth_config::is_enable('CASAuthentication')) {
+			//
+			//	return tx_igldapssoauth_utility_Ldap::get_dn();
 
 			} else {
 

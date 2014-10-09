@@ -24,12 +24,11 @@ LDAP / SSO Authentication
 		en
 
 	:Description:
-		Authenticate frontend and/or backend users using LDAP or Central Authentication Service (CAS). Provide SSO
-		authentication service. Support for OpenLDAP, Active Directory and Novell eDirectory. Handle TLS and SSL
-		(ldaps://).
+		Authenticate frontend and/or backend users using LDAP. Support for OpenLDAP, Active Directory and
+		Novell eDirectory. Handle TLS and SSL (ldaps://).
 
 	:Keywords:
-		openldap, active directory, ldap, authentication, sso, cas
+		openldap, active directory, ldap, authentication
 
 	:Copyright:
 		2000-2014

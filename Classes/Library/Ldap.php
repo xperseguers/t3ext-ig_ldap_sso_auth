@@ -130,6 +130,16 @@ class tx_igldapssoauth_ldap {
 
 	}
 
+	/**
+	 * Searches LDAP entries satisfying some filter.
+	 *
+	 * @param string $basedn
+	 * @param string $filter
+	 * @param array $attributes
+	 * @param bool $first_entry
+	 * @param int $limit
+	 * @return array
+	 */
 	static public function search($basedn = NULL, $filter = NULL, $attributes = array(), $first_entry = FALSE, $limit = 0) {
 		$result = array();
 
@@ -143,6 +153,26 @@ class tx_igldapssoauth_ldap {
 			}
 		}
 
+		return $result;
+	}
+
+	/**
+	 * Returns TRUE if last call to tx_igldapssoauth_ldap::search() returned a partial result set.
+	 * You should then call tx_igldapssoauth_ldap::searchNext().
+	 *
+	 * @return bool
+	 */
+	static public function isPartialSearchResult() {
+		return tx_igldapssoauth_utility_Ldap::has_more_entries();
+	}
+
+	/**
+	 * Returns the next block of entries satisfying a previous call to tx_igldapsso_auth_ldap::search().
+	 *
+	 * @return array
+	 */
+	static public function searchNext() {
+		$result = tx_igldapssoauth_utility_Ldap::get_next_entries();
 		return $result;
 	}
 

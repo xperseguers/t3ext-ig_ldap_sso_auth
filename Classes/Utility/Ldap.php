@@ -58,6 +58,7 @@ class tx_igldapssoauth_utility_Ldap {
 	static protected $feid; // LDAP First Entry ID
 	static protected $status; // LDAP server status.
 	static protected $serverType; // 0 = OpenLDAP, 1 = Active Directory / Novell eDirectory
+	static protected $previousEntry = FALSE;
 
 	/**
 	 * Connects to LDAP Server and sets the cid.
@@ -201,10 +202,10 @@ class tx_igldapssoauth_utility_Ldap {
 	 * @param string $basedn
 	 * @param string $filter
 	 * @param array $attributes
-	 * @param integer $attributes_only
-	 * @param integer $size_limit
-	 * @param integer $time_limit
-	 * @param string $deref
+	 * @param int $attributes_only
+	 * @param int $size_limit
+	 * @param int $time_limit
+	 * @param int $deref
 	 * @return bool
 	 * @see http://ca3.php.net/manual/fr/function.ldap-search.php
 	 */
@@ -250,33 +251,63 @@ class tx_igldapssoauth_utility_Ldap {
 		return FALSE;
 	}
 
-	static public function get_entries() {
-		$result = array();
-		if (is_array(self::$sid)) {
-			foreach (self::$sid as $sid) {
-				$resulttemp = @ldap_get_entries(self::$cid, $sid);
-				if (is_array($resulttemp)) {
-					$result['count'] += $resulttemp['count'];
-					unset($resulttemp['count']);
-					foreach ($resulttemp as $resultRow) {
-						$result[] = $resultRow;
-					}
+	/**
+	 * Returns up to 1000 LDAP entries corresponding to a filter prepared by a call to
+	 * tx_igldapssoauth_utility_Ldap::search().
+	 *
+	 * @param resource $previousEntry Used to get the remaining entries after receiving a partial result set
+	 * @return array
+	 */
+	static public function get_entries($previousEntry = NULL) {
+		$entries = array('count' => 0);
+		self::$previousEntry = NULL;
+
+		$sids = is_array(self::$sid) ? self::$sid : array(self::$sid);
+		foreach ($sids as $sid) {
+			$entry = $previousEntry === NULL ? @ldap_first_entry(self::$cid, $sid) : @ldap_next_entry(self::$cid, $previousEntry);
+			if (!$entry) continue;
+			do {
+				$attributes = ldap_get_attributes(self::$cid, $entry);
+				$attributes['dn'] = ldap_get_dn(self::$cid, $entry);
+				$tempEntry = array();
+				foreach ($attributes as $key => $value) {
+					$tempEntry[strtolower($key)] = $value;
 				}
-
-			}
-		} else {
-			$result = @ldap_get_entries(self::$cid, self::$sid);
-		}
-
-		// Search successfull
-		if ($result) {
-			self::$status['get_entries']['status'] = ldap_error(self::$cid);
-			// Convert LDAP result character set  -> local character set
-			return (tx_igldapssoauth_utility_Ldap::convert_charset_array($result, self::$ldap_charset, self::$local_charset));
+				$entries[] = $tempEntry;
+				$entries['count']++;
+				if ($entries['count'] == 1000) {
+					self::$previousEntry = $entry;
+					break;
+				}
+			} while ($entry = @ldap_next_entry(self::$cid, $entry));
 		}
 
 		self::$status['get_entries']['status'] = ldap_error(self::$cid);
-		return array();
+
+		return $entries['count'] > 0
+			// Convert LDAP result character set  -> local character set
+			? tx_igldapssoauth_utility_Ldap::convert_charset_array($entries, self::$ldap_charset, self::$local_charset)
+			: array();
+	}
+
+	/**
+	 * Returns next LDAP entries corresponding to a filter prepared by a call to
+	 * tx_igldapssoauth_utility_Ldap::search().
+	 *
+	 * @return array
+	 */
+	static public function get_next_entries() {
+		return self::get_entries(self::$previousEntry);
+	}
+
+	/**
+	 * Returns TRUE if last call to tx_igldapssoauth_utility_Ldap::get_entries
+	 * returned a partial result set.
+	 *
+	 * @return bool
+	 */
+	static public function has_more_entries() {
+		return self::$previousEntry !== NULL;
 	}
 
 	static public function get_first_entry() {

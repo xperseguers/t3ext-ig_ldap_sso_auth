@@ -946,47 +946,56 @@ HTML;
 		$out[] = '<td nowrap="nowrap">' . $GLOBALS['LANG']->getLL('import_users_table_th_import') . '</td>';
 		$out[] = '</tr>';
 
-		$typo3Users = $importUtility->fetchTypo3Users($ldapUsers);
 		$config = $importUtility->getConfiguration();
+		$numberOfUsers = 0;
 
 		// Loop on all users and display them
 		// If a user was selected import if from LDAP
-		foreach ($ldapUsers as $index => $aUser) {
-			// Merge LDAP and TYPO3 information
-			$user = tx_igldapssoauth_auth::merge($aUser, $typo3Users[$index], $config['users']['mapping']);
+		do {
+			$numberOfUsers += count($ldapUsers);
+			$typo3Users = $importUtility->fetchTypo3Users($ldapUsers);
+			foreach ($ldapUsers as $index => $aUser) {
+				// Merge LDAP and TYPO3 information
+				$user = tx_igldapssoauth_auth::merge($aUser, $typo3Users[$index], $config['users']['mapping']);
 
-			// Import the user using information from LDAP
-			if (in_array($user['tx_igldapssoauth_dn'], $importUsers, TRUE)) {
-				$user = $importUtility->import($user, $aUser);
+				// Import the user using information from LDAP
+				if (in_array($user['tx_igldapssoauth_dn'], $importUsers, TRUE)) {
+					$user = $importUtility->import($user, $aUser);
+				}
+
+				if ($user['uid'] == 0) {
+					// LDAP user is not yet imported
+					$rowClass = '';
+					$isChecked = FALSE;
+				} elseif ($user['deleted'] == 1) {
+					// LDAP user has been manually deleted
+					$rowClass = 'deleted-ldap-group';
+					$isChecked = FALSE;
+				} else {
+					// LDAP user has already been imported
+					$rowClass = 'local-ldap-group';
+					$isChecked = TRUE;
+				}
+
+				$out[] = '<tr class="db_list_normal ' . $rowClass . '">';
+				$out[] = '<td>' . ($user['title'] ? htmlspecialchars($user['title']) : '&nbsp;') . '</td>';
+				$out[] = '<td>' . $user['tx_igldapssoauth_dn'] . '</td>';
+				$out[] = '<td>' . ($user['pid'] ? $user['pid'] : 0) . '</td>';
+				$out[] = '<td>' . ($user['uid'] ? $user['uid'] : 0) . '</td>';
+				$out[] = '<td><input type="checkbox" name="import_users[]" value="' . htmlspecialchars($user['tx_igldapssoauth_dn']) . '" ' . ($isChecked ? 'checked="checked"' : '') . ' /></td>';
+				$out[] = '</tr>';
 			}
 
-			if ($user['uid'] == 0) {
-				// LDAP user is not yet imported
-				$rowClass = '';
-				$isChecked = FALSE;
-			} elseif ($user['deleted'] == 1) {
-				// LDAP user has been manually deleted
-				$rowClass = 'deleted-ldap-group';
-				$isChecked = FALSE;
-			} else {
-				// LDAP user has already been imported
-				$rowClass = 'local-ldap-group';
-				$isChecked = TRUE;
-			}
+			// Free memory before going on
+			$typo3Users = NULL;
+			$ldapUsers = NULL;
+			$ldapUsers = $importUtility->hasMoreLdapUsers() ? $importUtility->fetchLdapUsers(TRUE) : array();
+		} while (count($ldapUsers) > 0);
 
-			$out[] = '<tr class="db_list_normal ' . $rowClass . '">';
-			$out[] = '<td>' . ($user['title'] ? htmlspecialchars($user['title']) : '&nbsp;') . '</td>';
-			$out[] = '<td>' . $user['tx_igldapssoauth_dn'] . '</td>';
-			$out[] = '<td>' . ($user['pid'] ? $user['pid'] : 0) . '</td>';
-			$out[] = '<td>' . ($user['uid'] ? $user['uid'] : 0) . '</td>';
-			$out[] = '<td><input type="checkbox" name="import_users[]" value="' . htmlspecialchars($user['tx_igldapssoauth_dn']) . '" ' . ($isChecked ? 'checked="checked"' : '') . ' /></td>';
-			$out[] = '</tr>';
-		}
-
-		if (count($ldapUsers) > 0) {
+		if ($numberOfUsers > 0) {
 			$out[] = '<tr class="db_list_normal">';
 			$out[] = '<td colspan="4"></td>';
-			$toggleAllLabel = $GLOBALS['LANG']->getLL('import_users_table_select_all', TRUE);
+			$toggleAllLabel = $GLOBALS['LANG']->getLL('import_users_table_select_all', TRUE) . ' (' . $numberOfUsers . ')';
 			$out[] = <<<HTML
 				<td>
 					<input type="checkbox" onclick="toggleImport(this)" id="selectAll" />

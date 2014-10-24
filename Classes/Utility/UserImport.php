@@ -120,20 +120,35 @@ class Tx_IgLdapSsoAuth_Utility_UserImport {
 	/**
 	 * Fetches all possible LDAP/AD users for a given configuration and context.
 	 *
+	 * @param bool $partial TRUE to fetch remaining entries when a partial result set was returned
 	 * @return array
 	 */
-	public function fetchLdapUsers() {
+	public function fetchLdapUsers($partial = FALSE) {
 
 		// Get the users from LDAP/AD server
 		$ldapUsers = array();
 		if (!empty($this->configuration['users']['basedn'])) {
-			$filter = tx_igldapssoauth_config::replace_filter_markers($this->configuration['users']['filter']);
-			$attributes = tx_igldapssoauth_config::get_ldap_attributes($this->configuration['users']['mapping']);
-			$ldapUsers = tx_igldapssoauth_ldap::search($this->configuration['users']['basedn'], $filter, $attributes);
+			if (!$partial) {
+				$filter = tx_igldapssoauth_config::replace_filter_markers($this->configuration['users']['filter']);
+				$attributes = tx_igldapssoauth_config::get_ldap_attributes($this->configuration['users']['mapping']);
+				$ldapUsers = tx_igldapssoauth_ldap::search($this->configuration['users']['basedn'], $filter, $attributes);
+			} else {
+				$ldapUsers = tx_igldapssoauth_ldap::searchNext();
+			}
 			unset($ldapUsers['count']);
 		}
 
 		return $ldapUsers;
+	}
+
+	/**
+	 * Returns TRUE is a previous call to Tx_IgLdapSsoAuth_Utility_UserImport::fetchLdapUsers() returned
+	 * a partial result set.
+	 *
+	 * @return bool
+	 */
+	public function hasMoreLdapUsers() {
+		return tx_igldapssoauth_ldap::isPartialSearchResult();
 	}
 
 	/**

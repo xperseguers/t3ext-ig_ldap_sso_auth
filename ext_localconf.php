@@ -7,6 +7,9 @@ if (!defined ('TYPO3_MODE')) {
 $EXT_CONFIG = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']);
 
 // SSO configuration
+if ((bool)$EXT_CONFIG['enableFESSO']) {
+	$GLOBALS['TYPO3_CONF_VARS']['SVCONF']['auth']['setup']['FE_fetchUserIfNoSession'] = 1;
+}
 
 // Visually change the record icon for FE/BE users and groups
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_iconworks.php']['overrideIconOverlay'][] = 'EXT:' . $_EXTKEY . '/Classes/Hooks/DatabaseRecordListIconUtility.php:Tx_IgLdapSsoAuth_Hooks_DatabaseRecordListIconUtility';

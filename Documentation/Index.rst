@@ -25,7 +25,8 @@ LDAP / SSO Authentication
 
 	:Description:
 		Authenticate frontend and/or backend users using LDAP. Support for OpenLDAP, Active Directory and
-		Novell eDirectory. Handle TLS and SSL (ldaps://).
+		Novell eDirectory. Handle TLS and SSL (ldaps://). Single Sign-On (SSO) is supported as well (you will
+		need a proper mod_ntlm / Kerberos Apache configuration).
 
 	:Keywords:
 		openldap, active directory, ldap, authentication

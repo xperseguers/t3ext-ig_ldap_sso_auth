@@ -69,13 +69,14 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 	 */
 	public function getUser() {
 		$user = FALSE;
+		$enableFrontendSso = TYPO3_MODE === 'FE' && (bool)$this->config['enableFESSO'] && !empty($_SERVER['REMOTE_USER']);
 
 		// This simple check is the key to prevent your log being filled up with warnings
 		// due to the AJAX calls to maintain the session active if your configuration forces
 		// the authentication stack to always fetch the user:
 		// $TYPO3_CONF_VARS['SVCONF']['auth']['setup']['BE_alwaysFetchUser'] = true;
 		// This is the case, e.g., when using EXT:crawler.
-		if ($this->login['status'] !== 'login') {
+		if ($this->login['status'] !== 'login' && !$enableFrontendSso) {
 			return $user;
 		}
 
@@ -108,8 +109,21 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 			// Enable feature
 			$userRecordOrIsValid = FALSE;
 
+			// Single Sign-On authentication
+			if ($enableFrontendSso) {
+				$remoteUser = $_SERVER['REMOTE_USER'];
+
+				// Strip the domain name
+				if ($pos = strpos($remoteUser, '@')) {
+					$remoteUser = substr($remoteUser, 0, $pos);
+				} elseif ($pos = strrpos($remoteUser, '\\')) {
+					$remoteUser = substr($remoteUser, $pos + 1);
+				}
+
+				$userRecordOrIsValid = tx_igldapssoauth_auth::ldap_auth($remoteUser);
+
 			// Authenticate user from LDAP
-			if ($this->login['status'] === 'login' && $this->login['uident']) {
+			} elseif ($this->login['status'] === 'login' && $this->login['uident']) {
 
 				// Configuration of authentication service.
 				$loginSecurityLevel = $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['loginSecurityLevel'];
@@ -141,7 +155,12 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 				}
 
 				try {
-					$userRecordOrIsValid = tx_igldapssoauth_auth::ldap_auth($this->login['uname'], $password);
+					if ($password !== NULL) {
+						$userRecordOrIsValid = tx_igldapssoauth_auth::ldap_auth($this->login['uname'], $password);
+					} else {
+						// Could not decrypt password
+						$userRecordOrIsValid = FALSE;
+					}
 				} catch (Exception $e) {
 					// Possible known exception: 1409566275, LDAP extension is not available for PHP
 					$userRecordOrIsValid = FALSE;
@@ -210,7 +229,9 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 			$OK = 100;
 		}
 
-		if ($this->login['uident'] && $this->login['uname'] && !empty($user['tx_igldapssoauth_dn'])) {
+		$enableFrontendSso = TYPO3_MODE === 'FE' && (bool)$this->config['enableFESSO'] && !empty($_SERVER['REMOTE_USER']);
+
+		if ((($this->login['uident'] && $this->login['uname']) || $enableFrontendSso) && !empty($user['tx_igldapssoauth_dn'])) {
 			if (isset($user['tx_igldapssoauth_from'])) {
 				$OK = 200;
 			} elseif (TYPO3_MODE === 'BE' && tx_igldapssoauth_config::is_enable('BEfailsafe')) {

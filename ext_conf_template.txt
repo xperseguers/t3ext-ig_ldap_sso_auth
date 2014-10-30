@@ -45,3 +45,6 @@ TYPO3FEGroupsNotSynchronize = 0
 
 # cat=frontend/enable; type=boolean; label=Keep Frontend groups: Keep the Frontend user groups assigned locally.
 keepFEGroups = 0
+
+# cat=frontend/enable; type=boolean; label=Frontend SSO: Enable Single Sign-On for Frontend users.
+enableFESSO = 0

@@ -76,6 +76,7 @@ class tx_igldapssoauth_config {
 		}
 
 		self::$be['LDAPAuthentication'] = $config['enableBELDAPAuthentication'];
+		self::$be['SSOAuthentication'] = FALSE;
 		self::$be['DeleteCookieLogout'] = 0;
 		self::$be['forceLowerCaseUsername'] = $config['forceLowerCaseUsername'] ? $config['forceLowerCaseUsername'] : 0;
 		self::$be['evaluateGroupsFromMembership'] = $config['group_membership'] == self::GROUP_MEMBERSHIP_FROM_MEMBER;
@@ -97,6 +98,7 @@ class tx_igldapssoauth_config {
 		self::$be['groups']['mapping'] = self::make_group_mapping($config['be_groups_mapping']);
 
 		self::$fe['LDAPAuthentication'] = $config['enableFELDAPAuthentication'];
+		self::$fe['SSOAuthentication'] = (bool)$config['enableFESSO'];
 		self::$fe['DeleteCookieLogout'] = $config['DeleteCookieLogout'];
 		self::$fe['forceLowerCaseUsername'] = $config['forceLowerCaseUsername'] ? $config['forceLowerCaseUsername'] : 0;
 		self::$fe['evaluateGroupsFromMembership'] = $config['group_membership'] == self::GROUP_MEMBERSHIP_FROM_MEMBER;

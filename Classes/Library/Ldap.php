@@ -93,7 +93,7 @@ class tx_igldapssoauth_ldap {
 		if (tx_igldapssoauth_utility_Ldap::search($basedn, str_replace('{USERNAME}', $username, $filter), array('dn'))) {
 
 			// Validate with password.
-			if ($password) {
+			if ($password !== NULL) {
 
 				// Bind DN of user with password.
 				if (tx_igldapssoauth_utility_Ldap::bind(tx_igldapssoauth_utility_Ldap::get_dn(), $password)) {
@@ -113,21 +113,19 @@ class tx_igldapssoauth_ldap {
 				}
 
 			// If enable, SSO authentication without password
-			//} elseif (!$password && tx_igldapssoauth_config::is_enable('CASAuthentication')) {
-			//
-			//	return tx_igldapssoauth_utility_Ldap::get_dn();
+			} elseif ($password === NULL && tx_igldapssoauth_config::is_enable('SSOAuthentication')) {
+
+				return tx_igldapssoauth_utility_Ldap::get_dn();
 
 			} else {
 
 				// User invalid. Authentication failed.
 				return FALSE;
-
 			}
 
 		}
 
 		return FALSE;
-
 	}
 
 	/**

@@ -61,8 +61,9 @@ with this extension?**
 
 .. answer
 
-*Not currently. This feature is currently in the backlog for a future version. In the mean time, you may have a look
-at* :ter:`woehrl_sso_intranet`.
+*Yes. You have to activate this option in Extension Manager and ensure you have properly configured mod_ntlm or
+Kerberos with Apache (or any other supported web server). This extension will look for a username
+in* ``$_SERVER['REMOTE_USER']`` *(without any domain part) to silently create the session in TYPO3.*
 
 -------
 

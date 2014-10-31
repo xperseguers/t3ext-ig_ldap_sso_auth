@@ -38,7 +38,8 @@ register with the hook using a code like:
 
 .. code-block:: php
 
-	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'][] = 'EXT:extension/Path/To/Class/ClassName.php:ClassName';
+	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'][]
+		= 'EXT:extension/Path/To/Class/ClassName.php:ClassName';
 
 Your class has to implement the :code:`Tx_IgLdapSsoAuth_Utility_ExtraDataProcessorInterface`
 interface. This implies implementing a method called :code:`processExtraData` which

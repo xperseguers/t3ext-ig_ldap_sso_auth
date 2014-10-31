@@ -47,3 +47,4 @@ The form to edit such a record is split in 6 tabs that we will describe separate
 	Scheduler
 	SampleConfiguration
 	ImportOtherTables
+	ConfigureApacheKerberos

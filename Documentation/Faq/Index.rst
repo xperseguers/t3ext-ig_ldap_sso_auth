@@ -56,8 +56,8 @@ the LDAP password will be valid**.
 .. question
 
 **I would like to silently and automatically authenticate my users in frontend (Single Sign On / SSO). Since Apache is
-configured to restrict access using Kerberos, no login form should be needed in my website. Is this possible with this
-extension?**
+configured to restrict access using** :term:`Kerberos`, **no login form should be needed in my website. Is this possible
+with this extension?**
 
 .. answer
 

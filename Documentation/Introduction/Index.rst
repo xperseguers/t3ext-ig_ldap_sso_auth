@@ -16,9 +16,14 @@ Introduction
 What does it do?
 ----------------
 
-This extension enables import/update/deletion of users and groups (frontend, backend or both) from a LDAP-directory.
-This way, TYPO3 can be used as an intranet CMS. Multiple LDAP server configurations are allowed. Works with OpenLDAP,
-Active Directory and Novell eDirectory.
+This extension enables import/update/deletion of users and groups (frontend, backend or both) from a LDAP-directory and
+provides Single Sign-On (:term:`SSO`) for frontend users. These features make it the perfect choice when deploying TYPO3
+as an intranet CMS.
+
+In case the network topology makes it useful, this extension is able to work with multiple LDAP server configurations,
+with a priority order based on the manual sorting of configuration records.
+
+This extension is known to work with OpenLDAP, Active Directory (various versions) and Novell eDirectory.
 
 Please consult the :ref:`faq` for additional information.
 
@@ -64,7 +69,7 @@ Screenshots
 Sponsorship
 -----------
 
-This extension has been initially developped by Infoglobe, a Canadian company specialized in open-source software and
+This extension has been initially developed by Infoglobe, a Canadian company specialized in open-source software and
 has now been taken over by Causal Sàrl, a Swiss company actively contributing to TYPO3.
 
 Support for TYPO3 6.2 LTS and some further enhancements have been sponsored by the "Centre électronique de gestion

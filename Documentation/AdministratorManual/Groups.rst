@@ -30,8 +30,8 @@ authentication and do not want to use groups from LDAP.
 - **Filter:** To be used to add restrictions that allow you to exclude objects from specific properties. The
   syntax used in this field is the standard LDAP search syntax.
 
-  This field should not be left empty although it is not marked as required. Be sure to always double-check your configuration
-  using the wizard in the backend module.
+  This field should not be left empty although it is not marked as required. Be sure to always double-check your
+  configuration using the wizard in the backend module.
 
   **Example:**
 

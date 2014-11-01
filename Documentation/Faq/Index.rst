@@ -41,8 +41,8 @@ behaviour may be enabled/disabled globally for backend and/or frontend within Ex
 
 .. question
 
-**I have a local user with the same username than a LDAP user but which has been manually created in TYPO3. Which
-password will be taken into account?**
+**I have a local user with the same username as a LDAP user but which has been manually created in TYPO3. Which password
+will be taken into account?**
 
 .. answer
 
@@ -165,5 +165,6 @@ to be compatible with ig_ldap_sso_auth using the "UPDATE!" script in Extension M
 global options for ig_ldap_sso_auth in EM and only then migrate your legacy eu_ldap configuration records. This will
 ensure possible configuration issues to be detected.*
 
-*The migration wizard does not require extension eu_ldap to be* **loaded** *but only expects the corresponding database
-table to be present.*
+.. hint::
+	The migration wizard does not require extension eu_ldap to be **loaded** but only expects the corresponding
+	database table to be present.

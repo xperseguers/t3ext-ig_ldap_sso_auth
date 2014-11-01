@@ -24,9 +24,13 @@ LDAP / SSO Authentication
 		en
 
 	:Description:
-		Authenticate frontend and/or backend users using LDAP. Support for OpenLDAP, Active Directory and
-		Novell eDirectory. Handle TLS and SSL (ldaps://). Single Sign-On (SSO) is supported as well (you will
-		need a proper mod_ntlm / Kerberos Apache configuration).
+		This extension provides LDAP support for TYPO3 by delegating the authentication of frontend and/or backend users
+		to the centrally-managed directory of your organization. It fully supports OpenLDAP, Active Directory and Novell
+		eDirectory and is capable of connecting securely to the authentication server using either TLS or SSL
+		(ldaps://).
+
+		In case of use in an intranet environment, this extension is a perfect match since it natively brings Single
+		Sign-On (SSO) capability to TYPO3 without any complex configuration.
 
 	:Keywords:
 		openldap, active directory, ldap, authentication

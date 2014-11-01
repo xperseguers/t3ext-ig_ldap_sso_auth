@@ -71,7 +71,7 @@ desired service to access. The KDC is installed as part of the domain controller
 AS exchange
 """""""""""
 
-When initially logging on to a network, users must negociate access by providing a login name and password in order to
+When initially logging on to a network, users must negotiate access by providing a login name and password in order to
 be verified by the AS portion of a :term:`KDC`. The KDC has access to Active Directory user account information. Once
 successfully authenticated, the user is granted a Ticket to Get Tickets (TGT) that is valid for the local domain (in our
 example, for the realm ``example.com``). The TGT has a default lifetime of 10 hours and may be renewed throughout the
@@ -141,14 +141,17 @@ Within an ``intranet.example.com`` shell, install the package:
 	$ sudo apt-get install libapache2-mod-auth-kerb krb5-user
 
 .. hint::
+
 	``krb5-user`` is not an actual requirement but it will provide handy command-line tools for Kerberos.
 
 In additional to ``libapache2-mod-auth-kerb``, this will install the dependency package ``krb5-config`` and then show
 you a configuration wizard asking for:
 
-- **Default Kerberos version 5 realm.** Use ``EXAMPLE.COM``.
-- **The KDC.** My Active Directory server is ``ws2008r2.example.com``, replace by your own.
-- **The administration server.** This is typically the same as the LDAP/Active Directory server.
+- **Default Kerberos version 5 realm.** Use ``EXAMPLE.COM`` (in capital letters).
+- **The KDC.** My Active Directory server is ``ws2008r2.example.com``, replace by your own. In a larger organization,
+  you probably have two domain controllers, for redundancy reason.
+- **The administration server.** This is typically the same as the LDAP/Active Directory server or in case of multiple
+  domain controllers, this should be normally set to the master.
 
 Settings you provide are then stored within configuration file :file:`/etc/krb5.conf`.
 
@@ -156,7 +159,7 @@ You should now check that Kerberos works on ``intranet.example.com``. Do a basic
 
 #. Ensure that ``intranet`` can reach :term:`KDC` ``ws2008rs2`` via the network (:command:`ping`, ...).
 #. Have a username and password in Windows Domain ``EXAMPLE.COM``. In this example ``einstein`` is used as username.
-#. Within the shell type:
+#. Within the shell, type:
 
    .. code-block:: bash
 
@@ -165,6 +168,7 @@ You should now check that Kerberos works on ``intranet.example.com``. Do a basic
    If everything is OK the command will ask you for ``einstein``'s domain password and terminates without an error message.
 
    .. note::
+
        If command fails with
 
        .. code-block:: none
@@ -172,7 +176,7 @@ You should now check that Kerberos works on ``intranet.example.com``. Do a basic
            kinit: Cannot resolve servers for KDC in realm "example.com" while getting
            initial credentials
 
-       then it means that you did not pay attention to writing the realm in CAPITAL LETTERS.
+       then it most probably means that you did not pay attention to writing the realm in CAPITAL LETTERS.
 
 #. Finally use :command:`klist` to show the initial ticket you have got from the KDC:
 
@@ -195,14 +199,14 @@ Creating a service principal for the web server
 be ``HTTP``, so for the server ``intranet.example.com`` the required service principal name is
 ``HTTP/intranet.example.com@EXAMPLE.COM``.
 
-#. Create a dummy account in Windows Domain ``EXAMPLE.COM``. It is used like a machine account **but this is a standard
-   user account**. In this example the name of dummy account is ``kerbdummy1``.
+#. Create a dummy account in Windows Domain ``EXAMPLE.COM``. It is used like a machine account **but is nevertheless a
+   standard user account**. In this example the name of dummy account is ``kerbdummy1``.
 
-#. Login to the domain controller ``ws2008r2`` and use the Windows command line tool :command:`ktpass` to map the dummy
+#. Log in to the domain controller ``ws2008r2`` and use the Windows command line tool :command:`ktpass` to map the dummy
    account ``kerbdummy1`` to the service principal ``HTTP/intranet.example.com@EXAMPLE.COM``. You need that service
    principal to *kerberize* host ``intranet``:
 
-   .. code-block:: Batch
+   .. code-block:: none
 
        C:\>ktpass
          -princ HTTP/intranet.example.com@EXAMPLE.COM
@@ -210,9 +214,10 @@ be ``HTTP``, so for the server ``intranet.example.com`` the required service pri
          -crypto AES256-SHA1
          -ptype KRB5_NT_PRINCIPAL
          -pass very!$longp@ssw0rd
-         -out C:\\temp\\intranetkeytab
+         -out C:\temp\intranetkeytab
 
    .. note::
+
        If you have to target Windows XP machines, ``AES256-SHA1`` is not supported. Use the legacy crypto ``RC4-HMAC-NT``
        instead.
 
@@ -221,10 +226,12 @@ be ``HTTP``, so for the server ``intranet.example.com`` the required service pri
    its owner.
 
    .. note::
+
        An alternate way to create the needed keytab file is with the help of :command:`kadmin` directly on your Linux
        machine. Please refer
-       to `www.microhowto.info <http://www.microhowto.info/howto/configure_apache_to_use_kerberos_authentication.html>`_
-       for instructions.
+       to `www.microhowto.info`_ for instructions.
+
+   .. _www.microhowto.info: http://www.microhowto.info/howto/configure_apache_to_use_kerberos_authentication.html#idp145152
 
 #. Check if the KDC sends correct tickets by checking in detail:
 
@@ -232,7 +239,6 @@ be ``HTTP``, so for the server ``intranet.example.com`` the required service pri
    - principal name in ticket **must** match the principal name in keytab
 
    .. code-block:: bash
-
 
        $ kvno HTTP/intranet.example.com@EXAMPLE.COM
        HTTP/intranet.example.com@EXAMPLE.COM: kvno = 4
@@ -268,6 +274,7 @@ be ``HTTP``, so for the server ``intranet.example.com`` the required service pri
                renew until 01/11/2014 14:11
 
    .. note::
+
        if command fails with
 
        .. code-block:: none
@@ -277,7 +284,7 @@ be ``HTTP``, so for the server ``intranet.example.com`` the required service pri
        It *may* be related to using a legacy crypto. Try to edit file :file:`/etc/krb5.conf` and update it to actively
        specify older cryptos:
 
-       .. code-block:: none
+       .. code-block:: ini
 
            [libdefaults]
                default_realm = EXAMPLE.COM
@@ -295,7 +302,7 @@ using the ``AuthType`` directive with a value of ``Kerberos``.
 
 In order to protect the whole TYPO3 website, add following snippet to your virtual host configuration:
 
-.. code-block:: ApacheConf
+.. code-block:: apache
 
 	<Location />
 		AuthType Kerberos
@@ -309,6 +316,7 @@ In order to protect the whole TYPO3 website, add following snippet to your virtu
 	</Location>
 
 .. note::
+
 	If there is a need for the web site to be accessible to its authorized users from machines that are not part on the
 	Kerberos realm, you may let ``mod_auth_kerb`` ask the user for her password using basic authentication and then
 	validate that password by attempting to authenticate to the KDC. Please note however that this is significantly less
@@ -319,9 +327,14 @@ In order to protect the whole TYPO3 website, add following snippet to your virtu
 
 	To do so, change:
 
-	.. code-block:: ApacheConf
+	.. code-block:: apache
 
 		KrbMethodK5Passwd on
+
+.. warning::
+    If you need to enable fallback to basic authentication, you should do that in conjunction with SSL since the
+    password is sent Base64-encoded, that is, as readable as clear text. The use of SSL encryption is also recommended
+    if you are using the Negotiate method.
 
 
 .. _admin-manual-kerberos-apache-basic-configuration-authorization:
@@ -332,15 +345,17 @@ Specifying a list of authorized users or user groups
 Having an authentication method does not by itself restrict access to the web site until you disallow access by
 anonymous users using ``Require`` directive:
 
-.. code-block:: ApacheConf
+.. code-block:: apache
 
 	<Location />
 		# ...
 		Require valid-user
 	</Location>
 
-Please refer to the Apache documentation if you want to restrict access to certain users or groups (you will certainly
-need to use another authorization module such as ``mod_authnz_ldap``).
+Please refer to the `Apache documentation`_ if you want to restrict access to certain users or groups (if so, you will
+certainly need to use another authorization module such as ``mod_authnz_ldap``).
+
+.. _Apache documentation: https://httpd.apache.org/docs/2.2/howto/auth.html
 
 Final step is to reload the Apache configuration:
 
@@ -350,6 +365,15 @@ Final step is to reload the Apache configuration:
 	Syntax OK
 	$ sudo service apache2 force-reload
 
+You will need to access your website from a machine within your domain or by authenticating with the basic
+authentication dialog, if enabled. TYPO3 will then read the authenticated username from ``$_SERVER['REMOTE_USER']`` and
+silently create the frontend user session, if it does not exist yet. You do not need any frontend login plugin for your
+website.
+
+.. note::
+
+    If you are not using Microsoft Internet Explorer, you may need to configure your browser to enable Single Sign-On.
+    Please refer to https://wiki.shibboleth.net/confluence/display/SHIB2/Single+sign-on+Browser+configuration.
 
 **Sources:**
 

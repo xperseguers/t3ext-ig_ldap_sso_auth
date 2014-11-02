@@ -47,6 +47,7 @@
 			<label index="search_wizard_submit_search">search</label>
 			<label index="search_wizard_result">Result</label>
 			<label index="search_wizard_no_result">No results</label>
+			<label index="search_wizard_preview">Preview mapping</label>
 
 			<label index="import_groups_be_no_groups_found">No backend groups found.</label>
 			<label index="import_groups_fe_no_groups_found">No frontend groups found.</label>

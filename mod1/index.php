@@ -595,6 +595,31 @@ CSS;
 
 			$title = $GLOBALS['LANG']->getLL('search_wizard_result');
 
+			if ($search['first_entry'] && is_array($result) && count($result) > 1) {
+				list($mode, $configKey) = explode('_', $search['table']);
+				$configuration = $mode === 'fe'
+					? tx_igldapssoauth_config::getFeConfiguration()
+					: tx_igldapssoauth_config::getBeConfiguration();
+				if ($configKey === 'users') {
+					$mapping = $configuration['users']['mapping'];
+					$blankTypo3Record = tx_igldapssoauth_typo3_user::create($search['table']);
+				} else {
+					$mapping = $configuration['groups']['mapping'];
+					$blankTypo3Record = tx_igldapssoauth_typo3_group::create($search['table']);
+				}
+				$record = tx_igldapssoauth_auth::merge($result, $blankTypo3Record, $mapping);
+
+				// Remove empty lines
+				$keys = array_keys($record);
+				foreach ($keys as $key) {
+					if (empty($record[$key])) {
+						unset($record[$key]);
+					}
+				}
+
+				$this->content .= $this->exportArrayAsTable($record, $GLOBALS['LANG']->getLL('search_wizard_preview'));
+			}
+
 			// With PHP 5.4 and above this could be renamed as
 			// ksort_recursive($result, SORT_NATURAL)
 			if (is_array($result)) {

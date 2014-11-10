@@ -40,7 +40,7 @@ $tempColumns = array(
 if (version_compare(TYPO3_version, '6.1.0', '<')) {
 	t3lib_div::loadTCA('be_groups');
 }
-t3lib_extMgm::addTCAcolumns('be_groups', $tempColumns, 1);
+t3lib_extMgm::addTCAcolumns('be_groups', $tempColumns);
 t3lib_extMgm::addToAllTCAtypes('be_groups', 'tx_igldapssoauth_dn;;;;1-1-1');
 
 //// Add fields tx_igldapssoauth_dn to be_users TCA.
@@ -58,7 +58,7 @@ t3lib_extMgm::addToAllTCAtypes('be_groups', 'tx_igldapssoauth_dn;;;;1-1-1');
 //if (version_compare(TYPO3_version, '6.1.0', '<')) {
 //	t3lib_div::loadTCA('be_users');
 //}
-//t3lib_extMgm::addTCAcolumns('be_users', $tempColumns, 1);
+//t3lib_extMgm::addTCAcolumns('be_users', $tempColumns);
 //t3lib_extMgm::addToAllTCAtypes('be_users', 'tx_igldapssoauth_dn;;;;1-1-1');
 
 // Add fields tx_igldapssoauth_dn to fe_groups TCA.
@@ -76,7 +76,7 @@ $tempColumns = array(
 if (version_compare(TYPO3_version, '6.1.0', '<')) {
 	t3lib_div::loadTCA('fe_groups');
 }
-t3lib_extMgm::addTCAcolumns('fe_groups', $tempColumns, 1);
+t3lib_extMgm::addTCAcolumns('fe_groups', $tempColumns);
 t3lib_extMgm::addToAllTCAtypes('fe_groups', 'tx_igldapssoauth_dn');
 
 //// Add fields tx_igldapssoauth_dn to fe_users TCA.
@@ -94,7 +94,7 @@ t3lib_extMgm::addToAllTCAtypes('fe_groups', 'tx_igldapssoauth_dn');
 //if (version_compare(TYPO3_version, '6.1.0', '<')) {
 //	t3lib_div::loadTCA('fe_users');
 //}
-//t3lib_extMgm::addTCAcolumns('fe_users', $tempColumns, 1);
+//t3lib_extMgm::addTCAcolumns('fe_users', $tempColumns);
 //t3lib_extMgm::addToAllTCAtypes('fe_users', 'tx_igldapssoauth_dn;;;;1-1-1');
 
 $icons = array(

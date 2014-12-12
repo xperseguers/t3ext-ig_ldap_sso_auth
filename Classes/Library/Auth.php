@@ -281,7 +281,7 @@ class tx_igldapssoauth_auth {
 	 * @param array $ldapUser LDAP user data
 	 * @param array|null $configuration Current LDAP configuration
 	 * @param string $groupTable Name of the group table (should normally be either "be_groups" or "fe_groups")
-	 * @return array|bool
+	 * @return array
 	 */
 	static public function get_user_groups($ldapUser, $configuration = NULL, $groupTable = '') {
 		if (!isset($configuration)) {
@@ -314,7 +314,7 @@ class tx_igldapssoauth_auth {
 
 		if (count($ldapGroups) === 0) {
 			if (count($requiredLDAPGroups) > 0) {
-				return FALSE;
+				return array();
 			}
 		} else {
 			// Get pid from group mapping.
@@ -328,7 +328,7 @@ class tx_igldapssoauth_auth {
 			);
 
 			if (tx_igldapssoauth_config::is_enable('IfGroupExist') && count($typo3_groups_tmp) === 0) {
-				return FALSE;
+				return array();
 			}
 
 			if (count($requiredLDAPGroups) > 0) {
@@ -343,7 +343,7 @@ class tx_igldapssoauth_auth {
 					}
 				}
 				if (!$required) {
-					return FALSE;
+					return array();
 				}
 			}
 
@@ -411,6 +411,9 @@ class tx_igldapssoauth_auth {
 	 * @return array
 	 */
 	static protected function get_ldap_groups(array $ldap_user = array()) {
+		if (empty(self::$config)) {
+			self::initializeConfiguration();
+		}
 
 		// Get groups attributes from group mapping configuration.
 		$ldap_group_attributes = tx_igldapssoauth_config::get_ldap_attributes(self::$config['groups']['mapping']);

@@ -187,7 +187,7 @@ class Tx_IgLdapSsoAuth_Utility_UserImport {
 			unset($user['__extraData']);
 		}
 
-		if ($user['uid'] == 0) {
+		if (empty($user['uid'])) {
 			// Set other necessary information for a new user
 			// First make sure to be acting in the right context
 			tx_igldapssoauth_config::setTypo3Mode($this->context);

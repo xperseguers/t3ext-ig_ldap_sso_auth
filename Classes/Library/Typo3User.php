@@ -217,10 +217,13 @@ class tx_igldapssoauth_typo3_user {
 
 		$databaseConnection = self::getDatabaseConnection();
 
+		$cleanData = $data;
+		unset($cleanData['__extraData']);
+
 		$databaseConnection->exec_UPDATEquery(
 			$table,
 			'uid=' . intval($data['uid']),
-			$data,
+			$cleanData,
 			FALSE
 		);
 		$success = $databaseConnection->sql_errno() == 0;

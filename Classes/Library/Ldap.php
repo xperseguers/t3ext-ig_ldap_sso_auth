@@ -82,7 +82,7 @@ class tx_igldapssoauth_ldap {
 	 * Returns the corresponding DN if a given user is provided, otherwise FALSE.
 	 *
 	 * @param string $username
-	 * @param string $password
+	 * @param string $password User's password. If NULL password will not be checked
 	 * @param string $basedn
 	 * @param string $filter
 	 * @return bool|string
@@ -96,7 +96,10 @@ class tx_igldapssoauth_ldap {
 			if ($password !== NULL) {
 
 				// Bind DN of user with password.
-				if (tx_igldapssoauth_utility_Ldap::bind(tx_igldapssoauth_utility_Ldap::get_dn(), $password)) {
+				if (empty($password)) {
+					self::$lastBindDiagnostic = 'Empty password provided!';
+					return FALSE;
+				} elseif (tx_igldapssoauth_utility_Ldap::bind(tx_igldapssoauth_utility_Ldap::get_dn(), $password)) {
 					$dn = tx_igldapssoauth_utility_Ldap::get_dn();
 
 					// Restore last LDAP binding
@@ -105,8 +108,7 @@ class tx_igldapssoauth_ldap {
 					self::$lastBindDiagnostic = '';
 
 					return $dn;
-				}
-				else {
+				} else {
 					$status = tx_igldapssoauth_utility_Ldap::get_status();
 					self::$lastBindDiagnostic = $status['bind']['diagnostic'];
 					return FALSE;	// Password does not match

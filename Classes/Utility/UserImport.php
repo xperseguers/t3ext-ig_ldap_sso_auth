@@ -179,6 +179,7 @@ class Tx_IgLdapSsoAuth_Utility_UserImport {
 	 * @param array $ldapUser LDAP user information
 	 * @param string $restoreBehavior How to restore users (only for update)
 	 * @return array Modified user data
+	 * @throws Exception
 	 */
 	public function import($user, $ldapUser, $restoreBehavior = 'both') {
 		// Store the extra data for later restore and remove it
@@ -194,6 +195,10 @@ class Tx_IgLdapSsoAuth_Utility_UserImport {
 			$user['username'] = tx_igldapssoauth_typo3_user::setUsername($user['username']);
 			$user['password'] = tx_igldapssoauth_typo3_user::setRandomPassword();
 			$typo3Groups = tx_igldapssoauth_auth::get_user_groups($ldapUser, $this->configuration, $this->groupTable);
+			if ($typo3Groups === NULL) {
+				// Required LDAP groups are missing: quit!
+				return $user;
+			}
 			$user = tx_igldapssoauth_typo3_user::set_usergroup($typo3Groups, $user, NULL, $this->groupTable);
 
 			$user = tx_igldapssoauth_typo3_user::add($this->userTable, $user);

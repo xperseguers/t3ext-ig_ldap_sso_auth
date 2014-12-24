@@ -69,6 +69,7 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 	 */
 	public function getUser() {
 		$user = FALSE;
+		$userRecordOrIsValid = FALSE;
 		$enableFrontendSso = TYPO3_MODE === 'FE' && (bool)$this->config['enableFESSO'] && !empty($_SERVER['REMOTE_USER']);
 
 		// This simple check is the key to prevent your log being filled up with warnings

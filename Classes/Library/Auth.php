@@ -177,6 +177,11 @@ class tx_igldapssoauth_auth {
 		// First reset the LDAP groups
 		self::$ldapGroups = NULL;
 		$typo3_groups = self::get_user_groups($ldap_user);
+		if ($typo3_groups === NULL) {
+			// Required LDAP groups are missing
+			static::$lastAuthenticationDiagnostic = 'Missing required LDAP groups.';
+			return FALSE;
+		}
 
 		if (tx_igldapssoauth_config::is_enable('IfUserExist') && !$typo3_user['uid']) {
 			return FALSE;
@@ -281,7 +286,7 @@ class tx_igldapssoauth_auth {
 	 * @param array $ldapUser LDAP user data
 	 * @param array|null $configuration Current LDAP configuration
 	 * @param string $groupTable Name of the group table (should normally be either "be_groups" or "fe_groups")
-	 * @return array
+	 * @return array|NULL Array of groups or NULL if required LDAP groups are missing
 	 */
 	static public function get_user_groups($ldapUser, $configuration = NULL, $groupTable = '') {
 		if (!isset($configuration)) {
@@ -314,7 +319,7 @@ class tx_igldapssoauth_auth {
 
 		if (count($ldapGroups) === 0) {
 			if (count($requiredLDAPGroups) > 0) {
-				return array();
+				return NULL;
 			}
 		} else {
 			// Get pid from group mapping.
@@ -327,24 +332,25 @@ class tx_igldapssoauth_auth {
 				$typo3_group_pid
 			);
 
-			if (tx_igldapssoauth_config::is_enable('IfGroupExist') && count($typo3_groups_tmp) === 0) {
-				return array();
-			}
-
 			if (count($requiredLDAPGroups) > 0) {
-				$required = FALSE;
+				$hasRequired = FALSE;
 				$group_Listuid = array();
 				foreach ($typo3_groups_tmp as $typo3_group) {
 					$group_Listuid[] = $typo3_group['uid'];
 				}
 				foreach ($requiredLDAPGroups as $uid) {
 					if (in_array($uid, $group_Listuid)) {
-						$required = TRUE;
+						$hasRequired = TRUE;
+						break;
 					}
 				}
-				if (!$required) {
-					return array();
+				if (!$hasRequired) {
+					return NULL;
 				}
+			}
+
+			if (tx_igldapssoauth_config::is_enable('IfGroupExist') && count($typo3_groups_tmp) === 0) {
+				return array();
 			}
 
 			$i = 0;

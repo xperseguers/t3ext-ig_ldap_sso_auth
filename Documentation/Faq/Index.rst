@@ -118,6 +118,21 @@ to the parent group. E.g.,* ::
 
 -------
 
+.. question
+
+**My infrastructure provides 2 LDAP servers, one containing group records, the second containing only users but with
+"memberOf" attributes corresponding to groups found on the other server. Is it possible to map those groups to the
+users?**
+
+.. answer
+
+*Yes. In order to do that, you will need to manually import the LDAP user groups into your TYPO3 website and then
+configure the global option in Extension Manager that disables the synchronization of user groups. This way, only the
+configured baseDN for groups will be compared with the groups assigned as "memberOf" attributes, without actively
+retrieving corresponding group records from the LDAP server.*
+
+-------
+
 
 .. _faq-security:
 

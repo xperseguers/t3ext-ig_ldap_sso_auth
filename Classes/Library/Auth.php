@@ -422,7 +422,13 @@ class tx_igldapssoauth_auth {
 					$membership,
 					self::$config['groups']['basedn'],
 					self::$config['groups']['filter'],
-					$ldap_group_attributes
+					$ldap_group_attributes,
+					// If groups should not get synchronized, there is no need to actively check them
+					// against the LDAP server, simply accept every groups from $membership matching
+					// the baseDN for groups, because LDAP groups not existing locally will simply be
+					// skipped and not automatically created. This allows groups to be available on a
+					// different LDAP server (see https://forge.typo3.org/issues/64141):
+					!(bool)self::$config['GroupsNotSynchronize']
 				);
 			}
 		} else {

@@ -29,9 +29,10 @@ class tx_igldapssoauth_ldap_group {
 	 * @param string $baseDn
 	 * @param string $filter
 	 * @param array $attributes
+	 * @param bool $extendedCheck TRUE if groups should be actively checked against LDAP server, FALSE to check against baseDN solely
 	 * @return array
 	 */
-	static public function select_from_membership($membership = array(), $baseDn = NULL, $filter = NULL, $attributes = array()) {
+	static public function select_from_membership($membership = array(), $baseDn = NULL, $filter = NULL, $attributes = array(), $extendedCheck = TRUE) {
 		$ldap_groups['count'] = 0;
 
 		if (!$membership) {
@@ -48,7 +49,25 @@ class tx_igldapssoauth_ldap_group {
 				// Group $groupdn does not match the required baseDn for LDAP groups
 				continue;
 			}
-			$ldap_group = tx_igldapssoauth_ldap::search($groupdn, $filter, $attributes);
+			if ($extendedCheck) {
+				$ldap_group = tx_igldapssoauth_ldap::search($groupdn, $filter, $attributes);
+			} else {
+				$parts = explode(',', $groupdn);
+				list($firstAttribute, $value) = explode('=', $parts[0]);
+				$firstAttribute = strtolower($firstAttribute);
+				$ldap_group = array(
+					0 => array(
+						0 => $firstAttribute,
+						$firstAttribute => array(
+							0 => $value,
+							'count' => 1,
+						),
+						'dn' => $groupdn,
+						'count' => 1,
+					),
+					'count' => 1,
+				);
+			}
 			if (!isset($ldap_group['count']) || $ldap_group['count'] == 0) {
 				continue;
 			}

@@ -430,6 +430,7 @@ class tx_igldapssoauth_auth {
 			if ($membership = tx_igldapssoauth_ldap_group::get_membership($ldap_user, self::$config['users']['mapping'])) {
 				$ldap_groups = tx_igldapssoauth_ldap_group::select_from_membership(
 					$membership,
+					self::$config['groups']['basedn'],
 					self::$config['groups']['filter'],
 					$ldap_group_attributes
 				);

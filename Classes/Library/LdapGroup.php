@@ -31,7 +31,17 @@
  */
 class tx_igldapssoauth_ldap_group {
 
-	static public function select_from_membership($membership = array(), $filter = NULL, $attributes = array()) {
+	/**
+	 * Returns LDAP group records based on a list of DNs provided as $membership,
+	 * taking group's baseDN and filter into consideration.
+	 *
+	 * @param array $membership
+	 * @param string $baseDn
+	 * @param string $filter
+	 * @param array $attributes
+	 * @return array
+	 */
+	static public function select_from_membership($membership = array(), $baseDn = NULL, $filter = NULL, $attributes = array()) {
 		$ldap_groups['count'] = 0;
 
 		if (!$membership) {
@@ -44,8 +54,12 @@ class tx_igldapssoauth_ldap_group {
 		unset($membership['count']);
 
 		foreach ($membership as $groupdn) {
+			if (substr($groupdn, -strlen($baseDn)) !== $baseDn) {
+				// Group $groupdn does not match the required baseDn for LDAP groups
+				continue;
+			}
 			$ldap_group = tx_igldapssoauth_ldap::search($groupdn, $filter, $attributes);
-			if ($ldap_group['count'] == 0) {
+			if (!isset($ldap_group['count']) || $ldap_group['count'] == 0) {
 				continue;
 			}
 			$ldap_groups['count']++;

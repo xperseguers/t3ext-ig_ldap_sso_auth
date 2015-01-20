@@ -235,12 +235,14 @@ class tx_igldapssoauth_config {
 	}
 
 	/**
+	 * Returns the LDAP attribute holding the username.
+	 *
 	 * @param string $filter
 	 * @return string
 	 */
 	static public function get_username_attribute($filter = NULL) {
-		if ($filter && preg_match("'([^$]*)\\(([^$]*)={USERNAME}\\)'", $filter, $username)) {
-			return $username[2];
+		if ($filter && preg_match('/(\\b.*)=\\{USERNAME\\}/', $filter, $matches)) {
+			return $matches[1];
 		}
 
 		return '';

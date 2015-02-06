@@ -153,7 +153,33 @@ you a configuration wizard asking for:
 - **The administration server.** This is typically the same as the LDAP/Active Directory server or in case of multiple
   domain controllers, this should be normally set to the master.
 
-Settings you provide are then stored within configuration file :file:`/etc/krb5.conf`.
+Settings you provide are then stored within configuration file :file:`/etc/krb5.conf` which should look like this after
+the wizard configuration:
+
+.. code-block:: none
+
+	[libdefaults]
+	    default_realm    = EXAMPLE.COM
+
+	[realms]
+	    EXAMPLE.COM = {
+	        kdc          = ws2008r2.example.com
+	        #kdc          = other-kdc.example.com
+	        #master_kdc   = ws2008r2.example.com
+	        admin_server = ws2008r2.example.com
+	    }
+
+	[domain_realm]
+	    .example.com     = EXAMPLE.COM
+
+	[logging]
+	    kdc              = SYSLOG:NOTICE
+	    admin_server     = SYSLOG:NOTICE
+	    default          = SYSLOG:NOTICE
+
+.. note::
+	A description of each section and the meaning of keys is available on
+	http://web.mit.edu/kerberos/krb5-1.5/krb5-1.5/doc/krb5-admin/krb5.conf.html.
 
 You should now check that Kerberos works on ``intranet.example.com``. Do a basic check using :command:`kinit`:
 
@@ -319,7 +345,15 @@ In order to protect the whole TYPO3 website, add following snippet to your virtu
 		KrbAuthRealms EXAMPLE.COM
 		KrbServiceName HTTP
 		Krb5Keytab /etc/apache2/http_intranet.keytab
+
+		# Disable the verification tickets against local keytab to
+		# prevent KDC spoofing attacks
+		# It should be used only for testing purposes
+		KrbVerifyKDC off
 	</Location>
+
+.. note::
+	Other configuration options are available on http://modauthkerb.sourceforge.net/configure.html.
 
 .. note::
 
@@ -404,13 +438,14 @@ Apache's error log shows:
 
 .. code-block:: none
 
-	[debug] src/mod_auth_kerb.c(1641): [client X.X.X.X] kerb_authenticate_user entered with user (NULL) and auth_type Kerberos
-	[debug] src/mod_auth_kerb.c(1249): [client X.X.X.X] Acquiring creds for HTTP@intranet.example.com
-	[debug] src/mod_auth_kerb.c(1395): [client X.X.X.X] Verifying client data using KRB5 GSS-API
-	[debug] src/mod_auth_kerb.c(1411): [client X.X.X.X] Client didn't delegate us their credential
-	[debug] src/mod_auth_kerb.c(1430): [client X.X.X.X] GSS-API token of length 9 bytes will be sent back
-	[debug] src/mod_auth_kerb.c(1110): [client X.X.X.X] GSS-API major_status:000d0000, minor_status:000186a5
-	[error] [client X.X.X.X] gss_accept_sec_context() failed: Unspecified GSS failure.  Minor code may provide more information (, )
+	[debug] [client X.X.X.X] kerb_authenticate_user entered with user (NULL) and auth_type Kerberos
+	[debug] [client X.X.X.X] Acquiring creds for HTTP@intranet.example.com
+	[debug] [client X.X.X.X] Verifying client data using KRB5 GSS-API
+	[debug] [client X.X.X.X] Client didn't delegate us their credential
+	[debug] [client X.X.X.X] GSS-API token of length 9 bytes will be sent back
+	[debug] [client X.X.X.X] GSS-API major_status:000d0000, minor_status:000186a5
+	[error] [client X.X.X.X] gss_accept_sec_context() failed: Unspecified GSS failure.
+	                         Minor code may provide more information (, )
 
 It turns out that although the domain controller is MS Windows Server 2008r2 and the domain machine is using MS Windows
 8.1, the account does not support Kerberos AES 256 bit encryption by default.
@@ -427,12 +462,12 @@ Apache's error log when everything is working properly:
 
 .. code-block:: none
 
-	[debug] src/mod_auth_kerb.c(1641): [client X.X.X.X] kerb_authenticate_user entered with user (NULL) and auth_type Kerberos
-	[debug] src/mod_auth_kerb.c(1249): [client X.X.X.X] Acquiring creds for HTTP@intranet.example.com
-	[debug] src/mod_auth_kerb.c(1395): [client X.X.X.X] Verifying client data using KRB5 GSS-API
-	[debug] src/mod_auth_kerb.c(1411): [client X.X.X.X] Client didn't delegate us their credential
-	[debug] src/mod_auth_kerb.c(1430): [client X.X.X.X] GSS-API token of length 185 bytes will be sent back
-	[debug] src/mod_auth_kerb.c(1547): [client X.X.X.X] kerb_authenticate_a_name_to_local_name einstein@EXAMPLE.COM -> einstein
+	[debug] [client X.X.X.X] kerb_authenticate_user entered with user (NULL) and auth_type Kerberos
+	[debug] [client X.X.X.X] Acquiring creds for HTTP@intranet.example.com
+	[debug] [client X.X.X.X] Verifying client data using KRB5 GSS-API
+	[debug] [client X.X.X.X] Client didn't delegate us their credential
+	[debug] [client X.X.X.X] GSS-API token of length 185 bytes will be sent back
+	[debug] [client X.X.X.X] kerb_authenticate_a_name_to_local_name einstein@EXAMPLE.COM -> einstein
 
 .. hint::
 	In case you need/prefer it, a hidden option of ``mod_auth_kerb`` lets you automatically strip @EXAMPLE.COM (the

@@ -1,5 +1,5 @@
 <?php
-if (!defined ('TYPO3_MODE')) die ('Access denied.');
+defined('TYPO3_MODE') or die();
 
 $TCA['tx_igldapssoauth_config'] = array(
 	'ctrl' => $TCA['tx_igldapssoauth_config']['ctrl'],

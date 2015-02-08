@@ -1,7 +1,5 @@
 <?php
-if (!defined ('TYPO3_MODE')) {
-	die ('Access denied.');
-}
+defined('TYPO3_MODE') or die();
 
 // Init table configuration array for tx_igldapssoauth_config.
 $GLOBALS['TCA']['tx_igldapssoauth_config'] = array(

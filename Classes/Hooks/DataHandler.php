@@ -12,6 +12,8 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Hook into \TYPO3\CMS\Core\DataHandling\DataHandler.
  *
@@ -28,10 +30,10 @@ class Tx_IgLdapSsoAuth_Hooks_DataHandler {
 	 * @param string $table
 	 * @param mixed $id
 	 * @param array $fieldArray
-	 * @param t3lib_TCEmain $pObj
+	 * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj
 	 * @return void
 	 */
-	public function processDatamap_afterDatabaseOperations($operation, $table, $id, array $fieldArray, t3lib_TCEmain $pObj) {
+	public function processDatamap_afterDatabaseOperations($operation, $table, $id, array $fieldArray, \TYPO3\CMS\Core\DataHandling\DataHandler $pObj) {
 		if ($table !== 'tx_igldapssoauth_config') {
 			// Early return
 			return;
@@ -40,7 +42,7 @@ class Tx_IgLdapSsoAuth_Hooks_DataHandler {
 			$id = $pObj->substNEWwithIDs[$id];
 		}
 
-		$row = t3lib_BEfunc::getRecord($table, $id);
+		$row = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord($table, $id);
 		if ($row['group_membership'] == tx_igldapssoauth_config::GROUP_MEMBERSHIP_FROM_MEMBER) {
 			$warningMessageKeys = array();
 
@@ -60,14 +62,19 @@ class Tx_IgLdapSsoAuth_Hooks_DataHandler {
 			}
 
 			foreach ($warningMessageKeys as $key) {
-				$flashMessage = t3lib_div::makeInstance(
-					't3lib_FlashMessage',
+				/** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
+				$flashMessage = GeneralUtility::makeInstance(
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					$GLOBALS['LANG']->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:' . $key, TRUE),
 					'',
-					t3lib_FlashMessage::WARNING,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
 					TRUE
 				);
-				t3lib_FlashMessageQueue::addMessage($flashMessage);
+				/** @var $flashMessageService \TYPO3\CMS\Core\Messaging\FlashMessageService */
+				$flashMessageService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
+				/** @var $defaultFlashMessageQueue \TYPO3\CMS\Core\Messaging\FlashMessageQueue */
+				$defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
+				$defaultFlashMessageQueue->enqueue($flashMessage);
 			}
 		}
 	}

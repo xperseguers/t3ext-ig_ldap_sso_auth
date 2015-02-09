@@ -15,6 +15,8 @@
 // Make sure that we are executed only in TYPO3 context
 defined('TYPO3_MODE') or die();
 
+use TYPO3\CMS\Core\Messaging\FlashMessage;
+
 /**
  * Class providing configuration checks for ig_ldap_sso_auth.
  *
@@ -28,7 +30,7 @@ class tx_igldapssoauth_emconfhelper {
 	/**
 	 * @var integer
 	 */
-	protected $errorType = t3lib_FlashMessage::OK;
+	protected $errorType = FlashMessage::OK;
 
 	/**
 	 * @var string
@@ -116,28 +118,28 @@ EOT;
 	protected function setErrorLevel($level) {
 		switch ($level) {
 			case 'error':
-				$this->errorType = t3lib_FlashMessage::ERROR;
+				$this->errorType = FlashMessage::ERROR;
 				$this->header = 'Errors found in your configuration';
 				$this->preText = '<br />';
 				break;
 			case 'warning':
-				if ($this->errorType < t3lib_FlashMessage::ERROR) {
-					$this->errorType = t3lib_FlashMessage::WARNING;
+				if ($this->errorType < FlashMessage::ERROR) {
+					$this->errorType = FlashMessage::WARNING;
 					$this->header = 'Warnings about your configuration';
 					$this->preText = '<br />';
 				}
 				break;
 			case 'info':
-				if ($this->errorType < t3lib_FlashMessage::WARNING) {
-					$this->errorType = t3lib_FlashMessage::INFO;
+				if ($this->errorType < FlashMessage::WARNING) {
+					$this->errorType = FlashMessage::INFO;
 					$this->header = 'Additional information';
 					$this->preText = '<br />';
 				}
 				break;
 			case 'ok':
 				// TODO: Remove INFO condition as it has lower importance
-				if ($this->errorType < t3lib_FlashMessage::WARNING && $this->errorType != t3lib_FlashMessage::INFO) {
-					$this->errorType = t3lib_FlashMessage::OK;
+				if ($this->errorType < FlashMessage::WARNING && $this->errorType != FlashMessage::INFO) {
+					$this->errorType = FlashMessage::OK;
 					$this->header = 'No errors were found';
 					$this->preText = 'Configuration has been configured correctly.<br />';
 				}
@@ -168,7 +170,13 @@ EOT;
 		}
 
 		$message = $this->preText . $message;
-		$flashMessage = t3lib_div::makeInstance('t3lib_FlashMessage', $message, $this->header, $this->errorType);
+		/** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
+		$flashMessage = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+			'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+			$message,
+			$this->header,
+			$this->errorType
+		);
 
 		return $flashMessage->render();
 	}
@@ -195,7 +203,7 @@ EOT;
 			// TODO: Explain
 			$parts = explode('.', $key, 2);
 
-			if (count($parts) == 2) {
+			if (count($parts) === 2) {
 				// TODO: Explain
 				$value = $this->processPostData(array($parts[1] => $value));
 				$postArray[$parts[0] . '.'] = array_merge((array) $postArray[$parts[0] . '.'], $value);

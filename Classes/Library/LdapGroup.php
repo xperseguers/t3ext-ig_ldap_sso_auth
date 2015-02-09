@@ -79,14 +79,6 @@ class tx_igldapssoauth_ldap_group {
 	}
 
 	/**
-	 * @deprecated since version 1.3, this method will be removed in version 1.5, use tx_igldapssoauth_ldap_group::selectFromUser() instead.
-	 */
-	static public function select_from_userdn($userdn = NULL, $basedn = NULL, $filter = NULL, $attributes = array()) {
-		t3lib_div::logDeprecatedFunction();
-		return tx_igldapssoauth_ldap::search($basedn, str_replace('{USERDN}', tx_igldapssoauth_ldap::escapeDnForFilter($userdn), $filter), $attributes);
-	}
-
-	/**
 	 * Returns groups associated to a given user (identified either by his DN or his uid attribute).
 	 *
 	 * @param string $baseDn

@@ -12,6 +12,8 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Hook into \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList and
  * \TYPO3\CMS\Backend\Utility\IconUtility to visually change
@@ -22,7 +24,7 @@
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class Tx_IgLdapSsoAuth_Hooks_DatabaseRecordListIconUtility implements t3lib_localRecordListGetTableHook {
+class Tx_IgLdapSsoAuth_Hooks_DatabaseRecordListIconUtility implements \TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface {
 
 	/**
 	 * Modifies the DB list query.
@@ -31,12 +33,12 @@ class Tx_IgLdapSsoAuth_Hooks_DatabaseRecordListIconUtility implements t3lib_loca
 	 * @param integer $pageId The record's page ID
 	 * @param string $additionalWhereClause An additional WHERE clause
 	 * @param string $selectedFieldsList Comma separated list of selected fields
-	 * @param localRecordList $parentObject Parent localRecordList object
+	 * @param \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList $parentObject
 	 * @return void
 	 * @see \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList::getTable()
 	 */
 	public function getDBlistQuery($table, $pageId, &$additionalWhereClause, &$selectedFieldsList, &$parentObject) {
-		if (t3lib_div::inList('be_groups,be_users,fe_groups,fe_users', $table)) {
+		if (GeneralUtility::inList('be_groups,be_users,fe_groups,fe_users', $table)) {
 			$selectedFieldsList .= ',tx_igldapssoauth_dn';
 		}
 	}
@@ -51,7 +53,7 @@ class Tx_IgLdapSsoAuth_Hooks_DatabaseRecordListIconUtility implements t3lib_loca
 	 * @see \TYPO3\CMS\Backend\Utility\IconUtility::mapRecordOverlayToSpriteIconName()
 	 */
 	public function overrideIconOverlay($table, array $row, array &$status) {
-		if (t3lib_div::inList('be_groups,be_users,fe_groups,fe_users', $table)) {
+		if (GeneralUtility::inList('be_groups,be_users,fe_groups,fe_users', $table)) {
 			$status['is_ldap_record'] = !empty($row['tx_igldapssoauth_dn']);
 		}
 	}

@@ -21,6 +21,9 @@ $GLOBALS['BE_USER']->modAccess($MCONF, 1);
 
 // DEFAULT initialization of a module [END]
 
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Module 'LDAP configuration' for the 'ig_ldap_sso_auth' extension.
  *
@@ -29,7 +32,7 @@ $GLOBALS['BE_USER']->modAccess($MCONF, 1);
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class tx_igldapssoauth_module1 extends t3lib_SCbase {
+class tx_igldapssoauth_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 
 	const FUNCTION_SHOW_STATUS = 1;
 	const FUNCTION_SEARCH_WIZARD = 2;
@@ -91,20 +94,11 @@ class tx_igldapssoauth_module1 extends t3lib_SCbase {
 	 * @return void
 	 */
 	public function main() {
-		if (!version_compare(TYPO3_version, '4.5.99', '>')) {
-			// See bug http://forge.typo3.org/issues/31697
-			$GLOBALS['TYPO3_CONF_VARS']['BE']['debug'] = 1;
-		}
-		if (version_compare(TYPO3_version, '6.1.0', '>=')) {
-			$this->doc = t3lib_div::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
-		} else {
-			$this->doc = t3lib_div::makeInstance('template');
-		}
-		if (version_compare(TYPO3_branch, '6.2', '>=')) {
-			$this->doc->setModuleTemplate(t3lib_extMgm::extPath($this->extKey) . 'mod1/mod_template.html');
-		} else {
-			$this->doc->setModuleTemplate(t3lib_extMgm::extPath($this->extKey) . 'mod1/mod_template_v45-61.html');
-		}
+		// See bug http://forge.typo3.org/issues/31697
+		$GLOBALS['TYPO3_CONF_VARS']['BE']['debug'] = 1;
+
+		$this->doc = GeneralUtility::makeInstance('TYPO3\\CMS\\Backend\\Template\\DocumentTemplate');
+		$this->doc->setModuleTemplate(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($this->extKey) . 'mod1/mod_template.html');
 
 		$this->doc->backPath = $GLOBALS['BACK_PATH'];
 		$this->doc->inDocStylesArray[] = <<<CSS
@@ -145,15 +139,6 @@ CSS;
 		if ($GLOBALS['BE_USER']->user['admin']) {
 			$this->doc->form = '<form action="" method="post">';
 
-			if (version_compare(TYPO3_branch, '6.2', '<')) {
-				// override the default jumpToUrl
-				$this->doc->JScodeArray['jumpToUrl'] = '
-					function jumpToUrl(URL) {
-						window.location.href = URL;
-					}
-				';
-			}
-
 			// Render content:
 			$this->moduleContent();
 		} else {
@@ -163,7 +148,7 @@ CSS;
 		}
 
 		// Compile document
-		$markers['FUNC_MENU'] = $this->doc->funcMenu('', t3lib_BEfunc::getFuncMenu($this->id, 'SET[function]', $this->MOD_SETTINGS['function'], $this->MOD_MENU['function']));
+		$markers['FUNC_MENU'] = $this->doc->funcMenu('', BackendUtility::getFuncMenu($this->id, 'SET[function]', $this->MOD_SETTINGS['function'], $this->MOD_MENU['function']));
 		$markers['CONTENT'] = $this->content;
 		$this->content = '';
 
@@ -180,10 +165,10 @@ CSS;
 	 * @return void
 	 */
 	protected function moduleContent() {
-		$thisUrl = t3lib_BEfunc::getModuleUrl($this->MCONF['name']);
+		$thisUrl = BackendUtility::getModuleUrl($this->MCONF['name']);
 
 		/** @var Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository $configurationRepository */
-		$configurationRepository = t3lib_div::makeInstance('Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository');
+		$configurationRepository = GeneralUtility::makeInstance('Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository');
 		$configurationRecords = $configurationRepository->fetchAll();
 
 		if (count($configurationRecords) === 0) {
@@ -194,27 +179,24 @@ CSS;
 				'http://docs.typo3.org/typo3cms/extensions/ig_ldap_sso_auth/AdministratorManual/Index.html',
 				$newUrl
 			);
-			$flashMessage = t3lib_div::makeInstance(
-				't3lib_FlashMessage',
+			$this->enqueueFlashMessage(
 				$message,
 				$GLOBALS['LANG']->getLL('configuration_missing.title'),
-				t3lib_FlashMessage::WARNING,
-				TRUE
+				\TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
 			);
-			t3lib_FlashMessageQueue::addMessage($flashMessage);
 			return;
 		}
 
 		$this->content .= $this->doc->header($GLOBALS['LANG']->getLL('title'));
 
-		$config = t3lib_div::_GET('config');
+		$config = GeneralUtility::_GET('config');
 		// Reset selected configuration
 		$this->ldapConfiguration = NULL;
 
 		if (count($configurationRecords) === 1) {
 			$configurationSelector = htmlspecialchars($configurationRecords[0]['name']);
 		} else {
-			$thisFullUrl = t3lib_div::getIndpEnv('TYPO3_SITE_URL') . 'typo3/' . $thisUrl;
+			$thisFullUrl = GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . 'typo3/' . $thisUrl;
 			$configurationSelector = '<select onchange="document.location=this.value;">';
 
 			foreach ($configurationRecords as $configurationRecord) {
@@ -238,7 +220,7 @@ CSS;
 		$thisUrl .= '&config=' . $uid;
 		$editUrl = 'alt_doc.php?returnUrl=' . urlencode($thisUrl) . '&amp;edit[tx_igldapssoauth_config][' . $uid . ']=edit';
 		$editLink = sprintf(
-			' <a href="%s" title="uid=%s">' . t3lib_iconWorks::getSpriteIcon('actions-document-open') . '</a>',
+			' <a href="%s" title="uid=%s">' . \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-open') . '</a>',
 			$editUrl,
 			$uid
 		);
@@ -252,7 +234,7 @@ CSS;
 				$this->show_status();
 				break;
 			case self::FUNCTION_SEARCH_WIZARD:
-				$this->search_wizard(t3lib_div::_GP('search'));
+				$this->search_wizard(GeneralUtility::_GP('search'));
 				break;
 			case self::FUNCTION_IMPORT_GROUPS_BE:
 				$this->import_groups('be');
@@ -284,7 +266,7 @@ CSS;
 		);
 
 		// CSH
-		$buttons['csh'] = t3lib_BEfunc::cshItem('_MOD_web_func', '', $GLOBALS['BACK_PATH']);
+		$buttons['csh'] = BackendUtility::cshItem('_MOD_web_func', '', $GLOBALS['BACK_PATH']);
 
 		// Shortcut
 		if ($GLOBALS['BE_USER']->mayMakeShortcut()) {
@@ -319,14 +301,19 @@ CSS;
 				tx_igldapssoauth_ldap::connect($ldapConfiguration);
 			} catch (Exception $e) {
 				// Possible known exception: 1409566275, LDAP extension is not available for PHP
-				$flashMessage = t3lib_div::makeInstance(
-					't3lib_FlashMessage',
+				/** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
+				$flashMessage = GeneralUtility::makeInstance(
+					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 					$e->getMessage(),
 					'Error ' . $e->getCode(),
-					t3lib_FlashMessage::ERROR,
+					\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR,
 					TRUE
 				);
-				t3lib_FlashMessageQueue::addMessage($flashMessage);
+				/** @var $flashMessageService \TYPO3\CMS\Core\Messaging\FlashMessageService */
+				$flashMessageService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
+				/** @var $defaultFlashMessageQueue \TYPO3\CMS\Core\Messaging\FlashMessageQueue */
+				$defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
+				$defaultFlashMessageQueue->enqueue($flashMessage);
 			}
 
 			$ldapConfiguration['password'] = $ldapConfiguration['password'] ? '********' : NULL;
@@ -369,7 +356,7 @@ CSS;
 	 */
 	protected function exportArrayAsTable($configuration, $title, $typo3_mode = '') {
 		$groupKeys = array('requiredLDAPGroups', 'updateAdminAttribForGroups', 'assignGroups');
-		$iconPath = t3lib_extMgm::extRelPath($this->extKey) . 'Resources/Public/Icons/';
+		$iconPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($this->extKey) . 'Resources/Public/Icons/';
 
 		$out = array();
 		$out[] = '<table cellspacing="0" cellpadding="0" border="0" class="typo3-dblist">';
@@ -390,7 +377,7 @@ CSS;
 				if (!empty($key) && in_array($key, $groupKeys)) {
 					$table = $typo3_mode === 'BE' ? 'be_groups' : 'fe_groups';
 					if ($value != '0') {
-						$uids = t3lib_div::intExplode(',', $value, TRUE);
+						$uids = GeneralUtility::intExplode(',', $value, TRUE);
 						$rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
 							'uid, title',
 							$table,
@@ -405,7 +392,7 @@ CSS;
 						$value = '<em>' . htmlspecialchars($GLOBALS['LANG']->getLL('show_status_title_no_group')) . '</em>';
 					}
 				} elseif (is_array($value)) {
-					$value = t3lib_utility_Debug::viewArray($value);
+					$value = \TYPO3\CMS\Core\Utility\DebugUtility::viewArray($value);
 				} elseif ($typo3_mode === 'BE' || $typo3_mode === 'FE' || $key === 'tls') {
 					// This is a boolean flag
 					$value = $value ? '1' : '0';
@@ -493,16 +480,13 @@ CSS;
 
 		try {
 			$success = tx_igldapssoauth_ldap::connect(tx_igldapssoauth_config::getLdapConfiguration());
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			// Possible known exception: 1409566275, LDAP extension is not available for PHP
-			$flashMessage = t3lib_div::makeInstance(
-				't3lib_FlashMessage',
+			$this->enqueueFlashMessage(
 				$e->getMessage(),
 				'Error ' . $e->getCode(),
-				t3lib_FlashMessage::ERROR,
-				TRUE
+				\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
 			);
-			t3lib_FlashMessageQueue::addMessage($flashMessage);
 			$success = FALSE;
 		}
 		if ($success) {
@@ -619,9 +603,7 @@ CSS;
 			tx_igldapssoauth_ldap::disconnect();
 
 		} else {
-
-			$this->content .= '<h2>' . $GLOBALS['LANG']->getLL('search_wizard_ldap_status') . '</h2><hr />' . t3lib_utility_Debug::viewArray(tx_igldapssoauth_ldap::get_status());
-
+			$this->content .= '<h2>' . $GLOBALS['LANG']->getLL('search_wizard_ldap_status') . '</h2><hr />' . \TYPO3\CMS\Core\Utility\DebugUtility::viewArray(tx_igldapssoauth_ldap::get_status());
 		}
 
 	}
@@ -657,7 +639,7 @@ CSS;
 			return;
 		}
 
-		$import_groups = t3lib_div::_GP('import_groups');
+		$import_groups = GeneralUtility::_GP('import_groups');
 		if (!is_array($import_groups)) {
 			$import_groups = array();
 		}
@@ -727,7 +709,7 @@ CSS;
 			$typo3_group = tx_igldapssoauth_auth::merge($ldap_group, $typo3_groups[$index], $config['groups']['mapping']);
 
 			// Import the group using information from LDAP
-			if (t3lib_div::inArray($import_groups, $typo3_group['tx_igldapssoauth_dn'])) {
+			if (GeneralUtility::inArray($import_groups, $typo3_group['tx_igldapssoauth_dn'])) {
 				unset($typo3_group['parentGroup']);
 				if ($typo3_group['uid'] == 0) {
 					$typo3_group = tx_igldapssoauth_typo3_group::add($table, $typo3_group);
@@ -825,14 +807,11 @@ HTML;
 		tx_igldapssoauth_ldap::disconnect();
 
 		if ($groupsAdded > 0 || $groupsUpdated > 0) {
-			$flashMessage = t3lib_div::makeInstance(
-				't3lib_FlashMessage',
+			$this->enqueueFlashMessage(
 				sprintf($GLOBALS['LANG']->getLL('import_groups_status'), $groupsAdded, $groupsUpdated),
 				$GLOBALS['LANG']->getLL('import_groups_' . $typo3_mode),
-				t3lib_FlashMessage::INFO,
-				TRUE
+				\TYPO3\CMS\Core\Messaging\FlashMessage::INFO
 			);
-			t3lib_FlashMessageQueue::addMessage($flashMessage);
 		}
 	}
 
@@ -845,9 +824,9 @@ HTML;
 
 			if (is_array($typo3ParentGroup[0])) {
 				if (!empty($typo3ParentGroup[0]['subgroup'])) {
-					$subGroupList = t3lib_div::trimExplode(',', $typo3ParentGroup[0]['subgroup']);
+					$subGroupList = GeneralUtility::trimExplode(',', $typo3ParentGroup[0]['subgroup']);
 				}
-				//if(!is_array($subGroupList)||!in_array($childUid,$subGroupList)){
+				//if (!is_array($subGroupList) || !in_array($childUid,$subGroupList)) {
 				$subGroupList[] = $childUid;
 				$subGroupList = array_unique($subGroupList);
 				$typo3ParentGroup[0]['subgroup'] = implode(',', $subGroupList);
@@ -913,13 +892,13 @@ HTML;
 		}
 
 		// Get list of users to import
-		$importUsers = t3lib_div::_GP('import_users');
+		$importUsers = GeneralUtility::_GP('import_users');
 		if (!is_array($importUsers)) {
 			$importUsers = array();
 		}
 
 		/** @var Tx_IgLdapSsoAuth_Utility_UserImport $importUtility */
-		$importUtility = t3lib_div::makeInstance(
+		$importUtility = GeneralUtility::makeInstance(
 			'Tx_IgLdapSsoAuth_Utility_UserImport',
 			$this->ldapConfiguration['uid'],
 			$typo3Mode
@@ -1049,18 +1028,15 @@ HTML;
 		$usersAdded = $importUtility->getUsersAdded();
 		$usersUpdated = $importUtility->getUsersUpdated();
 		if ($usersAdded > 0 || $usersUpdated > 0) {
-			$flashMessage = t3lib_div::makeInstance(
-				't3lib_FlashMessage',
+			$this->enqueueFlashMessage(
 				sprintf(
 					$GLOBALS['LANG']->getLL('import_users_status'),
 					$usersAdded,
 					$usersUpdated
 				),
 				$GLOBALS['LANG']->getLL('import_users_' . $typo3Mode),
-				t3lib_FlashMessage::INFO,
-				TRUE
+				\TYPO3\CMS\Core\Messaging\FlashMessage::INFO
 			);
-			t3lib_FlashMessageQueue::addMessage($flashMessage);
 		}
 	}
 
@@ -1076,7 +1052,7 @@ HTML;
 	/**
 	 * Returns the database connection.
 	 *
-	 * @return t3lib_DB
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
 	 */
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
@@ -1090,31 +1066,48 @@ HTML;
 	protected function checkLdapConnection() {
 		try {
 			$success = tx_igldapssoauth_ldap::connect(tx_igldapssoauth_config::getLdapConfiguration());
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			// Possible known exception: 1409566275, LDAP extension is not available for PHP
-			$flashMessage = t3lib_div::makeInstance(
-				't3lib_FlashMessage',
+			$this->enqueueFlashMessage(
 				$e->getMessage(),
 				'Error ' . $e->getCode(),
-				t3lib_FlashMessage::ERROR,
-				TRUE
+				\TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
 			);
-			t3lib_FlashMessageQueue::addMessage($flashMessage);
 			return FALSE;
 		}
 		return $success;
 	}
+
+	/**
+	 * Enqueues a flash message.
+	 *
+	 * @param string $message
+	 * @param string $title
+	 * @param int $severity
+	 * @throws \TYPO3\CMS\Core\Exception
+	 */
+	protected function enqueueFlashMessage($message, $title, $severity) {
+		/** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
+		$flashMessage = GeneralUtility::makeInstance(
+			'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+			$message,
+			$title,
+			$severity,
+			TRUE
+		);
+
+		/** @var $flashMessageService \TYPO3\CMS\Core\Messaging\FlashMessageService */
+		$flashMessageService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
+		/** @var $defaultFlashMessageQueue \TYPO3\CMS\Core\Messaging\FlashMessageQueue */
+		$defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
+		$defaultFlashMessageQueue->enqueue($flashMessage);
+	}
+
 }
 
 // Make instance:
 /** @var $SOBE tx_igldapssoauth_module1 */
-$SOBE = t3lib_div::makeInstance('tx_igldapssoauth_module1');
+$SOBE = GeneralUtility::makeInstance('tx_igldapssoauth_module1');
 $SOBE->init();
-
-// Include files?
-foreach ($SOBE->include_once as $INC_FILE) {
-	include_once($INC_FILE);
-}
-
 $SOBE->main();
 $SOBE->printContent();

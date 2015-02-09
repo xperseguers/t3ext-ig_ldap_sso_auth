@@ -12,6 +12,8 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Synchronizes users for selected context and configuration.
  *
@@ -21,7 +23,7 @@
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class Tx_IgLdapSsoAuth_Task_ImportUsers extends tx_scheduler_Task {
+class Tx_IgLdapSsoAuth_Task_ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 
 	/**
 	 * Synchronization context (may be FE, BE or both).
@@ -56,14 +58,14 @@ class Tx_IgLdapSsoAuth_Task_ImportUsers extends tx_scheduler_Task {
 	/**
 	 * Performs the synchronization of LDAP users according to selected parameters.
 	 *
-	 * @throws Exception
+	 * @throws \Exception
 	 * @return boolean Returns TRUE on successful execution, FALSE on error
 	 */
 	public function execute() {
 
 		// Assemble a list of configuration and contexts for import
 		/** @var Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository $configurationRepository */
-		$configurationRepository = t3lib_div::makeInstance('Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository');
+		$configurationRepository = GeneralUtility::makeInstance('Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository');
 		if (empty($this->configuration)) {
 			$ldapConfigurations = $configurationRepository->fetchAll();
 		} else {
@@ -88,7 +90,7 @@ class Tx_IgLdapSsoAuth_Task_ImportUsers extends tx_scheduler_Task {
 		foreach ($ldapConfigurations as $aConfiguration) {
 			foreach ($executionContexts as $aContext) {
 				/** @var Tx_IgLdapSsoAuth_Utility_UserImport $importUtility */
-				$importUtility = t3lib_div::makeInstance(
+				$importUtility = GeneralUtility::makeInstance(
 					'Tx_IgLdapSsoAuth_Utility_UserImport',
 					$aConfiguration['uid'],
 					$aContext
@@ -136,7 +138,7 @@ class Tx_IgLdapSsoAuth_Task_ImportUsers extends tx_scheduler_Task {
 		// If some failures were registered, rollback the whole transaction and report error
 		if ($failures > 0) {
 			$this->getDatabaseConnection()->sql_query('ROLLBACK');
-			throw new Exception(
+			throw new \Exception(
 				'Some or all imports failed. Synchronisation was aborted. Check your settings or your network connections',
 				1410774015
 			);
@@ -250,7 +252,7 @@ class Tx_IgLdapSsoAuth_Task_ImportUsers extends tx_scheduler_Task {
 	 */
 	public function getConfigurationName() {
 		/** @var Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository $configurationRepository */
-		$configurationRepository = t3lib_div::makeInstance('Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository');
+		$configurationRepository = GeneralUtility::makeInstance('Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository');
 		$ldapConfiguration = $configurationRepository->fetchByUid($this->configuration);
 		if ($ldapConfiguration === NULL) {
 			return '';
@@ -262,7 +264,7 @@ class Tx_IgLdapSsoAuth_Task_ImportUsers extends tx_scheduler_Task {
 	/**
 	 * Returns the database connection.
 	 *
-	 * @return t3lib_DB
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
 	 */
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];

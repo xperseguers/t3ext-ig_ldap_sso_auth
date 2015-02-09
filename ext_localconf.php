@@ -35,12 +35,6 @@ if (is_array($subTypesArr)) {
 // Register hook for \TYPO3\CMS\Core\DataHandling\DataHandler
 $TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:' . $_EXTKEY . '/Classes/Hooks/DataHandler.php:Tx_IgLdapSsoAuth_Hooks_DataHandler';
 
-// Register the synchronize users Scheduler task
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_igldapssoauth_scheduler_synchroniseusers'] = array(
-	'extension'   => $_EXTKEY,
-	'title'       => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:synchro.name',
-	'description' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:synchro.description'
-);
 // Register the import users Scheduler task
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_IgLdapSsoAuth_Task_ImportUsers'] = array(
 	'extension'			=> $_EXTKEY,
@@ -49,7 +43,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_IgLdapSsoAut
 	'additionalFields'	=> 'Tx_IgLdapSsoAuth_Task_ImportUsersAdditionalFields'
 );
 
-t3lib_extMgm::addService($_EXTKEY,  'auth' /* sv type */,  'tx_igldapssoauth_sv1' /* sv key */,
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService($_EXTKEY,  'auth' /* sv type */,  'tx_igldapssoauth_sv1' /* sv key */,
 	array(
 		'title' => 'Authentication service',
 		'description' => 'Authentication service for LDAP and SSO environment.',
@@ -63,10 +57,10 @@ t3lib_extMgm::addService($_EXTKEY,  'auth' /* sv type */,  'tx_igldapssoauth_sv1
 		'os' => '',
 		'exec' => '',
 
-		'classFile' => t3lib_extMgm::extPath($_EXTKEY) . 'Classes/Service/Sv1.php',
+		'classFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Classes/Service/Sv1.php',
 		'className' => 'tx_igldapssoauth_sv1',
 	)
 );
 
 // User have save doc new bouton
-t3lib_extMgm::addUserTSConfig('options.saveDocNew.tx_igldapssoauth_config=1');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('options.saveDocNew.tx_igldapssoauth_config=1');

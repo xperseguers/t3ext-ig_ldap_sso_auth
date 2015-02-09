@@ -99,7 +99,7 @@ class Tx_IgLdapSsoAuth_Utility_Debug {
 	 * @api
 	 */
 	static public function log($message, $severity, $dataVar = FALSE) {
-		t3lib_div::devLog($message, 'ig_ldap_sso_auth', $severity, $dataVar);
+		\TYPO3\CMS\Core\Utility\GeneralUtility::devLog($message, 'ig_ldap_sso_auth', $severity, $dataVar);
 	}
 
 }

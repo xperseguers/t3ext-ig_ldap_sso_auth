@@ -25,10 +25,10 @@ class Tx_IgLdapSsoAuth_Tca_Form_Suggest {
 	 * Renders a suggestion for the mapping.
 	 *
 	 * @param array $PA
-	 * @param t3lib_TCEforms $pObj
+	 * @param \TYPO3\CMS\Backend\Form\FormEngine $pObj
 	 * @return string
 	 */
-	public function render(array &$PA, t3lib_TCEforms $pObj) {
+	public function render(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
 		$serverType = (int)$PA['row']['ldap_server'];
 
 		if (substr($PA['field'], -7) === '_basedn') {
@@ -38,9 +38,8 @@ class Tx_IgLdapSsoAuth_Tca_Form_Suggest {
 		}
 
 		if (!empty($suggestion)) {
-			$topMargin = version_compare(TYPO3_version, '6.0.0', '<') ? '-1.7em' : '-2.5em';
-			$out[] = '<div style="margin:' . $topMargin . ' 0 0 1em;">';
-			$out[] = '<b>' . $GLOBALS['LANG']->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:suggestion.server.' . $serverType, TRUE) . '</b>';
+			$out[] = '<div style="margin:-2.5em 0 0 1em;">';
+			$out[] = '<strong>' . $GLOBALS['LANG']->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:suggestion.server.' . $serverType, TRUE) . '</strong>';
 
 			$suggestId = 'tx_igldapssoauth_suggest_' . $PA['field'];
 			$out[] = '<pre style="margin:1em 0;" id="' . $suggestId . '">';
@@ -95,7 +94,7 @@ class Tx_IgLdapSsoAuth_Tca_Form_Suggest {
 			$table = substr($PA['field'], 0, -7);
 		}
 
-		$templatePath = t3lib_extMgm::extPath('ig_ldap_sso_auth') . 'Resources/Private/Templates/';
+		$templatePath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('ig_ldap_sso_auth') . 'Resources/Private/Templates/';
 		// Try a specific configuration for this server
 		$templateFileName = $templatePath . $prefix . $table . '_' . $serverType . '.txt';
 		if (!is_file($templateFileName)) {

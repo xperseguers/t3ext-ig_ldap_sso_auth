@@ -19,7 +19,7 @@
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class Tx_IgLdapSsoAuth_Task_ImportUsersAdditionalFields implements tx_scheduler_AdditionalFieldProvider {
+class Tx_IgLdapSsoAuth_Task_ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface {
 
 	/**
 	 * Gets additional fields to render in the form to add/edit a task.
@@ -28,11 +28,11 @@ class Tx_IgLdapSsoAuth_Task_ImportUsersAdditionalFields implements tx_scheduler_
 	 * and one to select a LDAP configuration (or all).
 	 *
 	 * @param array $taskInfo Values of the fields from the add/edit task form
-	 * @param tx_scheduler_Task $task The task object being edited. Null when adding a task!
-	 * @param tx_scheduler_Module $schedulerModule Reference to the scheduler backend module
+	 * @param \TYPO3\CMS\Scheduler\Task\AbstractTask $task The task object being edited. Null when adding a task!
+	 * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule Reference to the scheduler backend module
 	 * @return array A two dimensional array, array('Identifier' => array('fieldId' => array('code' => '', 'label' => '', 'cshKey' => '', 'cshLabel' => ''))
 	 */
-	public function getAdditionalFields(array &$taskInfo, $task, tx_scheduler_Module $schedulerModule) {
+	public function getAdditionalFields(array &$taskInfo, $task, \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule) {
 		$additionalFields = array();
 
 		// Process the context field
@@ -98,7 +98,7 @@ class Tx_IgLdapSsoAuth_Task_ImportUsersAdditionalFields implements tx_scheduler_
 		$fieldCode .= '<option value="0"' . $selected . '>' . $GLOBALS['LANG']->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xml:task.import_users.field.configuration.all') . '</option>';
 		// Get the existing LDAP configurations
 		/** @var Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository $configurationRepository */
-		$configurationRepository = t3lib_div::makeInstance('Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository');
+		$configurationRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository');
 		$ldapConfigurations = $configurationRepository->fetchAll();
 		foreach ($ldapConfigurations as $configuration) {
 			$uid = $configuration['uid'];
@@ -206,10 +206,10 @@ class Tx_IgLdapSsoAuth_Task_ImportUsersAdditionalFields implements tx_scheduler_
 	 * Validates the additional fields' values.
 	 *
 	 * @param array $submittedData An array containing the data submitted by the add/edit task form
-	 * @param tx_scheduler_Module $schedulerModule Reference to the scheduler backend module
+	 * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule Reference to the scheduler backend module
 	 * @return boolean TRUE if validation was ok (or selected class is not relevant), FALSE otherwise
 	 */
-	public function validateAdditionalFields(array &$submittedData, tx_scheduler_Module $schedulerModule) {
+	public function validateAdditionalFields(array &$submittedData, \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule) {
 		// Since only valid values could be chosen from the selectors, always return true
 		return TRUE;
 	}
@@ -218,10 +218,10 @@ class Tx_IgLdapSsoAuth_Task_ImportUsersAdditionalFields implements tx_scheduler_
 	 * Takes care of saving the additional fields' values in the task's object.
 	 *
 	 * @param array $submittedData An array containing the data submitted by the add/edit task form
-	 * @param tx_scheduler_Task $task Reference to the scheduler backend module
+	 * @param \TYPO3\CMS\Scheduler\Task\AbstractTask $task Reference to the scheduler backend module
 	 * @return void
 	 */
-	public function saveAdditionalFields(array $submittedData, tx_scheduler_Task $task) {
+	public function saveAdditionalFields(array $submittedData, \TYPO3\CMS\Scheduler\Task\AbstractTask $task) {
 		$task->setContext($submittedData['tx_igldapssoauth_context']);
 		$task->setConfiguration($submittedData['tx_igldapssoauth_configuration']);
 		$task->setMissingUsersHandling($submittedData['tx_igldapssoauth_missinguserhandling']);

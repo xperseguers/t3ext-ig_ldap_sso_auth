@@ -169,7 +169,7 @@ class Tx_IgLdapSsoAuth_Utility_UserImport {
 	 * @param array $ldapUser LDAP user information
 	 * @param string $restoreBehavior How to restore users (only for update)
 	 * @return array Modified user data
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	public function import($user, $ldapUser, $restoreBehavior = 'both') {
 		// Store the extra data for later restore and remove it
@@ -223,11 +223,11 @@ class Tx_IgLdapSsoAuth_Utility_UserImport {
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'])) {
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'] as $className) {
 					/** @var $postProcessor Tx_IgLdapSsoAuth_Utility_ExtraDataProcessorInterface */
-					$postProcessor = t3lib_div::getUserObj($className);
+					$postProcessor = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($className);
 					if ($postProcessor instanceof Tx_IgLdapSsoAuth_Utility_ExtraDataProcessorInterface) {
 						$postProcessor->processExtraData($this->userTable, $user);
 					} else {
-						throw new Exception(
+						throw new \Exception(
 							sprintf(
 								'Invalid post-processing class %s. It must implement the Tx_IgLdapSsoAuth_Utility_ExtraDataProcessorInterface interface',
 								$className

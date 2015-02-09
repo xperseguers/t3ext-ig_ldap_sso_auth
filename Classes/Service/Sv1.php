@@ -12,10 +12,6 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-if (version_compare(TYPO3_branch, '6.0', '<')) {
-	require_once(t3lib_extMgm::extPath('sv') . 'class.tx_sv_auth.php');
-}
-
 /**
  * LDAP / SSO authentication service.
  *
@@ -24,17 +20,12 @@ if (version_compare(TYPO3_branch, '6.0', '<')) {
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class tx_igldapssoauth_sv1 extends tx_sv_auth {
+class tx_igldapssoauth_sv1 extends \TYPO3\CMS\Sv\AuthenticationService {
 
 	var $prefixId = 'tx_igldapssoauth_sv1'; // Same as class name
 	var $scriptRelPath = 'Classes/Service/Sv1.php'; // Path to this script relative to the extension dir.
 	var $extKey = 'ig_ldap_sso_auth'; // The extension key.
 	var $igldapssoauth;
-
-	/**
-	 * @var tx_rsaauth_abstract_backend
-	 */
-	protected $backend;
 
 	/**
 	 * @var array
@@ -54,7 +45,7 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 	 * Find a user (eg. look up the user record in database when a login is sent)
 	 *
 	 * @return mixed user array or FALSE
-	 * @throws RuntimeException
+	 * @throws \RuntimeException
 	 */
 	public function getUser() {
 		$user = FALSE;
@@ -90,7 +81,7 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 				$msg = sprintf(
 					'Configuration record #%s is not enabled for domain %s',
 					$configurationRecord['uid'],
-					t3lib_div::getIndpEnv('TYPO3_HOST_ONLY')
+					\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY')
 				);
 				Tx_IgLdapSsoAuth_Utility_Debug::info($msg);
 				continue;
@@ -125,24 +116,12 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 						$message = "ig_ldap_sso_auth error: current login security level '" . $loginSecurityLevel . "' is not supported.";
 						$message .= " Try to use 'normal' or 'rsa' (recommended but would need more settings): ";
 						$message .= "\$TYPO3_CONF_VARS['BE']['loginSecurityLevel'] = 'normal';";
-						throw new RuntimeException($message, 1324313489);
+						throw new \RuntimeException($message, 1324313489);
 					}
 				}
 
 				// normal case
 				$password = $this->login['uident_text'];
-
-				if (version_compare(TYPO3_branch, '4.7', '<') && $loginSecurityLevel === 'rsa') {
-					$password = $this->login['uident'];
-					/* @var $storage tx_rsaauth_abstract_storage */
-					$storage = tx_rsaauth_storagefactory::getStorage();
-
-					// Preprocess the password
-					$key = $storage->get();
-
-					$this->backend = tx_rsaauth_backendfactory::getBackend();
-					$password = $this->backend->decrypt($key, substr($password, 4));
-				}
 
 				try {
 					if ($password !== NULL) {
@@ -151,7 +130,7 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 						// Could not decrypt password
 						$userRecordOrIsValid = FALSE;
 					}
-				} catch (Exception $e) {
+				} catch (\Exception $e) {
 					// Possible known exception: 1409566275, LDAP extension is not available for PHP
 					$userRecordOrIsValid = FALSE;
 				}
@@ -253,7 +232,7 @@ class tx_igldapssoauth_sv1 extends tx_sv_auth {
 	/**
 	 * Returns the database connection.
 	 *
-	 * @return t3lib_DB
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
 	 */
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];

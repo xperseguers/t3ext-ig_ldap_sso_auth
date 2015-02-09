@@ -12,6 +12,8 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Class tx_igldapssoauth_auth for the 'ig_ldap_sso_auth' extension.
  *
@@ -35,18 +37,6 @@ class tx_igldapssoauth_auth {
 	 * @var tx_igldapssoauth_sv1
 	 */
 	static protected $authenticationService;
-
-	/**
-	 * Sets the base authentication class.
-	 *
-	 * @param tx_igldapssoauth_sv1 $authenticationService
-	 * @return void
-	 * @deprecated since version 1.3, this method will be removed in version 1.5, use tx_igldapssoauth_auth::setAuthenticationService() instead.
-	 */
-	static public function init(tx_igldapssoauth_sv1 $authenticationService) {
-		t3lib_div::logDeprecatedFunction();
-		self::$authenticationService = $authenticationService;
-	}
 
 	/**
 	 * Sets the authentication service.
@@ -80,7 +70,7 @@ class tx_igldapssoauth_auth {
 	 * @param string $username
 	 * @param string $password
 	 * @return bool|array TRUE or array of user info on success, otherwise FALSE
-	 * @throws Exception when LDAP extension for PHP is not available
+	 * @throws \Exception when LDAP extension for PHP is not available
 	 */
 	static public function ldap_auth($username = NULL, $password = NULL) {
 		self::$lastAuthenticationDiagnostic = '';
@@ -177,13 +167,6 @@ class tx_igldapssoauth_auth {
 			return FALSE;
 			// User does not exist in TYPO3.
 		} elseif (!$typo3_user['uid'] && (!empty($typo3_groups) || !tx_igldapssoauth_config::is_enable('DeleteUserIfNoTYPO3Groups'))) {
-
-			if (empty($GLOBALS['TCA'])) {
-				/** @var $tslibFe tslib_fe */
-				$tslibFe = t3lib_div::makeInstance('tslib_fe', $GLOBALS['TYPO3_CONF_VARS'], t3lib_div::_GP('id'), '');
-				$tslibFe->includeTCA();
-			}
-
 			// Insert new user: use TCA configuration to override default values
 			$table = self::$authenticationService->authInfo['db_user']['table'];
 			if (is_array($GLOBALS['TCA'][$table]['columns'])) {
@@ -302,7 +285,7 @@ class tx_igldapssoauth_auth {
 
 		$requiredLDAPGroups = tx_igldapssoauth_config::is_enable('requiredLDAPGroups');
 		if ($requiredLDAPGroups) {
-			$requiredLDAPGroups = t3lib_div::trimExplode(',', $requiredLDAPGroups);
+			$requiredLDAPGroups = GeneralUtility::trimExplode(',', $requiredLDAPGroups);
 		} else {
 			$requiredLDAPGroups = array();
 		}
@@ -603,7 +586,7 @@ class tx_igldapssoauth_auth {
 								!empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'][$newVal])
 							) {
 
-								$_procObj = & t3lib_div::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'][$newVal]);
+								$_procObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'][$newVal]);
 								$mappedValue = $_procObj->extraMerge($field, $typo3, $ldap, $ldapAttr, $passParams);
 							}
 							break;

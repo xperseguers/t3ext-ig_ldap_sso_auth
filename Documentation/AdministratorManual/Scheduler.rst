@@ -14,11 +14,6 @@ Scheduler automation
 The extension provides a Scheduler task for automating the import of users from
 the configured LDAP servers.
 
-.. note::
-
-   There is also a legacy Scheduler task. It is marked with "DEPRECATED" in its
-   title and you should not rely on it.
-
 The task comes with several options, as can be seen in the Scheduler module:
 
 .. figure:: ../Images/configuration-scheduler.png

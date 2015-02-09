@@ -12,6 +12,8 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+
 /**
  * Utility class for fetching LDAP configurations.
  *
@@ -34,9 +36,9 @@ class Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository {
 	 * @return array
 	 */
 	public function fetchAll() {
-		$where = '1 = 1' . t3lib_BEfunc::deleteClause('tx_igldapssoauth_config');
+		$where = '1 = 1' . BackendUtility::deleteClause('tx_igldapssoauth_config');
 		if (!$this->fetchDisabledRecords) {
-			$where .= t3lib_BEfunc::BEenableFields('tx_igldapssoauth_config');
+			$where .= BackendUtility::BEenableFields('tx_igldapssoauth_config');
 		}
 		$configurations = self::getDatabaseConnection()->exec_SELECTgetRows(
 			'*',
@@ -58,9 +60,9 @@ class Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository {
 	 * @return array
 	 */
 	public function fetchByUid($uid) {
-		$where = 'uid = ' . intval($uid) . t3lib_BEfunc::deleteClause('tx_igldapssoauth_config');
+		$where = 'uid = ' . intval($uid) . BackendUtility::deleteClause('tx_igldapssoauth_config');
 		if (!$this->fetchDisabledRecords) {
-			$where .= t3lib_BEfunc::BEenableFields('tx_igldapssoauth_config');
+			$where .= BackendUtility::BEenableFields('tx_igldapssoauth_config');
 		}
 		$configuration = self::getDatabaseConnection()->exec_SELECTgetSingleRow(
 			'*',
@@ -83,9 +85,10 @@ class Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository {
 	/**
 	 * Returns the database connection.
 	 *
-	 * @return t3lib_DB
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
 	 */
 	static protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
 	}
+
 }

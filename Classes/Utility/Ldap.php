@@ -60,12 +60,12 @@ class tx_igldapssoauth_utility_Ldap {
 	 * @param integer $serverType 0 = OpenLDAP, 1 = Active Directory / Novell eDirectory
 	 * @param bool $tls
 	 * @return bool TRUE if connection succeeded.
-	 * @throws Exception when LDAP extension for PHP is not available
+	 * @throws \Exception when LDAP extension for PHP is not available
 	 */
 	static public function connect($host = NULL, $port = NULL, $protocol = NULL, $charset = NULL, $serverType = 0, $tls = FALSE) {
 		// Valid if php load ldap module.
 		if (!extension_loaded('ldap')) {
-			throw new Exception('Your PHP version seems to lack LDAP support. Please install/activate the extension.', 1409566275);
+			throw new \Exception('Your PHP version seems to lack LDAP support. Please install/activate the extension.', 1409566275);
 		}
 
 		// Connect to ldap server.
@@ -236,7 +236,7 @@ class tx_igldapssoauth_utility_Ldap {
 			return TRUE;
 		}
 
-		// No connection identifer (cid).
+		// No connection identifier (cid).
 		self::$status['search']['status'] = ldap_error(self::$cid);
 		return FALSE;
 	}
@@ -333,26 +333,18 @@ class tx_igldapssoauth_utility_Ldap {
 	}
 
 	static protected function init_charset($charset = NULL) {
-		/** @var $csObj t3lib_cs */
+		/** @var $csObj \TYPO3\CMS\Core\Charset\CharsetConverter */
 		if ((isset($GLOBALS['TSFE'])) && (isset($GLOBALS['TSFE']->csConvObj))) {
 			$csObj = $GLOBALS['TSFE']->csConvObj;
 		} else {
-			if (!class_exists('t3lib_cs') && defined('PATH_t3lib')) {
-				require_once(PATH_t3lib . 'class.t3lib_cs.php');
-			}
-
-			$csObj = t3lib_div::makeInstance('t3lib_cs');
+			$csObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
 		}
 
 		// LDAP server charset
 		self::$ldap_charset = $csObj->parse_charset($charset ? $charset : 'utf-8');
 
 		// TYPO3 charset
-		if (version_compare(TYPO3_version, '4.7.0', '<')) {
-			self::$local_charset = $csObj->parse_charset($GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'] ? $GLOBALS['TYPO3_CONF_VARS']['BE']['forceCharset'] : 'iso-8859-1');
-		} else {
-			self::$local_charset = 'utf-8';
-		}
+		self::$local_charset = 'utf-8';
 	}
 
 	static public function convert_charset_array($arr, $char1, $char2) {
@@ -360,15 +352,11 @@ class tx_igldapssoauth_utility_Ldap {
 			return $arr;
 		}
 
-		/** @var $csObj t3lib_cs */
+		/** @var $csObj \TYPO3\CMS\Core\Charset\CharsetConverter */
 		if ((isset($GLOBALS['TSFE'])) && (isset($GLOBALS['TSFE']->csConvObj))) {
 			$csObj = $GLOBALS['TSFE']->csConvObj;
 		} else {
-			if (!class_exists('t3lib_cs') && defined('PATH_t3lib')) {
-				require_once(PATH_t3lib . 'class.t3lib_cs.php');
-			}
-
-			$csObj = t3lib_div::makeInstance('t3lib_cs');
+			$csObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
 		}
 
 		foreach ($arr as $k => $val) {

@@ -1,27 +1,16 @@
 <?php
-/***************************************************************
- *  Copyright notice
+/*
+ * This file is part of the TYPO3 CMS project.
  *
- *  (c) 2014 Xavier Perseguers <xavier@causal.ch>
- *  All rights reserved
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
  *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
+ * The TYPO3 project - inspiring people to share!
+ */
 
 $BACK_PATH = $GLOBALS['BACK_PATH'] . TYPO3_mainDir;
 
@@ -35,7 +24,7 @@ $BACK_PATH = $GLOBALS['BACK_PATH'] . TYPO3_mainDir;
  * @author      Xavier Perseguers <xavier@causal.ch>
  * @license     http://www.gnu.org/copyleft/gpl.html
  */
-class ext_update extends t3lib_SCbase {
+class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 
 	/** @var string */
 	protected $extKey = 'ig_ldap_sso_auth';
@@ -49,11 +38,15 @@ class ext_update extends t3lib_SCbase {
 	/** @var string */
 	protected $table = 'tx_igldapssoauth_config';
 
+	/** @var \TYPO3\CMS\Core\Database\DatabaseConnection */
+	protected $databaseConnection;
+
 	/**
 	 * Default constructor.
 	 */
 	public function __construct() {
 		$this->configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
+		$this->databaseConnection = $GLOBALS['TYPO3_DB'];
 	}
 
 	/**
@@ -91,10 +84,10 @@ class ext_update extends t3lib_SCbase {
 				// Global setting present => should be migrated if not already done
 				$updateNeeded = TRUE;
 			}
-			$where[] = $field . '=' . $this->getDatabaseConnection()->fullQuoteStr('', $this->table);
+			$where[] = $field . '=' . $this->databaseConnection->fullQuoteStr('', $this->table);
 		}
 		if ($updateNeeded) {
-			$oldConfigurationRecords = $this->getDatabaseConnection()->exec_SELECTcountRows(
+			$oldConfigurationRecords = $this->databaseConnection->exec_SELECTcountRows(
 				'*',
 				$this->table,
 				implode(' AND ', $where)
@@ -111,7 +104,7 @@ class ext_update extends t3lib_SCbase {
 	 * @return bool
 	 */
 	protected function checkV12ToV13() {
-		$oldConfigurationRecords = $this->getDatabaseConnection()->exec_SELECTcountRows(
+		$oldConfigurationRecords = $this->databaseConnection->exec_SELECTcountRows(
 			'*',
 			$this->table,
 			'group_membership=0'
@@ -130,20 +123,20 @@ class ext_update extends t3lib_SCbase {
 
 		// We check the database table itself and not whether EXT:eu_ldap is loaded
 		// because it may have been deactivated since it is not incompatible
-		$existingTables = $this->getDatabaseConnection()->admin_get_tables();
+		$existingTables = $this->databaseConnection->admin_get_tables();
 		if (!isset($existingTables[$table])) {
 			return FALSE;
 		}
 
 		// Ensure the column used to flag processed records is present
-		$fields = $this->getDatabaseConnection()->admin_get_fields($table);
+		$fields = $this->databaseConnection->admin_get_fields($table);
 		if (!isset($fields[$migrationField])) {
 			$alterTableQuery = 'ALTER TABLE ' . $table . ' ADD ' . $migrationField . ' tinyint(4) NOT NULL default \'0\'';
 			// Method admin_query() will parse the query and make it compatible with DBAL, if needed
-			$this->getDatabaseConnection()->admin_query($alterTableQuery);
+			$this->databaseConnection->admin_query($alterTableQuery);
 		}
 
-		$euLdapConfigurationRecords = $this->getDatabaseConnection()->exec_SELECTcountRows(
+		$euLdapConfigurationRecords = $this->databaseConnection->exec_SELECTcountRows(
 			'*',
 			$table,
 			$migrationField . '=0'
@@ -184,9 +177,9 @@ class ext_update extends t3lib_SCbase {
 				// Global setting present => should be migrated
 				$fieldValues[$field] = $this->configuration[$configKey];
 			}
-			$where[] = $field . '=' . $this->getDatabaseConnection()->fullQuoteStr('', $this->table);
+			$where[] = $field . '=' . $this->databaseConnection->fullQuoteStr('', $this->table);
 		}
-		$oldConfigurationRecords = $this->getDatabaseConnection()->exec_SELECTgetRows(
+		$oldConfigurationRecords = $this->databaseConnection->exec_SELECTgetRows(
 			'uid',
 			$this->table,
 			implode(' AND ', $where)
@@ -194,7 +187,7 @@ class ext_update extends t3lib_SCbase {
 
 		$i = 0;
 		foreach ($oldConfigurationRecords as $oldConfigurationRecord) {
-			$this->getDatabaseConnection()->exec_UPDATEquery(
+			$this->databaseConnection->exec_UPDATEquery(
 				$this->table,
 				'uid=' . $oldConfigurationRecord['uid'],
 				$fieldValues
@@ -211,7 +204,7 @@ class ext_update extends t3lib_SCbase {
 	 * @return string
 	 */
 	protected function upgradeV12ToV13() {
-		$this->getDatabaseConnection()->exec_UPDATEquery(
+		$this->databaseConnection->exec_UPDATEquery(
 			$this->table,
 			'1=1',
 			array(
@@ -249,7 +242,7 @@ class ext_update extends t3lib_SCbase {
 	 * @return void
 	 */
 	protected function migrateEuLdapGlobalOptions(array &$out) {
-		$automaticImportRows = $this->getDatabaseConnection()->exec_SELECTgetRows(
+		$automaticImportRows = $this->databaseConnection->exec_SELECTgetRows(
 			'DISTINCT authenticate_be, automatic_import, doitfe',
 			'tx_euldap_server',
 			'1=1'
@@ -324,7 +317,7 @@ class ext_update extends t3lib_SCbase {
 	 * @return void
 	 */
 	protected function migrateEuLdapConfiguration(array &$out) {
-		$euLdapConfigurationRecords = $this->getDatabaseConnection()->exec_SELECTgetRows(
+		$euLdapConfigurationRecords = $this->databaseConnection->exec_SELECTgetRows(
 			'*',
 			'tx_euldap_server',
 			'tx_igldapssoauth_migrated=0'
@@ -460,7 +453,7 @@ class ext_update extends t3lib_SCbase {
 					$mapping[] = 'www = <' . $legacy['www'] . '>';
 				}
 
-				$additionalInstructions = t3lib_div::trimExplode(',', $legacy['map_additional_fields'], TRUE);
+				$additionalInstructions = \TYPO3\CMS\Core\Utility\GeneralUtility::trimExplode(',', $legacy['map_additional_fields'], TRUE);
 				foreach ($additionalInstructions as $additionalInstruction) {
 					list($dbField, $ldapField) = explode('=', $additionalInstruction, 2);
 					$mapping[] = $dbField . ' = <' . $ldapField . '>';
@@ -471,7 +464,7 @@ class ext_update extends t3lib_SCbase {
 
 			if ($data['be_groups_required'] === '*') {
 				// Replace '*' by every local BE group
-				$groups = $this->getDatabaseConnection()->exec_SELECTgetRows(
+				$groups = $this->databaseConnection->exec_SELECTgetRows(
 					'uid',
 					'be_groups',
 					'hidden=0 AND deleted=0 AND tx_igldapssoauth_dn=\'\' AND eu_ldap=0',
@@ -484,7 +477,7 @@ class ext_update extends t3lib_SCbase {
 			}
 			if ($data['fe_groups_required'] === '*') {
 				// Replace '*' by every local FE group
-				$groups = $this->getDatabaseConnection()->exec_SELECTgetRows(
+				$groups = $this->databaseConnection->exec_SELECTgetRows(
 					'uid',
 					'fe_groups',
 					'hidden=0 AND deleted=0 AND tx_igldapssoauth_dn=\'\' AND eu_ldap=0',
@@ -506,9 +499,9 @@ class ext_update extends t3lib_SCbase {
 			}
 
 			// Insert the migrated record to ig_ldap_sso_auth
-			$this->getDatabaseConnection()->exec_INSERTquery($this->table, $data);
-			if ($this->getDatabaseConnection()->sql_affected_rows() == 1) {
-				$this->getDatabaseConnection()->exec_UPDATEquery(
+			$this->databaseConnection->exec_INSERTquery($this->table, $data);
+			if ($this->databaseConnection->sql_affected_rows() == 1) {
+				$this->databaseConnection->exec_UPDATEquery(
 					'tx_euldap_server',
 					'uid=' . $legacy['uid'],
 					array(
@@ -535,7 +528,7 @@ UPDATE $table
 SET tx_igldapssoauth_dn=tx_euldap_dn
 WHERE tx_igldapssoauth_dn='' AND tx_euldap_dn<>''
 SQL;
-			$this->getDatabaseConnection()->sql_query($query);
+			$this->databaseConnection->sql_query($query);
 		}
 
 		$out[] = $this->formatOk('Successfully migrated eu_ldap users.');
@@ -593,15 +586,6 @@ SQL;
 		$output .= '</div>';
 
 		return $output;
-	}
-
-	/**
-	 * Returns the database connection.
-	 *
-	 * @return t3lib_DB
-	 */
-	protected function getDatabaseConnection() {
-		return $GLOBALS['TYPO3_DB'];
 	}
 
 }

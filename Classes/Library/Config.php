@@ -12,6 +12,8 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Class tx_igldapssoauth_config for the 'ig_ldap_sso_auth' extension.
  *
@@ -58,7 +60,7 @@ class tx_igldapssoauth_config {
 
 		self::$name = $config['name'];
 		self::$domains = array();
-		$domainUids = t3lib_div::intExplode(',', $config['domains'], TRUE);
+		$domainUids = GeneralUtility::intExplode(',', $config['domains'], TRUE);
 		foreach ($domainUids as $domainUid) {
 			$row = self::getDatabaseConnection()->exec_SELECTgetSingleRow('domainName', 'sys_domain', 'uid=' . intval($domainUid));
 			self::$domains[] = $row['domainName'];
@@ -135,7 +137,7 @@ class tx_igldapssoauth_config {
 	static public function isEnabledForCurrentHost() {
 		static $host = NULL;
 		if ($host === NULL && count(self::$domains) > 0) {
-			$host = t3lib_div::getIndpEnv('TYPO3_HOST_ONLY');
+			$host = GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY');
 		}
 		return count(self::$domains) === 0 || in_array($host, self::$domains);
 	}
@@ -370,7 +372,7 @@ class tx_igldapssoauth_config {
 	/**
 	 * Returns the database connection.
 	 *
-	 * @return t3lib_DB
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
 	 */
 	static protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];

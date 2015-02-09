@@ -6,8 +6,6 @@
 	</meta>
 	<data type="array">
 		<languageKey index="default" type="array">
-			<label index="synchro.name">Synchronisation of LDAP users (DEPRECATED)</label>
-			<label index="synchro.description">Imports and updates all users information who can connect to the site.</label>
 			<label index="task.import_users.title">Import LDAP users</label>
 			<label index="task.import_users.description">Import LDAP for one or all configurations, for FE, BE or both. Users missing on the LDAP side will be disabled.</label>
 			<label index="task.import_users.field.context">Context</label>

@@ -12,6 +12,8 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Class tx_igldapssoauth_typo3_group for the 'ig_ldap_sso_auth' extension.
  *
@@ -23,27 +25,15 @@
 class tx_igldapssoauth_typo3_group {
 
 	/**
-	 * Initializes a new BE/FE group record.
-	 *
-	 * @param string $table Either 'be_groups' or 'fe_groups'
-	 * @return array
-	 * @deprecated since version 1.3, this method will be removed in version 1.5, use tx_igldapssoauth_typo3_group::create() instead.
-	 */
-	static public function init($table = NULL) {
-		t3lib_div::logDeprecatedFunction();
-		return self::create($table);
-	}
-
-	/**
 	 * Creates a fresh BE/FE group record.
 	 *
 	 * @param string $table Either 'be_groups' or 'fe_groups'
 	 * @return array
-	 * @throws RuntimeException
+	 * @throws \RuntimeException
 	 */
 	static public function create($table) {
-		if (!t3lib_div::inList('be_groups,fe_groups', $table)) {
-			throw new RuntimeException('Invalid table "' . $table . '"', 1404892331);
+		if (!GeneralUtility::inList('be_groups,fe_groups', $table)) {
+			throw new \RuntimeException('Invalid table "' . $table . '"', 1404892331);
 		}
 
 		$newGroup = array();
@@ -66,29 +56,13 @@ class tx_igldapssoauth_typo3_group {
 	 * @param string $table Either 'be_groups' or 'fe_groups'
 	 * @param int $uid
 	 * @param int $pid
-	 * @param string $title
 	 * @param string $dn
 	 * @return array|NULL
-	 * @deprecated since version 1.3, this method will be removed in version 1.5, use tx_igldapssoauth_typo3_group::fetch() instead.
-	 */
-	static public function select($table = NULL, $uid = 0, $pid = NULL, $title = NULL, $dn = NULL) {
-		t3lib_div::logDeprecatedFunction();
-		return self::fetch($table, $uid, $pid, $dn);
-	}
-
-	/**
-	 * Searches BE/FE groups either by uid or by DN in a given storage folder (pid).
-	 *
-	 * @param string $table Either 'be_groups' or 'fe_groups'
-	 * @param int $uid
-	 * @param int $pid
-	 * @param string $dn
-	 * @return array|NULL
-	 * @throws RuntimeException
+	 * @throws \RuntimeException
 	 */
 	static public function fetch($table, $uid = 0, $pid = NULL, $dn = NULL) {
-		if (!t3lib_div::inList('be_groups,fe_groups', $table)) {
-			throw new RuntimeException('Invalid table "' . $table . '"', 1404891809);
+		if (!GeneralUtility::inList('be_groups,fe_groups', $table)) {
+			throw new \RuntimeException('Invalid table "' . $table . '"', 1404891809);
 		}
 
 		$databaseConnection = self::getDatabaseConnection();
@@ -117,25 +91,11 @@ class tx_igldapssoauth_typo3_group {
 	 * @param string $table Either 'be_groups' or 'fe_groups'
 	 * @param array $data
 	 * @return array The new record
-	 * @deprecated since version 1.3, this method will be removed in version 1.5, use tx_igldapssoauth_typo3_group::add() instead.
-	 */
-	static public function insert($table = NULL, $data = array()) {
-		t3lib_div::logDeprecatedFunction();
-		return array(self::add($table, $data));
-	}
-
-	/**
-	 * Adds a new BE/FE group to the database and returns the new record
-	 * with all columns.
-	 *
-	 * @param string $table Either 'be_groups' or 'fe_groups'
-	 * @param array $data
-	 * @return array The new record
-	 * @throws RuntimeException
+	 * @throws \RuntimeException
 	 */
 	static public function add($table, array $data = array()) {
-		if (!t3lib_div::inList('be_groups,fe_groups', $table)) {
-			throw new RuntimeException('Invalid table "' . $table . '"', 1404891833);
+		if (!GeneralUtility::inList('be_groups,fe_groups', $table)) {
+			throw new \RuntimeException('Invalid table "' . $table . '"', 1404891833);
 		}
 
 		$databaseConnection = self::getDatabaseConnection();
@@ -171,11 +131,11 @@ class tx_igldapssoauth_typo3_group {
 	 * @param string $table Either 'be_groups' or 'fe_groups'
 	 * @param array $data
 	 * @return bool TRUE on success, otherwise FALSE
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	static public function update($table, array $data = array()) {
-		if (!t3lib_div::inList('be_groups,fe_groups', $table)) {
-			throw new RuntimeException('Invalid table "' . $table . '"', 1404891867);
+		if (!GeneralUtility::inList('be_groups,fe_groups', $table)) {
+			throw new \RuntimeException('Invalid table "' . $table . '"', 1404891867);
 		}
 
 		$databaseConnection = self::getDatabaseConnection();
@@ -187,22 +147,6 @@ class tx_igldapssoauth_typo3_group {
 			FALSE
 		);
 		$success = $databaseConnection->sql_errno() == 0;
-
-		// Hook for post-processing the group
-		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['processUpdateGroup'])) {
-			if (version_compare(TYPO3_version, '6.0.0', '>=')) {
-				t3lib_div::deprecationLog('Hook processUpdateGroup has been deprecated for users of TYPO3 6.x since version 1.3.0 and will be removed in version 1.5.0');
-			}
-			$params = array(
-				'table' => $table,
-				'typo3_group' => $data,
-			);
-			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['processUpdateGroup'] as $funcRef) {
-				Tx_IgLdapSsoAuth_Utility_Debug::debug('[HOOK] processUpdateGroup: ' . $funcRef, $params);
-				$null = NULL;
-				t3lib_div::callUserFunction($funcRef, $params, $null);
-			}
-		}
 
 		if ($success) {
 			Tx_IgLdapSsoAuth_Utility_Notification::dispatch(
@@ -237,7 +181,7 @@ class tx_igldapssoauth_typo3_group {
 	/**
 	 * Returns the database connection.
 	 *
-	 * @return t3lib_DB
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
 	 */
 	static protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];

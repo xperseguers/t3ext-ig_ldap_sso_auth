@@ -18,8 +18,8 @@ $GLOBALS['TCA']['tx_igldapssoauth_config'] = array(
 			'disabled' => 'hidden',
 		),
 		'requestUpdate' => 'ldap_server',
-		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY) . 'Configuration/TCA/Config.php',
-		'iconfile' => t3lib_extMgm::extRelPath($_EXTKEY) . 'Resources/Public/Icons/icon_tx_igldapssoauth_config.png',
+		'dynamicConfigFile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Configuration/TCA/Config.php',
+		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/icon_tx_igldapssoauth_config.png',
 	),
 );
 
@@ -35,11 +35,8 @@ $tempColumns = array(
 	),
 );
 
-if (version_compare(TYPO3_version, '6.1.0', '<')) {
-	t3lib_div::loadTCA('be_groups');
-}
-t3lib_extMgm::addTCAcolumns('be_groups', $tempColumns);
-t3lib_extMgm::addToAllTCAtypes('be_groups', 'tx_igldapssoauth_dn;;;;1-1-1');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('be_groups', $tempColumns);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('be_groups', 'tx_igldapssoauth_dn;;;;1-1-1');
 
 //// Add fields tx_igldapssoauth_dn to be_users TCA.
 //$tempColumns = array(
@@ -53,11 +50,8 @@ t3lib_extMgm::addToAllTCAtypes('be_groups', 'tx_igldapssoauth_dn;;;;1-1-1');
 //	),
 //);
 //
-//if (version_compare(TYPO3_version, '6.1.0', '<')) {
-//	t3lib_div::loadTCA('be_users');
-//}
-//t3lib_extMgm::addTCAcolumns('be_users', $tempColumns);
-//t3lib_extMgm::addToAllTCAtypes('be_users', 'tx_igldapssoauth_dn;;;;1-1-1');
+//\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('be_users', $tempColumns);
+//\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('be_users', 'tx_igldapssoauth_dn;;;;1-1-1');
 
 // Add fields tx_igldapssoauth_dn to fe_groups TCA.
 $tempColumns = array(
@@ -71,11 +65,8 @@ $tempColumns = array(
 	),
 );
 
-if (version_compare(TYPO3_version, '6.1.0', '<')) {
-	t3lib_div::loadTCA('fe_groups');
-}
-t3lib_extMgm::addTCAcolumns('fe_groups', $tempColumns);
-t3lib_extMgm::addToAllTCAtypes('fe_groups', 'tx_igldapssoauth_dn');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('fe_groups', $tempColumns);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_groups', 'tx_igldapssoauth_dn');
 
 //// Add fields tx_igldapssoauth_dn to fe_users TCA.
 //$tempColumns = array(
@@ -89,16 +80,13 @@ t3lib_extMgm::addToAllTCAtypes('fe_groups', 'tx_igldapssoauth_dn');
 //	),
 //);
 //
-//if (version_compare(TYPO3_version, '6.1.0', '<')) {
-//	t3lib_div::loadTCA('fe_users');
-//}
-//t3lib_extMgm::addTCAcolumns('fe_users', $tempColumns);
-//t3lib_extMgm::addToAllTCAtypes('fe_users', 'tx_igldapssoauth_dn;;;;1-1-1');
+//\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('fe_users', $tempColumns);
+//\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('fe_users', 'tx_igldapssoauth_dn;;;;1-1-1');
 
 $icons = array(
-	'overlay-ldap-record' => t3lib_extMgm::extRelPath($_EXTKEY) . 'Resources/Public/Icons/overlay-ldap-record.png',
+	'overlay-ldap-record' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/overlay-ldap-record.png',
 );
-t3lib_SpriteManager::addSingleIcons($icons, $_EXTKEY);
+\TYPO3\CMS\Backend\Sprite\SpriteManager::addSingleIcons($icons, $_EXTKEY);
 
 $GLOBALS['TBE_STYLES']['spriteIconApi']['spriteIconRecordOverlayPriorities'][] = 'is_ldap_record';
 $GLOBALS['TBE_STYLES']['spriteIconApi']['spriteIconRecordOverlayNames']['is_ldap_record'] = 'extensions-' . $_EXTKEY . '-overlay-ldap-record';
@@ -111,8 +99,8 @@ $GLOBALS['EXT_CONFIG']['enableFELDAPAuthentication'] ? $GLOBALS['TCA']['fe_users
 
 // Add BE module on top of tools main module
 if (TYPO3_MODE === 'BE') {
-	t3lib_extMgm::addModule('tools', 'txigldapssoauthM1', 'top', t3lib_extMgm::extPath($_EXTKEY) . 'mod1/');
+	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule('tools', 'txigldapssoauthM1', 'top', \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'mod1/');
 }
 
 // Initialize "context sensitive help" (csh)
-t3lib_extMgm::addLLrefForTCAdescr('tx_igldapssoauth_config', 'EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_csh_db.xml');
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('tx_igldapssoauth_config', 'EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_csh_db.xml');

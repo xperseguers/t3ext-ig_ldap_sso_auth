@@ -33,7 +33,7 @@ if (is_array($subTypesArr)) {
 }
 
 // Register hook for \TYPO3\CMS\Core\DataHandling\DataHandler
-$TYPO3_CONF_VARS['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:' . $_EXTKEY . '/Classes/Hooks/DataHandler.php:Tx_IgLdapSsoAuth_Hooks_DataHandler';
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:' . $_EXTKEY . '/Classes/Hooks/DataHandler.php:Tx_IgLdapSsoAuth_Hooks_DataHandler';
 
 // Register the synchronize users Scheduler task
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['tx_igldapssoauth_scheduler_synchroniseusers'] = array(
@@ -49,24 +49,26 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Tx_IgLdapSsoAut
 	'additionalFields'	=> 'Tx_IgLdapSsoAuth_Task_ImportUsersAdditionalFields'
 );
 
-t3lib_extMgm::addService($_EXTKEY,  'auth' /* sv type */,  'tx_igldapssoauth_sv1' /* sv key */,
-	array(
-		'title' => 'Authentication service',
-		'description' => 'Authentication service for LDAP and SSO environment.',
+$serviceInfo = array(
+	'title' => 'Authentication service',
+	'description' => 'Authentication service for LDAP and SSO environment.',
 
-		'subtype' => $subTypes,
+	'subtype' => $subTypes,
 
-		'available' => TRUE,
-		'priority' => 80,
-		'quality' => 80,
+	'available' => TRUE,
+	'priority' => 80,
+	'quality' => 80,
 
-		'os' => '',
-		'exec' => '',
+	'os' => '',
+	'exec' => '',
 
-		'classFile' => t3lib_extMgm::extPath($_EXTKEY) . 'Classes/Service/Sv1.php',
-		'className' => 'tx_igldapssoauth_sv1',
-	)
+	'classFile' => t3lib_extMgm::extPath($_EXTKEY) . 'Classes/Service/Sv1.php',
+	'className' => 'tx_igldapssoauth_sv1',
 );
+if (version_compare(TYPO3_version, '6.1.0', '>=')) {
+	unset($serviceInfo['classFile']);
+}
+t3lib_extMgm::addService($_EXTKEY,  'auth' /* sv type */,  'tx_igldapssoauth_sv1' /* sv key */, $serviceInfo);
 
-// User have save doc new bouton
+// User have save doc new button
 t3lib_extMgm::addUserTSConfig('options.saveDocNew.tx_igldapssoauth_config=1');

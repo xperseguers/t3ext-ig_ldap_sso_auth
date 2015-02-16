@@ -104,6 +104,11 @@ class tx_igldapssoauth_ldap_group {
 		return $groups;
 	}
 
+	/**
+	 * @param array $ldap_user
+	 * @param array $mapping
+	 * @return array|bool
+	 */
 	static public function get_membership($ldap_user = array(), $mapping = array()) {
 		if (isset($mapping['usergroup']) && preg_match("`<([^$]*)>`", $mapping['usergroup'], $attribute)) {
 			return $ldap_user[strtolower($attribute[1])];

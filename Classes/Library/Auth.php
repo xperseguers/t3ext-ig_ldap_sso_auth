@@ -591,6 +591,7 @@ class tx_igldapssoauth_auth {
 						default:
 							$mappedValue = '';
 							$params = explode(';', $match[1]);
+							$passParams = array();
 
 							foreach ($params as $param) {
 								$paramTemps = explode('|', $param);

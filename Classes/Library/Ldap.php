@@ -1,4 +1,6 @@
 <?php
+namespace Causal\IgLdapSsoAuth\Library;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -12,14 +14,17 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use Causal\IgLdapSsoAuth\Utility\LdapUtility;
+use Causal\IgLdapSsoAuth\Utility\DebugUtility;
+
 /**
- * Class tx_igldapssoauth_ldap for the 'ig_ldap_sso_auth' extension.
+ * Class Ldap for the 'ig_ldap_sso_auth' extension.
  *
  * @author	Michael Gagnon <mgagnon@infoglobe.ca>
  * @package	TYPO3
  * @subpackage	ig_ldap_sso_auth
  */
-class tx_igldapssoauth_ldap {
+class Ldap {
 
 	static protected $lastBindDiagnostic = '';
 
@@ -40,8 +45,8 @@ class tx_igldapssoauth_ldap {
 		);
 
 		// Connect to ldap server.
-		if (!tx_igldapssoauth_utility_Ldap::connect($config['host'], $config['port'], $config['protocol'], $config['charset'], $config['server'], $config['tls'])) {
-			Tx_IgLdapSsoAuth_Utility_Debug::error('Cannot connect', $debugConfiguration);
+		if (!LdapUtility::connect($config['host'], $config['port'], $config['protocol'], $config['charset'], $config['server'], $config['tls'])) {
+			DebugUtility::error('Cannot connect', $debugConfiguration);
 			return FALSE;
 		}
 
@@ -49,21 +54,21 @@ class tx_igldapssoauth_ldap {
 		$debugConfiguration['password'] = $config['password'] !== '' ? '********' : '';
 
 		// Bind to ldap server.
-		if (!tx_igldapssoauth_utility_Ldap::bind($config['binddn'], $config['password'])) {
-			$status = tx_igldapssoauth_utility_Ldap::get_status();
+		if (!LdapUtility::bind($config['binddn'], $config['password'])) {
+			$status = LdapUtility::get_status();
 			self::$lastBindDiagnostic = $status['bind']['diagnostic'];
 
 			$message = 'Cannot bind to LDAP';
 			if (!empty(self::$lastBindDiagnostic)) {
 				$message .= ': ' . self::$lastBindDiagnostic;
 			}
-			Tx_IgLdapSsoAuth_Utility_Debug::error($message, $debugConfiguration);
+			DebugUtility::error($message, $debugConfiguration);
 
 			self::disconnect();
 			return FALSE;
 		}
 
-		Tx_IgLdapSsoAuth_Utility_Debug::info('Successfully connected', $debugConfiguration);
+		DebugUtility::info('Successfully connected', $debugConfiguration);
 		return TRUE;
 	}
 
@@ -79,7 +84,7 @@ class tx_igldapssoauth_ldap {
 	static public function valid_user($username = NULL, $password = NULL, $basedn = NULL, $filter = NULL) {
 
 		// If user found on ldap server.
-		if (tx_igldapssoauth_utility_Ldap::search($basedn, str_replace('{USERNAME}', $username, $filter), array('dn'))) {
+		if (LdapUtility::search($basedn, str_replace('{USERNAME}', $username, $filter), array('dn'))) {
 
 			// Validate with password.
 			if ($password !== NULL) {
@@ -88,25 +93,25 @@ class tx_igldapssoauth_ldap {
 				if (empty($password)) {
 					self::$lastBindDiagnostic = 'Empty password provided!';
 					return FALSE;
-				} elseif (tx_igldapssoauth_utility_Ldap::bind(tx_igldapssoauth_utility_Ldap::get_dn(), $password)) {
-					$dn = tx_igldapssoauth_utility_Ldap::get_dn();
+				} elseif (LdapUtility::bind(LdapUtility::get_dn(), $password)) {
+					$dn = LdapUtility::get_dn();
 
 					// Restore last LDAP binding
-					$config = tx_igldapssoauth_config::getLdapConfiguration();
-					tx_igldapssoauth_utility_Ldap::bind($config['binddn'], $config['password']);
+					$config = Configuration::getLdapConfiguration();
+					LdapUtility::bind($config['binddn'], $config['password']);
 					self::$lastBindDiagnostic = '';
 
 					return $dn;
 				} else {
-					$status = tx_igldapssoauth_utility_Ldap::get_status();
+					$status = LdapUtility::get_status();
 					self::$lastBindDiagnostic = $status['bind']['diagnostic'];
 					return FALSE;	// Password does not match
 				}
 
 			// If enable, SSO authentication without password
-			} elseif ($password === NULL && tx_igldapssoauth_config::is_enable('SSOAuthentication')) {
+			} elseif ($password === NULL && Configuration::is_enable('SSOAuthentication')) {
 
-				return tx_igldapssoauth_utility_Ldap::get_dn();
+				return LdapUtility::get_dn();
 
 			} else {
 
@@ -132,13 +137,13 @@ class tx_igldapssoauth_ldap {
 	static public function search($basedn = NULL, $filter = NULL, $attributes = array(), $first_entry = FALSE, $limit = 0) {
 		$result = array();
 
-		if (tx_igldapssoauth_utility_Ldap::search($basedn, $filter, $attributes, 0, $first_entry ? 1 : $limit)) {
+		if (LdapUtility::search($basedn, $filter, $attributes, 0, $first_entry ? 1 : $limit)) {
 			if ($first_entry) {
-				$result = tx_igldapssoauth_utility_Ldap::get_first_entry();
-				$result['dn'] = tx_igldapssoauth_utility_Ldap::get_dn();
+				$result = LdapUtility::get_first_entry();
+				$result['dn'] = LdapUtility::get_dn();
 				unset($result['count']);
 			} else {
-				$result = tx_igldapssoauth_utility_Ldap::get_entries();
+				$result = LdapUtility::get_entries();
 			}
 		}
 
@@ -146,31 +151,31 @@ class tx_igldapssoauth_ldap {
 	}
 
 	/**
-	 * Returns TRUE if last call to tx_igldapssoauth_ldap::search() returned a partial result set.
-	 * You should then call tx_igldapssoauth_ldap::searchNext().
+	 * Returns TRUE if last call to @see search() returned a partial result set.
+	 * You should then call @see searchNext().
 	 *
 	 * @return bool
 	 */
 	static public function isPartialSearchResult() {
-		return tx_igldapssoauth_utility_Ldap::has_more_entries();
+		return LdapUtility::has_more_entries();
 	}
 
 	/**
-	 * Returns the next block of entries satisfying a previous call to tx_igldapsso_auth_ldap::search().
+	 * Returns the next block of entries satisfying a previous call to @see search().
 	 *
 	 * @return array
 	 */
 	static public function searchNext() {
-		$result = tx_igldapssoauth_utility_Ldap::get_next_entries();
+		$result = LdapUtility::get_next_entries();
 		return $result;
 	}
 
 	static public function get_status() {
-		return tx_igldapssoauth_utility_Ldap::get_status();
+		return LdapUtility::get_status();
 	}
 
 	static public function disconnect() {
-		tx_igldapssoauth_utility_Ldap::disconnect();
+		LdapUtility::disconnect();
 	}
 
 	/**

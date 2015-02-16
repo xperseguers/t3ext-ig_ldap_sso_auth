@@ -1,4 +1,6 @@
 <?php
+namespace Causal\IgLdapSsoAuth\Service;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -12,6 +14,12 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Causal\IgLdapSsoAuth\Library\Authentication;
+use Causal\IgLdapSsoAuth\Library\Configuration;
+use Causal\IgLdapSsoAuth\Utility\DebugUtility;
+use Causal\IgLdapSsoAuth\Utility\NotificationUtility;
+
 /**
  * LDAP / SSO authentication service.
  *
@@ -20,10 +28,10 @@
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class tx_igldapssoauth_sv1 extends \TYPO3\CMS\Sv\AuthenticationService {
+class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 
-	var $prefixId = 'tx_igldapssoauth_sv1'; // Same as class name
-	var $scriptRelPath = 'Classes/Service/Sv1.php'; // Path to this script relative to the extension dir.
+	var $prefixId = 'tx_igldapssoauth_sv1'; // Keep class name
+	var $scriptRelPath = 'Classes/Service/AuthenticationService.php'; // Path to this script relative to the extension dir.
 	var $extKey = 'ig_ldap_sso_auth'; // The extension key.
 	var $igldapssoauth;
 
@@ -38,7 +46,7 @@ class tx_igldapssoauth_sv1 extends \TYPO3\CMS\Sv\AuthenticationService {
 	public function __construct() {
 		$config = $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey];
 		$this->config = $config ? unserialize($config) : array();
-		tx_igldapssoauth_auth::setAuthenticationService($this);
+		Authentication::setAuthenticationService($this);
 	}
 
 	/**
@@ -71,19 +79,19 @@ class tx_igldapssoauth_sv1 extends \TYPO3\CMS\Sv\AuthenticationService {
 
 		if (count($configurationRecords) === 0) {
 			// Early return since LDAP is not configured
-			Tx_IgLdapSsoAuth_Utility_Debug::warning('Skipping LDAP authentication as extension is not yet configured');
+			DebugUtility::warning('Skipping LDAP authentication as extension is not yet configured');
 			return FALSE;
 		}
 
 		foreach ($configurationRecords as $configurationRecord) {
-			tx_igldapssoauth_config::init(TYPO3_MODE, $configurationRecord['uid']);
-			if (!tx_igldapssoauth_config::isEnabledForCurrentHost()) {
+			Configuration::init(TYPO3_MODE, $configurationRecord['uid']);
+			if (!Configuration::isEnabledForCurrentHost()) {
 				$msg = sprintf(
 					'Configuration record #%s is not enabled for domain %s',
 					$configurationRecord['uid'],
-					\TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY')
+					GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY')
 				);
-				Tx_IgLdapSsoAuth_Utility_Debug::info($msg);
+				DebugUtility::info($msg);
 				continue;
 			}
 
@@ -101,7 +109,7 @@ class tx_igldapssoauth_sv1 extends \TYPO3\CMS\Sv\AuthenticationService {
 					$remoteUser = substr($remoteUser, $pos + 1);
 				}
 
-				$userRecordOrIsValid = tx_igldapssoauth_auth::ldap_auth($remoteUser);
+				$userRecordOrIsValid = Authentication::ldap_auth($remoteUser);
 
 			// Authenticate user from LDAP
 			} elseif ($this->login['status'] === 'login' && $this->login['uident']) {
@@ -125,7 +133,7 @@ class tx_igldapssoauth_sv1 extends \TYPO3\CMS\Sv\AuthenticationService {
 
 				try {
 					if ($password !== NULL) {
-						$userRecordOrIsValid = tx_igldapssoauth_auth::ldap_auth($this->login['uname'], $password);
+						$userRecordOrIsValid = Authentication::ldap_auth($this->login['uname'], $password);
 					} else {
 						// Could not decrypt password
 						$userRecordOrIsValid = FALSE;
@@ -142,13 +150,13 @@ class tx_igldapssoauth_sv1 extends \TYPO3\CMS\Sv\AuthenticationService {
 				// Authentication is valid
 				break;
 			} else {
-				$diagnostic = tx_igldapssoauth_auth::getLastAuthenticationDiagnostic();
+				$diagnostic = Authentication::getLastAuthenticationDiagnostic();
 				if (!empty($diagnostic)) {
 					$this->writelog(255, 3, 3, 1,
 						"Login-attempt from %s (%s), username '%s': " . $diagnostic,
 						array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $this->login['uname']));
 				}
-				Tx_IgLdapSsoAuth_Utility_Notification::dispatch(
+				NotificationUtility::dispatch(
 					__CLASS__,
 					'authenticationFailed',
 					array(
@@ -167,7 +175,7 @@ class tx_igldapssoauth_sv1 extends \TYPO3\CMS\Sv\AuthenticationService {
 		}
 
 		if (is_array($user)) {
-			Tx_IgLdapSsoAuth_Utility_Debug::info('User found', $this->db_user);
+			DebugUtility::info('User found', $this->db_user);
 		}
 
 		return $user;
@@ -187,13 +195,13 @@ class tx_igldapssoauth_sv1 extends \TYPO3\CMS\Sv\AuthenticationService {
 	 * @return int|FALSE
 	 */
 	public function authUser(array $user) {
-		if (!tx_igldapssoauth_config::isInitialized()) {
+		if (!Configuration::isInitialized()) {
 			// Early return since LDAP is not configured
 			return 100;
 		}
 
 		if (TYPO3_MODE === 'BE') {
-			$OK = tx_igldapssoauth_config::is_enable('BEfailsafe') ? 100 : FALSE;
+			$OK = Configuration::is_enable('BEfailsafe') ? 100 : FALSE;
 		} else {
 			$OK = 100;
 		}
@@ -203,7 +211,7 @@ class tx_igldapssoauth_sv1 extends \TYPO3\CMS\Sv\AuthenticationService {
 		if ((($this->login['uident'] && $this->login['uname']) || $enableFrontendSso) && !empty($user['tx_igldapssoauth_dn'])) {
 			if (isset($user['tx_igldapssoauth_from'])) {
 				$OK = 200;
-			} elseif (TYPO3_MODE === 'BE' && tx_igldapssoauth_config::is_enable('BEfailsafe')) {
+			} elseif (TYPO3_MODE === 'BE' && Configuration::is_enable('BEfailsafe')) {
 				return 100;
 			} else {
 				// Failed login attempt (wrong password) - write that to the log!
@@ -211,7 +219,7 @@ class tx_igldapssoauth_sv1 extends \TYPO3\CMS\Sv\AuthenticationService {
 					"Login-attempt from %s (%s), username '%s', password not accepted!",
 					array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $this->login['uname']));
 
-				Tx_IgLdapSsoAuth_Utility_Debug::warning('Password not accepted: ' . $this->login['uident']);
+				DebugUtility::warning('Password not accepted: ' . $this->login['uident']);
 				$OK = FALSE;
 			}
 

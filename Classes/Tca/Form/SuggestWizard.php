@@ -1,4 +1,6 @@
 <?php
+namespace Causal\IgLdapSsoAuth\Tca\Form;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,7 +21,7 @@
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class Tx_IgLdapSsoAuth_Tca_Form_Suggest {
+class SuggestWizard {
 
 	/**
 	 * Renders a suggestion for the mapping.

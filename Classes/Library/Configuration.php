@@ -1,4 +1,6 @@
 <?php
+namespace Causal\IgLdapSsoAuth\Library;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,14 +17,14 @@
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class tx_igldapssoauth_config for the 'ig_ldap_sso_auth' extension.
+ * Class Configuration for the 'ig_ldap_sso_auth' extension.
  *
  * @author     Xavier Perseguers <xavier@typo3.org>
  * @author     Michael Gagnon <mgagnon@infoglobe.ca>
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class tx_igldapssoauth_config {
+class Configuration {
 
 	const GROUP_MEMBERSHIP_FROM_GROUP = 1;
 	const GROUP_MEMBERSHIP_FROM_MEMBER = 2;

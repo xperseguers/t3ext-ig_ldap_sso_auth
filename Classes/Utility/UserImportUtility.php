@@ -1,4 +1,6 @@
 <?php
+namespace Causal\IgLdapSsoAuth\Utility;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -12,14 +14,21 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Causal\IgLdapSsoAuth\Domain\Repository\Typo3UserRepository;
+use Causal\IgLdapSsoAuth\Library\Authentication;
+use Causal\IgLdapSsoAuth\Library\Configuration;
+use Causal\IgLdapSsoAuth\Library\Ldap;
+
 /**
  * Centralizes the code for importing users from LDAP/AD sources.
  *
- * @author Francois Suter <typo3@cobweb.ch>
+ * @author     Francois Suter <typo3@cobweb.ch>
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class Tx_IgLdapSsoAuth_Utility_UserImport {
+class UserImportUtility {
+
 	/**
 	 * Synchronization context (may be FE, BE or both).
 	 *
@@ -64,15 +73,15 @@ class Tx_IgLdapSsoAuth_Utility_UserImport {
 
 	public function __construct($configurationId, $context) {
 		// Load the configuration
-		tx_igldapssoauth_config::init(
+		Configuration::init(
 			$context,
 			$configurationId
 		);
 		// Store current context and get related configuration
 		$this->context = $context;
 		$this->configuration = ($context === 'be')
-			? tx_igldapssoauth_config::getBeConfiguration()
-			: tx_igldapssoauth_config::getFeConfiguration();
+			? Configuration::getBeConfiguration()
+			: Configuration::getFeConfiguration();
 		// Define related tables
 		if ($context === 'be') {
 			$this->userTable = 'be_users';
@@ -89,9 +98,9 @@ class Tx_IgLdapSsoAuth_Utility_UserImport {
 	 * @return void
 	 */
 	public function disableUsers() {
-		tx_igldapssoauth_typo3_user::disableForConfiguration(
+		Typo3UserRepository::disableForConfiguration(
 			$this->userTable,
-			tx_igldapssoauth_config::getUid()
+			Configuration::getUid()
 		);
 	}
 
@@ -101,9 +110,9 @@ class Tx_IgLdapSsoAuth_Utility_UserImport {
 	 * @return void
 	 */
 	public function deleteUsers() {
-		tx_igldapssoauth_typo3_user::deleteForConfiguration(
+		Typo3UserRepository::deleteForConfiguration(
 			$this->userTable,
-			tx_igldapssoauth_config::getUid()
+			Configuration::getUid()
 		);
 	}
 
@@ -119,11 +128,11 @@ class Tx_IgLdapSsoAuth_Utility_UserImport {
 		$ldapUsers = array();
 		if (!empty($this->configuration['users']['basedn'])) {
 			if (!$partial) {
-				$filter = tx_igldapssoauth_config::replace_filter_markers($this->configuration['users']['filter']);
-				$attributes = tx_igldapssoauth_config::get_ldap_attributes($this->configuration['users']['mapping']);
-				$ldapUsers = tx_igldapssoauth_ldap::search($this->configuration['users']['basedn'], $filter, $attributes);
+				$filter = Configuration::replace_filter_markers($this->configuration['users']['filter']);
+				$attributes = Configuration::get_ldap_attributes($this->configuration['users']['mapping']);
+				$ldapUsers = Ldap::search($this->configuration['users']['basedn'], $filter, $attributes);
 			} else {
-				$ldapUsers = tx_igldapssoauth_ldap::searchNext();
+				$ldapUsers = Ldap::searchNext();
 			}
 			unset($ldapUsers['count']);
 		}
@@ -132,13 +141,13 @@ class Tx_IgLdapSsoAuth_Utility_UserImport {
 	}
 
 	/**
-	 * Returns TRUE is a previous call to Tx_IgLdapSsoAuth_Utility_UserImport::fetchLdapUsers() returned
+	 * Returns TRUE is a previous call to @see fetchLdapUsers() returned
 	 * a partial result set.
 	 *
 	 * @return bool
 	 */
 	public function hasMoreLdapUsers() {
-		return tx_igldapssoauth_ldap::isPartialSearchResult();
+		return Ldap::isPartialSearchResult();
 	}
 
 	/**
@@ -152,8 +161,8 @@ class Tx_IgLdapSsoAuth_Utility_UserImport {
 		// Populate an array of TYPO3 users records corresponding to the LDAP users
 		// If a given LDAP user has no associated user in TYPO3, a fresh record
 		// will be created so that $ldapUsers[i] <=> $typo3Users[i]
-		$typo3UserPid = tx_igldapssoauth_config::get_pid($this->configuration['users']['mapping']);
-		$typo3Users = tx_igldapssoauth_auth::get_typo3_users(
+		$typo3UserPid = Configuration::get_pid($this->configuration['users']['mapping']);
+		$typo3Users = Authentication::get_typo3_users(
 			$ldapUsers,
 			$this->configuration['users']['mapping'],
 			$this->userTable,
@@ -181,17 +190,17 @@ class Tx_IgLdapSsoAuth_Utility_UserImport {
 		if (empty($user['uid'])) {
 			// Set other necessary information for a new user
 			// First make sure to be acting in the right context
-			tx_igldapssoauth_config::setTypo3Mode($this->context);
-			$user['username'] = tx_igldapssoauth_typo3_user::setUsername($user['username']);
-			$user['password'] = tx_igldapssoauth_typo3_user::setRandomPassword();
-			$typo3Groups = tx_igldapssoauth_auth::get_user_groups($ldapUser, $this->configuration, $this->groupTable);
+			Configuration::setTypo3Mode($this->context);
+			$user['username'] = Typo3UserRepository::setUsername($user['username']);
+			$user['password'] = Typo3UserRepository::setRandomPassword();
+			$typo3Groups = Authentication::get_user_groups($ldapUser, $this->configuration, $this->groupTable);
 			if ($typo3Groups === NULL) {
 				// Required LDAP groups are missing: quit!
 				return $user;
 			}
-			$user = tx_igldapssoauth_typo3_user::set_usergroup($typo3Groups, $user, NULL, $this->groupTable);
+			$user = Typo3UserRepository::set_usergroup($typo3Groups, $user, NULL, $this->groupTable);
 
-			$user = tx_igldapssoauth_typo3_user::add($this->userTable, $user);
+			$user = Typo3UserRepository::add($this->userTable, $user);
 			$this->usersAdded++;
 		} else {
 			// Restore user that may have been previously deleted or disabled, depending on chosen behavior
@@ -209,9 +218,9 @@ class Tx_IgLdapSsoAuth_Utility_UserImport {
 					$user[$GLOBALS['TCA'][$this->userTable]['ctrl']['enablecolumns']['disabled']] = 0;
 					$user[$GLOBALS['TCA'][$this->userTable]['ctrl']['delete']] = 0;
 			}
-			$typo3Groups = tx_igldapssoauth_auth::get_user_groups($ldapUser, $this->configuration, $this->groupTable);
-			$user = tx_igldapssoauth_typo3_user::set_usergroup($typo3Groups, $user, NULL, $this->groupTable);
-			$success = tx_igldapssoauth_typo3_user::update($this->userTable, $user);
+			$typo3Groups = Authentication::get_user_groups($ldapUser, $this->configuration, $this->groupTable);
+			$user = Typo3UserRepository::set_usergroup($typo3Groups, $user, NULL, $this->groupTable);
+			$success = Typo3UserRepository::update($this->userTable, $user);
 			if ($success) {
 				$this->usersUpdated++;
 			}
@@ -224,14 +233,14 @@ class Tx_IgLdapSsoAuth_Utility_UserImport {
 			// Hook for processing the extra data
 			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'])) {
 				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'] as $className) {
-					/** @var $postProcessor Tx_IgLdapSsoAuth_Utility_ExtraDataProcessorInterface */
-					$postProcessor = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($className);
-					if ($postProcessor instanceof Tx_IgLdapSsoAuth_Utility_ExtraDataProcessorInterface) {
+					/** @var $postProcessor \Causal\IgLdapSsoAuth\Utility\ExtraDataProcessorInterface */
+					$postProcessor = GeneralUtility::getUserObj($className);
+					if ($postProcessor instanceof \Causal\IgLdapSsoAuth\Utility\ExtraDataProcessorInterface) {
 						$postProcessor->processExtraData($this->userTable, $user);
 					} else {
 						throw new \Exception(
 							sprintf(
-								'Invalid post-processing class %s. It must implement the Tx_IgLdapSsoAuth_Utility_ExtraDataProcessorInterface interface',
+								'Invalid post-processing class %s. It must implement the \\Causal\\IgLdapSsoAuth\\Utility\\ExtraDataProcessorInterface interface',
 								$className
 							),
 							1414136057

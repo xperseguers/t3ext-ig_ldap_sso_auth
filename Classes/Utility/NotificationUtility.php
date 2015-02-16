@@ -1,4 +1,6 @@
 <?php
+namespace Causal\IgLdapSsoAuth\Utility;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -12,6 +14,8 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Notification class.
  *
@@ -19,7 +23,7 @@
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class Tx_IgLdapSsoAuth_Utility_Notification {
+class NotificationUtility {
 
 	/**
 	 * Dispatches a signal by calling the registered slot methods.
@@ -33,7 +37,7 @@ class Tx_IgLdapSsoAuth_Utility_Notification {
 	 */
 	static public function dispatch($signalClassName, $signalName, array $signalArguments = array()) {
 		// Log the call to ease debugging
-		Tx_IgLdapSsoAuth_Utility_Debug::debug('Signal from ' . $signalClassName . ' with name ' . $signalName, $signalArguments);
+		DebugUtility::debug('Signal from ' . $signalClassName . ' with name ' . $signalName, $signalArguments);
 
 		return self::getSignalSlotDispatcher()->dispatch($signalClassName, $signalName, $signalArguments);
 	}
@@ -41,7 +45,7 @@ class Tx_IgLdapSsoAuth_Utility_Notification {
 	/**
 	 * Returns the signal slot dispatcher.
 	 *
-	 * @return Tx_Extbase_SignalSlot_Dispatcher
+	 * @return \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
 	 */
 	static protected function getSignalSlotDispatcher() {
 		/** @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher $signalSlotDispatcher */
@@ -49,7 +53,7 @@ class Tx_IgLdapSsoAuth_Utility_Notification {
 
 		if ($signalSlotDispatcher === NULL) {
 			/** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-			$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+			$objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
 			$signalSlotDispatcher = $objectManager->get('TYPO3\\CMS\\Extbase\\SignalSlot\\Dispatcher');
 		}
 

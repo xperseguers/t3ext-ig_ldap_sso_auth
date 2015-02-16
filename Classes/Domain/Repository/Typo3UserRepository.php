@@ -1,4 +1,6 @@
 <?php
+namespace Causal\IgLdapSsoAuth\Domain\Repository;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,16 +15,18 @@
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Causal\IgLdapSsoAuth\Library\Configuration;
+use Causal\IgLdapSsoAuth\Utility\NotificationUtility;
 
 /**
- * Class tx_igldapssoauth_typo3_user for the 'ig_ldap_sso_auth' extension.
+ * Class Typo3UserRepository for the 'ig_ldap_sso_auth' extension.
  *
  * @author     Xavier Perseguers <xavier@typo3.org>
  * @author     Michael Gagnon <mgagnon@infoglobe.ca>
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class tx_igldapssoauth_typo3_user {
+class Typo3UserRepository {
 
 	/**
 	 * Creates a fresh BE/FE user record.
@@ -137,7 +141,7 @@ class tx_igldapssoauth_typo3_user {
 			'uid=' . intval($uid)
 		);
 
-		Tx_IgLdapSsoAuth_Utility_Notification::dispatch(
+		NotificationUtility::dispatch(
 			__CLASS__,
 			'userAdded',
 			array(
@@ -176,7 +180,7 @@ class tx_igldapssoauth_typo3_user {
 		$success = $databaseConnection->sql_errno() == 0;
 
 		if ($success) {
-			Tx_IgLdapSsoAuth_Utility_Notification::dispatch(
+			NotificationUtility::dispatch(
 				__CLASS__,
 				'userUpdated',
 				array(
@@ -212,7 +216,7 @@ class tx_igldapssoauth_typo3_user {
 				$fields
 			);
 
-			Tx_IgLdapSsoAuth_Utility_Notification::dispatch(
+			NotificationUtility::dispatch(
 				__CLASS__,
 				'userDisabled',
 				array(
@@ -246,7 +250,7 @@ class tx_igldapssoauth_typo3_user {
 				$fields
 			);
 
-			Tx_IgLdapSsoAuth_Utility_Notification::dispatch(
+			NotificationUtility::dispatch(
 				__CLASS__,
 				'userDeleted',
 				array(
@@ -257,7 +261,7 @@ class tx_igldapssoauth_typo3_user {
 		}
 	}
 
-	static public function set_usergroup(array $typo3_groups = array(), array $typo3_user = array(), tx_igldapssoauth_sv1 $pObj = NULL, $groupTable = '') {
+	static public function set_usergroup(array $typo3_groups = array(), array $typo3_user = array(), \Causal\IgLdapSsoAuth\Service\AuthenticationService $pObj = NULL, $groupTable = '') {
 		$group_uid = array();
 
 		foreach ($typo3_groups as $typo3_group) {
@@ -278,14 +282,14 @@ class tx_igldapssoauth_typo3_user {
 				}
 			}
 		}
-		$assignGroups = GeneralUtility::intExplode(',', tx_igldapssoauth_config::is_enable('assignGroups'), TRUE);
+		$assignGroups = GeneralUtility::intExplode(',', Configuration::is_enable('assignGroups'), TRUE);
 		foreach ($assignGroups as $uid) {
-			if (tx_igldapssoauth_typo3_group::fetch($groupTable, $uid) && !in_array($uid, $group_uid)) {
+			if (Typo3GroupRepository::fetch($groupTable, $uid) && !in_array($uid, $group_uid)) {
 				$group_uid[] = $uid;
 			}
 		}
 
-		if (tx_igldapssoauth_config::is_enable('keepTYPO3Groups') && $typo3_user['usergroup']) {
+		if (Configuration::is_enable('keepTYPO3Groups') && $typo3_user['usergroup']) {
 			$usergroup = GeneralUtility::intExplode(',', $typo3_user['usergroup'], TRUE);
 
 			foreach ($usergroup as $uid) {
@@ -295,7 +299,7 @@ class tx_igldapssoauth_typo3_user {
 			}
 		}
 
-		$updateAdminAttribForGroups = tx_igldapssoauth_config::is_enable('updateAdminAttribForGroups');
+		$updateAdminAttribForGroups = Configuration::is_enable('updateAdminAttribForGroups');
 		if ($updateAdminAttribForGroups) {
 			$updateAdminAttribForGroups = GeneralUtility::trimExplode(',', $updateAdminAttribForGroups);
 			$typo3_user['admin'] = 0;
@@ -319,8 +323,8 @@ class tx_igldapssoauth_typo3_user {
 	 * @return string
 	 */
 	static public function setUsername($username) {
-		if (tx_igldapssoauth_config::is_enable('forceLowerCaseUsername')) {
-			// Possible enhancement: use t3lib_cs::conv_case instead
+		if (Configuration::is_enable('forceLowerCaseUsername')) {
+			// Possible enhancement: use \TYPO3\CMS\Core\Charset\CharsetConverter::conv_case instead
 			$username = strtolower($username);
 		}
 		return $username;

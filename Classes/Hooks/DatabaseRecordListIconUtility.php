@@ -1,4 +1,6 @@
 <?php
+namespace Causal\IgLdapSsoAuth\Hooks;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -24,7 +26,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class Tx_IgLdapSsoAuth_Hooks_DatabaseRecordListIconUtility implements \TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface {
+class DatabaseRecordListIconUtility implements \TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface {
 
 	/**
 	 * Modifies the DB list query.

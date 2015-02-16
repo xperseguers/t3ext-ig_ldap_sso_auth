@@ -1,4 +1,6 @@
 <?php
+namespace Causal\IgLdapSsoAuth\Library;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -12,6 +14,8 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use Causal\IgLdapSsoAuth\Library\Ldap;
+
 /**
  * Class tx_igldapssoauth_typo3_group for the 'ig_ldap_sso_auth' extension.
  *
@@ -19,7 +23,7 @@
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class tx_igldapssoauth_ldap_group {
+class LdapGroup {
 
 	/**
 	 * Returns LDAP group records based on a list of DNs provided as $membership,
@@ -50,7 +54,7 @@ class tx_igldapssoauth_ldap_group {
 				continue;
 			}
 			if ($extendedCheck) {
-				$ldap_group = tx_igldapssoauth_ldap::search($groupdn, $filter, $attributes);
+				$ldap_group = Ldap::search($groupdn, $filter, $attributes);
 			} else {
 				$parts = explode(',', $groupdn);
 				list($firstAttribute, $value) = explode('=', $parts[0]);
@@ -89,10 +93,10 @@ class tx_igldapssoauth_ldap_group {
 	 * @return array
 	 */
 	static public function selectFromUser($baseDn, $filter = '', $userDn = '', $userUid = '', array $attributes = array()) {
-		$filter = str_replace('{USERDN}', tx_igldapssoauth_ldap::escapeDnForFilter($userDn), $filter);
-		$filter = str_replace('{USERUID}', tx_igldapssoauth_ldap::escapeDnForFilter($userUid), $filter);
+		$filter = str_replace('{USERDN}', Ldap::escapeDnForFilter($userDn), $filter);
+		$filter = str_replace('{USERUID}', Ldap::escapeDnForFilter($userUid), $filter);
 
-		$groups = tx_igldapssoauth_ldap::search($baseDn, $filter, $attributes);
+		$groups = Ldap::search($baseDn, $filter, $attributes);
 		return $groups;
 	}
 

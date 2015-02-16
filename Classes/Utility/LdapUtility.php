@@ -1,4 +1,6 @@
 <?php
+namespace Causal\IgLdapSsoAuth\Utility;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -12,33 +14,32 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
- * Class tx_igldapssoauth_utility_Ldap.
+ * Class LdapUtility.
  *
- * @access public
- * @package	TYPO3
- * @subpackage	iglib
- * @author	Michael Gagnon <mgagnon@infoglobe.ca>
+ * @package     TYPO3
+ * @subpackage  iglib
+ * @author      Michael Gagnon <mgagnon@infoglobe.ca>
  * @copyright	(c) 2007 Michael Gagnon <mgagnon@infoglobe.ca>
- * @version	$Id: class.tx_igldapssoauth_utility_ldap.php
  * @see http://www-sop.inria.fr/semir/personnel/Laurent.Mirtain/ldap-livre.html
  *
  * Opération  |	LDAP description
  * -----------------------------------------------------------------------
- * Search		 Recherche dans l'annuaire d'objets à partir d'un DN et/ou d'un filtre [ok]
- * Compare		 Comparaison du contenu de deux objets
- * Add			 Ajout d'une entrée
- * Modify		 Modification du contenu d'une entrée
- * Delete		 Suppression d'un objet
- * Rename		Modification du DN d'une entrée (Modify DN)
- * Connect		 Connexion au serveur [ok]
- * Bind		 Authentification au serveur [ok]
- * Disconnect	 Deconnexion (unbind) [ok]
- * Abandon		 Abandon d'une opération en cours
- * Extended	 Opérations étendues (v3)
- *
+ * Search       Recherche dans l'annuaire d'objets à partir d'un DN et/ou d'un filtre [ok]
+ * Compare      Comparaison du contenu de deux objets
+ * Add          Ajout d'une entrée
+ * Modify       Modification du contenu d'une entrée
+ * Delete       Suppression d'un objet
+ * Rename       Modification du DN d'une entrée (Modify DN)
+ * Connect      Connexion au serveur [ok]
+ * Bind         Authentification au serveur [ok]
+ * Disconnect   Deconnexion (unbind) [ok]
+ * Abandon      Abandon d'une opération en cours
+ * Extended     Opérations étendues (v3)
  */
-class tx_igldapssoauth_utility_Ldap {
+class LdapUtility {
 
 	static protected $ldap_charset; // LDAP Server charset.
 	static protected $local_charset; // Local character set (TYPO3).
@@ -243,7 +244,7 @@ class tx_igldapssoauth_utility_Ldap {
 
 	/**
 	 * Returns up to 1000 LDAP entries corresponding to a filter prepared by a call to
-	 * tx_igldapssoauth_utility_Ldap::search().
+	 * @see LdapUtility::search().
 	 *
 	 * @param resource $previousEntry Used to get the remaining entries after receiving a partial result set
 	 * @return array
@@ -276,13 +277,13 @@ class tx_igldapssoauth_utility_Ldap {
 
 		return $entries['count'] > 0
 			// Convert LDAP result character set  -> local character set
-			? tx_igldapssoauth_utility_Ldap::convert_charset_array($entries, self::$ldap_charset, self::$local_charset)
+			? static::convert_charset_array($entries, self::$ldap_charset, self::$local_charset)
 			: array();
 	}
 
 	/**
 	 * Returns next LDAP entries corresponding to a filter prepared by a call to
-	 * tx_igldapssoauth_utility_Ldap::search().
+	 * @see LdapUtility::search().
 	 *
 	 * @return array
 	 */
@@ -291,7 +292,7 @@ class tx_igldapssoauth_utility_Ldap {
 	}
 
 	/**
-	 * Returns TRUE if last call to tx_igldapssoauth_utility_Ldap::get_entries
+	 * Returns TRUE if last call to @see LdapUtility::get_entries()
 	 * returned a partial result set.
 	 *
 	 * @return bool
@@ -302,7 +303,7 @@ class tx_igldapssoauth_utility_Ldap {
 
 	static public function get_first_entry() {
 		self::$status['get_first_entry']['status'] = ldap_error(self::$cid);
-		return (tx_igldapssoauth_utility_Ldap::convert_charset_array(@ldap_get_attributes(self::$cid, self::$feid), self::$ldap_charset, self::$local_charset));
+		return (static::convert_charset_array(@ldap_get_attributes(self::$cid, self::$feid), self::$ldap_charset, self::$local_charset));
 	}
 
 	static public function get_dn() {
@@ -337,7 +338,7 @@ class tx_igldapssoauth_utility_Ldap {
 		if ((isset($GLOBALS['TSFE'])) && (isset($GLOBALS['TSFE']->csConvObj))) {
 			$csObj = $GLOBALS['TSFE']->csConvObj;
 		} else {
-			$csObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
+			$csObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
 		}
 
 		// LDAP server charset
@@ -356,12 +357,12 @@ class tx_igldapssoauth_utility_Ldap {
 		if ((isset($GLOBALS['TSFE'])) && (isset($GLOBALS['TSFE']->csConvObj))) {
 			$csObj = $GLOBALS['TSFE']->csConvObj;
 		} else {
-			$csObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
+			$csObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
 		}
 
 		foreach ($arr as $k => $val) {
 			if (is_array($val)) {
-				$arr[$k] = tx_igldapssoauth_utility_Ldap::convert_charset_array($val, $char1, $char2);
+				$arr[$k] = static::convert_charset_array($val, $char1, $char2);
 			} else {
 				$arr[$k] = $csObj->conv($val, $char1, $char2);
 			}

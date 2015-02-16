@@ -15,8 +15,8 @@
 $BACK_PATH = $GLOBALS['BACK_PATH'] . TYPO3_mainDir;
 
 /**
- * Class to be used to migrate global configuration from v1.1.x and below to
- * configuration records in v1.2.
+ * Class to be used to migrate configuration to be compatible with a newer major
+ * version of this extension.
  *
  * @category    Extension Manager
  * @package     TYPO3
@@ -61,6 +61,9 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		}
 		if ($this->checkV12ToV13()) {
 			$this->operations[] = 'upgradeV12ToV13';
+		}
+		if ($this->checkV2xToV30()) {
+			$this->operations[] = 'upgradeV2xToV30';
 		}
 		if ($this->checkEuLdap()) {
 			$this->operations[] = 'migrateEuLdap';
@@ -110,6 +113,23 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 			'group_membership=0'
 		);
 		return $oldConfigurationRecords > 0;
+	}
+
+	/**
+	 * Returns TRUE if upgrade wizard from v2.x to v3.0 should be run.
+	 *
+	 * @return bool
+	 */
+	protected function checkV2xToV30() {
+		if (!TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('scheduler')) {
+			return FALSE;
+		}
+		$oldTaskRecords = $this->databaseConnection->exec_SELECTcountRows(
+			'*',
+			'tx_scheduler_task',
+			'serialized_task_object LIKE ' . $this->databaseConnection->fullQuoteStr('O:33:"Tx_IgLdapSsoAuth_Task_ImportUsers":%', 'tx_scheduler_task')
+		);
+		return $oldTaskRecords > 0;
 	}
 
 	/**
@@ -213,6 +233,40 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		);
 
 		return $this->formatOk('Successfully transferred how the group membership should be extracted from LDAP from global configuration to the configuration records.');
+	}
+
+	/**
+	 * Upgrades configuration from v2.x to v3.0.
+	 *
+	 * @return string
+	 */
+	protected function upgradeV2xToV30() {
+		$table = 'tx_scheduler_task';
+		$oldClassName = 'Tx_IgLdapSsoAuth_Task_ImportUsers';
+		$newClassName = 'Causal\\IgLdapSsoAuth\\Task\\ImportUsers';
+		$oldPattern = 'O:' . strlen($oldClassName) . ':"' . $oldClassName . '":';
+		$newPattern = 'O:' . strlen($newClassName) . ':"' . $newClassName . '":';
+
+		$oldTaskRecords = $this->databaseConnection->exec_SELECTgetRows(
+			'uid, serialized_task_object',
+			$table,
+			'serialized_task_object LIKE ' . $this->databaseConnection->fullQuoteStr($oldPattern . '%', $table)
+		);
+
+		$i = 0;
+		foreach ($oldTaskRecords as $oldTaskRecord) {
+			$data = array(
+				'serialized_task_object' => preg_replace('/^' . $oldPattern . '/', $newPattern, $oldTaskRecord['serialized_task_object']),
+			);
+			$this->databaseConnection->exec_UPDATEquery(
+				$table,
+				'uid=' . (int)$oldTaskRecord['uid'],
+				$data
+			);
+			$i++;
+		}
+
+		return $this->formatOk('Successfully updated ' . $i . ' user import scheduler task' . ($i > 1 ? 's' : ''));
 	}
 
 	/**
@@ -374,8 +428,8 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 				'group_membership'   => $legacy['memberof'] == 1
 					? (
 						$legacy['servertype'] == 3
-							? tx_igldapssoauth_config::GROUP_MEMBERSHIP_FROM_GROUP
-							: tx_igldapssoauth_config::GROUP_MEMBERSHIP_FROM_MEMBER
+							? \Causal\IgLdapSsoAuth\Library\Configuration::GROUP_MEMBERSHIP_FROM_GROUP
+							: \Causal\IgLdapSsoAuth\Library\Configuration::GROUP_MEMBERSHIP_FROM_MEMBER
 					)
 					: 0,	// No standard mapping, will have to be manually configured
 				'sorting'            => $legacy['sorting'],

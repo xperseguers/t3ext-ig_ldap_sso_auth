@@ -23,6 +23,11 @@ $GLOBALS['BE_USER']->modAccess($MCONF, 1);
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Causal\IgLdapSsoAuth\Domain\Repository\Typo3GroupRepository;
+use Causal\IgLdapSsoAuth\Domain\Repository\Typo3UserRepository;
+use Causal\IgLdapSsoAuth\Library\Authentication;
+use Causal\IgLdapSsoAuth\Library\Configuration;
+use Causal\IgLdapSsoAuth\Library\Ldap;
 
 /**
  * Module 'LDAP configuration' for the 'ig_ldap_sso_auth' extension.
@@ -167,8 +172,8 @@ CSS;
 	protected function moduleContent() {
 		$thisUrl = BackendUtility::getModuleUrl($this->MCONF['name']);
 
-		/** @var Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository $configurationRepository */
-		$configurationRepository = GeneralUtility::makeInstance('Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository');
+		/** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
+		$configurationRepository = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Repository\\ConfigurationRepository');
 		$configurationRecords = $configurationRepository->fetchAll();
 
 		if (count($configurationRecords) === 0) {
@@ -215,7 +220,7 @@ CSS;
 		}
 
 		$uid = $this->ldapConfiguration['uid'];
-		tx_igldapssoauth_config::init(TYPO3_MODE, $uid);
+		Configuration::init(TYPO3_MODE, $uid);
 
 		$thisUrl .= '&config=' . $uid;
 		$editUrl = 'alt_doc.php?returnUrl=' . urlencode($thisUrl) . '&amp;edit[tx_igldapssoauth_config][' . $uid . ']=edit';
@@ -282,23 +287,23 @@ CSS;
 	 * @return void
 	 */
 	protected function show_status() {
-		$feConfiguration = tx_igldapssoauth_config::getFeConfiguration();
-		$beConfiguration = tx_igldapssoauth_config::getBeConfiguration();
+		$feConfiguration = Configuration::getFeConfiguration();
+		$beConfiguration = Configuration::getBeConfiguration();
 
-		$domains = tx_igldapssoauth_config::getDomains();
+		$domains = Configuration::getDomains();
 		if (count($domains) > 0) {
 			$this->content .= '<p><strong>' . $GLOBALS['LANG']->getLL('show_status_ldap_domains') . '</strong> ' . implode(', ', $domains) . '</p>';
 		}
 
 		// LDAP
 		$title = $GLOBALS['LANG']->getLL('show_status_ldap');
-		$ldapConfiguration = tx_igldapssoauth_config::getLdapConfiguration();
+		$ldapConfiguration = Configuration::getLdapConfiguration();
 		if ($ldapConfiguration['host']) {
 
-			$ldapConfiguration['server'] = tx_igldapssoauth_config::get_server_name($ldapConfiguration['server']);
+			$ldapConfiguration['server'] = Configuration::get_server_name($ldapConfiguration['server']);
 
 			try {
-				tx_igldapssoauth_ldap::connect($ldapConfiguration);
+				Ldap::connect($ldapConfiguration);
 			} catch (Exception $e) {
 				// Possible known exception: 1409566275, LDAP extension is not available for PHP
 				/** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
@@ -321,7 +326,7 @@ CSS;
 			$this->content .= $this->exportArrayAsTable($ldapConfiguration, $title);
 
 			$title = $GLOBALS['LANG']->getLL('show_status_ldap_connection_status');
-			$this->content .= $this->exportArrayAsTable(tx_igldapssoauth_ldap::get_status(), $title);
+			$this->content .= $this->exportArrayAsTable(Ldap::get_status(), $title);
 		} else {
 			$this->content .= $this->exportArrayAsTable($GLOBALS['LANG']->getLL('show_status_ldap_disable'), $title);
 			return;
@@ -436,12 +441,12 @@ CSS;
 
 				list($typo3_mode, $type) = explode('_', $search['table']);
 				$config = ($typo3_mode === 'be')
-					? tx_igldapssoauth_config::getBeConfiguration()
-					: tx_igldapssoauth_config::getFeConfiguration();
+					? Configuration::getBeConfiguration()
+					: Configuration::getFeConfiguration();
 
 				$search['basedn'] = $config[$type]['basedn'];
-				$search['filter'] = tx_igldapssoauth_config::replace_filter_markers($config[$type]['filter']);
-				$attributes = tx_igldapssoauth_config::get_ldap_attributes($config[$type]['mapping']);
+				$search['filter'] = Configuration::replace_filter_markers($config[$type]['filter']);
+				$attributes = Configuration::get_ldap_attributes($config[$type]['mapping']);
 				if ($type === 'users') {
 					if (strpos($config['groups']['filter'], '{USERUID}') !== FALSE) {
 						$attributes[] = 'uid';
@@ -459,14 +464,14 @@ CSS;
 
 				list($typo3_mode, $type) = explode('_', $search['table']);
 				$config = ($typo3_mode === 'be')
-					? tx_igldapssoauth_config::getBeConfiguration()
-					: tx_igldapssoauth_config::getFeConfiguration();
+					? Configuration::getBeConfiguration()
+					: Configuration::getFeConfiguration();
 
 				$search['first_entry'] = TRUE;
 				$search['see_status'] = FALSE;
 				$search['basedn'] = $config[$type]['basedn'];
-				$search['filter'] = tx_igldapssoauth_config::replace_filter_markers($config[$type]['filter']);
-				$attributes = tx_igldapssoauth_config::get_ldap_attributes($config['users']['mapping']);
+				$search['filter'] = Configuration::replace_filter_markers($config[$type]['filter']);
+				$attributes = Configuration::get_ldap_attributes($config['users']['mapping']);
 				if (strpos($config['groups']['filter'], '{USERUID}') !== FALSE) {
 					$attributes[] = 'uid';
 					$attributes = array_unique($attributes);
@@ -479,7 +484,7 @@ CSS;
 		$this->content .= '<hr />';
 
 		try {
-			$success = tx_igldapssoauth_ldap::connect(tx_igldapssoauth_config::getLdapConfiguration());
+			$success = Ldap::connect(Configuration::getLdapConfiguration());
 		} catch (\Exception $e) {
 			// Possible known exception: 1409566275, LDAP extension is not available for PHP
 			$this->enqueueFlashMessage(
@@ -556,14 +561,14 @@ CSS;
 			}
 
 			$search['basedn'] = explode('||', $search['basedn']);
-			$result = tx_igldapssoauth_ldap::search($search['basedn'], $search['filter'], $attributes, $search['first_entry'], 100);
+			$result = Ldap::search($search['basedn'], $search['filter'], $attributes, $search['first_entry'], 100);
 			if (!$result) {
 				$result = $GLOBALS['LANG']->getLL('search_wizard_no_result');
 			}
 
 			if ($search['see_status']) {
 				$title = $GLOBALS['LANG']->getLL('search_wizard_ldap_status');
-				$this->content .= $this->exportArrayAsTable(tx_igldapssoauth_ldap::get_status(), $title);
+				$this->content .= $this->exportArrayAsTable(Ldap::get_status(), $title);
 			}
 
 			$title = $GLOBALS['LANG']->getLL('search_wizard_result');
@@ -571,16 +576,16 @@ CSS;
 			if ($search['first_entry'] && is_array($result) && count($result) > 1) {
 				list($mode, $configKey) = explode('_', $search['table']);
 				$configuration = $mode === 'fe'
-					? tx_igldapssoauth_config::getFeConfiguration()
-					: tx_igldapssoauth_config::getBeConfiguration();
+					? Configuration::getFeConfiguration()
+					: Configuration::getBeConfiguration();
 				if ($configKey === 'users') {
 					$mapping = $configuration['users']['mapping'];
-					$blankTypo3Record = tx_igldapssoauth_typo3_user::create($search['table']);
+					$blankTypo3Record = Typo3UserRepository::create($search['table']);
 				} else {
 					$mapping = $configuration['groups']['mapping'];
-					$blankTypo3Record = tx_igldapssoauth_typo3_group::create($search['table']);
+					$blankTypo3Record = Typo3GroupRepository::create($search['table']);
 				}
-				$record = tx_igldapssoauth_auth::merge($result, $blankTypo3Record, $mapping);
+				$record = Authentication::merge($result, $blankTypo3Record, $mapping);
 
 				// Remove empty lines
 				$keys = array_keys($record);
@@ -600,10 +605,10 @@ CSS;
 			}
 			$this->content .= $this->exportArrayAsTable($result, $title);
 
-			tx_igldapssoauth_ldap::disconnect();
+			Ldap::disconnect();
 
 		} else {
-			$this->content .= '<h2>' . $GLOBALS['LANG']->getLL('search_wizard_ldap_status') . '</h2><hr />' . \TYPO3\CMS\Core\Utility\DebugUtility::viewArray(tx_igldapssoauth_ldap::get_status());
+			$this->content .= '<h2>' . $GLOBALS['LANG']->getLL('search_wizard_ldap_status') . '</h2><hr />' . \TYPO3\CMS\Core\Utility\DebugUtility::viewArray(Ldap::get_status());
 		}
 
 	}
@@ -645,14 +650,14 @@ CSS;
 		}
 
 		$config = ($typo3_mode === 'be')
-			? tx_igldapssoauth_config::getBeConfiguration()
-			: tx_igldapssoauth_config::getFeConfiguration();
+			? Configuration::getBeConfiguration()
+			: Configuration::getFeConfiguration();
 
 		$ldap_groups = array();
 		if (!empty($config['groups']['basedn'])) {
-			$filter = tx_igldapssoauth_config::replace_filter_markers($config['groups']['filter']);
-			$attributes = tx_igldapssoauth_config::get_ldap_attributes($config['groups']['mapping']);
-			$ldap_groups = tx_igldapssoauth_ldap::search($config['groups']['basedn'], $filter, $attributes);
+			$filter = Configuration::replace_filter_markers($config['groups']['filter']);
+			$attributes = Configuration::get_ldap_attributes($config['groups']['mapping']);
+			$ldap_groups = Ldap::search($config['groups']['basedn'], $filter, $attributes);
 			unset($ldap_groups['count']);
 		}
 
@@ -693,9 +698,9 @@ CSS;
 		// Populate an array of TYPO3 group records corresponding to the LDAP groups
 		// If a given LDAP group has no associated group in TYPO3, a fresh record
 		// will be created so that $ldap_groups[i] <=> $typo3_groups[i]
-		$typo3_group_pid = tx_igldapssoauth_config::get_pid($config['groups']['mapping']);
+		$typo3_group_pid = Configuration::get_pid($config['groups']['mapping']);
 		$table = $typo3_mode === 'be' ? 'be_groups' : 'fe_groups';
-		$typo3_groups = tx_igldapssoauth_auth::get_typo3_groups(
+		$typo3_groups = Authentication::get_typo3_groups(
 			$ldap_groups,
 			$config['groups']['mapping'],
 			$table,
@@ -706,18 +711,18 @@ CSS;
 		$groupsUpdated = 0;
 
 		foreach ($ldap_groups as $index => $ldap_group) {
-			$typo3_group = tx_igldapssoauth_auth::merge($ldap_group, $typo3_groups[$index], $config['groups']['mapping']);
+			$typo3_group = Authentication::merge($ldap_group, $typo3_groups[$index], $config['groups']['mapping']);
 
 			// Import the group using information from LDAP
 			if (GeneralUtility::inArray($import_groups, $typo3_group['tx_igldapssoauth_dn'])) {
 				unset($typo3_group['parentGroup']);
 				if ($typo3_group['uid'] == 0) {
-					$typo3_group = tx_igldapssoauth_typo3_group::add($table, $typo3_group);
+					$typo3_group = Typo3GroupRepository::add($table, $typo3_group);
 					$groupsAdded++;
 				} else {
 					// Restore group that may have been previously deleted
 					$typo3_group['deleted'] = 0;
-					$success = tx_igldapssoauth_typo3_group::update($table, $typo3_group);
+					$success = Typo3GroupRepository::update($table, $typo3_group);
 					if ($success) {
 						$groupsUpdated++;
 					}
@@ -804,7 +809,7 @@ HTML;
 
 		$this->content .= '</form>';
 
-		tx_igldapssoauth_ldap::disconnect();
+		Ldap::disconnect();
 
 		if ($groupsAdded > 0 || $groupsUpdated > 0) {
 			$this->enqueueFlashMessage(
@@ -820,7 +825,7 @@ HTML;
 		$table = $typo3_mode === 'be' ? 'be_groups' : 'fe_groups';
 
 		foreach ($parentsLDAPGroups as $parentDn) {
-			$typo3ParentGroup = tx_igldapssoauth_typo3_group::fetch($table, FALSE, $typo3_group_pid, $parentDn);
+			$typo3ParentGroup = Typo3GroupRepository::fetch($table, FALSE, $typo3_group_pid, $parentDn);
 
 			if (is_array($typo3ParentGroup[0])) {
 				if (!empty($typo3ParentGroup[0]['subgroup'])) {
@@ -830,25 +835,25 @@ HTML;
 				$subGroupList[] = $childUid;
 				$subGroupList = array_unique($subGroupList);
 				$typo3ParentGroup[0]['subgroup'] = implode(',', $subGroupList);
-				tx_igldapssoauth_typo3_group::update($table, $typo3ParentGroup[0]);
+				Typo3GroupRepository::update($table, $typo3ParentGroup[0]);
 				//}
 			} else {
 				$config = ($typo3_mode === 'be')
-					? tx_igldapssoauth_config::getBeConfiguration()
-					: tx_igldapssoauth_config::getFeConfiguration();
+					? Configuration::getBeConfiguration()
+					: Configuration::getFeConfiguration();
 
-				$filter = '(&' . tx_igldapssoauth_config::replace_filter_markers($config['groups']['filter']) . '&(distinguishedName=' . $parentDn . '))';
-				$attributes = tx_igldapssoauth_config::get_ldap_attributes($config['groups']['mapping']);
-				$ldap_groups = tx_igldapssoauth_ldap::search($config['groups']['basedn'], $filter, $attributes);
+				$filter = '(&' . Configuration::replace_filter_markers($config['groups']['filter']) . '&(distinguishedName=' . $parentDn . '))';
+				$attributes = Configuration::get_ldap_attributes($config['groups']['mapping']);
+				$ldap_groups = Ldap::search($config['groups']['basedn'], $filter, $attributes);
 				unset($ldap_groups['count']);
 
 				if (count($ldap_groups) > 0) {
-					$typo3_group_pid = tx_igldapssoauth_config::get_pid($config['groups']['mapping']);
+					$typo3_group_pid = Configuration::get_pid($config['groups']['mapping']);
 
 					// Populate an array of TYPO3 group records corresponding to the LDAP groups
 					// If a given LDAP group has no associated group in TYPO3, a fresh record
 					// will be created so that $ldap_groups[i] <=> $typo3_groups[i]
-					$typo3_groups = tx_igldapssoauth_auth::get_typo3_groups(
+					$typo3_groups = Authentication::get_typo3_groups(
 						$ldap_groups,
 						$config['groups']['mapping'],
 						$table,
@@ -856,10 +861,10 @@ HTML;
 					);
 
 					foreach ($ldap_groups as $index => $ldap_group) {
-						$typo3_group = tx_igldapssoauth_auth::merge($ldap_group, $typo3_groups[$index], $config['groups']['mapping']);
+						$typo3_group = Authentication::merge($ldap_group, $typo3_groups[$index], $config['groups']['mapping']);
 						unset($typo3_group['parentGroup']);
 						$typo3_group['subgroup'] = $childUid;
-						$typo3_group = tx_igldapssoauth_typo3_group::add($table, $typo3_group);
+						$typo3_group = Typo3GroupRepository::add($table, $typo3_group);
 
 						if (is_array($ldap_group[$fieldParent])) {
 							unset($ldap_group[$fieldParent]['count']);
@@ -897,9 +902,9 @@ HTML;
 			$importUsers = array();
 		}
 
-		/** @var Tx_IgLdapSsoAuth_Utility_UserImport $importUtility */
+		/** @var \Causal\IgLdapSsoAuth\Utility\UserImportUtility $importUtility */
 		$importUtility = GeneralUtility::makeInstance(
-			'Tx_IgLdapSsoAuth_Utility_UserImport',
+			'Causal\\IgLdapSsoAuth\\Utility\\UserImportUtility',
 			$this->ldapConfiguration['uid'],
 			$typo3Mode
 		);
@@ -949,7 +954,7 @@ HTML;
 			$typo3Users = $importUtility->fetchTypo3Users($ldapUsers);
 			foreach ($ldapUsers as $index => $aUser) {
 				// Merge LDAP and TYPO3 information
-				$user = tx_igldapssoauth_auth::merge($aUser, $typo3Users[$index], $config['users']['mapping']);
+				$user = Authentication::merge($aUser, $typo3Users[$index], $config['users']['mapping']);
 
 				// Import the user using information from LDAP
 				if (in_array($user['tx_igldapssoauth_dn'], $importUsers, TRUE)) {
@@ -1023,7 +1028,7 @@ HTML;
 
 		$this->content .= '</form>';
 
-		tx_igldapssoauth_ldap::disconnect();
+		Ldap::disconnect();
 
 		$usersAdded = $importUtility->getUsersAdded();
 		$usersUpdated = $importUtility->getUsersUpdated();
@@ -1065,7 +1070,7 @@ HTML;
 	 */
 	protected function checkLdapConnection() {
 		try {
-			$success = tx_igldapssoauth_ldap::connect(tx_igldapssoauth_config::getLdapConfiguration());
+			$success = Ldap::connect(Configuration::getLdapConfiguration());
 		} catch (\Exception $e) {
 			// Possible known exception: 1409566275, LDAP extension is not available for PHP
 			$this->enqueueFlashMessage(

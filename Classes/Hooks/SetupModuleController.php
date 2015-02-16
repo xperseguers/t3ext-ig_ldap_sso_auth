@@ -1,4 +1,6 @@
 <?php
+namespace Causal\IgLdapSsoAuth\Hooks;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -20,7 +22,7 @@
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class Tx_IgLdapSsoAuth_Hooks_SetupModuleController {
+class SetupModuleController {
 
 	/**
 	 * Pre-processes the submitted data.
@@ -28,7 +30,7 @@ class Tx_IgLdapSsoAuth_Hooks_SetupModuleController {
 	 * @param array $params
 	 * @param \TYPO3\CMS\Setup\Controller\SetupModuleController $pObj
 	 */
-	public function preprocessData(array $params, $pObj) {
+	public function preprocessData(array $params, \TYPO3\CMS\Setup\Controller\SetupModuleController $pObj) {
 		if (empty($GLOBALS['BE_USER']->user['tx_igldapssoauth_dn'])) {
 			return;
 		}

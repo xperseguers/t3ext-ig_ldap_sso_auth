@@ -169,12 +169,12 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'items' => array(
 					array(
 						'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.group_membership.I.1',
-						tx_igldapssoauth_config::GROUP_MEMBERSHIP_FROM_GROUP,
+						\Causal\IgLdapSsoAuth\Library\Configuration::GROUP_MEMBERSHIP_FROM_GROUP,
 						\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('ig_ldap_sso_auth') . 'Resources/Public/Icons/selicon_group_membership_1.png'
 					),
 					array(
 						'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.group_membership.I.2',
-						tx_igldapssoauth_config::GROUP_MEMBERSHIP_FROM_MEMBER,
+						\Causal\IgLdapSsoAuth\Library\Configuration::GROUP_MEMBERSHIP_FROM_MEMBER,
 						\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('ig_ldap_sso_auth') . 'Resources/Public/Icons/selicon_group_membership_2.png'
 					),
 				),
@@ -193,7 +193,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'wizards' => array(
 					'suggest' => array(
 						'type' => 'userFunc',
-						'userFunc' => 'Tx_IgLdapSsoAuth_Tca_Form_Suggest->render',
+						'userFunc' => 'Causal\\IgLdapSsoAuth\\Tca\\Form\\SuggestWizard->render',
 					),
 				),
 			)
@@ -209,7 +209,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'wizards' => array(
 					'suggest' => array(
 						'type' => 'userFunc',
-						'userFunc' => 'Tx_IgLdapSsoAuth_Tca_Form_Suggest->render',
+						'userFunc' => 'Causal\\IgLdapSsoAuth\\Tca\\Form\\SuggestWizard->render',
 					),
 				),
 			)
@@ -225,7 +225,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'wizards' => array(
 					'suggest' => array(
 						'type' => 'userFunc',
-						'userFunc' => 'Tx_IgLdapSsoAuth_Tca_Form_Suggest->render',
+						'userFunc' => 'Causal\\IgLdapSsoAuth\\Tca\\Form\\SuggestWizard->render',
 					),
 				),
 			)
@@ -240,7 +240,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'wizards' => array(
 					'suggest' => array(
 						'type' => 'userFunc',
-						'userFunc' => 'Tx_IgLdapSsoAuth_Tca_Form_Suggest->render',
+						'userFunc' => 'Causal\\IgLdapSsoAuth\\Tca\\Form\\SuggestWizard->render',
 					),
 				),
 			)
@@ -256,7 +256,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'wizards' => array(
 					'suggest' => array(
 						'type' => 'userFunc',
-						'userFunc' => 'Tx_IgLdapSsoAuth_Tca_Form_Suggest->render',
+						'userFunc' => 'Causal\\IgLdapSsoAuth\\Tca\\Form\\SuggestWizard->render',
 					),
 				),
 			)
@@ -272,7 +272,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'wizards' => array(
 					'suggest' => array(
 						'type' => 'userFunc',
-						'userFunc' => 'Tx_IgLdapSsoAuth_Tca_Form_Suggest->render',
+						'userFunc' => 'Causal\\IgLdapSsoAuth\\Tca\\Form\\SuggestWizard->render',
 					),
 				),
 			)
@@ -344,7 +344,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'wizards' => array(
 					'suggest' => array(
 						'type' => 'userFunc',
-						'userFunc' => 'Tx_IgLdapSsoAuth_Tca_Form_Suggest->render',
+						'userFunc' => 'Causal\\IgLdapSsoAuth\\Tca\\Form\\SuggestWizard->render',
 					),
 				),
 			)
@@ -360,7 +360,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'wizards' => array(
 					'suggest' => array(
 						'type' => 'userFunc',
-						'userFunc' => 'Tx_IgLdapSsoAuth_Tca_Form_Suggest->render',
+						'userFunc' => 'Causal\\IgLdapSsoAuth\\Tca\\Form\\SuggestWizard->render',
 					),
 				),
 			)
@@ -376,7 +376,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'wizards' => array(
 					'suggest' => array(
 						'type' => 'userFunc',
-						'userFunc' => 'Tx_IgLdapSsoAuth_Tca_Form_Suggest->render',
+						'userFunc' => 'Causal\\IgLdapSsoAuth\\Tca\\Form\\SuggestWizard->render',
 					),
 				),
 			)
@@ -391,7 +391,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'wizards' => array(
 					'suggest' => array(
 						'type' => 'userFunc',
-						'userFunc' => 'Tx_IgLdapSsoAuth_Tca_Form_Suggest->render',
+						'userFunc' => 'Causal\\IgLdapSsoAuth\\Tca\\Form\\SuggestWizard->render',
 					),
 				),
 			)
@@ -407,7 +407,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'wizards' => array(
 					'suggest' => array(
 						'type' => 'userFunc',
-						'userFunc' => 'Tx_IgLdapSsoAuth_Tca_Form_Suggest->render',
+						'userFunc' => 'Causal\\IgLdapSsoAuth\\Tca\\Form\\SuggestWizard->render',
 					),
 				),
 			)
@@ -423,7 +423,7 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'wizards' => array(
 					'suggest' => array(
 						'type' => 'userFunc',
-						'userFunc' => 'Tx_IgLdapSsoAuth_Tca_Form_Suggest->render',
+						'userFunc' => 'Causal\\IgLdapSsoAuth\\Tca\\Form\\SuggestWizard->render',
 					),
 				),
 			)

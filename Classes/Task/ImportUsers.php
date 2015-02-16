@@ -1,4 +1,6 @@
 <?php
+namespace Causal\IgLdapSsoAuth\Task;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,6 +15,9 @@
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Causal\IgLdapSsoAuth\Library\Authentication;
+use Causal\IgLdapSsoAuth\Library\Configuration;
+use Causal\IgLdapSsoAuth\Library\Ldap;
 
 /**
  * Synchronizes users for selected context and configuration.
@@ -23,7 +28,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class Tx_IgLdapSsoAuth_Task_ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
+class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 
 	/**
 	 * Synchronization context (may be FE, BE or both).
@@ -64,8 +69,8 @@ class Tx_IgLdapSsoAuth_Task_ImportUsers extends \TYPO3\CMS\Scheduler\Task\Abstra
 	public function execute() {
 
 		// Assemble a list of configuration and contexts for import
-		/** @var Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository $configurationRepository */
-		$configurationRepository = GeneralUtility::makeInstance('Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository');
+		/** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
+		$configurationRepository = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Repository\\ConfigurationRepository');
 		if (empty($this->configuration)) {
 			$ldapConfigurations = $configurationRepository->fetchAll();
 		} else {
@@ -89,14 +94,14 @@ class Tx_IgLdapSsoAuth_Task_ImportUsers extends \TYPO3\CMS\Scheduler\Task\Abstra
 		$failures = 0;
 		foreach ($ldapConfigurations as $aConfiguration) {
 			foreach ($executionContexts as $aContext) {
-				/** @var Tx_IgLdapSsoAuth_Utility_UserImport $importUtility */
+				/** @var \Causal\IgLdapSsoAuth\Utility\UserImportUtility $importUtility */
 				$importUtility = GeneralUtility::makeInstance(
-					'Tx_IgLdapSsoAuth_Utility_UserImport',
+					'Causal\\IgLdapSsoAuth\\Utility\\UserImportUtility',
 					$aConfiguration['uid'],
 					$aContext
 				);
 				// Start by connecting to the designated LDAP/AD server
-				$success = tx_igldapssoauth_ldap::connect(tx_igldapssoauth_config::getLdapConfiguration());
+				$success = Ldap::connect(Configuration::getLdapConfiguration());
 				// Proceed with import if successful
 				if ($success) {
 
@@ -119,7 +124,7 @@ class Tx_IgLdapSsoAuth_Task_ImportUsers extends \TYPO3\CMS\Scheduler\Task\Abstra
 						// Loop on all users and import them
 						foreach ($ldapUsers as $index => $aUser) {
 							// Merge LDAP and TYPO3 information
-							$user = tx_igldapssoauth_auth::merge($aUser, $typo3Users[$index], $config['users']['mapping']);
+							$user = Authentication::merge($aUser, $typo3Users[$index], $config['users']['mapping']);
 
 							// Import the user using information from LDAP
 							$importUtility->import($user, $aUser, $this->restoredUsersHandling);
@@ -128,7 +133,7 @@ class Tx_IgLdapSsoAuth_Task_ImportUsers extends \TYPO3\CMS\Scheduler\Task\Abstra
 					}
 					// Clean up
 					unset($importUtility);
-					tx_igldapssoauth_ldap::disconnect();
+					Ldap::disconnect();
 				} else {
 					$failures++;
 				}
@@ -139,7 +144,7 @@ class Tx_IgLdapSsoAuth_Task_ImportUsers extends \TYPO3\CMS\Scheduler\Task\Abstra
 		if ($failures > 0) {
 			$this->getDatabaseConnection()->sql_query('ROLLBACK');
 			throw new \Exception(
-				'Some or all imports failed. Synchronisation was aborted. Check your settings or your network connections',
+				'Some or all imports failed. Synchronisation was aborted. Check your settings or your network connection',
 				1410774015
 			);
 
@@ -251,8 +256,8 @@ class Tx_IgLdapSsoAuth_Task_ImportUsers extends \TYPO3\CMS\Scheduler\Task\Abstra
 	 * @return string
 	 */
 	public function getConfigurationName() {
-		/** @var Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository $configurationRepository */
-		$configurationRepository = GeneralUtility::makeInstance('Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository');
+		/** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
+		$configurationRepository = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Repository\\ConfigurationRepository');
 		$ldapConfiguration = $configurationRepository->fetchByUid($this->configuration);
 		if ($ldapConfiguration === NULL) {
 			return '';
@@ -269,4 +274,5 @@ class Tx_IgLdapSsoAuth_Task_ImportUsers extends \TYPO3\CMS\Scheduler\Task\Abstra
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
 	}
+
 }

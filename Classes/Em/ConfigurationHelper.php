@@ -1,4 +1,6 @@
 <?php
+namespace Causal\IgLdapSsoAuth\Em;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,6 +17,7 @@
 // Make sure that we are executed only in TYPO3 context
 defined('TYPO3_MODE') or die();
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 
 /**
@@ -25,7 +28,7 @@ use TYPO3\CMS\Core\Messaging\FlashMessage;
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class tx_igldapssoauth_emconfhelper {
+class ConfigurationHelper {
 
 	/**
 	 * @var integer
@@ -171,7 +174,7 @@ EOT;
 
 		$message = $this->preText . $message;
 		/** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
-		$flashMessage = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+		$flashMessage = GeneralUtility::makeInstance(
 			'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 			$message,
 			$this->header,

@@ -1,4 +1,6 @@
 <?php
+namespace Causal\IgLdapSsoAuth\Task;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -12,6 +14,8 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Provides additional fields to the "Synchronize Users" Scheduler task.
  *
@@ -19,7 +23,7 @@
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class Tx_IgLdapSsoAuth_Task_ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface {
+class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface {
 
 	/**
 	 * Gets additional fields to render in the form to add/edit a task.
@@ -33,6 +37,7 @@ class Tx_IgLdapSsoAuth_Task_ImportUsersAdditionalFields implements \TYPO3\CMS\Sc
 	 * @return array A two dimensional array, array('Identifier' => array('fieldId' => array('code' => '', 'label' => '', 'cshKey' => '', 'cshLabel' => ''))
 	 */
 	public function getAdditionalFields(array &$taskInfo, $task, \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule) {
+		/** @var \Causal\IgLdapSsoAuth\Task\ImportUsers $task */
 		$additionalFields = array();
 
 		// Process the context field
@@ -97,8 +102,8 @@ class Tx_IgLdapSsoAuth_Task_ImportUsersAdditionalFields implements \TYPO3\CMS\Sc
 		}
 		$fieldCode .= '<option value="0"' . $selected . '>' . $GLOBALS['LANG']->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xml:task.import_users.field.configuration.all') . '</option>';
 		// Get the existing LDAP configurations
-		/** @var Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository $configurationRepository */
-		$configurationRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository');
+		/** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
+		$configurationRepository = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Repository\\ConfigurationRepository');
 		$ldapConfigurations = $configurationRepository->fetchAll();
 		foreach ($ldapConfigurations as $configuration) {
 			$uid = $configuration['uid'];
@@ -222,9 +227,11 @@ class Tx_IgLdapSsoAuth_Task_ImportUsersAdditionalFields implements \TYPO3\CMS\Sc
 	 * @return void
 	 */
 	public function saveAdditionalFields(array $submittedData, \TYPO3\CMS\Scheduler\Task\AbstractTask $task) {
+		/** @var \Causal\IgLdapSsoAuth\Task\ImportUsers $task */
 		$task->setContext($submittedData['tx_igldapssoauth_context']);
 		$task->setConfiguration($submittedData['tx_igldapssoauth_configuration']);
 		$task->setMissingUsersHandling($submittedData['tx_igldapssoauth_missinguserhandling']);
 		$task->setRestoredUsersHandling($submittedData['tx_igldapssoauth_restoreduserhandling']);
 	}
+
 }

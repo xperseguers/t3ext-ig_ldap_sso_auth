@@ -1,4 +1,6 @@
 <?php
+namespace Causal\IgLdapSsoAuth\Utility;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -12,6 +14,8 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Debugging class.
  *
@@ -19,7 +23,7 @@
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class Tx_IgLdapSsoAuth_Utility_Debug {
+class DebugUtility {
 
 	// Severity constants used by \TYPO3\CMS\Core\Utility\GeneralUtility::devLog()
 	// but adapted from RFC 3164 (http://www.ietf.org/rfc/rfc3164.txt)
@@ -93,13 +97,13 @@ class Tx_IgLdapSsoAuth_Utility_Debug {
 	 * Wrapper for dev log, in order to ease testing.
 	 *
 	 * @param string $message Message (in English)
-	 * @param integer $severity Severity, one of the Tx_IgLdapSsoAuth_Utility_Debug::SEVERITY_* constants
+	 * @param integer $severity Severity, one of the \Causal\IgLdapSsoAuth\Utility\DebugUtility::SEVERITY_* constants
 	 * @param mixed $dataVar Additional data you want to pass to the logger
 	 * @return void
 	 * @api
 	 */
 	static public function log($message, $severity, $dataVar = FALSE) {
-		\TYPO3\CMS\Core\Utility\GeneralUtility::devLog($message, 'ig_ldap_sso_auth', $severity, $dataVar);
+		GeneralUtility::devLog($message, 'ig_ldap_sso_auth', $severity, $dataVar);
 	}
 
 }

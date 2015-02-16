@@ -1,4 +1,6 @@
 <?php
+namespace Causal\IgLdapSsoAuth\Utility;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,7 +21,7 @@
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-interface Tx_IgLdapSsoAuth_Utility_ExtraDataProcessorInterface {
+interface ExtraDataProcessorInterface {
 
 	/**
 	 * Processes the extra data associated with the user record.

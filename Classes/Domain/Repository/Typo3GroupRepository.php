@@ -1,4 +1,6 @@
 <?php
+namespace Causal\IgLdapSsoAuth\Domain\Repository;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,16 +15,18 @@
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Causal\IgLdapSsoAuth\Library\Authentication;
+use Causal\IgLdapSsoAuth\Utility\NotificationUtility;
 
 /**
- * Class tx_igldapssoauth_typo3_group for the 'ig_ldap_sso_auth' extension.
+ * Class Typo3GroupRepository for the 'ig_ldap_sso_auth' extension.
  *
  * @author     Xavier Perseguers <xavier@typo3.org>
  * @author     Michael Gagnon <mgagnon@infoglobe.ca>
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class tx_igldapssoauth_typo3_group {
+class Typo3GroupRepository {
 
 	/**
 	 * Creates a fresh BE/FE group record.
@@ -113,7 +117,7 @@ class tx_igldapssoauth_typo3_group {
 			'uid=' . intval($uid)
 		);
 
-		Tx_IgLdapSsoAuth_Utility_Notification::dispatch(
+		NotificationUtility::dispatch(
 			__CLASS__,
 			'groupAdded',
 			array(
@@ -149,7 +153,7 @@ class tx_igldapssoauth_typo3_group {
 		$success = $databaseConnection->sql_errno() == 0;
 
 		if ($success) {
-			Tx_IgLdapSsoAuth_Utility_Notification::dispatch(
+			NotificationUtility::dispatch(
 				__CLASS__,
 				'groupUpdated',
 				array(
@@ -172,7 +176,7 @@ class tx_igldapssoauth_typo3_group {
 				return $ldap_user[$attribute[1]];
 			}
 
-			return tx_igldapssoauth_auth::replaceLdapMarkers($mapping['title'], $ldap_user);
+			return Authentication::replaceLdapMarkers($mapping['title'], $ldap_user);
 		}
 
 		return NULL;

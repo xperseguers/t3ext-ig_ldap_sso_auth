@@ -1,4 +1,6 @@
 <?php
+namespace Causal\IgLdapSsoAuth\Hooks;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,6 +15,7 @@
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Causal\IgLdapSsoAuth\Library\Configuration;
 
 /**
  * Hook into \TYPO3\CMS\Core\DataHandling\DataHandler.
@@ -21,7 +24,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class Tx_IgLdapSsoAuth_Hooks_DataHandler {
+class DataHandler {
 
 	/**
 	 * Hooks into \TYPO3\CMS\Core\DataHandling\DataHandler after records have been saved to the database.
@@ -43,19 +46,19 @@ class Tx_IgLdapSsoAuth_Hooks_DataHandler {
 		}
 
 		$row = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord($table, $id);
-		if ($row['group_membership'] == tx_igldapssoauth_config::GROUP_MEMBERSHIP_FROM_MEMBER) {
+		if ($row['group_membership'] == Configuration::GROUP_MEMBERSHIP_FROM_MEMBER) {
 			$warningMessageKeys = array();
 
 			if (!empty($row['be_users_basedn']) && !empty($row['be_groups_basedn'])) {
 				// Check backend mapping
-				$mapping = tx_igldapssoauth_config::make_mapping($row['be_users_mapping']);
+				$mapping = Configuration::make_mapping($row['be_users_mapping']);
 				if (!isset($mapping['usergroup'])) {
 					$warningMessageKeys[] = 'tx_igldapssoauth_config.group_membership.fe.missingUsergroupMapping';
 				}
 			}
 			if (!empty($row['fe_users_basedn']) && !empty($row['fe_groups_basedn'])) {
 				// Check frontend mapping
-				$mapping = tx_igldapssoauth_config::make_mapping($row['fe_users_mapping']);
+				$mapping = Configuration::make_mapping($row['fe_users_mapping']);
 				if (!isset($mapping['usergroup'])) {
 					$warningMessageKeys[] = 'tx_igldapssoauth_config.group_membership.be.missingUsergroupMapping';
 				}

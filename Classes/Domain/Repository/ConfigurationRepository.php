@@ -1,4 +1,6 @@
 <?php
+namespace Causal\IgLdapSsoAuth\Domain\Repository;
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -23,7 +25,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class Tx_IgLdapSsoAuth_Domain_Repository_ConfigurationRepository {
+class ConfigurationRepository {
 
 	/**
 	 * @var bool Set to TRUE to also fetch disabled records (according to TCA enable fields)

@@ -33,8 +33,8 @@ In your extension (in the :file:`ext_localconf.php` file), register with the hoo
 	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'][]
 		= 'EXT:extension/Path/To/Class/ClassName.php:ClassName';
 
-Your class has to implement the :code:`Tx_IgLdapSsoAuth_Utility_ExtraDataProcessorInterface` interface. This implies
-implementing a method called :code:`processExtraData` which will receive the following arguments:
+Your class has to implement the :code:`\Causal\IgLdapSsoAuth\Utility\ExtraDataProcessorInterface` interface.
+This implies implementing a method called :code:`processExtraData` which will receive the following arguments:
 
 $userTable
   The name of the user table that was just handled

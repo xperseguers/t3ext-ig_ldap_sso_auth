@@ -41,14 +41,57 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class LdapUtility {
 
-	static protected $ldap_charset; // LDAP Server charset.
-	static protected $local_charset; // Local character set (TYPO3).
-	static protected $cid; // LDAP Server Connection ID
-	static protected $bid; // LDAP Server Bind ID
-	static protected $sid; // LDAP Server Search ID
-	static protected $feid; // LDAP First Entry ID
-	static protected $status; // LDAP server status.
-	static protected $serverType; // 0 = OpenLDAP, 1 = Active Directory / Novell eDirectory
+	/**
+	 * LDAP Server charset
+	 * @var string
+	 */
+	static protected $ldap_charset;
+
+	/**
+	 * Local character set (TYPO3)
+	 * @var string
+	 */
+	static protected $local_charset;
+
+	/**
+	 * LDAP Server Connection ID
+	 * @var resource
+	 */
+	static protected $cid;
+
+	/**
+	 * LDAP Server Bind ID
+	 * @var resource
+	 */
+	static protected $bid;
+
+	/**
+	 * LDAP Server Search ID
+	 * @var resource
+	 */
+	static protected $sid;
+
+	/**
+	 * LDAP First Entry ID
+	 * @var resource
+	 */
+	static protected $feid;
+
+	/**
+	 * LDAP server status
+	 * @var array
+	 */
+	static protected $status;
+
+	/**
+	 * 0 = OpenLDAP, 1 = Active Directory / Novell eDirectory
+	 * @var string
+	 */
+	static protected $serverType;
+
+	/**
+	 * @var resource|bool
+	 */
 	static protected $previousEntry = FALSE;
 
 	/**

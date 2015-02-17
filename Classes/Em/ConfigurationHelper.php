@@ -51,6 +51,15 @@ class ConfigurationHelper {
 	protected $problems = array();
 
 	/**
+	 * Initializes this object.
+	 *
+	 * @return void
+	 */
+	protected function init() {
+		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']);
+	}
+
+	/**
 	 * Checks the backend configuration and shows a message if necessary.
 	 *
 	 * @param array $params Field information to be rendered
@@ -182,41 +191,6 @@ EOT;
 		);
 
 		return $flashMessage->render();
-	}
-
-	/**
-	 * Initializes this object.
-	 *
-	 * @return void
-	 */
-	protected function init() {
-		$requestSetup = $this->processPostData((array) $_REQUEST['data']);
-		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']);
-	}
-
-	/**
-	 * Processes the information submitted by the user using a POST request and
-	 * transforms it to a TypoScript node notation.
-	 *
-	 * @param array $postArray Incoming POST information
-	 * @return array Processed and transformed POST information
-	 */
-	protected function processPostData(array $postArray = array()) {
-		foreach ($postArray as $key => $value) {
-			// TODO: Explain
-			$parts = explode('.', $key, 2);
-
-			if (count($parts) === 2) {
-				// TODO: Explain
-				$value = $this->processPostData(array($parts[1] => $value));
-				$postArray[$parts[0] . '.'] = array_merge((array) $postArray[$parts[0] . '.'], $value);
-			} else {
-				// TODO: Explain
-				$postArray[$parts[0]] = $value;
-			}
-		}
-
-		return $postArray;
 	}
 
 }

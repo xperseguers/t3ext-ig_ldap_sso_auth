@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2015-02-17T16:10:14Z" product-name="ig_ldap_sso_auth">
+		<header/>
+		<body>
+			<trans-unit id="tx_igldapssoauth_config">
+				<source>Configuration LDAP / SSO</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.name">
+				<source>Name:</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.domains">
+				<source>Associated domains:</source>
+			</trans-unit>
+
+			<trans-unit id="tx_igldapssoauth_config.ldap_server">
+				<source>Server Type:</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.ldap_server.I.0">
+				<source>OpenLDAP</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.ldap_server.I.1">
+				<source>Active Directory / Novell eDirectory</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.ldap_protocol">
+				<source>Protocol:</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.ldap_protocol.I.0">
+				<source>Version 3</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.ldap_protocol.I.1">
+				<source>Version 2</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.ldap_charset">
+				<source>Charset:</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.ldap_host">
+				<source>Host:</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.ldap_port">
+				<source>Port:</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.ldap_tls">
+				<source>Use TLS:</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.ldap_binddn">
+				<source>Bind DN:</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.ldap_password">
+				<source>Password:</source>
+			</trans-unit>
+
+			<trans-unit id="tx_igldapssoauth_config.group_membership">
+				<source>Relation between groups and users:</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.group_membership.I.1">
+				<source>Group contains the list of its members</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.group_membership.I.2">
+				<source>User contains the list of its associated groups</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.group_membership.fe.missingUsergroupMapping">
+				<source><![CDATA[Mapping for field "usergroup" is missing in the configuration of frontend users. You may end up importing ALL groups in LDAP into TYPO3 and get users associated to wrong groups. Suggestion: usergroup = <memberOf>]]></source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.group_membership.be.missingUsergroupMapping">
+				<source><![CDATA[Mapping for field "usergroup" is missing in the configuration of backend users. You may end up importing ALL groups in LDAP into TYPO3 and get users associated to wrong groups. Suggestion: usergroup = <memberOf>]]></source>
+			</trans-unit>
+
+			<trans-unit id="tx_igldapssoauth_config.be_users_basedn">
+				<source>Base DN:</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.be_users_filter">
+				<source>Filter:</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.be_users_mapping">
+				<source>Mapping:</source>
+			</trans-unit>
+
+			<trans-unit id="tx_igldapssoauth_config.be_groups_basedn">
+				<source>Base DN:</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.be_groups_filter">
+				<source>Filter:</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.be_groups_mapping">
+				<source>Mapping:</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.be_groups_required">
+				<source>Required LDAP groups:</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.be_groups_assigned">
+				<source>Local groups to be assigned:</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.be_groups_admin">
+				<source>TYPO3 administrator groups:</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.be_groups.tx_igldapssoauth_dn">
+				<source>Groups DN (Distinguished Name)</source>
+			</trans-unit>
+
+			<trans-unit id="tx_igldapssoauth_config.fe_users_basedn">
+				<source>Base DN:</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.fe_users_filter">
+				<source>Filter:</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.fe_users_mapping">
+				<source>Mapping:</source>
+			</trans-unit>
+
+			<trans-unit id="tx_igldapssoauth_config.fe_groups_basedn">
+				<source>Base DN:</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.fe_groups_filter">
+				<source>Filter:</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.fe_groups_mapping">
+				<source>Mapping:</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.fe_groups_required">
+				<source>Required LDAP groups:</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.fe_groups_assigned">
+				<source>Local groups to be assigned:</source>
+			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.fe_groups.tx_igldapssoauth_dn">
+				<source>Groups DN (Distinguished Name)</source>
+			</trans-unit>
+
+			<trans-unit id="tt_content.list_type_pi1">
+				<source>Central Authentication Service</source>
+			</trans-unit>
+
+			<trans-unit id="palette.connection">
+				<source>Connection</source>
+			</trans-unit>
+
+			<trans-unit id="suggestion.server.0">
+				<source>Suggestion for OpenLDAP:</source>
+			</trans-unit>
+			<trans-unit id="suggestion.server.1">
+				<source>Suggestion for Active Directory / Novell eDirectory:</source>
+			</trans-unit>
+			<trans-unit id="suggestion.copy">
+				<source>copy and use</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

@@ -68,7 +68,7 @@ class DataHandler {
 				/** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
 				$flashMessage = GeneralUtility::makeInstance(
 					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-					$GLOBALS['LANG']->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:' . $key, TRUE),
+					$GLOBALS['LANG']->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:' . $key, TRUE),
 					'',
 					\TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
 					TRUE

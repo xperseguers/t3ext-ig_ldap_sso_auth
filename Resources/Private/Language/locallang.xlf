@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2015-02-17T16:10:14Z" product-name="ig_ldap_sso_auth">
+		<header/>
+		<body>
+			<trans-unit id="task.import_users.title">
+				<source>Import LDAP users</source>
+			</trans-unit>
+			<trans-unit id="task.import_users.description">
+				<source>Import LDAP for one or all configurations, for FE, BE or both. Users missing on the LDAP side will be disabled.</source>
+			</trans-unit>
+			<trans-unit id="task.import_users.field.context">
+				<source>Context</source>
+			</trans-unit>
+			<trans-unit id="task.import_users.field.context.both">
+				<source>Both</source>
+			</trans-unit>
+			<trans-unit id="task.import_users.field.context.fe">
+				<source>Frontend</source>
+			</trans-unit>
+			<trans-unit id="task.import_users.field.context.be">
+				<source>Backend</source>
+			</trans-unit>
+			<trans-unit id="task.import_users.field.configuration">
+				<source>Configuration</source>
+			</trans-unit>
+			<trans-unit id="task.import_users.field.configuration.all">
+				<source>All</source>
+			</trans-unit>
+			<trans-unit id="task.import_users.additional_information">
+				<source>Context: %s, Configuration: %s</source>
+			</trans-unit>
+			<trans-unit id="task.import_users.field.missinguserhandling">
+				<source>Handling of missing users</source>
+			</trans-unit>
+			<trans-unit id="task.import_users.field.missinguserhandling.disable">
+				<source>Disable</source>
+			</trans-unit>
+			<trans-unit id="task.import_users.field.missinguserhandling.delete">
+				<source>Delete</source>
+			</trans-unit>
+			<trans-unit id="task.import_users.field.missinguserhandling.nothing">
+				<source>Do nothing</source>
+			</trans-unit>
+			<trans-unit id="task.import_users.field.restoreduserhandling">
+				<source>Handling of restored users</source>
+			</trans-unit>
+			<trans-unit id="task.import_users.field.restoreduserhandling.enable">
+				<source>Re-enable</source>
+			</trans-unit>
+			<trans-unit id="task.import_users.field.restoreduserhandling.undelete">
+				<source>Undelete</source>
+			</trans-unit>
+			<trans-unit id="task.import_users.field.restoreduserhandling.both">
+				<source>Re-enable and undelete</source>
+			</trans-unit>
+			<trans-unit id="task.import_users.field.restoreduserhandling.nothing">
+				<source>Do nothing</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

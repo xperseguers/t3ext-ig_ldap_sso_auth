@@ -1,7 +1,7 @@
 <?php
 return array(
 	'ctrl' => array(
-		'title' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config',
+		'title' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config',
 		'label' => 'name',
 		'sortby' => 'sorting',
 		'adminOnly' => 1,
@@ -34,7 +34,7 @@ return array(
 						name, domains,
 					--div--;LDAP,
 						ldap_server;;1,
-					--palette--;LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:palette.connection;connection,
+					--palette--;LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:palette.connection;connection,
 						ldap_binddn, ldap_password, group_membership,
 					--div--;BE_USERS,
 						be_users_basedn, be_users_filter, be_users_mapping, be_groups_required, be_groups_assigned,
@@ -58,7 +58,7 @@ return array(
 	'columns' => array(
 		'hidden' => array(
 			'exclude' => 1,
-			'label'   => 'LLL:EXT:lang/locallang_general.xml:LGL.hidden',
+			'label'   => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
 			'config'  => array(
 				'type'    => 'check',
 				'default' => '0'
@@ -66,7 +66,7 @@ return array(
 		),
 		'name' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.name',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.name',
 			'config' => array(
 				'type' => 'input',
 				'size' => '30',
@@ -75,7 +75,7 @@ return array(
 		),
 		'domains' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.domains',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.domains',
 			'config' => array(
 				'type' => 'select',
 				'foreign_table' => 'sys_domain',
@@ -91,12 +91,12 @@ return array(
 		),
 		'ldap_server' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.ldap_server',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_server',
 			'config' => array(
 				'type' => 'select',
 				'items' => array(
-					array('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.ldap_server.I.0', '0'),
-					array('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.ldap_server.I.1', '1'),
+					array('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_server.I.0', '0'),
+					array('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_server.I.1', '1'),
 				),
 				'size' => 1,
 				'maxitems' => 1,
@@ -104,12 +104,12 @@ return array(
 		),
 		'ldap_protocol' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.ldap_protocol',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_protocol',
 			'config' => array(
 				'type' => 'select',
 				'items' => array(
-					array('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.ldap_protocol.I.0', '3'),
-					array('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.ldap_protocol.I.1', '2'),
+					array('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_protocol.I.0', '3'),
+					array('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_protocol.I.1', '2'),
 				),
 				'size' => 1,
 				'maxitems' => 1,
@@ -117,7 +117,7 @@ return array(
 		),
 		'ldap_charset' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.ldap_charset',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_charset',
 			'config' => array(
 				'type' => 'input',
 				'size' => '10',
@@ -128,7 +128,7 @@ return array(
 		),
 		'ldap_host' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.ldap_host',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_host',
 			'config' => array(
 				'type' => 'input',
 				'size' => '30',
@@ -138,7 +138,7 @@ return array(
 		),
 		'ldap_port' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.ldap_port',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_port',
 			'config' => array(
 				'type' => 'input',
 				'size' => '5',
@@ -149,7 +149,7 @@ return array(
 		),
 		'ldap_tls' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.ldap_tls',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_tls',
 			'config' => array(
 				'type' => 'check',
 				'default' => '0',
@@ -157,7 +157,7 @@ return array(
 		),
 		'ldap_binddn' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.ldap_binddn',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_binddn',
 			'config' => array(
 				'type' => 'input',
 				'size' => '30',
@@ -166,7 +166,7 @@ return array(
 		),
 		'ldap_password' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.ldap_password',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_password',
 			'config' => array(
 				'type' => 'input',
 				'size' => '30',
@@ -175,17 +175,17 @@ return array(
 			)
 		),
 		'group_membership' => array(
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.group_membership',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.group_membership',
 			'config' => array(
 				'type' => 'select',
 				'items' => array(
 					array(
-						'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.group_membership.I.1',
+						'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.group_membership.I.1',
 						\Causal\IgLdapSsoAuth\Library\Configuration::GROUP_MEMBERSHIP_FROM_GROUP,
 						\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('ig_ldap_sso_auth') . 'Resources/Public/Icons/selicon_group_membership_1.png'
 					),
 					array(
-						'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.group_membership.I.2',
+						'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.group_membership.I.2',
 						\Causal\IgLdapSsoAuth\Library\Configuration::GROUP_MEMBERSHIP_FROM_MEMBER,
 						\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('ig_ldap_sso_auth') . 'Resources/Public/Icons/selicon_group_membership_2.png'
 					),
@@ -197,7 +197,7 @@ return array(
 		),
 		'be_users_basedn' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.be_users_basedn',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.be_users_basedn',
 			'config' => array(
 				'type' => 'input',
 				'size' => '30',
@@ -212,7 +212,7 @@ return array(
 		),
 		'be_users_filter' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.be_users_filter',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.be_users_filter',
 			'config' => array(
 				'type' => 'text',
 				'rows' => 3,
@@ -228,7 +228,7 @@ return array(
 		),
 		'be_users_mapping' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.be_users_mapping',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.be_users_mapping',
 			'config' => array(
 				'type' => 'text',
 				'rows' => 8,
@@ -244,7 +244,7 @@ return array(
 		),
 		'be_groups_basedn' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.be_groups_basedn',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.be_groups_basedn',
 			'config' => array(
 				'type' => 'input',
 				'size' => '30',
@@ -259,7 +259,7 @@ return array(
 		),
 		'be_groups_filter' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.be_groups_filter',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.be_groups_filter',
 			'config' => array(
 				'type' => 'text',
 				'rows' => 3,
@@ -275,7 +275,7 @@ return array(
 		),
 		'be_groups_mapping' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.be_groups_mapping',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.be_groups_mapping',
 			'config' => array(
 				'type' => 'text',
 				'rows' => 8,
@@ -291,7 +291,7 @@ return array(
 		),
 		'be_groups_required' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.be_groups_required',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.be_groups_required',
 			'config' => array(
 				'type' => 'select',
 				'foreign_table' => 'be_groups',
@@ -308,7 +308,7 @@ return array(
 		),
 		'be_groups_assigned' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.be_groups_assigned',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.be_groups_assigned',
 			'config' => array(
 				'type' => 'select',
 				'foreign_table' => 'be_groups',
@@ -325,7 +325,7 @@ return array(
 		),
 		'be_groups_admin' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.be_groups_admin',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.be_groups_admin',
 			'config' => array(
 				'type' => 'select',
 				'foreign_table' => 'be_groups',
@@ -342,7 +342,7 @@ return array(
 		),
 		'fe_users_basedn' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.fe_users_basedn',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.fe_users_basedn',
 			'config' => array(
 				'type' => 'input',
 				'size' => '30',
@@ -357,7 +357,7 @@ return array(
 		),
 		'fe_users_filter' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.fe_users_filter',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.fe_users_filter',
 			'config' => array(
 				'type' => 'text',
 				'rows' => 3,
@@ -373,7 +373,7 @@ return array(
 		),
 		'fe_users_mapping' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.fe_users_mapping',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.fe_users_mapping',
 			'config' => array(
 				'type' => 'text',
 				'rows' => 8,
@@ -389,7 +389,7 @@ return array(
 		),
 		'fe_groups_basedn' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.fe_groups_basedn',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.fe_groups_basedn',
 			'config' => array(
 				'type' => 'input',
 				'size' => '30',
@@ -404,7 +404,7 @@ return array(
 		),
 		'fe_groups_filter' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.fe_groups_filter',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.fe_groups_filter',
 			'config' => array(
 				'type' => 'text',
 				'rows' => 3,
@@ -420,7 +420,7 @@ return array(
 		),
 		'fe_groups_mapping' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.fe_groups_mapping',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.fe_groups_mapping',
 			'config' => array(
 				'type' => 'text',
 				'rows' => 8,
@@ -436,7 +436,7 @@ return array(
 		),
 		'fe_groups_required' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.fe_groups_required',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.fe_groups_required',
 			'config' => array(
 				'type' => 'select',
 				'foreign_table' => 'fe_groups',
@@ -453,7 +453,7 @@ return array(
 		),
 		'fe_groups_assigned' => array(
 			'exclude' => 1,
-			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config.fe_groups_assigned',
+			'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.fe_groups_assigned',
 			'config' => array(
 				'type' => 'select',
 				'foreign_table' => 'fe_groups',

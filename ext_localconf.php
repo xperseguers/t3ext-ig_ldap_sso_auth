@@ -38,8 +38,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['proc
 // Register the import users Scheduler task
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Causal\\IgLdapSsoAuth\\Task\\ImportUsers'] = array(
 	'extension'			=> $_EXTKEY,
-	'title'				=> 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:task.import_users.title',
-	'description'		=> 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xml:task.import_users.description',
+	'title'				=> 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:task.import_users.title',
+	'description'		=> 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:task.import_users.description',
 	'additionalFields'	=> 'Causal\\IgLdapSsoAuth\\Task\\ImportUsersAdditionalFields'
 );
 

@@ -41,7 +41,7 @@ class SuggestWizard {
 
 		if (!empty($suggestion)) {
 			$out[] = '<div style="margin:-2.5em 0 0 1em;">';
-			$out[] = '<strong>' . $GLOBALS['LANG']->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:suggestion.server.' . $serverType, TRUE) . '</strong>';
+			$out[] = '<strong>' . $GLOBALS['LANG']->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:suggestion.server.' . $serverType, TRUE) . '</strong>';
 
 			$suggestId = 'tx_igldapssoauth_suggest_' . $PA['field'];
 			$out[] = '<pre style="margin:1em 0;" id="' . $suggestId . '">';
@@ -55,7 +55,7 @@ class SuggestWizard {
 
 			$onclick = "var node=document.getElementById('$suggestId');document.{$PA['formName']}['{$PA['itemName']}'].value=(node.innerText || node.textContent);";
 			$onclick .= implode('', $PA['fieldChangeFunc']);	// Necessary to tell TCEforms that the value is updated
-			$button = '<input type="button" value="' . $GLOBALS['LANG']->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:suggestion.copy', TRUE) . '" onclick="' . htmlspecialchars($onclick) . '" class="formField" />';
+			$button = '<input type="button" value="' . $GLOBALS['LANG']->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:suggestion.copy', TRUE) . '" onclick="' . htmlspecialchars($onclick) . '" class="formField" />';
 			$out[] = $button;
 
 			$out[] = '</div>';

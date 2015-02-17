@@ -1,8 +1,22 @@
 <?php
-defined('TYPO3_MODE') or die();
-
-$TCA['tx_igldapssoauth_config'] = array(
-	'ctrl' => $TCA['tx_igldapssoauth_config']['ctrl'],
+return array(
+	'ctrl' => array(
+		'title' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xml:tx_igldapssoauth_config',
+		'label' => 'name',
+		'sortby' => 'sorting',
+		'adminOnly' => 1,
+		'rootLevel' => 1,
+		'dividers2tabs'=> TRUE,
+		'tstamp' => 'tstamp',
+		'crdate' => 'crdate',
+		'cruser_id' => 'cruser_id',
+		'delete' => 'deleted',
+		'enablecolumns' => array(
+			'disabled' => 'hidden',
+		),
+		'requestUpdate' => 'ldap_server',
+		'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('ig_ldap_sso_auth') . 'Resources/Public/Icons/icon_tx_igldapssoauth_config.png',
+	),
 	'interface' => array(
 		'showRecordFieldList' => 'hidden, name, domains,
 						ldap_server, ldap_protocol, ldap_charset, ldap_host, ldap_port, ldap_tls, ldap_binddn,
@@ -69,8 +83,6 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'minitems' => 0,
 				'maxitems' => 30,
 				'wizards' => array(
-					'_PADDING' => 4,
-					'_VERTICAL' => 1,
 					'suggest' => array(
 						'type' => 'suggest'
 					),
@@ -288,8 +300,6 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'minitems' => 0,
 				'maxitems' => 30,
 				'wizards' => array(
-					'_PADDING' => 4,
-					'_VERTICAL' => 1,
 					'suggest' => array(
 						'type' => 'suggest'
 					),
@@ -307,8 +317,6 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'minitems' => 0,
 				'maxitems' => 30,
 				'wizards' => array(
-					'_PADDING' => 4,
-					'_VERTICAL' => 1,
 					'suggest' => array(
 						'type' => 'suggest'
 					),
@@ -326,8 +334,6 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'minitems' => 0,
 				'maxitems' => 30,
 				'wizards' => array(
-					'_PADDING' => 4,
-					'_VERTICAL' => 1,
 					'suggest' => array(
 						'type' => 'suggest'
 					),
@@ -439,8 +445,6 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'minitems' => 0,
 				'maxitems' => 99,
 				'wizards' => array(
-					'_PADDING' => 4,
-					'_VERTICAL' => 1,
 					'suggest' => array(
 						'type' => 'suggest'
 					),
@@ -458,8 +462,6 @@ $TCA['tx_igldapssoauth_config'] = array(
 				'minitems' => 0,
 				'maxitems' => 99,
 				'wizards' => array(
-					'_PADDING' => 4,
-					'_VERTICAL' => 1,
 					'suggest' => array(
 						'type' => 'suggest'
 					),

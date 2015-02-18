@@ -9,9 +9,14 @@ $icons = array(
 $GLOBALS['TBE_STYLES']['spriteIconApi']['spriteIconRecordOverlayPriorities'][] = 'is_ldap_record';
 $GLOBALS['TBE_STYLES']['spriteIconApi']['spriteIconRecordOverlayNames']['is_ldap_record'] = 'extensions-' . $_EXTKEY . '-overlay-ldap-record';
 
-// Add BE module on top of tools main module
+// Add BE module on top of system main module
 if (TYPO3_MODE === 'BE') {
-	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule('tools', 'txigldapssoauthM1', 'top', \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'mod1/');
+	\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
+		'system',
+		'txigldapssoauthM1',
+		'top',
+		\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'mod1/'
+	);
 }
 
 // Initialize "context sensitive help" (csh)

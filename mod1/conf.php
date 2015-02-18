@@ -1,6 +1,6 @@
 <?php
 // DO NOT REMOVE OR CHANGE THESE 3 LINES:
-$MCONF['name'] = 'tools_txigldapssoauthM1';
+$MCONF['name'] = 'system_txigldapssoauthM1';
 
 $MCONF['access'] = 'admin';
 $MCONF['script'] = '_DISPATCH';

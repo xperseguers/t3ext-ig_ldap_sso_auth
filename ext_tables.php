@@ -106,12 +106,15 @@ $GLOBALS['TBE_STYLES']['spriteIconApi']['spriteIconRecordOverlayNames']['is_ldap
 // Alter users TCA
 $GLOBALS['EXT_CONFIG']['enableBELDAPAuthentication'] ? $GLOBALS['TCA']['be_users']['columns']['password']['config']['eval'] = 'md5,password' : null;
 $GLOBALS['EXT_CONFIG']['enableFELDAPAuthentication'] ? $GLOBALS['TCA']['fe_users']['columns']['password']['config']['eval'] = 'password': null;
-// Load TCA.
-
 
 // Add BE module on top of tools main module
 if (TYPO3_MODE === 'BE') {
-	t3lib_extMgm::addModule('tools', 'txigldapssoauthM1', 'top', t3lib_extMgm::extPath($_EXTKEY) . 'mod1/');
+	t3lib_extMgm::addModule(
+	version_compare(TYPO3_version, '6.2.0', '<') ? 'tools' : 'system',
+	'txigldapssoauthM1',
+	'top',
+	t3lib_extMgm::extPath($_EXTKEY) . 'mod1/'
+);
 }
 
 // Initialize "context sensitive help" (csh)

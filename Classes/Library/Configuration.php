@@ -234,7 +234,7 @@ class Configuration {
 	 * @return string
 	 */
 	static public function get_username_attribute($filter = NULL) {
-		if ($filter && preg_match('/(\\b.*)=\\{USERNAME\\}/', $filter, $matches)) {
+		if ($filter && preg_match('/(\\w*)=\\{USERNAME\\}/', $filter, $matches)) {
 			return $matches[1];
 		}
 

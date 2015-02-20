@@ -219,7 +219,12 @@ class UserImportUtility {
 					$user[$GLOBALS['TCA'][$this->userTable]['ctrl']['delete']] = 0;
 			}
 			$typo3Groups = Authentication::get_user_groups($ldapUser, $this->configuration, $this->groupTable);
-			$user = Typo3UserRepository::set_usergroup($typo3Groups, $user, NULL, $this->groupTable);
+			$user = Typo3UserRepository::set_usergroup(
+				($typo3Groups === NULL) ? array() : $typo3Groups,
+				$user,
+				NULL,
+				$this->groupTable
+			);
 			$success = Typo3UserRepository::update($this->userTable, $user);
 			if ($success) {
 				$this->usersUpdated++;

@@ -175,7 +175,7 @@ CSS;
 
 		/** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
 		$configurationRepository = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Repository\\ConfigurationRepository');
-		$configurationRecords = $configurationRepository->fetchAll();
+		$configurationRecords = $configurationRepository->findAll();
 
 		if (count($configurationRecords) === 0) {
 			$newUrl = 'alt_doc.php?returnUrl=' . urlencode($thisUrl) . '&amp;edit[tx_igldapssoauth_config][0]=new';
@@ -288,8 +288,8 @@ CSS;
 	 * @return void
 	 */
 	protected function show_status() {
-		$feConfiguration = Configuration::getFeConfiguration();
-		$beConfiguration = Configuration::getBeConfiguration();
+		$feConfiguration = Configuration::getFrontendConfiguration();
+		$beConfiguration = Configuration::getBackendConfiguration();
 
 		$domains = Configuration::getDomains();
 		if (count($domains) > 0) {
@@ -322,7 +322,7 @@ CSS;
 				$defaultFlashMessageQueue->enqueue($flashMessage);
 			}
 
-			$ldapConfiguration['password'] = $ldapConfiguration['password'] ? '********' : NULL;
+			$ldapConfiguration['password'] = $ldapConfiguration['password'] ? '••••••••••••' : NULL;
 
 			$this->content .= $this->exportArrayAsTable($ldapConfiguration, $title);
 
@@ -381,17 +381,11 @@ CSS;
 				$out[] = '<td style="width: 20em"><strong>' . htmlspecialchars($key) . '</strong></td>';
 
 				if (!empty($key) && in_array($key, $groupKeys)) {
-					$table = $typo3_mode === 'BE' ? 'be_groups' : 'fe_groups';
-					if ($value != '0') {
-						$uids = GeneralUtility::intExplode(',', $value, TRUE);
-						$rows = $this->getDatabaseConnection()->exec_SELECTgetRows(
-							'uid, title',
-							$table,
-							'uid IN (' . implode(',', $uids) . ')'
-						);
+					$groups = $value;
+					if (count($groups) > 0) {
 						$value = '<ul>';
-						foreach ($rows as $row) {
-							$value .= '<li>' . htmlspecialchars(sprintf('%s [%s]', $row['title'], $row['uid'])) . '</li>';
+						foreach ($groups as $group) {
+							$value .= '<li>' . htmlspecialchars(sprintf('%s [%s]', $group->getTitle(), $group->getUid())) . '</li>';
 						}
 						$value .= '</ul>';
 					} else {
@@ -442,8 +436,8 @@ CSS;
 
 				list($typo3_mode, $type) = explode('_', $search['table']);
 				$config = ($typo3_mode === 'be')
-					? Configuration::getBeConfiguration()
-					: Configuration::getFeConfiguration();
+					? Configuration::getBackendConfiguration()
+					: Configuration::getFrontendConfiguration();
 
 				$search['basedn'] = $config[$type]['basedn'];
 				$search['filter'] = Configuration::replace_filter_markers($config[$type]['filter']);
@@ -465,8 +459,8 @@ CSS;
 
 				list($typo3_mode, $type) = explode('_', $search['table']);
 				$config = ($typo3_mode === 'be')
-					? Configuration::getBeConfiguration()
-					: Configuration::getFeConfiguration();
+					? Configuration::getBackendConfiguration()
+					: Configuration::getFrontendConfiguration();
 
 				$search['first_entry'] = TRUE;
 				$search['see_status'] = FALSE;
@@ -496,9 +490,6 @@ CSS;
 			$success = FALSE;
 		}
 		if ($success) {
-			if (is_array($search['basedn'])) {
-				$search['basedn'] = implode('||', $search['basedn']);
-			}
 			$first_entry = $search['first_entry'] ? 'checked="checked"' : "";
 			$see_status = $search['see_status'] ? 'checked="checked"' : "";
 			$be_users = ($search['table'] == 'be_users') ? 'checked="checked"' : "";
@@ -561,7 +552,6 @@ CSS;
 				$attributes = explode(',', $search['attributes']);
 			}
 
-			$search['basedn'] = explode('||', $search['basedn']);
 			$result = Ldap::getInstance()->search($search['basedn'], $search['filter'], $attributes, $search['first_entry'], 100);
 			if (!$result) {
 				$result = $GLOBALS['LANG']->getLL('search_wizard_no_result');
@@ -577,8 +567,8 @@ CSS;
 			if ($search['first_entry'] && is_array($result) && count($result) > 1) {
 				list($mode, $configKey) = explode('_', $search['table']);
 				$configuration = $mode === 'fe'
-					? Configuration::getFeConfiguration()
-					: Configuration::getBeConfiguration();
+					? Configuration::getFrontendConfiguration()
+					: Configuration::getBackendConfiguration();
 				if ($configKey === 'users') {
 					$mapping = $configuration['users']['mapping'];
 					$blankTypo3Record = Typo3UserRepository::create($search['table']);
@@ -651,8 +641,8 @@ CSS;
 		}
 
 		$config = ($typo3_mode === 'be')
-			? Configuration::getBeConfiguration()
-			: Configuration::getFeConfiguration();
+			? Configuration::getBackendConfiguration()
+			: Configuration::getFrontendConfiguration();
 
 		$ldap_groups = array();
 		if (!empty($config['groups']['basedn'])) {
@@ -699,11 +689,10 @@ CSS;
 		// Populate an array of TYPO3 group records corresponding to the LDAP groups
 		// If a given LDAP group has no associated group in TYPO3, a fresh record
 		// will be created so that $ldap_groups[i] <=> $typo3_groups[i]
-		$typo3_group_pid = Configuration::get_pid($config['groups']['mapping']);
+		$typo3_group_pid = Configuration::getPid($config['groups']['mapping']);
 		$table = $typo3_mode === 'be' ? 'be_groups' : 'fe_groups';
-		$typo3_groups = Authentication::get_typo3_groups(
+		$typo3_groups = Authentication::getTypo3Groups(
 			$ldap_groups,
-			$config['groups']['mapping'],
 			$table,
 			$typo3_group_pid
 		);
@@ -715,7 +704,7 @@ CSS;
 			$typo3_group = Authentication::merge($ldap_group, $typo3_groups[$index], $config['groups']['mapping']);
 
 			// Import the group using information from LDAP
-			if (GeneralUtility::inArray($import_groups, $typo3_group['tx_igldapssoauth_dn'])) {
+			if (in_array($typo3_group['tx_igldapssoauth_dn'], $import_groups)) {
 				unset($typo3_group['parentGroup']);
 				if ($typo3_group['uid'] == 0) {
 					$typo3_group = Typo3GroupRepository::add($table, $typo3_group);
@@ -840,8 +829,8 @@ HTML;
 				//}
 			} else {
 				$config = ($typo3_mode === 'be')
-					? Configuration::getBeConfiguration()
-					: Configuration::getFeConfiguration();
+					? Configuration::getBackendConfiguration()
+					: Configuration::getFrontendConfiguration();
 
 				$filter = '(&' . Configuration::replace_filter_markers($config['groups']['filter']) . '&(distinguishedName=' . $parentDn . '))';
 				$attributes = Configuration::get_ldap_attributes($config['groups']['mapping']);
@@ -849,14 +838,13 @@ HTML;
 				unset($ldap_groups['count']);
 
 				if (count($ldap_groups) > 0) {
-					$typo3_group_pid = Configuration::get_pid($config['groups']['mapping']);
+					$typo3_group_pid = Configuration::getPid($config['groups']['mapping']);
 
 					// Populate an array of TYPO3 group records corresponding to the LDAP groups
 					// If a given LDAP group has no associated group in TYPO3, a fresh record
 					// will be created so that $ldap_groups[i] <=> $typo3_groups[i]
-					$typo3_groups = Authentication::get_typo3_groups(
+					$typo3_groups = Authentication::getTypo3Groups(
 						$ldap_groups,
-						$config['groups']['mapping'],
 						$table,
 						$typo3_group_pid
 					);

@@ -64,5 +64,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Causal\\IgLdapS
 	)
 );
 
+// Register type converters
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerTypeConverter('Causal\\IgLdapSsoAuth\\Property\\TypeConverter\\ConfigurationConverter');
+
 // User have save doc new button
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('options.saveDocNew.tx_igldapssoauth_config=1');

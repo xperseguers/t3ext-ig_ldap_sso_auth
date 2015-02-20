@@ -1,0 +1,62 @@
+{namespace ldap=Causal\IgLdapSsoAuth\ViewHelpers}
+
+<f:form id="tx-igldapssoauth-importform" action="importUsersAjax">
+	<f:form.hidden name="configuration" value="{currentConfiguration.uid}" />
+	<f:form.hidden name="mode" value="{mode}" />
+	<f:form.hidden id="tx-igldapssoauth-dn" name="dn" value="" />
+
+	<table class="{classes.table}">
+		<tr class="{classes.tableRow}">
+			<th class="col-icon">&nbsp;</th>
+			<th><f:translate key="module_import.field.name" /></th>
+			<th>DN</th>
+			<f:if condition="{mode}=='fe'">
+				<th>pid</th>
+			</f:if>
+			<th>&nbsp;</th>
+		</tr>
+
+		<f:for each="{users}" as="user">
+			<tr class="{classes.tableRow} {f:if(condition:user.uid,then:'local-ldap-user-or-group')} {f:if(condition:user.deleted,then:'deleted-ldap-user-or-group')}">
+				<td class="col-icon">
+					<f:if condition="{mode}=='be'">
+						<f:then><ldap:spriteManagerIcon iconName="{f:if(condition:user.admin,then:'status-user-admin',else:'status-user-backend')}" uid="{user.uid}" /></f:then>
+						<f:else><ldap:spriteManagerIcon iconName="status-user-frontend" uid="{user.uid}" /></f:else>
+					</f:if>
+				</td>
+				<td>
+					<f:if condition="{user.realName}">
+						<f:then>{user.realName}</f:then>
+						<f:else>{user.name}</f:else>
+					</f:if>
+				</td>
+				<td>{user.tx_igldapssoauth_dn}</td>
+				<f:if condition="{mode}=='fe'">
+					<td class="{f:if(condition:user.uid,then:'',else:'future-value')}">
+						{user.pid}
+					</td>
+				</f:if>
+				<td>
+					<f:form.button name="item" value="{user.tx_igldapssoauth_dn}">
+						<f:if condition="{user.deleted}">
+							<f:then><f:translate key="module_import.action.undelete" /></f:then>
+							<f:else>
+								<f:if condition="{user.uid}">
+									<f:then><f:translate key="module_import.action.update" /></f:then>
+									<f:else><f:translate key="module_import.action.import" /></f:else>
+								</f:if>
+							</f:else>
+						</f:if>
+					</f:form.button>
+				</td>
+			</tr>
+		</f:for>
+
+		<caption>
+			<ul>
+				<li><span class="square-local"></span> <f:translate key="module_import_users.caption_local" /></li>
+				<li><span class="square-deleted"></span> <f:translate key="module_import_users.caption_deleted" /></li>
+			</ul>
+		</caption>
+	</table>
+</f:form>

@@ -61,13 +61,13 @@ class Typo3UserRepository {
 	 *
 	 * @param string $table Either 'be_users' or 'fe_users'
 	 * @param int $uid
-	 * @param int $pid
+	 * @param int|NULL $pid
 	 * @param string $username
 	 * @param string $dn
 	 * @return array Array of user records
 	 * @throws InvalidUserTableException
 	 */
-	static public function fetch($table, $uid = 0, $pid = 0, $username = NULL, $dn = NULL) {
+	static public function fetch($table, $uid = 0, $pid = NULL, $username = NULL, $dn = NULL) {
 		if (!GeneralUtility::inList('be_users,fe_users', $table)) {
 			throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891636);
 		}
@@ -262,7 +262,7 @@ class Typo3UserRepository {
 		}
 	}
 
-	static public function set_usergroup(array $typo3_groups = array(), array $typo3_user = array(), \Causal\IgLdapSsoAuth\Service\AuthenticationService $pObj = NULL, $groupTable = '') {
+	static public function set_usergroup(array $typo3_groups = array(), array $typo3_user = array(), \Causal\IgLdapSsoAuth\Service\AuthenticationService $pObj = NULL) {
 		$group_uid = array();
 
 		foreach ($typo3_groups as $typo3_group) {
@@ -271,22 +271,11 @@ class Typo3UserRepository {
 			}
 		}
 
-		// If group table is not explicitly defined, try to get it from context
-		if (empty($groupTable)) {
-			if (isset($pObj)) {
-				$groupTable = $pObj->authInfo['db_groups']['table'];
-			} else {
-				if (TYPO3_MODE === 'BE') {
-					$groupTable = 'be_groups';
-				} else {
-					$groupTable = 'fe_groups';
-				}
-			}
-		}
-		$assignGroups = GeneralUtility::intExplode(',', Configuration::is_enable('assignGroups'), TRUE);
-		foreach ($assignGroups as $uid) {
-			if (Typo3GroupRepository::fetch($groupTable, $uid) && !in_array($uid, $group_uid)) {
-				$group_uid[] = $uid;
+		/** @var \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]|\TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup[] $assignGroups */
+		$assignGroups = Configuration::is_enable('assignGroups');
+		foreach ($assignGroups as $group) {
+			if (!in_array($group->getUid(), $group_uid)) {
+				$group_uid[] = $group->getUid();
 			}
 		}
 
@@ -300,12 +289,12 @@ class Typo3UserRepository {
 			}
 		}
 
-		$updateAdminAttribForGroups = Configuration::is_enable('updateAdminAttribForGroups');
-		if ($updateAdminAttribForGroups) {
-			$updateAdminAttribForGroups = GeneralUtility::trimExplode(',', $updateAdminAttribForGroups);
+		/** @var \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]|\TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup[] $administratorGroups */
+		$administratorGroups = Configuration::is_enable('updateAdminAttribForGroups');
+		if (count($administratorGroups) > 0) {
 			$typo3_user['admin'] = 0;
-			foreach ($updateAdminAttribForGroups as $uid) {
-				if (in_array($uid, $group_uid)) {
+			foreach ($administratorGroups as $administratorGroup) {
+				if (in_array($administratorGroup->getUid(), $group_uid)) {
 					$typo3_user['admin'] = 1;
 					break;
 				}

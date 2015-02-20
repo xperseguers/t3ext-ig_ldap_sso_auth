@@ -17,7 +17,7 @@ The second tab is the global configurations about a single LDAP server.
 
 - **Protocol:** Choose the LDAP protocol version (2 or 3). Recent LDAP use version 3
 
-- **Charset:** Character set of your LDAP connection. Usually ``utf-8``.
+- **Character set:** Character set of your LDAP connection. Usually ``utf-8``.
 
 - **Host:** Host of your LDAP. You may use either a host name / IP address or prefix it with a protocol such as
   ``ldap://<hostname>`` or ``ldaps://<hostname>`` (latter in case you want to connect with SSL).

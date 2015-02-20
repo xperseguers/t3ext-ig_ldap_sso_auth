@@ -76,7 +76,7 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface {
 		}
 
 		$debugConfiguration['binddn'] = $config['binddn'];
-		$debugConfiguration['password'] = $config['password'] !== '' ? '********' : '';
+		$debugConfiguration['password'] = $config['password'] !== '' ? '••••••••••••' : '';
 
 		// Bind to ldap server.
 		if (!$this->ldapUtility->bind($config['binddn'], $config['password'])) {

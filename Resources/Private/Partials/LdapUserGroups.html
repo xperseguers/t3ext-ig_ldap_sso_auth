@@ -1,0 +1,57 @@
+{namespace ldap=Causal\IgLdapSsoAuth\ViewHelpers}
+
+<f:form id="tx-igldapssoauth-importform" action="importUserGroupsAjax">
+	<f:form.hidden name="configuration" value="{currentConfiguration.uid}" />
+	<f:form.hidden name="mode" value="{mode}" />
+	<f:form.hidden id="tx-igldapssoauth-dn" name="dn" value="" />
+
+	<table class="{classes.table}">
+		<tr class="{classes.tableRow}">
+			<th class="col-icon">&nbsp;</th>
+			<th><f:translate key="module_import.field.name" /></th>
+			<th>DN</th>
+			<f:if condition="{mode}=='fe'">
+				<th>pid</th>
+			</f:if>
+			<th>&nbsp;</th>
+		</tr>
+
+		<f:for each="{groups}" as="group">
+			<tr class="{classes.tableRow} {f:if(condition:group.uid,then:'local-ldap-user-or-group')} {f:if(condition:group.deleted,then:'deleted-ldap-user-or-group')}">
+				<td class="col-icon">
+					<f:if condition="{mode}=='be'">
+						<f:then><ldap:spriteManagerIcon iconName="status-user-group-backend" uid="{group.uid}" /></f:then>
+						<f:else><ldap:spriteManagerIcon iconName="status-user-group-frontend" uid="{group.uid}" /></f:else>
+					</f:if>
+				</td>
+				<td>{group.title}</td>
+				<td>{group.tx_igldapssoauth_dn}</td>
+				<f:if condition="{mode}=='fe'">
+					<td class="{f:if(condition:group.uid,then:'',else:'future-value')}">
+						{group.pid}
+					</td>
+				</f:if>
+				<td>
+					<f:form.button name="item" value="{group.tx_igldapssoauth_dn}">
+						<f:if condition="{group.deleted}">
+							<f:then><f:translate key="module_import.action.undelete" /></f:then>
+							<f:else>
+								<f:if condition="{group.uid}">
+									<f:then><f:translate key="module_import.action.update" /></f:then>
+									<f:else><f:translate key="module_import.action.import" /></f:else>
+								</f:if>
+							</f:else>
+						</f:if>
+					</f:form.button>
+				</td>
+			</tr>
+		</f:for>
+
+		<caption>
+			<ul>
+				<li><span class="square-local"></span> <f:translate key="module_import_groups.caption_local" /></li>
+				<li><span class="square-deleted"></span> <f:translate key="module_import_groups.caption_deleted" /></li>
+			</ul>
+		</caption>
+	</table>
+</f:form>

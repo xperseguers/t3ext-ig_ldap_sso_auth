@@ -114,17 +114,17 @@ class Configuration {
 	protected $backendGroupsMapping;
 
 	/**
-	 * @var string
+	 * @var array
 	 */
 	protected $backendGroupsRequired;
 
 	/**
-	 * @var string
+	 * @var array
 	 */
 	protected $backendGroupsAssigned;
 
 	/**
-	 * @var string
+	 * @var array
 	 */
 	protected $backendGroupsAdministrator;
 
@@ -159,12 +159,12 @@ class Configuration {
 	protected $frontendGroupsMapping;
 
 	/**
-	 * @var string
+	 * @var array
 	 */
 	protected $frontendGroupsRequired;
 
 	/**
-	 * @var string
+	 * @var array
 	 */
 	protected $frontendGroupsAssigned;
 
@@ -326,21 +326,21 @@ class Configuration {
 	}
 
 	/**
-	 * @return string
+	 * @return \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]
 	 */
 	public function getBackendGroupsRequired() {
 		return $this->backendGroupsRequired;
 	}
 
 	/**
-	 * @return string
+	 * @return \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]
 	 */
 	public function getBackendGroupsAssigned() {
 		return $this->backendGroupsAssigned;
 	}
 
 	/**
-	 * @return string
+	 * @return \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]
 	 */
 	public function getBackendGroupsAdministrator() {
 		return $this->backendGroupsAdministrator;
@@ -389,17 +389,26 @@ class Configuration {
 	}
 
 	/**
-	 * @return string
+	 * @return \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup[]
 	 */
 	public function getFrontendGroupsRequired() {
 		return $this->frontendGroupsRequired;
 	}
 
 	/**
-	 * @return string
+	 * @return \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup[]
 	 */
 	public function getFrontendGroupsAssigned() {
 		return $this->frontendGroupsAssigned;
+	}
+
+	/**
+	 * Returns the class name and the uid of the object as string
+	 *
+	 * @return string
+	 */
+	public function __toString() {
+		return get_class($this) . ':' . (string)$this->uid;
 	}
 
 }

@@ -84,7 +84,7 @@
 				<source>Version 2</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.ldap_charset">
-				<source>Charset:</source>
+				<source>Character set:</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.ldap_host">
 				<source>Host:</source>

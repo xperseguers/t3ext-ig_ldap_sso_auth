@@ -60,10 +60,10 @@ class Authentication {
 	 * @return array The corresponding configuration (BE/FE)
 	 */
 	static public function initializeConfiguration() {
-		if (Configuration::getTypo3Mode() === 'be') {
-			static::$config = Configuration::getBeConfiguration();
+		if (Configuration::getMode() === 'be') {
+			static::$config = Configuration::getBackendConfiguration();
 		} else {
-			static::$config = Configuration::getFeConfiguration();
+			static::$config = Configuration::getFrontendConfiguration();
 		}
 		return static::$config;
 	}
@@ -149,10 +149,10 @@ class Authentication {
 			$username = $ldap_user[$userAttribute][0];
 		}
 		// Get user pid from user mapping.
-		$typo3_users_pid = Configuration::get_pid(static::$config['users']['mapping']);
+		$typo3_users_pid = Configuration::getPid(static::$config['users']['mapping']);
 
 		// Get TYPO3 user from username, DN and pid.
-		$typo3_user = static::get_typo3_user($username, $userdn, $typo3_users_pid);
+		$typo3_user = static::getTypo3User($username, $userdn, $typo3_users_pid);
 		if ($typo3_user === NULL) {
 			// Non-existing local users are not allowed to authenticate
 			return FALSE;
@@ -288,24 +288,19 @@ class Authentication {
 		$ldapGroups = static::get_ldap_groups($ldapUser);
 		unset($ldapGroups['count']);
 
+		/** @var \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]|\TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup[] $requiredLDAPGroups */
 		$requiredLDAPGroups = Configuration::is_enable('requiredLDAPGroups');
-		if ($requiredLDAPGroups) {
-			$requiredLDAPGroups = GeneralUtility::trimExplode(',', $requiredLDAPGroups);
-		} else {
-			$requiredLDAPGroups = array();
-		}
 
 		if (count($ldapGroups) === 0) {
 			if (count($requiredLDAPGroups) > 0) {
 				return NULL;
 			}
 		} else {
-			// Get pid from group mapping.
-			$typo3_group_pid = Configuration::get_pid($configuration['groups']['mapping']);
+			// Get pid from group mapping
+			$typo3_group_pid = Configuration::getPid($configuration['groups']['mapping']);
 
-			$typo3_groups_tmp = static::get_typo3_groups(
+			$typo3_groups_tmp = static::getTypo3Groups(
 				$ldapGroups,
-				$configuration['groups']['mapping'],
 				$groupTable,
 				$typo3_group_pid
 			);
@@ -316,8 +311,8 @@ class Authentication {
 				foreach ($typo3_groups_tmp as $typo3_group) {
 					$group_Listuid[] = $typo3_group['uid'];
 				}
-				foreach ($requiredLDAPGroups as $uid) {
-					if (in_array($uid, $group_Listuid)) {
+				foreach ($requiredLDAPGroups as $group) {
+					if (in_array($group->getUid(), $group_Listuid)) {
 						$hasRequired = TRUE;
 						break;
 					}
@@ -442,13 +437,27 @@ class Authentication {
 	 *
 	 * @param string $username
 	 * @param string $userdn
-	 * @param integer $pid
+	 * @param int $pid
 	 * @return array
+	 * @deprecated since 3.0, will be removed in 3.2, use getTypo3User() instead
 	 */
 	static protected function get_typo3_user($username = NULL, $userdn = NULL, $pid = 0) {
+		GeneralUtility::logDeprecatedFunction();
+		return static::getTypo3User($username, $userdn, $pid);
+	}
+
+	/**
+	 * Returns a TYPO3 user.
+	 *
+	 * @param string $username
+	 * @param string $userDn
+	 * @param int|NULL $pid
+	 * @return array
+	 */
+	static protected function getTypo3User($username, $userDn, $pid = NULL) {
 		$user = NULL;
 
-		$typo3_users = Typo3UserRepository::fetch(static::$authenticationService->authInfo['db_user']['table'], 0, $pid, $username, $userdn);
+		$typo3_users = Typo3UserRepository::fetch(static::$authenticationService->authInfo['db_user']['table'], 0, $pid, $username, $userDn);
 		if ($typo3_users) {
 			if (Configuration::is_enable('IfUserExist')) {
 				// Ensure every returned record is active
@@ -471,11 +480,11 @@ class Authentication {
 		} elseif (!Configuration::is_enable('IfUserExist')) {
 			$user = Typo3UserRepository::create(static::$authenticationService->authInfo['db_user']['table']);
 
-			$user['pid'] = $pid;
+			$user['pid'] = (int)$pid;
 			$user['crdate'] = $GLOBALS['EXEC_TIME'];
 			$user['tstamp'] = $GLOBALS['EXEC_TIME'];
 			$user['username'] = $username;
-			$user['tx_igldapssoauth_dn'] = $userdn;
+			$user['tx_igldapssoauth_dn'] = $userDn;
 		}
 
 		return $user;
@@ -488,25 +497,40 @@ class Authentication {
 	 * @param array $ldap_groups
 	 * @param array $mapping
 	 * @param string $table
-	 * @param integer $pid
+	 * @param int|NULL $pid
 	 * @return array
+	 * @deprecated since 3.0, will be removed in 3.2, use getTypo3Groups() instead
 	 */
 	static public function get_typo3_groups(array $ldap_groups = array(), array $mapping = array(), $table = NULL, $pid = 0) {
-		if (count($ldap_groups) === 0) {
+		GeneralUtility::logDeprecatedFunction();
+		return static::getTypo3Groups($ldap_groups, $table, $pid);
+	}
+
+	/**
+	 * Returns TYPO3 groups associated to $ldapGroups or create
+	 * fresh records if they don't exist yet.
+	 *
+	 * @param array $ldapGroups
+	 * @param string $table
+	 * @param int|NULL $pid
+	 * @return array
+	 */
+	static public function getTypo3Groups(array $ldapGroups = array(), $table = NULL, $pid = NULL) {
+		if (count($ldapGroups) === 0) {
 			// Early return
 			return array();
 		}
 
 		$typo3Groups = array();
 
-		foreach ($ldap_groups as $ldap_group) {
-			$existingTypo3Groups = Typo3GroupRepository::fetch($table, 0, $pid, $ldap_group['dn']);
+		foreach ($ldapGroups as $ldapGroup) {
+			$existingTypo3Groups = Typo3GroupRepository::fetch($table, 0, $pid, $ldapGroup['dn']);
 
 			if (count($existingTypo3Groups) > 0) {
 				$typo3Group = $existingTypo3Groups[0];
 			} else {
 				$typo3Group = Typo3GroupRepository::create($table);
-				$typo3Group['pid'] = $pid;
+				$typo3Group['pid'] = (int)$pid;
 				$typo3Group['crdate'] = $GLOBALS['EXEC_TIME'];
 				$typo3Group['tstamp'] = $GLOBALS['EXEC_TIME'];
 			}
@@ -524,25 +548,41 @@ class Authentication {
 	 * @param array $ldap_users
 	 * @param array $mapping
 	 * @param string $table
-	 * @param integer $pid
+	 * @param int $pid
 	 * @return array
+	 * @deprecated since 3.0, will be removed in 3.2, use getTypo3Users() instead
 	 */
 	static public function get_typo3_users(array $ldap_users = array(), array $mapping = array(), $table = NULL, $pid = 0) {
-		if (count($ldap_users) === 0) {
+		GeneralUtility::logDeprecatedFunction();
+		return static::getTypo3Users($ldap_users, $mapping, $table, $pid);
+	}
+
+	/**
+	 * Returns TYPO3 users associated to $ldap_users or create fresh records
+	 * if they don't exist yet.
+	 *
+	 * @param array $ldapUsers
+	 * @param array $mapping
+	 * @param string $table
+	 * @param int|NULL $pid
+	 * @return array
+	 */
+	static public function getTypo3Users(array $ldapUsers = array(), array $mapping = array(), $table = NULL, $pid = NULL) {
+		if (count($ldapUsers) === 0) {
 			// Early return
 			return array();
 		}
 
 		$typo3Users = array();
 
-		foreach ($ldap_users as $ldap_user) {
-			$existingTypo3Users = Typo3UserRepository::fetch($table, 0, $pid, NULL, $ldap_user['dn']);
+		foreach ($ldapUsers as $ldapUser) {
+			$existingTypo3Users = Typo3UserRepository::fetch($table, 0, $pid, NULL, $ldapUser['dn']);
 
 			if (count($existingTypo3Users) > 0) {
 				$typo3User = $existingTypo3Users[0];
 			} else {
 				$typo3User = Typo3UserRepository::create($table);
-				$typo3User['pid'] = $pid;
+				$typo3User['pid'] = (int)$pid;
 				$typo3User['crdate'] = $GLOBALS['EXEC_TIME'];
 				$typo3User['tstamp'] = $GLOBALS['EXEC_TIME'];
 			}

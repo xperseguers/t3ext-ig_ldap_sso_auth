@@ -1,0 +1,57 @@
+{namespace ldap=Causal\IgLdapSsoAuth\ViewHelpers}
+
+<f:layout name="Default" />
+
+<f:section name="iconButtons">
+	<f:render partial="Menu" arguments="{menu:menu, currentConfiguration:currentConfiguration}" />
+</f:section>
+
+<f:section name="configuration">
+	<f:render partial="ConfigurationRecords" arguments="{configurationRecords:configurationRecords, currentConfiguration:currentConfiguration, editLink:editLink, action:action}" />
+</f:section>
+
+<f:section name="content">
+	<h1><f:translate key="module_search" /></h1>
+	<f:flashMessages renderMode="div" />
+
+	<f:form id="tx-igldapssoauth-searchform" action="searchAjax">
+		<f:form.hidden name="configuration" value="{currentConfiguration.uid}" />
+		<table class="{classes.table}">
+			<tr class="{classes.tableRow}">
+				<td class="key">Type</td>
+				<td>
+					<f:form.radio id="tx-igldapssoauth-type-0" name="type" value="fe_users" checked="checked" /> <label for="tx-igldapssoauth-type-0">Frontend users</label><br />
+					<f:form.radio id="tx-igldapssoauth-type-1" name="type" value="fe_groups" /> <label for="tx-igldapssoauth-type-1">Frontend user groups</label><br />
+					<f:form.radio id="tx-igldapssoauth-type-2" name="type" value="be_users" /> <label for="tx-igldapssoauth-type-2">Backend users</label><br />
+					<f:form.radio id="tx-igldapssoauth-type-3" name="type" value="be_groups" /> <label for="tx-igldapssoauth-type-3">Backend user groups</label>
+				</td>
+			</tr>
+			<tr class="{classes.tableRow}">
+				<td class="key">Options</td>
+				<td>
+					<f:form.checkbox id="tx-igldapssoauth-firstentry" name="firstEntry" value="1" checked="checked" /> <label for="tx-igldapssoauth-firstentry">First entry only</label><br />
+					<f:form.checkbox id="tx-igldapssoauth-showstatus" name="showStatus" value="1" /> <label for="tx-igldapssoauth-showstatus">Show status</label>
+				</td>
+			</tr>
+			<tr class="{classes.tableRow}">
+				<td class="key"><label for="tx-igldapssoauth-basedn">Base DN</label></td>
+				<td><f:form.textfield id="tx-igldapssoauth-basedn" name="baseDn" value="{baseDn}" /></td>
+			</tr>
+			<tr class="{classes.tableRow}">
+				<td class="key"><label for="tx-igldapssoauth-filter">Filter</label></td>
+				<td><f:form.textarea id="tx-igldapssoauth-filter" name="filter" value="{filter}" /></td>
+			</tr>
+			<tr class="{classes.tableRow}">
+				<td></td>
+				<td><input id="tx-igldapssoauth-search" type="button" value="search" /></td>
+			</tr>
+		</table>
+	</f:form>
+
+	<div id="tx-igldapssoauth-result"></div>
+
+	<script type="text/javascript">
+		// Initialize the editor
+		IgLdapSsoAuthSearch.actions.updateForm = "{f:uri.action(action:'updateSearchAjax', arguments:{configuration:currentConfiguration.uid, type:'TYPE'})}";
+	</script>
+</f:section>

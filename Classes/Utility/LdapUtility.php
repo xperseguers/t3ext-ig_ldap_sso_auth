@@ -44,7 +44,7 @@ use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
  */
 class LdapUtility {
 
-	const MAX_ENTRIES = 1000;
+	const MAX_ENTRIES = 500;
 
 	/**
 	 * LDAP Server charset
@@ -184,7 +184,7 @@ class LdapUtility {
 		}
 
 		$this->status['bind']['dn'] = $dn;
-		$this->status['bind']['password'] = $password ? '********' : NULL;
+		$this->status['bind']['password'] = $password ? '••••••••••••' : NULL;
 		$this->status['bind']['diagnostic'] = '';
 
 		if (!(@ldap_bind($this->connection, $dn, $password))) {

@@ -3,6 +3,206 @@
 	<file source-language="en" datatype="plaintext" original="messages" date="2015-02-17T16:10:14Z" product-name="ig_ldap_sso_auth">
 		<header/>
 		<body>
+			<trans-unit id="mlang_tabs_tab">
+				<source>LDAP / SSO (new)</source>
+			</trans-unit>
+			<trans-unit id="mlang_labels_tabdescr">
+				<source>LDAP management and configuration module.</source>
+			</trans-unit>
+			<trans-unit id="mlang_labels_tablabel">
+				<source>LDAP management</source>
+			</trans-unit>
+
+			<trans-unit id="title">
+				<source>LDAP / SSO service management</source>
+			</trans-unit>
+			<trans-unit id="configuration_missing.title">
+				<source>No Configuration Records</source>
+			</trans-unit>
+			<trans-unit id="configuration_missing.message">
+				<source><![CDATA[This module cannot be used until you create at least one configuration record. Please refer to the <a href="%s" target="_blank">administrator manual</a> for further information.<br /><br /><a href="%s">Click here</a> to create a configuration record.]]></source>
+			</trans-unit>
+
+			<trans-unit id="module_overview">
+				<source>Overview</source>
+			</trans-unit>
+
+			<trans-unit id="module_status">
+				<source>Status</source>
+			</trans-unit>
+			<trans-unit id="module_status.title.domains">
+				<source>Domains</source>
+			</trans-unit>
+			<trans-unit id="module_status.description.domains">
+				<source>Current LDAP configuration is restricted to following domain(s):</source>
+			</trans-unit>
+			<trans-unit id="module_status.title.ldap">
+				<source>LDAP</source>
+			</trans-unit>
+			<trans-unit id="module_status.messages.ldapDisable">
+				<source>LDAP is disabled since the host name is undefined.</source>
+			</trans-unit>
+			<trans-unit id="module_status.messages.enabled">
+				<source>enabled</source>
+			</trans-unit>
+			<trans-unit id="module_status.messages.disabled">
+				<source>disabled</source>
+			</trans-unit>
+			<trans-unit id="module_status.messages.empty">
+				<source>none</source>
+			</trans-unit>
+			<trans-unit id="module_status.messages.formatProtocol">
+				<source>Version %s</source>
+			</trans-unit>
+			<trans-unit id="module_status.title.connection">
+				<source>Connection status</source>
+			</trans-unit>
+			<trans-unit id="module_status.title.frontend">
+				<source>Frontend authentication</source>
+			</trans-unit>
+			<trans-unit id="module_status.title.backend">
+				<source>Backend authentication</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.server">
+				<source>Server type</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.charset">
+				<source>Character set</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.protocol">
+				<source>Protocol</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.host">
+				<source>Host</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.port">
+				<source>Port</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.tls">
+				<source>Use TLS</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.binddn">
+				<source>Bind DN</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.password">
+				<source>Password</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.connect">
+				<source>LDAP connect</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.bind">
+				<source>LDAP bind</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.LDAPAuthentication">
+				<source>LDAP authentication</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.SSOAuthentication">
+				<source>Single Sign On (SSO)</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.forceLowerCaseUsername">
+				<source>Convert user name to lower-case</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.evaluateGroupsFromMembership">
+				<source>Extract groups from membership attribute</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.IfUserExist">
+				<source>User must exist already</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.IfGroupExist">
+				<source>User group must exist already</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.BEfailsafe">
+				<source>Local (non-LDAP) users may authenticate</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.updateAdminAttribForGroups">
+				<source>User groups promoted as TYPO3 administrators</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.DeleteUserIfNoTYPO3Groups">
+				<source>Delete user if not in any TYPO3 user groups</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.DeleteUserIfNoLDAPGroups">
+				<source>Delete user if not in any LDAP user groups</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.GroupsNotSynchronize">
+				<source>Prevent synchronization of user groups</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.assignGroups">
+				<source>Additional TYPO3 user groups assigned</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.keepTYPO3Groups">
+				<source>Keep locally-assigned TYPO3 user groups</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.requiredLDAPGroups">
+				<source>Required LDAP user groups to validate authentication</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.users">
+				<source>Configuration for users</source>
+			</trans-unit>
+			<trans-unit id="module_status.configuration.groups">
+				<source>Configuration for user groups</source>
+			</trans-unit>
+
+			<trans-unit id="module_search">
+				<source>Search wizard</source>
+			</trans-unit>
+			<trans-unit id="module_search_status">
+				<source>LDAP search status</source>
+			</trans-unit>
+			<trans-unit id="module_search_result">
+				<source>Result</source>
+			</trans-unit>
+			<trans-unit id="module_search_noResult">
+				<source>No results</source>
+			</trans-unit>
+			<trans-unit id="module_search_preview">
+				<source>Preview mapping</source>
+			</trans-unit>
+
+			<trans-unit id="module_import.action.import">
+				<source>import</source>
+			</trans-unit>
+			<trans-unit id="module_import.action.update">
+				<source>update</source>
+			</trans-unit>
+			<trans-unit id="module_import.action.undelete">
+				<source>undelete</source>
+			</trans-unit>
+
+			<trans-unit id="module_import_users_fe">
+				<source>Import LDAP users (Frontend)</source>
+			</trans-unit>
+			<trans-unit id="module_import_users_be">
+				<source>Import LDAP users (Backend)</source>
+			</trans-unit>
+			<trans-unit id="module_import_users.empty">
+				<source>No users found.</source>
+			</trans-unit>
+			<trans-unit id="module_import_users.caption_local">
+				<source>LDAP user is available locally</source>
+			</trans-unit>
+			<trans-unit id="module_import_users.caption_deleted">
+				<source>LDAP user has been imported but then manually deleted</source>
+			</trans-unit>
+			<trans-unit id="module_import.field.name">
+				<source>Name</source>
+			</trans-unit>
+
+			<trans-unit id="module_import_groups_fe">
+				<source>Import LDAP groups (Frontend)</source>
+			</trans-unit>
+			<trans-unit id="module_import_groups_be">
+				<source>Import LDAP groups (Backend)</source>
+			</trans-unit>
+			<trans-unit id="module_import_groups.empty">
+				<source>No groups found.</source>
+			</trans-unit>
+			<trans-unit id="module_import_groups.caption_local">
+				<source>LDAP group is available locally</source>
+			</trans-unit>
+			<trans-unit id="module_import_groups.caption_deleted">
+				<source>LDAP group has been imported but then manually deleted</source>
+			</trans-unit>
+
 			<trans-unit id="task.import_users.title">
 				<source>Import LDAP users</source>
 			</trans-unit>

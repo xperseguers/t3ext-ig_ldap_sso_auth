@@ -37,8 +37,31 @@ class ConfigurationRepository {
 	 * Returns all available LDAP configurations.
 	 *
 	 * @return \Causal\IgLdapSsoAuth\Domain\Model\Configuration[]
+	 * @deprecated since 3.0, will be removed in 3.2, use findAll() instead
 	 */
 	public function fetchAll() {
+		GeneralUtility::logDeprecatedFunction();
+		return $this->findAll();
+	}
+
+	/**
+	 * Returns a single LDAP configuration.
+	 *
+	 * @param integer $uid Primary key to look up
+	 * @return \Causal\IgLdapSsoAuth\Domain\Model\Configuration
+	 * @deprecated since 3.0, will be removed in 3.2, use findByUid() instead
+	 */
+	public function fetchByUid($uid) {
+		GeneralUtility::logDeprecatedFunction();
+		return $this->findByUid($uid);
+	}
+
+	/**
+	 * Returns all available LDAP configurations.
+	 *
+	 * @return \Causal\IgLdapSsoAuth\Domain\Model\Configuration[]
+	 */
+	public function findAll() {
 		$where = '1=1' . BackendUtility::deleteClause('tx_igldapssoauth_config');
 		if (!$this->fetchDisabledRecords) {
 			$where .= BackendUtility::BEenableFields('tx_igldapssoauth_config');
@@ -68,7 +91,7 @@ class ConfigurationRepository {
 	 * @param integer $uid Primary key to look up
 	 * @return \Causal\IgLdapSsoAuth\Domain\Model\Configuration
 	 */
-	public function fetchByUid($uid) {
+	public function findByUid($uid) {
 		$where = 'uid = ' . intval($uid) . BackendUtility::deleteClause('tx_igldapssoauth_config');
 		if (!$this->fetchDisabledRecords) {
 			$where .= BackendUtility::BEenableFields('tx_igldapssoauth_config');
@@ -100,15 +123,6 @@ class ConfigurationRepository {
 	}
 
 	/**
-	 * Returns the database connection.
-	 *
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	static protected function getDatabaseConnection() {
-		return $GLOBALS['TYPO3_DB'];
-	}
-
-	/**
 	 * Sets the given properties on the object.
 	 *
 	 * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $object The object to set properties on
@@ -132,21 +146,42 @@ class ConfigurationRepository {
 			'be_groups_basedn'   => 'backendGroupsBaseDn',
 			'be_groups_filter'   => 'backendGroupsFilter',
 			'be_groups_mapping'  => 'backendGroupsMapping',
-			'be_groups_required' => 'backendGroupsRequired',
-			'be_groups_assigned' => 'backendGroupsAssigned',
-			'be_groups_admin'    => 'backendGroupsAdministrator',
 			'fe_users_basedn'    => 'frontendUsersBaseDn',
 			'fe_users_filter'    => 'frontendUsersFilter',
 			'fe_users_mapping'   => 'frontendUsersMapping',
 			'fe_groups_basedn'   => 'frontendGroupsBaseDn',
 			'fe_groups_filter'   => 'frontendGroupsFilter',
 			'fe_groups_mapping'  => 'frontendGroupsMapping',
-			'fe_groups_required' => 'frontendGroupsRequired',
-			'fe_groups_assigned' => 'frontendGroupsAssigned',
 		);
 
 		foreach ($mapping as $fieldName => $propertyName) {
 			$object->_setProperty($propertyName, $row[$fieldName]);
+		}
+
+		// Mapping for backend / frontend user groups
+		$groupsMapping = array(
+			'be_groups_required' => 'backendGroupsRequired',
+			'be_groups_assigned' => 'backendGroupsAssigned',
+			'be_groups_admin'    => 'backendGroupsAdministrator',
+			'fe_groups_required' => 'frontendGroupsRequired',
+			'fe_groups_assigned' => 'frontendGroupsAssigned',
+		);
+
+		foreach ($groupsMapping as $fieldName => $propertyName) {
+			$groups = array();
+			$groupUids = GeneralUtility::intExplode(',', $row[$fieldName], TRUE);
+			if (count($groupUids) > 0) {
+				$repository = substr($fieldName, 0, 3) === 'be_'
+					? static::getBackendUserGroupRepository()
+					: static::getFrontendUserGroupRepository();
+				foreach ($groupUids as $groupUid) {
+					$group = $repository->findByUid($groupUid);
+					if ($group !== NULL) {
+						$groups[] = $group;
+					}
+				}
+			}
+			$object->_setProperty($propertyName, $groups);
 		}
 
 		$object->_setProperty('ldapServer', (int)$row['ldap_server']);
@@ -154,6 +189,55 @@ class ConfigurationRepository {
 		$object->_setProperty('ldapPort', (int)$row['ldap_port']);
 		$object->_setProperty('ldapTls', (bool)$row['ldap_tls']);
 		$object->_setProperty('groupMembership', (int)$row['group_membership']);
+	}
+
+	/**
+	 * Returns the database connection.
+	 *
+	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+	 */
+	static protected function getDatabaseConnection() {
+		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Returns the object manager.
+	 *
+	 * @return \TYPO3\CMS\Extbase\Object\ObjectManager
+	 */
+	static protected function getObjectManager() {
+		/** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+		static $objectManager = NULL;
+		if ($objectManager === NULL) {
+			$objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+		}
+		return $objectManager;
+	}
+
+	/**
+	 * Returns a BackendUserGroupRepository.
+	 *
+	 * @return \TYPO3\CMS\Extbase\Domain\Repository\BackendUserGroupRepository
+	 */
+	static protected function getBackendUserGroupRepository() {
+		static $backendUserGroupRepository = NULL;
+		if ($backendUserGroupRepository == NULL) {
+			$backendUserGroupRepository = static::getObjectManager()->get('TYPO3\\CMS\\Extbase\\Domain\\Repository\\BackendUserGroupRepository');
+		}
+		return $backendUserGroupRepository;
+	}
+
+	/**
+	 * Returns a FrontendUserGroupRepository.
+	 *
+	 * @return \TYPO3\CMS\Extbase\Domain\Repository\FrontendUserGroupRepository
+	 */
+	static protected function getFrontendUserGroupRepository() {
+		static $frontendUserGroupRepository = NULL;
+		if ($frontendUserGroupRepository == NULL) {
+			$frontendUserGroupRepository = static::getObjectManager()->get('TYPO3\\CMS\\Extbase\\Domain\\Repository\\FrontendUserGroupRepository');
+		}
+		return $frontendUserGroupRepository;
 	}
 
 }

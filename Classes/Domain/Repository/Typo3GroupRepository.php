@@ -60,7 +60,7 @@ class Typo3GroupRepository {
 	 *
 	 * @param string $table Either 'be_groups' or 'fe_groups'
 	 * @param int $uid
-	 * @param int $pid
+	 * @param int|NULL $pid
 	 * @param string $dn
 	 * @return array|NULL
 	 * @throws InvalidUserGroupTableException
@@ -72,16 +72,14 @@ class Typo3GroupRepository {
 
 		$databaseConnection = static::getDatabaseConnection();
 
-			// Search with uid
 		if ($uid) {
 			$where = 'uid=' . intval($uid);
-
-			// Search with DN, title and pid.
 		} else {
-			$where = 'tx_igldapssoauth_dn=' . $databaseConnection->fullQuoteStr($dn, $table) . ' AND pid IN (' . intval($pid) . ')';
+			$where = 'tx_igldapssoauth_dn=' . $databaseConnection->fullQuoteStr($dn, $table)
+				. ($pid ? ' AND pid=' . intval($pid) : '');
 		}
 
-		// Return TYPO3 group.
+		// Return TYPO3 group
 		return $databaseConnection->exec_SELECTgetRows(
 			'*',
 			$table,

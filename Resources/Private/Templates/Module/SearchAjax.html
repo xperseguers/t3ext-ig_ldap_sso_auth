@@ -1,0 +1,23 @@
+{namespace ldap=Causal\IgLdapSsoAuth\ViewHelpers}
+
+<f:if condition="{status}">
+	<h2><f:translate key="module_search_status" /></h2>
+	<ldap:configurationTable data="{status}" humanKeyNames="1" />
+</f:if>
+
+<f:if condition="{preview}">
+	<f:then>
+		<h2><f:translate key="module_search_preview" /></h2>
+		<ldap:configurationTable data="{preview}" />
+	</f:then>
+</f:if>
+
+<h2><f:translate key="module_search_result" /></h2>
+<f:if condition="{resultset}">
+	<f:then>
+		<ldap:configurationTable data="{resultset}" />
+	</f:then>
+	<f:else>
+		<em><f:translate key="module_search_noResult" /></em>
+	</f:else>
+</f:if>

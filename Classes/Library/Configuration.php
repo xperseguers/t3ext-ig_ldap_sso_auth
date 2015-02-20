@@ -34,7 +34,7 @@ class Configuration {
 	 */
 	static protected $configuration;
 
-	static protected $typo3_mode;
+	static protected $mode;
 	static protected $be = array();
 	static protected $fe = array();
 	static protected $ldap = array();
@@ -53,17 +53,17 @@ class Configuration {
 
 		/** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
 		$configurationRepository = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Repository\\ConfigurationRepository');
-		$configuration = $configurationRepository->fetchByUid($uid);
+		$configuration = $configurationRepository->findByUid($uid);
 		static::initialize($typo3_mode, $configuration);
 	}
 
 	/**
 	 * Initializes the configuration class.
 	 *
-	 * @param string $typo3_mode
+	 * @param string $mode TYPO3 mode, either 'be' or 'fe'
 	 * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
 	 */
-	static public function initialize($typo3_mode, \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration) {
+	static public function initialize($mode, \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration) {
 		$globalConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']);
 		if (!is_array($globalConfiguration)) {
 			$globalConfiguration = array();
@@ -75,7 +75,7 @@ class Configuration {
 		static::$configuration = $configuration;
 
 		// Default TYPO3_MODE is BE
-		static::$typo3_mode = $typo3_mode ? strtolower($typo3_mode) : strtolower(TYPO3_MODE);
+		static::setMode($mode ?: TYPO3_MODE);
 
 		// Select configuration from database, merge with extension configuration template and initialise class attributes.
 
@@ -86,42 +86,42 @@ class Configuration {
 			static::$domains[] = $row['domainName'];
 		}
 
-		static::$be['LDAPAuthentication'] = $globalConfiguration['enableBELDAPAuthentication'];
+		static::$be['LDAPAuthentication'] = (bool)$globalConfiguration['enableBELDAPAuthentication'];
 		static::$be['SSOAuthentication'] = FALSE;
-		static::$be['forceLowerCaseUsername'] = $globalConfiguration['forceLowerCaseUsername'] ? $globalConfiguration['forceLowerCaseUsername'] : 0;
+		static::$be['forceLowerCaseUsername'] = $globalConfiguration['forceLowerCaseUsername'] ? (bool)$globalConfiguration['forceLowerCaseUsername'] : FALSE;
 		static::$be['evaluateGroupsFromMembership'] = $configuration->getGroupMembership() === static::GROUP_MEMBERSHIP_FROM_MEMBER;
-		static::$be['IfUserExist'] = $globalConfiguration['TYPO3BEUserExist'];
-		static::$be['IfGroupExist'] = $globalConfiguration['TYPO3BEGroupExist'];
-		static::$be['BEfailsafe'] = $globalConfiguration['BEfailsafe'];
-		static::$be['DeleteUserIfNoLDAPGroups'] = 0;
-		static::$be['DeleteUserIfNoTYPO3Groups'] = 0;
-		static::$be['GroupsNotSynchronize'] = $globalConfiguration['TYPO3BEGroupsNotSynchronize'];
-		static::$be['requiredLDAPGroups'] = $configuration->getBackendGroupsRequired() ? $configuration->getBackendGroupsRequired() : 0;
-		static::$be['updateAdminAttribForGroups'] = $configuration->getBackendGroupsAdministrator() ? $configuration->getBackendGroupsAdministrator() : 0;
-		static::$be['assignGroups'] = $configuration->getBackendGroupsAssigned() ? $configuration->getBackendGroupsAssigned() : 0;
-		static::$be['keepTYPO3Groups'] = $globalConfiguration['keepBEGroups'];
-		static::$be['users']['basedn'] = explode('||', $configuration->getBackendUsersBaseDn());
+		static::$be['IfUserExist'] = (bool)$globalConfiguration['TYPO3BEUserExist'];
+		static::$be['IfGroupExist'] = (bool)$globalConfiguration['TYPO3BEGroupExist'];
+		static::$be['BEfailsafe'] = (bool)$globalConfiguration['BEfailsafe'];
+		static::$be['DeleteUserIfNoLDAPGroups'] = FALSE;
+		static::$be['DeleteUserIfNoTYPO3Groups'] = FALSE;
+		static::$be['GroupsNotSynchronize'] = (bool)$globalConfiguration['TYPO3BEGroupsNotSynchronize'];
+		static::$be['requiredLDAPGroups'] = $configuration->getBackendGroupsRequired() ? $configuration->getBackendGroupsRequired() : array();
+		static::$be['updateAdminAttribForGroups'] = $configuration->getBackendGroupsAdministrator() ? $configuration->getBackendGroupsAdministrator() : array();
+		static::$be['assignGroups'] = $configuration->getBackendGroupsAssigned() ? $configuration->getBackendGroupsAssigned() : array();
+		static::$be['keepTYPO3Groups'] = (bool)$globalConfiguration['keepBEGroups'];
+		static::$be['users']['basedn'] = $configuration->getBackendUsersBaseDn();
 		static::$be['users']['filter'] = $configuration->getBackendUsersFilter();
 		static::$be['users']['mapping'] = static::make_user_mapping($configuration->getBackendUsersMapping(), $configuration->getBackendUsersFilter());
 		static::$be['groups']['basedn'] = $configuration->getBackendGroupsBaseDn();
 		static::$be['groups']['filter'] = $configuration->getBackendGroupsFilter();
 		static::$be['groups']['mapping'] = static::make_group_mapping($configuration->getBackendGroupsMapping());
 
-		static::$fe['LDAPAuthentication'] = $globalConfiguration['enableFELDAPAuthentication'];
+		static::$fe['LDAPAuthentication'] = (bool)$globalConfiguration['enableFELDAPAuthentication'];
 		static::$fe['SSOAuthentication'] = (bool)$globalConfiguration['enableFESSO'];
-		static::$fe['forceLowerCaseUsername'] = $globalConfiguration['forceLowerCaseUsername'] ? $globalConfiguration['forceLowerCaseUsername'] : 0;
+		static::$fe['forceLowerCaseUsername'] = $globalConfiguration['forceLowerCaseUsername'] ? (bool)$globalConfiguration['forceLowerCaseUsername'] : FALSE;
 		static::$fe['evaluateGroupsFromMembership'] = $configuration->getGroupMembership() === static::GROUP_MEMBERSHIP_FROM_MEMBER;
-		static::$fe['IfUserExist'] = $globalConfiguration['TYPO3FEUserExist'];
-		static::$fe['IfGroupExist'] = $globalConfiguration['TYPO3FEGroupExist'];
-		static::$fe['BEfailsafe'] = 0;
-		static::$fe['updateAdminAttribForGroups'] = 0;
-		static::$fe['DeleteUserIfNoTYPO3Groups'] = $globalConfiguration['TYPO3FEDeleteUserIfNoTYPO3Groups'];
-		static::$fe['DeleteUserIfNoLDAPGroups'] = $globalConfiguration['TYPO3FEDeleteUserIfNoLDAPGroups'];
-		static::$fe['GroupsNotSynchronize'] = $globalConfiguration['TYPO3FEGroupsNotSynchronize'];
-		static::$fe['assignGroups'] = $configuration->getFrontendGroupsAssigned() ? $configuration->getFrontendGroupsAssigned() : 0;
-		static::$fe['keepTYPO3Groups'] = $globalConfiguration['keepFEGroups'];
-		static::$fe['requiredLDAPGroups'] = $configuration->getFrontendGroupsRequired() ? $configuration->getFrontendGroupsRequired() : 0;
-		static::$fe['users']['basedn'] = explode('||', $configuration->getFrontendUsersBaseDn());
+		static::$fe['IfUserExist'] = (bool)$globalConfiguration['TYPO3FEUserExist'];
+		static::$fe['IfGroupExist'] = (bool)$globalConfiguration['TYPO3FEGroupExist'];
+		static::$fe['BEfailsafe'] = FALSE;
+		static::$fe['updateAdminAttribForGroups'] = array();
+		static::$fe['DeleteUserIfNoTYPO3Groups'] = (bool)$globalConfiguration['TYPO3FEDeleteUserIfNoTYPO3Groups'];
+		static::$fe['DeleteUserIfNoLDAPGroups'] = (bool)$globalConfiguration['TYPO3FEDeleteUserIfNoLDAPGroups'];
+		static::$fe['GroupsNotSynchronize'] = (bool)$globalConfiguration['TYPO3FEGroupsNotSynchronize'];
+		static::$fe['assignGroups'] = $configuration->getFrontendGroupsAssigned() ? $configuration->getFrontendGroupsAssigned() : array();
+		static::$fe['keepTYPO3Groups'] = (bool)$globalConfiguration['keepFEGroups'];
+		static::$fe['requiredLDAPGroups'] = $configuration->getFrontendGroupsRequired() ? $configuration->getFrontendGroupsRequired() : array();
+		static::$fe['users']['basedn'] = $configuration->getFrontendUsersBaseDn();
 		static::$fe['users']['filter'] = $configuration->getFrontendUsersFilter();
 		static::$fe['users']['mapping'] = static::make_user_mapping($configuration->getFrontendUsersMapping(), $configuration->getFrontendUsersFilter());
 		static::$fe['groups']['basedn'] = $configuration->getFrontendGroupsBaseDn();
@@ -144,7 +144,7 @@ class Configuration {
 	 * @return bool
 	 */
 	static public function isInitialized() {
-		return static::$typo3_mode !== NULL;
+		return static::$mode !== NULL;
 	}
 
 	/**
@@ -230,8 +230,10 @@ class Configuration {
 	 *
 	 * @param array $mapping
 	 * @return int|NULL
+	 * @deprecated since 3.0, will be removed in 3.2, use getPid() instead
 	 */
 	static public function get_pid($mapping = array()) {
+		GeneralUtility::logDeprecatedFunction();
 		if (!$mapping) {
 			return NULL;
 		}
@@ -241,6 +243,22 @@ class Configuration {
 		}
 
 		return 0;
+	}
+
+	/**
+	 * Returns the pid (storage folder) to use.
+	 *
+	 * @param array $mapping
+	 * @return int|NULL
+	 */
+	static public function getPid($mapping = array()) {
+		if (!$mapping) {
+			return NULL;
+		}
+		if (isset($mapping['pid'])) {
+			return is_numeric($mapping['pid']) ? intval($mapping['pid']) : 0;
+		}
+		return NULL;
 	}
 
 	/**
@@ -270,8 +288,19 @@ class Configuration {
 	 * Gets the Frontend configuration.
 	 *
 	 * @return array
+	 * @deprecated since 3.0, will be removed in 3.2, use getFrontendConfiguration() instead
 	 */
 	static public function getFeConfiguration() {
+		GeneralUtility::logDeprecatedFunction();
+		return static::getFrontendConfiguration();
+	}
+
+	/**
+	 * Gets the Frontend configuration.
+	 *
+	 * @return array
+	 */
+	static public function getFrontendConfiguration() {
 		return static::$fe;
 	}
 
@@ -279,8 +308,19 @@ class Configuration {
 	 * Gets the Backend configuration.
 	 *
 	 * @return array
+	 * @deprecated since 3.0, will be removed in 3.2, use getBackendConfiguration() instead
 	 */
 	static public function getBeConfiguration() {
+		GeneralUtility::logDeprecatedFunction();
+		return static::getBackendConfiguration();
+	}
+
+	/**
+	 * Gets the Backend configuration.
+	 *
+	 * @return array
+	 */
+	static public function getBackendConfiguration() {
 		return static::$be;
 	}
 
@@ -288,9 +328,11 @@ class Configuration {
 	 * Gets the TYPO3 mode.
 	 *
 	 * @return string
+	 * @deprecated since 3.0, will be removed in 3.2, use getMode() instead
 	 */
 	static public function getTypo3Mode() {
-		return static::$typo3_mode;
+		GeneralUtility::logDeprecatedFunction();
+		return static::getMode();
 	}
 
 	/**
@@ -298,9 +340,35 @@ class Configuration {
 	 *
 	 * @param string $typo3_mode
 	 * @return void
+	 * @deprecated since 3.0, will be removed in 3.2, use setMode() instead
 	 */
 	static public function setTypo3Mode($typo3_mode) {
-		static::$typo3_mode = $typo3_mode;
+		GeneralUtility::logDeprecatedFunction();
+		static::setMode($typo3_mode);
+	}
+
+	/**
+	 * Gets the TYPO3 mode.
+	 *
+	 * @return string Either 'be' or 'fe'
+	 */
+	static public function getMode() {
+		return static::$mode;
+	}
+
+	/**
+	 * Sets the TYPO3 mode.
+	 *
+	 * @param string $mode TYPO3 mode, either 'be' or 'fe'
+	 * @return void
+	 * @throws \RuntimeException
+	 */
+	static public function setMode($mode) {
+		$mode = strtolower($mode);
+		if (!GeneralUtility::inList('be,fe', $mode)) {
+			throw new \RuntimeException('$mode must be either "be" or "fe"', 1425123719);
+		}
+		static::$mode = $mode;
 	}
 
 	/**
@@ -310,6 +378,7 @@ class Configuration {
 	 * @deprecated since 3.0, will be removed in 3.2
 	 */
 	static public function getUid() {
+		GeneralUtility::logDeprecatedFunction();
 		return static::$configuration->getUid();
 	}
 
@@ -320,11 +389,15 @@ class Configuration {
 	 * @deprecated since 3.0, will be removed in 3.2
 	 */
 	static public function getName() {
+		GeneralUtility::logDeprecatedFunction();
 		return self::$configuration->getName();
 	}
 
 	static public function is_enable($feature = NULL) {
-		$config = (static::$typo3_mode === 'be') ? static::getBeConfiguration() : static::getFeConfiguration();
+		$config = (static::$mode === 'be')
+			? static::getBackendConfiguration()
+			: static::getFrontendConfiguration();
+
 		return (isset($config[$feature]) ? $config[$feature] : FALSE);
 	}
 

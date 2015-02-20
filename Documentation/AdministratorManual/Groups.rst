@@ -53,8 +53,8 @@ authentication and do not want to use groups from LDAP.
   .. warning::
       When using ActiveDirectory, you typically set the option ``Relation between groups and users`` to
       ``User contains the list of its associated groups`` If so, you **must** add a line mapping the "usergroup" for
-      your user. This mapping *will not* be actually used by TYPO3 but will let the LDAP engine known which attribute is
-      used to evalue the group membership.
+      your user. This mapping *will not* be actually used by TYPO3 but will let the LDAP engine know which attribute is
+      used to evaluate the group membership.
 
       Example::
 

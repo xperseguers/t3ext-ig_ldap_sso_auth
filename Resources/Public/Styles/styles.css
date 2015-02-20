@@ -1,0 +1,129 @@
+table table.table {
+    margin-bottom: 0;
+}
+
+.table td.key {
+    font-weight: bold;
+    vertical-align: top;
+    width: 30%;
+}
+
+.table .table td.key {
+    width: 10%;
+    min-width: 14em;
+}
+
+td.col-icon {
+    width: 20px;
+}
+
+tr.local-ldap-user-or-group,
+.square-local,
+.typo3-dblist tr.local-ldap-user-or-group td
+{
+    background-color: #093 !important;
+    color: #fff;
+}
+
+tr.deleted-ldap-user-or-group,
+.square-deleted,
+.typo3-dblist tr.deleted-ldap-user-or-group td {
+    background-color: #f00 !important;
+    color: #fff;
+}
+
+td.key.error {
+    background-color: #f00;
+    color: #fff;
+}
+
+td.future-value {
+    font-style: italic;
+}
+
+caption {
+    caption-side: bottom;
+    text-align: left;
+    margin-top: .5em;
+}
+
+caption ul {
+    list-style: none;
+    margin: 0;
+    padding-left: 0;
+}
+
+.square-deleted, .square-local {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+}
+
+.value-default {
+    color: #00f;
+}
+
+.value-success {
+    color: #093;
+}
+
+.value-error {
+    color: #f00;
+}
+
+.value-enabled {
+    font-weight: bold;
+}
+
+.value-disabled {
+    font-style: italic;
+}
+
+input[type='text'] {
+    width: 100%;
+}
+
+textarea {
+    width: 100%;
+    height: 5em;
+}
+
+button {
+    color: #000;
+    width: 10em;
+}
+
+/***************************
+ TYPO3 6.2 specific
+ ***************************/
+
+table table.typo3-dblist {
+    margin-bottom: 0;
+}
+
+.typo3-dblist th {
+    padding: 6px;
+    text-align: left;
+}
+
+.typo3-dblist td.key {
+    font-weight: bold;
+    width: 30%;
+}
+
+.typo3-deblist .typo3-dblist td.key {
+    width: 10%;
+    min-width: 14em;
+}
+
+.typo3-dblist td.key.error {
+    background-color: #f00 !important;
+}
+
+.typo3-dblist button {
+    margin: 0;
+}
+
+#tx-igldapssoauth-importform .typo3-dblist td {
+    vertical-align: middle;
+}

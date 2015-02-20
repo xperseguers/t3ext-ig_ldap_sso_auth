@@ -73,9 +73,9 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 		/** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
 		$configurationRepository = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Repository\\ConfigurationRepository');
 		if (empty($this->configuration)) {
-			$ldapConfigurations = $configurationRepository->fetchAll();
+			$ldapConfigurations = $configurationRepository->findAll();
 		} else {
-			$configuration = $configurationRepository->fetchByUid($this->configuration);
+			$configuration = $configurationRepository->findByUid($this->configuration);
 			$ldapConfigurations = array();
 			if ($configuration !== NULL) {
 				$ldapConfigurations[] = $configuration;
@@ -259,7 +259,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 	public function getConfigurationName() {
 		/** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
 		$configurationRepository = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Repository\\ConfigurationRepository');
-		$ldapConfiguration = $configurationRepository->fetchByUid($this->configuration);
+		$ldapConfiguration = $configurationRepository->findByUid($this->configuration);
 		if ($ldapConfiguration === NULL) {
 			return '';
 		} else {

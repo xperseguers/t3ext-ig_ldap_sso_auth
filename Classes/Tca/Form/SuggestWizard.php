@@ -96,7 +96,7 @@ class SuggestWizard {
 			$table = substr($PA['field'], 0, -7);
 		}
 
-		$templatePath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('ig_ldap_sso_auth') . 'Resources/Private/Templates/';
+		$templatePath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('ig_ldap_sso_auth') . 'Resources/Private/Templates/TCA/';
 		// Try a specific configuration for this server
 		$templateFileName = $templatePath . $prefix . $table . '_' . $serverType . '.txt';
 		if (!is_file($templateFileName)) {

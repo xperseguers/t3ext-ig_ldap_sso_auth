@@ -84,8 +84,8 @@ class UserImportUtility {
 		// Store current context and get related configuration
 		$this->context = $context;
 		$this->configuration = ($context === 'be')
-			? Configuration::getBeConfiguration()
-			: Configuration::getFeConfiguration();
+			? Configuration::getBackendConfiguration()
+			: Configuration::getFrontendConfiguration();
 		// Define related tables
 		if ($context === 'be') {
 			$this->userTable = 'be_users';
@@ -165,8 +165,8 @@ class UserImportUtility {
 		// Populate an array of TYPO3 users records corresponding to the LDAP users
 		// If a given LDAP user has no associated user in TYPO3, a fresh record
 		// will be created so that $ldapUsers[i] <=> $typo3Users[i]
-		$typo3UserPid = Configuration::get_pid($this->configuration['users']['mapping']);
-		$typo3Users = Authentication::get_typo3_users(
+		$typo3UserPid = Configuration::getPid($this->configuration['users']['mapping']);
+		$typo3Users = Authentication::getTypo3Users(
 			$ldapUsers,
 			$this->configuration['users']['mapping'],
 			$this->userTable,
@@ -194,7 +194,7 @@ class UserImportUtility {
 		if (empty($user['uid'])) {
 			// Set other necessary information for a new user
 			// First make sure to be acting in the right context
-			Configuration::setTypo3Mode($this->context);
+			Configuration::setMode($this->context);
 			$user['username'] = Typo3UserRepository::setUsername($user['username']);
 			$user['password'] = Typo3UserRepository::setRandomPassword();
 			$typo3Groups = Authentication::get_user_groups($ldapUser, $this->configuration, $this->groupTable);
@@ -202,7 +202,7 @@ class UserImportUtility {
 				// Required LDAP groups are missing: quit!
 				return $user;
 			}
-			$user = Typo3UserRepository::set_usergroup($typo3Groups, $user, NULL, $this->groupTable);
+			$user = Typo3UserRepository::set_usergroup($typo3Groups, $user);
 
 			$user = Typo3UserRepository::add($this->userTable, $user);
 			$this->usersAdded++;
@@ -225,9 +225,7 @@ class UserImportUtility {
 			$typo3Groups = Authentication::get_user_groups($ldapUser, $this->configuration, $this->groupTable);
 			$user = Typo3UserRepository::set_usergroup(
 				($typo3Groups === NULL) ? array() : $typo3Groups,
-				$user,
-				NULL,
-				$this->groupTable
+				$user
 			);
 			$success = Typo3UserRepository::update($this->userTable, $user);
 			if ($success) {

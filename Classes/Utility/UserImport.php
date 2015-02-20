@@ -210,7 +210,12 @@ class Tx_IgLdapSsoAuth_Utility_UserImport {
 					$user[$GLOBALS['TCA'][$this->userTable]['ctrl']['delete']] = 0;
 			}
 			$typo3Groups = tx_igldapssoauth_auth::get_user_groups($ldapUser, $this->configuration, $this->groupTable);
-			$user = tx_igldapssoauth_typo3_user::set_usergroup($typo3Groups, $user, NULL, $this->groupTable);
+			$user = tx_igldapssoauth_typo3_user::set_usergroup(
+				($typo3Groups === NULL) ? array() : $typo3Groups,
+				$user,
+				NULL,
+				$this->groupTable
+			);
 			$success = tx_igldapssoauth_typo3_user::update($this->userTable, $user);
 			if ($success) {
 				$this->usersUpdated++;

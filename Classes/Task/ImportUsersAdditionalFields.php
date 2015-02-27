@@ -106,12 +106,12 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
 		$configurationRepository = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Repository\\ConfigurationRepository');
 		$ldapConfigurations = $configurationRepository->fetchAll();
 		foreach ($ldapConfigurations as $configuration) {
-			$uid = $configuration['uid'];
+			$uid = $configuration->getUid();
 			$selected = '';
 			if ($taskInfo[$fieldName] == $uid) {
 				$selected = ' selected="selected"';
 			}
-			$fieldCode .= '<option value="' . $uid . '"' . $selected . '>' . $configuration['name'] . '</option>';
+			$fieldCode .= '<option value="' . $uid . '"' . $selected . '>' . $configuration->getName() . '</option>';
 		}
 		$fieldCode .= '</select>';
 		// Register the field

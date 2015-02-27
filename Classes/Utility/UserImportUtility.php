@@ -39,7 +39,7 @@ class UserImportUtility {
 	/**
 	 * Selected LDAP configuration.
 	 *
-	 * @var array
+	 * @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration
 	 */
 	protected $configuration;
 
@@ -71,12 +71,15 @@ class UserImportUtility {
 	 */
 	protected $usersUpdated = 0;
 
-	public function __construct($configurationId, $context) {
+	/**
+	 * Default constructor.
+	 *
+	 * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
+	 * @param string $context
+	 */
+	public function __construct(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration, $context) {
 		// Load the configuration
-		Configuration::init(
-			$context,
-			$configurationId
-		);
+		Configuration::initialize($context, $configuration);
 		// Store current context and get related configuration
 		$this->context = $context;
 		$this->configuration = ($context === 'be')

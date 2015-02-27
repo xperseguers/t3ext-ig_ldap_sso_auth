@@ -60,7 +60,7 @@ class tx_igldapssoauth_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass
 	protected $config;
 
 	/**
-	 * @var array Currently selected LDAP configuration
+	 * @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration Currently selected LDAP configuration
 	 */
 	protected $ldapConfiguration;
 
@@ -194,23 +194,23 @@ CSS;
 
 		$this->content .= $this->doc->header($GLOBALS['LANG']->getLL('title'));
 
-		$config = GeneralUtility::_GET('config');
+		$config = (int)GeneralUtility::_GET('config');
 		// Reset selected configuration
 		$this->ldapConfiguration = NULL;
 
 		if (count($configurationRecords) === 1) {
-			$configurationSelector = htmlspecialchars($configurationRecords[0]['name']);
+			$configurationSelector = htmlspecialchars($configurationRecords[0]->getName());
 		} else {
 			$thisFullUrl = GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . 'typo3/' . $thisUrl;
 			$configurationSelector = '<select onchange="document.location=this.value;">';
 
 			foreach ($configurationRecords as $configurationRecord) {
-				$configurationSelector .= '<option value="' . htmlspecialchars($thisFullUrl . '&config=' . $configurationRecord['uid']) . '"';
-				if ($config == $configurationRecord['uid']) {
+				$configurationSelector .= '<option value="' . htmlspecialchars($thisFullUrl . '&config=' . $configurationRecord->getUid()) . '"';
+				if ($config === $configurationRecord->getUid()) {
 					$this->ldapConfiguration = $configurationRecord;
 					$configurationSelector .= ' selected="selected"';
 				}
-				$configurationSelector .= '>' . htmlspecialchars($configurationRecord['name']) . '</option>';
+				$configurationSelector .= '>' . htmlspecialchars($configurationRecord->getName()) . '</option>';
 			}
 
 			$configurationSelector .= '</select>';
@@ -219,9 +219,9 @@ CSS;
 			$this->ldapConfiguration = $configurationRecords[0];
 		}
 
-		$uid = $this->ldapConfiguration['uid'];
-		Configuration::init(TYPO3_MODE, $uid);
+		Configuration::initialize(TYPO3_MODE, $this->ldapConfiguration);
 
+		$uid = $this->ldapConfiguration->getUid();
 		$thisUrl .= '&config=' . $uid;
 		$editUrl = 'alt_doc.php?returnUrl=' . urlencode($thisUrl) . '&amp;edit[tx_igldapssoauth_config][' . $uid . ']=edit';
 		$editLink = sprintf(
@@ -905,7 +905,7 @@ HTML;
 		/** @var \Causal\IgLdapSsoAuth\Utility\UserImportUtility $importUtility */
 		$importUtility = GeneralUtility::makeInstance(
 			'Causal\\IgLdapSsoAuth\\Utility\\UserImportUtility',
-			$this->ldapConfiguration['uid'],
+			$this->ldapConfiguration,
 			$typo3Mode
 		);
 		$ldapUsers = $importUtility->fetchLdapUsers();

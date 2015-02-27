@@ -14,6 +14,7 @@ namespace Causal\IgLdapSsoAuth\Domain\Repository;
  * The TYPO3 project - inspiring people to share!
  */
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
@@ -35,23 +36,29 @@ class ConfigurationRepository {
 	/**
 	 * Returns all available LDAP configurations.
 	 *
-	 * @return array
+	 * @return \Causal\IgLdapSsoAuth\Domain\Model\Configuration[]
 	 */
 	public function fetchAll() {
-		$where = '1 = 1' . BackendUtility::deleteClause('tx_igldapssoauth_config');
+		$where = '1=1' . BackendUtility::deleteClause('tx_igldapssoauth_config');
 		if (!$this->fetchDisabledRecords) {
 			$where .= BackendUtility::BEenableFields('tx_igldapssoauth_config');
 		}
-		$configurations = self::getDatabaseConnection()->exec_SELECTgetRows(
+		$rows = static::getDatabaseConnection()->exec_SELECTgetRows(
 			'*',
 			'tx_igldapssoauth_config',
 			$where,
 			'',
 			'sorting'
 		);
-		if ($configurations == NULL) {
-			$configurations = array();
+
+		$configurations = array();
+		foreach ($rows as $row) {
+			/** @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration */
+			$configuration = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Model\\Configuration');
+			$this->thawProperties($configuration, $row);
+			$configurations[] = $configuration;
 		}
+
 		return $configurations;
 	}
 
@@ -59,18 +66,26 @@ class ConfigurationRepository {
 	 * Returns a single LDAP configuration.
 	 *
 	 * @param integer $uid Primary key to look up
-	 * @return array
+	 * @return \Causal\IgLdapSsoAuth\Domain\Model\Configuration
 	 */
 	public function fetchByUid($uid) {
 		$where = 'uid = ' . intval($uid) . BackendUtility::deleteClause('tx_igldapssoauth_config');
 		if (!$this->fetchDisabledRecords) {
 			$where .= BackendUtility::BEenableFields('tx_igldapssoauth_config');
 		}
-		$configuration = self::getDatabaseConnection()->exec_SELECTgetSingleRow(
+		$row = static::getDatabaseConnection()->exec_SELECTgetSingleRow(
 			'*',
 			'tx_igldapssoauth_config',
 			$where
 		);
+		if ($row) {
+			/** @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration */
+			$configuration = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Model\\Configuration');
+			$this->thawProperties($configuration, $row);
+		} else {
+			$configuration = NULL;
+		}
+
 		return $configuration;
 	}
 
@@ -91,6 +106,54 @@ class ConfigurationRepository {
 	 */
 	static protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Sets the given properties on the object.
+	 *
+	 * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $object The object to set properties on
+	 * @param array $row
+	 * @return void
+	 */
+	protected function thawProperties(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $object, array $row) {
+		$object->_setProperty('uid', (int)$row['uid']);
+
+		// Mapping for properties to be set without any transformation
+		$mapping = array(
+			'name'               => 'name',
+			'domains'            => 'domains',
+			'ldap_charset'       => 'ldapCharset',
+			'ldap_host'          => 'ldapHost',
+			'ldap_binddn'        => 'ldapBindDn',
+			'ldap_password'      => 'ldapPassword',
+			'be_users_basedn'    => 'backendUsersBaseDn',
+			'be_users_filter'    => 'backendUsersFilter',
+			'be_users_mapping'   => 'backendUsersMapping',
+			'be_groups_basedn'   => 'backendGroupsBaseDn',
+			'be_groups_filter'   => 'backendGroupsFilter',
+			'be_groups_mapping'  => 'backendGroupsMapping',
+			'be_groups_required' => 'backendGroupsRequired',
+			'be_groups_assigned' => 'backendGroupsAssigned',
+			'be_groups_admin'    => 'backendGroupsAdministrator',
+			'fe_users_basedn'    => 'frontendUsersBaseDn',
+			'fe_users_filter'    => 'frontendUsersFilter',
+			'fe_users_mapping'   => 'frontendUsersMapping',
+			'fe_groups_basedn'   => 'frontendGroupsBaseDn',
+			'fe_groups_filter'   => 'frontendGroupsFilter',
+			'fe_groups_mapping'  => 'frontendGroupsMapping',
+			'fe_groups_required' => 'frontendGroupsRequired',
+			'fe_groups_assigned' => 'frontendGroupsAssigned',
+		);
+
+		foreach ($mapping as $fieldName => $propertyName) {
+			$object->_setProperty($propertyName, $row[$fieldName]);
+		}
+
+		$object->_setProperty('ldapServer', (int)$row['ldap_server']);
+		$object->_setProperty('ldapProtocol', (int)$row['ldap_protocol']);
+		$object->_setProperty('ldapPort', (int)$row['ldap_port']);
+		$object->_setProperty('ldapTls', (bool)$row['ldap_tls']);
+		$object->_setProperty('groupMembership', (int)$row['group_membership']);
 	}
 
 }

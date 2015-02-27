@@ -92,12 +92,12 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 
 		// Loop on each configuration and context and import the related users
 		$failures = 0;
-		foreach ($ldapConfigurations as $aConfiguration) {
+		foreach ($ldapConfigurations as $configuration) {
 			foreach ($executionContexts as $aContext) {
 				/** @var \Causal\IgLdapSsoAuth\Utility\UserImportUtility $importUtility */
 				$importUtility = GeneralUtility::makeInstance(
 					'Causal\\IgLdapSsoAuth\\Utility\\UserImportUtility',
-					$aConfiguration['uid'],
+					$configuration['uid'],
 					$aContext
 				);
 				// Start by connecting to the designated LDAP/AD server
@@ -262,7 +262,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 		if ($ldapConfiguration === NULL) {
 			return '';
 		} else {
-			return $ldapConfiguration['name'];
+			return $ldapConfiguration->getName();
 		}
 	}
 

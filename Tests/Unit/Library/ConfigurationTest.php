@@ -34,6 +34,7 @@ class ConfigurationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 			array(NULL, ''),
 			array('uid={USERNAME}', 'uid'),
 			array('(uid={USERNAME})', 'uid'),
+			array('(&(uid={USERNAME})(objectClass=posixAccount)', 'uid'),
 			array('(&(objectClass=organizationalPerson)(mail=*@domain*)(sAMAccountName={USERNAME}))', 'sAMAccountName'),
 		);
 	}

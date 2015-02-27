@@ -42,7 +42,7 @@ class DebugUtility {
 	 * @api
 	 */
 	static public function debug($message, $dataVar = FALSE) {
-		self::log($message, self::SEVERITY_DEBUG, $dataVar);
+		static::log($message, static::SEVERITY_DEBUG, $dataVar);
 	}
 
 	/**
@@ -54,7 +54,7 @@ class DebugUtility {
 	 * @api
 	 */
 	static public function info($message, $dataVar = FALSE) {
-		self::log($message, self::SEVERITY_INFO, $dataVar);
+		static::log($message, static::SEVERITY_INFO, $dataVar);
 	}
 
 	/**
@@ -66,7 +66,7 @@ class DebugUtility {
 	 * @api
 	 */
 	static public function notice($message, $dataVar = FALSE) {
-		self::log($message, self::SEVERITY_NOTICE, $dataVar);
+		static::log($message, static::SEVERITY_NOTICE, $dataVar);
 	}
 
 	/**
@@ -78,7 +78,7 @@ class DebugUtility {
 	 * @api
 	 */
 	static public function warning($message, $dataVar = FALSE) {
-		self::log($message, self::SEVERITY_WARNING, $dataVar);
+		static::log($message, static::SEVERITY_WARNING, $dataVar);
 	}
 
 	/**
@@ -90,7 +90,7 @@ class DebugUtility {
 	 * @api
 	 */
 	static public function error($message, $dataVar = FALSE) {
-		self::log($message, self::SEVERITY_ERROR, $dataVar);
+		static::log($message, static::SEVERITY_ERROR, $dataVar);
 	}
 
 	/**

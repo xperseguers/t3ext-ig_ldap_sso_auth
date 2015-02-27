@@ -56,15 +56,15 @@ class Ldap {
 		// Bind to ldap server.
 		if (!LdapUtility::bind($config['binddn'], $config['password'])) {
 			$status = LdapUtility::get_status();
-			self::$lastBindDiagnostic = $status['bind']['diagnostic'];
+			static::$lastBindDiagnostic = $status['bind']['diagnostic'];
 
 			$message = 'Cannot bind to LDAP';
-			if (!empty(self::$lastBindDiagnostic)) {
-				$message .= ': ' . self::$lastBindDiagnostic;
+			if (!empty(static::$lastBindDiagnostic)) {
+				$message .= ': ' . static::$lastBindDiagnostic;
 			}
 			DebugUtility::error($message, $debugConfiguration);
 
-			self::disconnect();
+			static::disconnect();
 			return FALSE;
 		}
 
@@ -91,7 +91,7 @@ class Ldap {
 
 				// Bind DN of user with password.
 				if (empty($password)) {
-					self::$lastBindDiagnostic = 'Empty password provided!';
+					static::$lastBindDiagnostic = 'Empty password provided!';
 					return FALSE;
 				} elseif (LdapUtility::bind(LdapUtility::get_dn(), $password)) {
 					$dn = LdapUtility::get_dn();
@@ -99,12 +99,12 @@ class Ldap {
 					// Restore last LDAP binding
 					$config = Configuration::getLdapConfiguration();
 					LdapUtility::bind($config['binddn'], $config['password']);
-					self::$lastBindDiagnostic = '';
+					static::$lastBindDiagnostic = '';
 
 					return $dn;
 				} else {
 					$status = LdapUtility::get_status();
-					self::$lastBindDiagnostic = $status['bind']['diagnostic'];
+					static::$lastBindDiagnostic = $status['bind']['diagnostic'];
 					return FALSE;	// Password does not match
 				}
 
@@ -184,7 +184,7 @@ class Ldap {
 	 * @return string
 	 */
 	static public function getLastBindDiagnostic() {
-		return self::$lastBindDiagnostic;
+		return static::$lastBindDiagnostic;
 	}
 
 	/**

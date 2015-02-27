@@ -39,7 +39,7 @@ class NotificationUtility {
 		// Log the call to ease debugging
 		DebugUtility::debug('Signal from ' . $signalClassName . ' with name ' . $signalName, $signalArguments);
 
-		return self::getSignalSlotDispatcher()->dispatch($signalClassName, $signalName, $signalArguments);
+		return static::getSignalSlotDispatcher()->dispatch($signalClassName, $signalName, $signalArguments);
 	}
 
 	/**

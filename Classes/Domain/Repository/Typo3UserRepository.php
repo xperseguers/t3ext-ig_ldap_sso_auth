@@ -41,7 +41,7 @@ class Typo3UserRepository {
 		}
 
 		$newUser = array();
-		$fieldsConfiguration = self::getDatabaseConnection()->admin_get_fields($table);
+		$fieldsConfiguration = static::getDatabaseConnection()->admin_get_fields($table);
 
 		foreach ($fieldsConfiguration as $field => $configuration) {
 			if ($configuration['Null'] === 'NO' && $configuration['Default'] === NULL) {
@@ -72,7 +72,7 @@ class Typo3UserRepository {
 		}
 
 		$users = array();
-		$databaseConnection = self::getDatabaseConnection();
+		$databaseConnection = static::getDatabaseConnection();
 
 		if ($uid) {
 			// Search with uid
@@ -126,7 +126,7 @@ class Typo3UserRepository {
 			throw new \RuntimeException('Invalid table "' . $table . '"', 1404891712);
 		}
 
-		$databaseConnection = self::getDatabaseConnection();
+		$databaseConnection = static::getDatabaseConnection();
 
 		$databaseConnection->exec_INSERTquery(
 			$table,
@@ -166,7 +166,7 @@ class Typo3UserRepository {
 			throw new \RuntimeException('Invalid table "' . $table . '"', 1404891732);
 		}
 
-		$databaseConnection = self::getDatabaseConnection();
+		$databaseConnection = static::getDatabaseConnection();
 
 		$cleanData = $data;
 		unset($cleanData['__extraData']);
@@ -210,7 +210,7 @@ class Typo3UserRepository {
 			if (isset($GLOBALS['TCA'][$table]['ctrl']['tstamp'])) {
 				$fields[$GLOBALS['TCA'][$table]['ctrl']['tstamp']] = $GLOBALS['EXEC_TIME'];
 			}
-			self::getDatabaseConnection()->exec_UPDATEquery(
+			static::getDatabaseConnection()->exec_UPDATEquery(
 				$table,
 				'tx_igldapssoauth_id = ' . intval($uid),
 				$fields
@@ -244,7 +244,7 @@ class Typo3UserRepository {
 			if (isset($GLOBALS['TCA'][$table]['ctrl']['tstamp'])) {
 				$fields[$GLOBALS['TCA'][$table]['ctrl']['tstamp']] = $GLOBALS['EXEC_TIME'];
 			}
-			self::getDatabaseConnection()->exec_UPDATEquery(
+			static::getDatabaseConnection()->exec_UPDATEquery(
 				$table,
 				'tx_igldapssoauth_id = ' . intval($uid),
 				$fields

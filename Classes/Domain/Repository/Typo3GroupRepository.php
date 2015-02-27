@@ -41,7 +41,7 @@ class Typo3GroupRepository {
 		}
 
 		$newGroup = array();
-		$fieldsConfiguration = self::getDatabaseConnection()->admin_get_fields($table);
+		$fieldsConfiguration = static::getDatabaseConnection()->admin_get_fields($table);
 
 		foreach ($fieldsConfiguration as $field => $configuration) {
 			if ($configuration['Null'] === 'NO' && $configuration['Default'] === NULL) {
@@ -69,7 +69,7 @@ class Typo3GroupRepository {
 			throw new \RuntimeException('Invalid table "' . $table . '"', 1404891809);
 		}
 
-		$databaseConnection = self::getDatabaseConnection();
+		$databaseConnection = static::getDatabaseConnection();
 
 			// Search with uid
 		if ($uid) {
@@ -102,7 +102,7 @@ class Typo3GroupRepository {
 			throw new \RuntimeException('Invalid table "' . $table . '"', 1404891833);
 		}
 
-		$databaseConnection = self::getDatabaseConnection();
+		$databaseConnection = static::getDatabaseConnection();
 
 		$databaseConnection->exec_INSERTquery(
 			$table,
@@ -142,7 +142,7 @@ class Typo3GroupRepository {
 			throw new \RuntimeException('Invalid table "' . $table . '"', 1404891867);
 		}
 
-		$databaseConnection = self::getDatabaseConnection();
+		$databaseConnection = static::getDatabaseConnection();
 
 		$databaseConnection->exec_UPDATEquery(
 			$table,

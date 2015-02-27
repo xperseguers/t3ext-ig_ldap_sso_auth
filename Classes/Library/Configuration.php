@@ -51,75 +51,75 @@ class Configuration {
 		// Legacy configuration options
 		unset($globalConfig['evaluateGroupsFromMembership']);
 
-		self::$uid = $uid;
+		static::$uid = $uid;
 
 		// Default TYPO3_MODE is BE
-		self::$typo3_mode = $typo3_mode ? strtolower($typo3_mode) : strtolower(TYPO3_MODE);
+		static::$typo3_mode = $typo3_mode ? strtolower($typo3_mode) : strtolower(TYPO3_MODE);
 
 		// Select configuration from database, merge with extension configuration template and initialise class attributes.
-		$config = self::select(self::$uid);
+		$config = static::select(static::$uid);
 		$config = array_merge($globalConfig, $config);
 
-		self::$name = $config['name'];
-		self::$domains = array();
+		static::$name = $config['name'];
+		static::$domains = array();
 		$domainUids = GeneralUtility::intExplode(',', $config['domains'], TRUE);
 		foreach ($domainUids as $domainUid) {
-			$row = self::getDatabaseConnection()->exec_SELECTgetSingleRow('domainName', 'sys_domain', 'uid=' . intval($domainUid));
-			self::$domains[] = $row['domainName'];
+			$row = static::getDatabaseConnection()->exec_SELECTgetSingleRow('domainName', 'sys_domain', 'uid=' . intval($domainUid));
+			static::$domains[] = $row['domainName'];
 		}
 
-		self::$be['LDAPAuthentication'] = $config['enableBELDAPAuthentication'];
-		self::$be['SSOAuthentication'] = FALSE;
-		self::$be['DeleteCookieLogout'] = 0;
-		self::$be['forceLowerCaseUsername'] = $config['forceLowerCaseUsername'] ? $config['forceLowerCaseUsername'] : 0;
-		self::$be['evaluateGroupsFromMembership'] = $config['group_membership'] == self::GROUP_MEMBERSHIP_FROM_MEMBER;
-		self::$be['IfUserExist'] = $config['TYPO3BEUserExist'];
-		self::$be['IfGroupExist'] = $config['TYPO3BEGroupExist'];
-		self::$be['BEfailsafe'] = $config['BEfailsafe'];
-		self::$be['DeleteUserIfNoLDAPGroups'] = 0;
-		self::$be['DeleteUserIfNoTYPO3Groups'] = 0;
-		self::$be['GroupsNotSynchronize'] = $config['TYPO3BEGroupsNotSynchronize'];
-		self::$be['requiredLDAPGroups'] = $config['be_groups_required'] ? $config['be_groups_required'] : 0;
-		self::$be['updateAdminAttribForGroups'] = $config['be_groups_admin'] ? $config['be_groups_admin'] : 0;
-		self::$be['assignGroups'] = $config['be_groups_assigned'] ? $config['be_groups_assigned'] : 0;
-		self::$be['keepTYPO3Groups'] = $config['keepBEGroups'];
-		self::$be['users']['basedn'] = explode('||', $config['be_users_basedn']);
-		self::$be['users']['filter'] = $config['be_users_filter'];
-		self::$be['users']['mapping'] = self::make_user_mapping($config['be_users_mapping'], $config['be_users_filter']);
-		self::$be['groups']['basedn'] = $config['be_groups_basedn'];
-		self::$be['groups']['filter'] = $config['be_groups_filter'];
-		self::$be['groups']['mapping'] = self::make_group_mapping($config['be_groups_mapping']);
+		static::$be['LDAPAuthentication'] = $config['enableBELDAPAuthentication'];
+		static::$be['SSOAuthentication'] = FALSE;
+		static::$be['DeleteCookieLogout'] = 0;
+		static::$be['forceLowerCaseUsername'] = $config['forceLowerCaseUsername'] ? $config['forceLowerCaseUsername'] : 0;
+		static::$be['evaluateGroupsFromMembership'] = $config['group_membership'] == static::GROUP_MEMBERSHIP_FROM_MEMBER;
+		static::$be['IfUserExist'] = $config['TYPO3BEUserExist'];
+		static::$be['IfGroupExist'] = $config['TYPO3BEGroupExist'];
+		static::$be['BEfailsafe'] = $config['BEfailsafe'];
+		static::$be['DeleteUserIfNoLDAPGroups'] = 0;
+		static::$be['DeleteUserIfNoTYPO3Groups'] = 0;
+		static::$be['GroupsNotSynchronize'] = $config['TYPO3BEGroupsNotSynchronize'];
+		static::$be['requiredLDAPGroups'] = $config['be_groups_required'] ? $config['be_groups_required'] : 0;
+		static::$be['updateAdminAttribForGroups'] = $config['be_groups_admin'] ? $config['be_groups_admin'] : 0;
+		static::$be['assignGroups'] = $config['be_groups_assigned'] ? $config['be_groups_assigned'] : 0;
+		static::$be['keepTYPO3Groups'] = $config['keepBEGroups'];
+		static::$be['users']['basedn'] = explode('||', $config['be_users_basedn']);
+		static::$be['users']['filter'] = $config['be_users_filter'];
+		static::$be['users']['mapping'] = static::make_user_mapping($config['be_users_mapping'], $config['be_users_filter']);
+		static::$be['groups']['basedn'] = $config['be_groups_basedn'];
+		static::$be['groups']['filter'] = $config['be_groups_filter'];
+		static::$be['groups']['mapping'] = static::make_group_mapping($config['be_groups_mapping']);
 
-		self::$fe['LDAPAuthentication'] = $config['enableFELDAPAuthentication'];
-		self::$fe['SSOAuthentication'] = (bool)$config['enableFESSO'];
-		self::$fe['DeleteCookieLogout'] = $config['DeleteCookieLogout'];
-		self::$fe['forceLowerCaseUsername'] = $config['forceLowerCaseUsername'] ? $config['forceLowerCaseUsername'] : 0;
-		self::$fe['evaluateGroupsFromMembership'] = $config['group_membership'] == self::GROUP_MEMBERSHIP_FROM_MEMBER;
-		self::$fe['IfUserExist'] = $config['TYPO3FEUserExist'];
-		self::$fe['IfGroupExist'] = $config['TYPO3FEGroupExist'];
-		self::$fe['BEfailsafe'] = 0;
-		self::$fe['updateAdminAttribForGroups'] = 0;
-		self::$fe['DeleteUserIfNoTYPO3Groups'] = $config['TYPO3FEDeleteUserIfNoTYPO3Groups'];
-		self::$fe['DeleteUserIfNoLDAPGroups'] = $config['TYPO3FEDeleteUserIfNoLDAPGroups'];
-		self::$fe['GroupsNotSynchronize'] = $config['TYPO3FEGroupsNotSynchronize'];
-		self::$fe['assignGroups'] = $config['fe_groups_assigned'] ? $config['fe_groups_assigned'] : 0;
-		self::$fe['keepTYPO3Groups'] = $config['keepFEGroups'];
-		self::$fe['requiredLDAPGroups'] = $config['fe_groups_required'] ? $config['fe_groups_required'] : 0;
-		self::$fe['users']['basedn'] = explode('||', $config['fe_users_basedn']);
-		self::$fe['users']['filter'] = $config['fe_users_filter'];
-		self::$fe['users']['mapping'] = self::make_user_mapping($config['fe_users_mapping'], $config['fe_users_filter']);
-		self::$fe['groups']['basedn'] = $config['fe_groups_basedn'];
-		self::$fe['groups']['filter'] = $config['fe_groups_filter'];
-		self::$fe['groups']['mapping'] = self::make_group_mapping($config['fe_groups_mapping']);
+		static::$fe['LDAPAuthentication'] = $config['enableFELDAPAuthentication'];
+		static::$fe['SSOAuthentication'] = (bool)$config['enableFESSO'];
+		static::$fe['DeleteCookieLogout'] = $config['DeleteCookieLogout'];
+		static::$fe['forceLowerCaseUsername'] = $config['forceLowerCaseUsername'] ? $config['forceLowerCaseUsername'] : 0;
+		static::$fe['evaluateGroupsFromMembership'] = $config['group_membership'] == static::GROUP_MEMBERSHIP_FROM_MEMBER;
+		static::$fe['IfUserExist'] = $config['TYPO3FEUserExist'];
+		static::$fe['IfGroupExist'] = $config['TYPO3FEGroupExist'];
+		static::$fe['BEfailsafe'] = 0;
+		static::$fe['updateAdminAttribForGroups'] = 0;
+		static::$fe['DeleteUserIfNoTYPO3Groups'] = $config['TYPO3FEDeleteUserIfNoTYPO3Groups'];
+		static::$fe['DeleteUserIfNoLDAPGroups'] = $config['TYPO3FEDeleteUserIfNoLDAPGroups'];
+		static::$fe['GroupsNotSynchronize'] = $config['TYPO3FEGroupsNotSynchronize'];
+		static::$fe['assignGroups'] = $config['fe_groups_assigned'] ? $config['fe_groups_assigned'] : 0;
+		static::$fe['keepTYPO3Groups'] = $config['keepFEGroups'];
+		static::$fe['requiredLDAPGroups'] = $config['fe_groups_required'] ? $config['fe_groups_required'] : 0;
+		static::$fe['users']['basedn'] = explode('||', $config['fe_users_basedn']);
+		static::$fe['users']['filter'] = $config['fe_users_filter'];
+		static::$fe['users']['mapping'] = static::make_user_mapping($config['fe_users_mapping'], $config['fe_users_filter']);
+		static::$fe['groups']['basedn'] = $config['fe_groups_basedn'];
+		static::$fe['groups']['filter'] = $config['fe_groups_filter'];
+		static::$fe['groups']['mapping'] = static::make_group_mapping($config['fe_groups_mapping']);
 
 		foreach ($config as $key => $value) {
 			switch (TRUE) {
 				case (substr($key, 0, 5) === 'ldap_'):
-					self::$ldap[substr($key, 5)] = $value;
+					static::$ldap[substr($key, 5)] = $value;
 					break;
 			}
 		}
-		self::$ldap['charset'] = $config['ldap_charset'] ? $config['ldap_charset'] : 'utf-8';
+		static::$ldap['charset'] = $config['ldap_charset'] ? $config['ldap_charset'] : 'utf-8';
 	}
 
 	/**
@@ -128,7 +128,7 @@ class Configuration {
 	 * @return bool
 	 */
 	static public function isInitialized() {
-		return self::$typo3_mode !== NULL;
+		return static::$typo3_mode !== NULL;
 	}
 
 	/**
@@ -138,10 +138,10 @@ class Configuration {
 	 */
 	static public function isEnabledForCurrentHost() {
 		static $host = NULL;
-		if ($host === NULL && count(self::$domains) > 0) {
+		if ($host === NULL && count(static::$domains) > 0) {
 			$host = GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY');
 		}
-		return count(self::$domains) === 0 || in_array($host, self::$domains);
+		return count(static::$domains) === 0 || in_array($host, static::$domains);
 	}
 
 	/**
@@ -150,7 +150,7 @@ class Configuration {
 	 * @return array
 	 */
 	static public function getDomains() {
-		return self::$domains;
+		return static::$domains;
 	}
 
 	/**
@@ -163,10 +163,10 @@ class Configuration {
 	static protected function make_user_mapping($mapping = '', $filter = '') {
 		// Default fields : username, tx_igldapssoauth_dn
 
-		$user_mapping = self::make_mapping($mapping);
-		$user_mapping['username'] = '<' . self::get_username_attribute($filter) . '>';
+		$user_mapping = static::make_mapping($mapping);
+		$user_mapping['username'] = '<' . static::get_username_attribute($filter) . '>';
 		$user_mapping['tx_igldapssoauth_dn'] = '<dn>';
-		$user_mapping['tx_igldapssoauth_id'] = self::getUid();
+		$user_mapping['tx_igldapssoauth_id'] = static::getUid();
 
 		return $user_mapping;
 	}
@@ -180,7 +180,7 @@ class Configuration {
 	static protected function make_group_mapping($mapping = '') {
 		// Default fields : title, tx_igldapssoauth_dn
 
-		$group_mapping = self::make_mapping($mapping);
+		$group_mapping = static::make_mapping($mapping);
 		if (!isset($group_mapping['title'])) {
 			$group_mapping['title'] = '<dn>';
 		}
@@ -247,7 +247,7 @@ class Configuration {
 	 * @return array
 	 */
 	static public function getLdapConfiguration() {
-		return self::$ldap;
+		return static::$ldap;
 	}
 
 	/**
@@ -256,7 +256,7 @@ class Configuration {
 	 * @return array
 	 */
 	static public function getFeConfiguration() {
-		return self::$fe;
+		return static::$fe;
 	}
 
 	/**
@@ -265,7 +265,7 @@ class Configuration {
 	 * @return array
 	 */
 	static public function getBeConfiguration() {
-		return self::$be;
+		return static::$be;
 	}
 
 	/**
@@ -274,7 +274,7 @@ class Configuration {
 	 * @return string
 	 */
 	static public function getTypo3Mode() {
-		return self::$typo3_mode;
+		return static::$typo3_mode;
 	}
 
 	/**
@@ -284,7 +284,7 @@ class Configuration {
 	 * @return void
 	 */
 	static public function setTypo3Mode($typo3_mode) {
-		self::$typo3_mode = $typo3_mode;
+		static::$typo3_mode = $typo3_mode;
 	}
 
 	/**
@@ -293,7 +293,7 @@ class Configuration {
 	 * @return mixed
 	 */
 	static public function getUid() {
-		return self::$uid;
+		return static::$uid;
 	}
 
 	/**
@@ -306,7 +306,7 @@ class Configuration {
 	}
 
 	static public function is_enable($feature = NULL) {
-		$config = (self::$typo3_mode === 'be') ? self::getBeConfiguration() : self::getFeConfiguration();
+		$config = (static::$typo3_mode === 'be') ? static::getBeConfiguration() : static::getFeConfiguration();
 		return (isset($config[$feature]) ? $config[$feature] : FALSE);
 	}
 
@@ -362,7 +362,7 @@ class Configuration {
 	 * @return array
 	 */
 	static protected function select($uid = 0) {
-		$config = self::getDatabaseConnection()->exec_SELECTgetRows(
+		$config = static::getDatabaseConnection()->exec_SELECTgetRows(
 			'*',
 			'tx_igldapssoauth_config',
 			'deleted=0 AND hidden=0 AND uid=' . intval($uid)

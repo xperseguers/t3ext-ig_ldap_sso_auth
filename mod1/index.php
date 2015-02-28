@@ -347,7 +347,7 @@ CSS;
 		} else {
 			$configuration = $GLOBALS['LANG']->getLL('show_status_backend_authentication_disable');
 		}
-		$this->exportArrayAsTable($configuration, $title, 'BE');
+		$this->content .= $this->exportArrayAsTable($configuration, $title, 'BE');
 
 		// FE
 		$title = $GLOBALS['LANG']->getLL('show_status_frontend_authentication');

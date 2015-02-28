@@ -74,10 +74,10 @@ class tx_igldapssoauth_module1 extends t3lib_SCbase {
 			'function' => array(
 				self::FUNCTION_SHOW_STATUS => $GLOBALS['LANG']->getLL('show_status'),
 				self::FUNCTION_SEARCH_WIZARD => $GLOBALS['LANG']->getLL('search_wizard'),
-				self::FUNCTION_IMPORT_USERS_BE => $GLOBALS['LANG']->getLL('import_users_be'),
-				self::FUNCTION_IMPORT_GROUPS_BE => $GLOBALS['LANG']->getLL('import_groups_be'),
 				self::FUNCTION_IMPORT_USERS_FE => $GLOBALS['LANG']->getLL('import_users_fe'),
 				self::FUNCTION_IMPORT_GROUPS_FE => $GLOBALS['LANG']->getLL('import_groups_fe'),
+				self::FUNCTION_IMPORT_USERS_BE => $GLOBALS['LANG']->getLL('import_users_be'),
+				self::FUNCTION_IMPORT_GROUPS_BE => $GLOBALS['LANG']->getLL('import_groups_be'),
 			)
 		);
 
@@ -340,15 +340,6 @@ CSS;
 			return;
 		}
 
-		// BE
-		$title = $GLOBALS['LANG']->getLL('show_status_backend_authentication');
-		if ($beConfiguration['LDAPAuthentication']) {
-			$configuration = $beConfiguration;
-		} else {
-			$configuration = $GLOBALS['LANG']->getLL('show_status_backend_authentication_disable');
-		}
-		$this->content .= $this->exportArrayAsTable($configuration, $title, 'BE');
-
 		// FE
 		$title = $GLOBALS['LANG']->getLL('show_status_frontend_authentication');
 		if ($feConfiguration['LDAPAuthentication']) {
@@ -357,6 +348,15 @@ CSS;
 			$configuration = $GLOBALS['LANG']->getLL('show_status_frontend_authentication_disable');
 		}
 		$this->content .= $this->exportArrayAsTable($configuration, $title, 'FE');
+
+		// BE
+		$title = $GLOBALS['LANG']->getLL('show_status_backend_authentication');
+		if ($beConfiguration['LDAPAuthentication']) {
+			$configuration = $beConfiguration;
+		} else {
+			$configuration = $GLOBALS['LANG']->getLL('show_status_backend_authentication_disable');
+		}
+		$this->content .= $this->exportArrayAsTable($configuration, $title, 'BE');
 	}
 
 	/**
@@ -468,7 +468,7 @@ CSS;
 				break;
 
 			default:
-				$search['table'] = 'be_users';
+				$search['table'] = 'fe_users';
 
 				list($typo3_mode, $type) = explode('_', $search['table']);
 				$config = ($typo3_mode === 'be')
@@ -522,16 +522,6 @@ CSS;
 
 			$this->content .= '
 				<div>
-					<input type="radio" name="search[table]" id="table-beusers" value="be_users" ' . $be_users . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />
-					<label for="table-beusers"><strong>' . $GLOBALS['LANG']->getLL('search_wizard_radio_be_users') . '</strong></label>
-				</div>';
-			$this->content .= '
-				<div>
-					<input type="radio" name="search[table]" id="table-begroups" value="be_groups" ' . $be_groups . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />
-					<label for="table-begroups"><strong>' . $GLOBALS['LANG']->getLL('search_wizard_radio_be_groups') . '</strong></label>
-				</div>';
-			$this->content .= '
-				<div>
 					<input type="radio" name="search[table]" id="table-feusers" value="fe_users" ' . $fe_users . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />
 					<label for="table-feusers"><strong>' . $GLOBALS['LANG']->getLL('search_wizard_radio_fe_users') . '</strong></label>
 				</div>';
@@ -539,6 +529,16 @@ CSS;
 				<div>
 					<input type="radio" name="search[table]" id="table-fegroups" value="fe_groups" ' . $fe_groups . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />
 					<label for="table-fegroups"><strong>' . $GLOBALS['LANG']->getLL('search_wizard_radio_fe_groups') . '</strong></label>
+				</div>';
+			$this->content .= '
+				<div>
+					<input type="radio" name="search[table]" id="table-beusers" value="be_users" ' . $be_users . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />
+					<label for="table-beusers"><strong>' . $GLOBALS['LANG']->getLL('search_wizard_radio_be_users') . '</strong></label>
+				</div>';
+			$this->content .= '
+				<div>
+					<input type="radio" name="search[table]" id="table-begroups" value="be_groups" ' . $be_groups . ' onclick="this.form.elements[\'search[action]\'].value=\'select\';submit();return false;" />
+					<label for="table-begroups"><strong>' . $GLOBALS['LANG']->getLL('search_wizard_radio_be_groups') . '</strong></label>
 				</div>';
 			$this->content .= '<br />';
 

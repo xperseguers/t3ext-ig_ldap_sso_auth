@@ -20,13 +20,45 @@ use Causal\IgLdapSsoAuth\Utility\DebugUtility;
 /**
  * Class Ldap for the 'ig_ldap_sso_auth' extension.
  *
+ * @author	Xavier Perseguers <xavier@causal.ch>
  * @author	Michael Gagnon <mgagnon@infoglobe.ca>
  * @package	TYPO3
  * @subpackage	ig_ldap_sso_auth
  */
-class Ldap {
+class Ldap implements \TYPO3\CMS\Core\SingletonInterface {
 
-	static protected $lastBindDiagnostic = '';
+	/**
+	 * @var string
+	 */
+	protected $lastBindDiagnostic = '';
+
+	/**
+	 * @var \Causal\IgLdapSsoAuth\Utility\LdapUtility
+	 */
+	protected $ldapUtility;
+
+	/**
+	 * Injects an instance of \Causal\IgLdapSsoAuth\Utility\LdapUtility.
+	 *
+	 * @param \Causal\IgLdapSsoAuth\Utility\LdapUtility $ldapUtility
+	 */
+	public function injectLdapUtility(\Causal\IgLdapSsoAuth\Utility\LdapUtility $ldapUtility) {
+		$this->ldapUtility = $ldapUtility;
+	}
+
+	/**
+	 * Returns an instance of this class.
+	 *
+	 * @return \Causal\IgLdapSsoAuth\Library\Ldap
+	 */
+	static public function getInstance() {
+		/** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+		static $objectManager = NULL;
+		if ($objectManager === NULL) {
+			$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+		}
+		return $objectManager->get(__CLASS__);
+	}
 
 	/**
 	 * Initializes a connection to the LDAP server.
@@ -34,7 +66,7 @@ class Ldap {
 	 * @param array $config
 	 * @return bool
 	 */
-	static public function connect(array $config = array()) {
+	public function connect(array $config = array()) {
 		$debugConfiguration = array(
 			'host' => $config['host'],
 			'port' => $config['port'],
@@ -45,7 +77,7 @@ class Ldap {
 		);
 
 		// Connect to ldap server.
-		if (!LdapUtility::connect($config['host'], $config['port'], $config['protocol'], $config['charset'], $config['server'], $config['tls'])) {
+		if (!$this->ldapUtility->connect($config['host'], $config['port'], $config['protocol'], $config['charset'], $config['server'], $config['tls'])) {
 			DebugUtility::error('Cannot connect', $debugConfiguration);
 			return FALSE;
 		}
@@ -54,17 +86,17 @@ class Ldap {
 		$debugConfiguration['password'] = $config['password'] !== '' ? '********' : '';
 
 		// Bind to ldap server.
-		if (!LdapUtility::bind($config['binddn'], $config['password'])) {
-			$status = LdapUtility::get_status();
-			static::$lastBindDiagnostic = $status['bind']['diagnostic'];
+		if (!$this->ldapUtility->bind($config['binddn'], $config['password'])) {
+			$status = $this->ldapUtility->getStatus();
+			$this->lastBindDiagnostic = $status['bind']['diagnostic'];
 
 			$message = 'Cannot bind to LDAP';
-			if (!empty(static::$lastBindDiagnostic)) {
-				$message .= ': ' . static::$lastBindDiagnostic;
+			if (!empty($this->lastBindDiagnostic)) {
+				$message .= ': ' . $this->lastBindDiagnostic;
 			}
 			DebugUtility::error($message, $debugConfiguration);
 
-			static::disconnect();
+			$this->disconnect();
 			return FALSE;
 		}
 
@@ -73,45 +105,54 @@ class Ldap {
 	}
 
 	/**
+	 * Disconnects the LDAP server.
+	 *
+	 * @return void
+	 */
+	public function disconnect() {
+		$this->ldapUtility->disconnect();
+	}
+
+	/**
 	 * Returns the corresponding DN if a given user is provided, otherwise FALSE.
 	 *
 	 * @param string $username
 	 * @param string $password User's password. If NULL password will not be checked
-	 * @param string $basedn
+	 * @param string $baseDn
 	 * @param string $filter
 	 * @return bool|string
 	 */
-	static public function valid_user($username = NULL, $password = NULL, $basedn = NULL, $filter = NULL) {
+	public function validateUser($username = NULL, $password = NULL, $baseDn = NULL, $filter = NULL) {
 
 		// If user found on ldap server.
-		if (LdapUtility::search($basedn, str_replace('{USERNAME}', $username, $filter), array('dn'))) {
+		if ($this->ldapUtility->search($baseDn, str_replace('{USERNAME}', $username, $filter), array('dn'))) {
 
 			// Validate with password.
 			if ($password !== NULL) {
 
 				// Bind DN of user with password.
 				if (empty($password)) {
-					static::$lastBindDiagnostic = 'Empty password provided!';
+					$this->lastBindDiagnostic = 'Empty password provided!';
 					return FALSE;
-				} elseif (LdapUtility::bind(LdapUtility::get_dn(), $password)) {
-					$dn = LdapUtility::get_dn();
+				} elseif ($this->ldapUtility->bind($this->ldapUtility->getDn(), $password)) {
+					$dn = $this->ldapUtility->getDn();
 
 					// Restore last LDAP binding
 					$config = Configuration::getLdapConfiguration();
-					LdapUtility::bind($config['binddn'], $config['password']);
-					static::$lastBindDiagnostic = '';
+					$this->ldapUtility->bind($config['binddn'], $config['password']);
+					$this->lastBindDiagnostic = '';
 
 					return $dn;
 				} else {
-					$status = LdapUtility::get_status();
-					static::$lastBindDiagnostic = $status['bind']['diagnostic'];
+					$status = $this->ldapUtility->getStatus();
+					$this->lastBindDiagnostic = $status['bind']['diagnostic'];
 					return FALSE;	// Password does not match
 				}
 
 			// If enable, SSO authentication without password
 			} elseif ($password === NULL && Configuration::is_enable('SSOAuthentication')) {
 
-				return LdapUtility::get_dn();
+				return $this->ldapUtility->getDn();
 
 			} else {
 
@@ -127,23 +168,23 @@ class Ldap {
 	/**
 	 * Searches LDAP entries satisfying some filter.
 	 *
-	 * @param string $basedn
+	 * @param string $baseDn
 	 * @param string $filter
 	 * @param array $attributes
-	 * @param bool $first_entry
+	 * @param bool $firstEntry
 	 * @param int $limit
 	 * @return array
 	 */
-	static public function search($basedn = NULL, $filter = NULL, $attributes = array(), $first_entry = FALSE, $limit = 0) {
+	public function search($baseDn = NULL, $filter = NULL, $attributes = array(), $firstEntry = FALSE, $limit = 0) {
 		$result = array();
 
-		if (LdapUtility::search($basedn, $filter, $attributes, 0, $first_entry ? 1 : $limit)) {
-			if ($first_entry) {
-				$result = LdapUtility::get_first_entry();
-				$result['dn'] = LdapUtility::get_dn();
+		if ($this->ldapUtility->search($baseDn, $filter, $attributes, FALSE, $firstEntry ? 1 : $limit)) {
+			if ($firstEntry) {
+				$result = $this->ldapUtility->getFirstEntry();
+				$result['dn'] = $this->ldapUtility->getDn();
 				unset($result['count']);
 			} else {
-				$result = LdapUtility::get_entries();
+				$result = $this->ldapUtility->getEntries();
 			}
 		}
 
@@ -156,8 +197,8 @@ class Ldap {
 	 *
 	 * @return bool
 	 */
-	static public function isPartialSearchResult() {
-		return LdapUtility::has_more_entries();
+	public function isPartialSearchResult() {
+		return $this->ldapUtility->hasMoreEntries();
 	}
 
 	/**
@@ -165,17 +206,18 @@ class Ldap {
 	 *
 	 * @return array
 	 */
-	static public function searchNext() {
-		$result = LdapUtility::get_next_entries();
+	public function searchNext() {
+		$result = $this->ldapUtility->getNextEntries();
 		return $result;
 	}
 
-	static public function get_status() {
-		return LdapUtility::get_status();
-	}
-
-	static public function disconnect() {
-		LdapUtility::disconnect();
+	/**
+	 * Returns the LDAP status.
+	 *
+	 * @return array
+	 */
+	public function getStatus() {
+		return $this->ldapUtility->getStatus();
 	}
 
 	/**
@@ -183,8 +225,8 @@ class Ldap {
 	 *
 	 * @return string
 	 */
-	static public function getLastBindDiagnostic() {
-		return static::$lastBindDiagnostic;
+	public function getLastBindDiagnostic() {
+		return $this->lastBindDiagnostic;
 	}
 
 	/**
@@ -207,7 +249,7 @@ class Ldap {
 	 * @param string $dn
 	 * @return string Escaped $dn
 	 */
-	static public function escapeDnForFilter($dn) {
+	public function escapeDnForFilter($dn) {
 		$escapeCharacters = array('(', ')', '\\');
 		foreach ($escapeCharacters as $escapeCharacter) {
 			$dn = str_replace($escapeCharacter, '\\' . $escapeCharacter, $dn);

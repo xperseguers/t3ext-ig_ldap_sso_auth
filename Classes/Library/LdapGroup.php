@@ -54,7 +54,7 @@ class LdapGroup {
 				continue;
 			}
 			if ($extendedCheck) {
-				$ldap_group = Ldap::search($groupdn, $filter, $attributes);
+				$ldap_group = Ldap::getInstance()->search($groupdn, $filter, $attributes);
 			} else {
 				$parts = explode(',', $groupdn);
 				list($firstAttribute, $value) = explode('=', $parts[0]);
@@ -93,10 +93,10 @@ class LdapGroup {
 	 * @return array
 	 */
 	static public function selectFromUser($baseDn, $filter = '', $userDn = '', $userUid = '', array $attributes = array()) {
-		$filter = str_replace('{USERDN}', Ldap::escapeDnForFilter($userDn), $filter);
-		$filter = str_replace('{USERUID}', Ldap::escapeDnForFilter($userUid), $filter);
+		$filter = str_replace('{USERDN}', Ldap::getInstance()->escapeDnForFilter($userDn), $filter);
+		$filter = str_replace('{USERUID}', Ldap::getInstance()->escapeDnForFilter($userUid), $filter);
 
-		$groups = Ldap::search($baseDn, $filter, $attributes);
+		$groups = Ldap::getInstance()->search($baseDn, $filter, $attributes);
 		return $groups;
 	}
 

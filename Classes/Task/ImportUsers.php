@@ -101,7 +101,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 					$aContext
 				);
 				// Start by connecting to the designated LDAP/AD server
-				$success = Ldap::connect(Configuration::getLdapConfiguration());
+				$success = Ldap::getInstance()->connect(Configuration::getLdapConfiguration());
 				// Proceed with import if successful
 				if ($success) {
 
@@ -133,7 +133,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 					}
 					// Clean up
 					unset($importUtility);
-					Ldap::disconnect();
+					Ldap::getInstance()->disconnect();
 				} else {
 					$failures++;
 				}

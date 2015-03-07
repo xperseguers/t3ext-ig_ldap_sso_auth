@@ -86,12 +86,12 @@ class Authentication {
 		}
 
 		// Valid user only if username and connect to LDAP server.
-		if ($username && Ldap::connect(Configuration::getLdapConfiguration())) {
+		if ($username && Ldap::getInstance()->connect(Configuration::getLdapConfiguration())) {
 			// Set extension configuration from TYPO3 mode (BE/FE).
 			static::initializeConfiguration();
 
-			// Valid user from LDAP server.
-			if ($userdn = Ldap::valid_user($username, $password, static::$config['users']['basedn'], static::$config['users']['filter'])) {
+			// Valid user from LDAP server
+			if ($userdn = Ldap::getInstance()->validateUser($username, $password, static::$config['users']['basedn'], static::$config['users']['filter'])) {
 				DebugUtility::info(sprintf('Successfully authenticated user "%s" with LDAP', $username));
 
 				if ($userdn === TRUE) {
@@ -99,14 +99,14 @@ class Authentication {
 				}
 				return static::synchroniseUser($userdn, $username);
 			} else {
-				static::$lastAuthenticationDiagnostic = Ldap::getLastBindDiagnostic();
+				static::$lastAuthenticationDiagnostic = Ldap::getInstance()->getLastBindDiagnostic();
 				if (!empty(static::$lastAuthenticationDiagnostic)) {
 					DebugUtility::notice(static::$lastAuthenticationDiagnostic);
 				}
 			}
 
 			// LDAP authentication failed.
-			Ldap::disconnect();
+			Ldap::getInstance()->disconnect();
 
 			// This is a notice because it is fine to fallback to standard TYPO3 authentication
 			DebugUtility::notice(sprintf('Could not authenticate user "%s" with LDAP', $username));
@@ -116,7 +116,7 @@ class Authentication {
 
 		// LDAP authentication failed.
 		DebugUtility::warning('Cannot connect to LDAP or username is empty', array('username' => $username));
-		Ldap::disconnect();
+		Ldap::getInstance()->disconnect();
 		return FALSE;
 	}
 
@@ -245,7 +245,7 @@ class Authentication {
 		// so we just ask for every attribute!
 		$attributes = array();
 
-		$users = Ldap::search(
+		$users = Ldap::getInstance()->search(
 			$dn,
 			str_replace('{USERNAME}', '*', static::$config['users']['filter']),
 			$attributes

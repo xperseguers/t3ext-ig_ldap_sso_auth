@@ -133,9 +133,9 @@ class UserImportUtility {
 			if (!$partial) {
 				$filter = Configuration::replace_filter_markers($this->configuration['users']['filter']);
 				$attributes = Configuration::get_ldap_attributes($this->configuration['users']['mapping']);
-				$ldapUsers = Ldap::search($this->configuration['users']['basedn'], $filter, $attributes);
+				$ldapUsers = Ldap::getInstance()->search($this->configuration['users']['basedn'], $filter, $attributes);
 			} else {
-				$ldapUsers = Ldap::searchNext();
+				$ldapUsers = Ldap::getInstance()->searchNext();
 			}
 			unset($ldapUsers['count']);
 		}
@@ -150,7 +150,7 @@ class UserImportUtility {
 	 * @return bool
 	 */
 	public function hasMoreLdapUsers() {
-		return Ldap::isPartialSearchResult();
+		return Ldap::getInstance()->isPartialSearchResult();
 	}
 
 	/**

@@ -303,7 +303,7 @@ CSS;
 			$ldapConfiguration['server'] = Configuration::get_server_name($ldapConfiguration['server']);
 
 			try {
-				Ldap::connect($ldapConfiguration);
+				Ldap::getInstance()->connect($ldapConfiguration);
 			} catch (Exception $e) {
 				// Possible known exception: 1409566275, LDAP extension is not available for PHP
 				/** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
@@ -326,7 +326,7 @@ CSS;
 			$this->content .= $this->exportArrayAsTable($ldapConfiguration, $title);
 
 			$title = $GLOBALS['LANG']->getLL('show_status_ldap_connection_status');
-			$this->content .= $this->exportArrayAsTable(Ldap::get_status(), $title);
+			$this->content .= $this->exportArrayAsTable(Ldap::getInstance()->getStatus(), $title);
 		} else {
 			$this->content .= $this->exportArrayAsTable($GLOBALS['LANG']->getLL('show_status_ldap_disable'), $title);
 			return;
@@ -484,7 +484,7 @@ CSS;
 		$this->content .= '<hr />';
 
 		try {
-			$success = Ldap::connect(Configuration::getLdapConfiguration());
+			$success = Ldap::getInstance()->connect(Configuration::getLdapConfiguration());
 		} catch (\Exception $e) {
 			// Possible known exception: 1409566275, LDAP extension is not available for PHP
 			$this->enqueueFlashMessage(
@@ -561,14 +561,14 @@ CSS;
 			}
 
 			$search['basedn'] = explode('||', $search['basedn']);
-			$result = Ldap::search($search['basedn'], $search['filter'], $attributes, $search['first_entry'], 100);
+			$result = Ldap::getInstance()->search($search['basedn'], $search['filter'], $attributes, $search['first_entry'], 100);
 			if (!$result) {
 				$result = $GLOBALS['LANG']->getLL('search_wizard_no_result');
 			}
 
 			if ($search['see_status']) {
 				$title = $GLOBALS['LANG']->getLL('search_wizard_ldap_status');
-				$this->content .= $this->exportArrayAsTable(Ldap::get_status(), $title);
+				$this->content .= $this->exportArrayAsTable(Ldap::getInstance()->getStatus(), $title);
 			}
 
 			$title = $GLOBALS['LANG']->getLL('search_wizard_result');
@@ -605,10 +605,10 @@ CSS;
 			}
 			$this->content .= $this->exportArrayAsTable($result, $title);
 
-			Ldap::disconnect();
+			Ldap::getInstance()->disconnect();
 
 		} else {
-			$this->content .= '<h2>' . $GLOBALS['LANG']->getLL('search_wizard_ldap_status') . '</h2><hr />' . \TYPO3\CMS\Core\Utility\DebugUtility::viewArray(Ldap::get_status());
+			$this->content .= '<h2>' . $GLOBALS['LANG']->getLL('search_wizard_ldap_status') . '</h2><hr />' . \TYPO3\CMS\Core\Utility\DebugUtility::viewArray(Ldap::getInstance()->getStatus());
 		}
 
 	}
@@ -657,7 +657,7 @@ CSS;
 		if (!empty($config['groups']['basedn'])) {
 			$filter = Configuration::replace_filter_markers($config['groups']['filter']);
 			$attributes = Configuration::get_ldap_attributes($config['groups']['mapping']);
-			$ldap_groups = Ldap::search($config['groups']['basedn'], $filter, $attributes);
+			$ldap_groups = Ldap::getInstance()->search($config['groups']['basedn'], $filter, $attributes);
 			unset($ldap_groups['count']);
 		}
 
@@ -809,7 +809,7 @@ HTML;
 
 		$this->content .= '</form>';
 
-		Ldap::disconnect();
+		Ldap::getInstance()->disconnect();
 
 		if ($groupsAdded > 0 || $groupsUpdated > 0) {
 			$this->enqueueFlashMessage(
@@ -844,7 +844,7 @@ HTML;
 
 				$filter = '(&' . Configuration::replace_filter_markers($config['groups']['filter']) . '&(distinguishedName=' . $parentDn . '))';
 				$attributes = Configuration::get_ldap_attributes($config['groups']['mapping']);
-				$ldap_groups = Ldap::search($config['groups']['basedn'], $filter, $attributes);
+				$ldap_groups = Ldap::getInstance()->search($config['groups']['basedn'], $filter, $attributes);
 				unset($ldap_groups['count']);
 
 				if (count($ldap_groups) > 0) {
@@ -1028,7 +1028,7 @@ HTML;
 
 		$this->content .= '</form>';
 
-		Ldap::disconnect();
+		Ldap::getInstance()->disconnect();
 
 		$usersAdded = $importUtility->getUsersAdded();
 		$usersUpdated = $importUtility->getUsersUpdated();
@@ -1070,7 +1070,7 @@ HTML;
 	 */
 	protected function checkLdapConnection() {
 		try {
-			$success = Ldap::connect(Configuration::getLdapConfiguration());
+			$success = Ldap::getInstance()->connect(Configuration::getLdapConfiguration());
 		} catch (\Exception $e) {
 			// Possible known exception: 1409566275, LDAP extension is not available for PHP
 			$this->enqueueFlashMessage(

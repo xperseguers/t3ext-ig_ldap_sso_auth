@@ -20,165 +20,182 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Class LdapUtility.
  *
  * @package     TYPO3
- * @subpackage  iglib
+ * @subpackage  ig_ldap_sso_auth
+ * @author      Xavier Perseguers <xavier@causal.ch>
  * @author      Michael Gagnon <mgagnon@infoglobe.ca>
- * @copyright	(c) 2007 Michael Gagnon <mgagnon@infoglobe.ca>
+ * @copyright	(c) 2011-2015 Xavier Perseguers <xavier@causal.ch>
+ * @copyright	(c) 2007-2010 Michael Gagnon <mgagnon@infoglobe.ca>
  * @see http://www-sop.inria.fr/semir/personnel/Laurent.Mirtain/ldap-livre.html
  *
- * Opération  |	LDAP description
+ * Status | Operation | LDAP description
  * -----------------------------------------------------------------------
- * Search       Recherche dans l'annuaire d'objets à partir d'un DN et/ou d'un filtre [ok]
- * Compare      Comparaison du contenu de deux objets
- * Add          Ajout d'une entrée
- * Modify       Modification du contenu d'une entrée
- * Delete       Suppression d'un objet
- * Rename       Modification du DN d'une entrée (Modify DN)
- * Connect      Connexion au serveur [ok]
- * Bind         Authentification au serveur [ok]
- * Disconnect   Deconnexion (unbind) [ok]
- * Abandon      Abandon d'une opération en cours
- * Extended     Opérations étendues (v3)
+ * done     Search      Search in the object directory using a DN and/or a filter
+ *          Compare     Compare contents of two objects
+ *          Add         Add an entry
+ *          Modify      Modify contents of an entry
+ *          Delete      Removes an object
+ *          Rename      Modify DN of an entry
+ * done     Connect     Connect to the server
+ * done     Bind        Authenticate with the server
+ * done     Disconnect  Disconnect from the server
+ *          Abandon     Abandon an operation in progress
+ *          Extended    Extended operations (v3)
  */
 class LdapUtility {
+
+	const MAX_ENTRIES = 1000;
 
 	/**
 	 * LDAP Server charset
 	 * @var string
 	 */
-	static protected $ldap_charset;
+	protected $ldapCharacterSet;
 
 	/**
 	 * Local character set (TYPO3)
 	 * @var string
 	 */
-	static protected $local_charset;
+	protected $typo3CharacterSet;
 
 	/**
 	 * LDAP Server Connection ID
 	 * @var resource
 	 */
-	static protected $cid;
-
-	/**
-	 * LDAP Server Bind ID
-	 * @var resource
-	 */
-	static protected $bid;
+	protected $connection;
 
 	/**
 	 * LDAP Server Search ID
 	 * @var resource
 	 */
-	static protected $sid;
+	protected $searchResult;
 
 	/**
 	 * LDAP First Entry ID
 	 * @var resource
 	 */
-	static protected $feid;
+	protected $firstResultEntry;
 
 	/**
 	 * LDAP server status
 	 * @var array
 	 */
-	static protected $status;
+	protected $status;
 
 	/**
 	 * 0 = OpenLDAP, 1 = Active Directory / Novell eDirectory
-	 * @var string
+	 * @var int
 	 */
-	static protected $serverType;
+	protected $serverType;
 
 	/**
 	 * @var resource|bool
 	 */
-	static protected $previousEntry = FALSE;
+	protected $previousEntry = FALSE;
 
 	/**
-	 * Connects to LDAP Server and sets the cid.
+	 * Connects to an LDAP server.
 	 *
 	 * @param string $host
 	 * @param integer $port
 	 * @param integer $protocol Either 2 or 3
-	 * @param string $charset
+	 * @param string $characterSet
 	 * @param integer $serverType 0 = OpenLDAP, 1 = Active Directory / Novell eDirectory
 	 * @param bool $tls
 	 * @return bool TRUE if connection succeeded.
 	 * @throws \Exception when LDAP extension for PHP is not available
 	 */
-	static public function connect($host = NULL, $port = NULL, $protocol = NULL, $charset = NULL, $serverType = 0, $tls = FALSE) {
+	public function connect($host = NULL, $port = NULL, $protocol = NULL, $characterSet = NULL, $serverType = 0, $tls = FALSE) {
 		// Valid if php load ldap module.
 		if (!extension_loaded('ldap')) {
 			throw new \Exception('Your PHP version seems to lack LDAP support. Please install/activate the extension.', 1409566275);
 		}
 
 		// Connect to ldap server.
-		static::$status['connect']['host'] = $host;
-		static::$status['connect']['port'] = $port;
-		static::$serverType = $serverType;
+		$this->status['connect']['host'] = $host;
+		$this->status['connect']['port'] = $port;
+		$this->serverType = (int)$serverType;
 
-		if (!(static::$cid = @ldap_connect($host, $port))) {
-			// Could not connect to ldap server.
-			static::$cid = FALSE;
-			static::$status['connect']['status'] = ldap_error(static::$cid);
+		if (!($this->connection = @ldap_connect($host, $port))) {
+			// Could not connect to ldap server
+			$this->connection = FALSE;
+			$this->status['connect']['status'] = ldap_error($this->connection);
 			return FALSE;
 		}
 
-		static::$status['connect']['status'] = ldap_error(static::$cid);
+		$this->status['connect']['status'] = ldap_error($this->connection);
 
-		// Set configuration.
-		static::init_charset($charset);
+		// Set configuration
+		$this->initializeCharacterSet($characterSet);
 
-		@ldap_set_option(static::$cid, LDAP_OPT_PROTOCOL_VERSION, $protocol);
+		@ldap_set_option($this->connection, LDAP_OPT_PROTOCOL_VERSION, $protocol);
 
-		// Active Directory (User@Domain) configuration.
+		// Active Directory (User@Domain) configuration
 		if ($serverType == 1) {
-			@ldap_set_option(static::$cid, LDAP_OPT_REFERRALS, 0);
+			@ldap_set_option($this->connection, LDAP_OPT_REFERRALS, 0);
 		}
 
 		if ($tls) {
-			if (!@ldap_start_tls(static::$cid)) {
-				static::$status['option']['tls'] = 'Disable';
-				static::$status['option']['status'] = ldap_error(static::$cid);
+			if (!@ldap_start_tls($this->connection)) {
+				$this->status['option']['tls'] = 'Disable';
+				$this->status['option']['status'] = ldap_error($this->connection);
 				return FALSE;
 			}
 
-			static::$status['option']['tls'] = 'Enable';
-			static::$status['option']['status'] = ldap_error(static::$cid);
+			$this->status['option']['tls'] = 'Enable';
+			$this->status['option']['status'] = ldap_error($this->connection);
 		}
 
 		return TRUE;
 	}
 
 	/**
-	 * Bind.
+	 * Returns TRUE if connected to the LDAP server, @see connect().
+	 *
+	 * @return bool
+	 */
+	public function isConnected() {
+		return (bool)$this->$connection;
+	}
+
+	/**
+	 * Disconnects from the LDAP server.
+	 *
+	 * @return void
+	 */
+	public function disconnect() {
+		if ($this->connection) {
+			@ldap_close($this->connection);
+		}
+	}
+
+	/**
+	 * Binds to the LDAP server.
 	 *
 	 * @param string $dn
 	 * @param string $password
-	 * @return bool TRUE if bind succeeded.
+	 * @return bool TRUE if bind succeeded
 	 */
-	static public function bind($dn = NULL, $password = NULL) {
+	public function bind($dn = NULL, $password = NULL) {
 		// LDAP_OPT_DIAGNOSTIC_MESSAGE gets the extended error output
 		// from the ldap_get_option() function
 		if (!defined('LDAP_OPT_DIAGNOSTIC_MESSAGE')) {
 			define('LDAP_OPT_DIAGNOSTIC_MESSAGE', 0x0032);
 		}
 
-		static::$status['bind']['dn'] = $dn;
-		static::$status['bind']['password'] = $password ? '********' : NULL;
-		static::$status['bind']['diagnostic'] = '';
+		$this->status['bind']['dn'] = $dn;
+		$this->status['bind']['password'] = $password ? '********' : NULL;
+		$this->status['bind']['diagnostic'] = '';
 
-		if (!(static::$bid = @ldap_bind(static::$cid, $dn, $password))) {
+		if (!(@ldap_bind($this->connection, $dn, $password))) {
 			// Could not bind to server
-			static::$bid = FALSE;
-			static::$status['bind']['status'] = ldap_error(static::$cid);
+			$this->status['bind']['status'] = ldap_error($this->connection);
 
-			if (static::$serverType == 1) {
+			if ($this->serverType === 1) {
 				// We need to get the diagnostic message right after the call to ldap_bind(),
 				// before any other LDAP operation
-				ldap_get_option(static::$cid, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extended_error);
+				ldap_get_option($this->connection, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extended_error);
 				if (!empty($extended_error)) {
-					static::$status['bind']['diagnostic'] = static::extractDiagnosticMessage($extended_error);
+					$this->status['bind']['diagnostic'] = $this->extractDiagnosticMessage($extended_error);
 				}
 			}
 
@@ -186,7 +203,7 @@ class LdapUtility {
 		}
 
 		// Bind successful
-		static::$status['bind']['status'] = ldap_error(static::$cid);
+		$this->status['bind']['status'] = ldap_error($this->connection);
 		return TRUE;
 	}
 
@@ -204,7 +221,7 @@ class LdapUtility {
 	 * @return string Diagnostic message, in English
 	 * @see http://www-01.ibm.com/support/docview.wss?uid=swg21290631
 	 */
-	static protected function extractDiagnosticMessage($message) {
+	protected function extractDiagnosticMessage($message) {
 		$diagnostic = '';
 		$codeMessages = array(
 			'525' => 'The specified account does not exist.',
@@ -231,152 +248,169 @@ class LdapUtility {
 	}
 
 	/**
-	 * Search.
+	 * Performs a search on the LDAP server.
 	 *
-	 * @param string $basedn
+	 * @param string $baseDn
 	 * @param string $filter
 	 * @param array $attributes
-	 * @param int $attributes_only
-	 * @param int $size_limit
-	 * @param int $time_limit
-	 * @param int $deref
+	 * @param bool $attributesOnly
+	 * @param int $sizeLimit
+	 * @param int $timeLimit
+	 * @param int $dereferenceAliases
 	 * @return bool
 	 * @see http://ca3.php.net/manual/fr/function.ldap-search.php
 	 */
-	static public function search($basedn = NULL, $filter = NULL, $attributes = array(), $attributes_only = 0, $size_limit = 0, $time_limit = 0, $deref = LDAP_DEREF_NEVER) {
+	public function search($baseDn = NULL, $filter = NULL, $attributes = array(), $attributesOnly = FALSE, $sizeLimit = 0, $timeLimit = 0, $dereferenceAliases = LDAP_DEREF_NEVER) {
 
-		if (!$basedn) {
-			static::$status['search']['basedn'] = 'No valid base DN';
+		if (!$baseDn) {
+			$this->status['search']['basedn'] = 'No valid base DN';
 			return FALSE;
 		}
 		if (!$filter) {
-			static::$status['search']['filter'] = 'No valid filter';
+			$this->status['search']['filter'] = 'No valid filter';
 			return FALSE;
 		}
 
-		if (static::$cid) {
-			$cid = static::$cid;
-			if (is_array($basedn)) {
+		if ($this->connection) {
+			$connections = $this->connection;
+			if (is_array($baseDn)) {
 
-				$cid = array();
-				foreach ($basedn as $dn) {
-					$cid[] = static::$cid;
+				$connections = array();
+				foreach ($baseDn as $dn) {
+					$connections[] = $this->connection;
 				}
 			}
 
-			if (!(static::$sid = @ldap_search($cid, $basedn, $filter, $attributes, $attributes_only, $size_limit, $time_limit, $deref))) {
+			if (!($this->searchResult = @ldap_search($connections, $baseDn, $filter, $attributes, $attributesOnly, $sizeLimit, $timeLimit, $dereferenceAliases))) {
 				// Search failed.
-				static::$status['search']['status'] = ldap_error(static::$cid);
+				$this->status['search']['status'] = ldap_error($this->connection);
 				return FALSE;
 			}
 
-			if (is_array(static::$sid)) {
+			if (is_array($this->searchResult)) {
 				// Search successful.
-				static::$feid = @ldap_first_entry(static::$cid, static::$sid[0]);
+				$this->firstResultEntry = @ldap_first_entry($this->connection, $this->searchResult[0]);
 			} else {
-				static::$feid = @ldap_first_entry(static::$cid, static::$sid);
+				$this->firstResultEntry = @ldap_first_entry($this->connection, $this->searchResult);
 			}
-			static::$status['search']['status'] = ldap_error(static::$cid);
+			$this->status['search']['status'] = ldap_error($this->connection);
 			return TRUE;
 		}
 
 		// No connection identifier (cid).
-		static::$status['search']['status'] = ldap_error(static::$cid);
+		$this->status['search']['status'] = ldap_error($this->connection);
 		return FALSE;
 	}
 
 	/**
-	 * Returns up to 1000 LDAP entries corresponding to a filter prepared by a call to
-	 * @see LdapUtility::search().
+	 * Returns up to MAX_ENTRIES (1000) LDAP entries corresponding to a filter prepared by a call to
+	 * @see search().
 	 *
 	 * @param resource $previousEntry Used to get the remaining entries after receiving a partial result set
 	 * @return array
 	 */
-	static public function get_entries($previousEntry = NULL) {
+	public function getEntries($previousEntry = NULL) {
 		$entries = array('count' => 0);
-		static::$previousEntry = NULL;
+		$this->previousEntry = NULL;
 
-		$sids = is_array(static::$sid) ? static::$sid : array(static::$sid);
-		foreach ($sids as $sid) {
-			$entry = $previousEntry === NULL ? @ldap_first_entry(static::$cid, $sid) : @ldap_next_entry(static::$cid, $previousEntry);
-			if (!$entry) continue;
+		$searchResults = is_array($this->searchResult) ? $this->searchResult : array($this->searchResult);
+		foreach ($searchResults as $searchResult) {
+			$entry = ($previousEntry === NULL)
+				? @ldap_first_entry($this->connection, $searchResult)
+				: @ldap_next_entry($this->connection, $previousEntry);
+
+			if (!$entry) {
+				continue;
+			}
 			do {
-				$attributes = ldap_get_attributes(static::$cid, $entry);
-				$attributes['dn'] = ldap_get_dn(static::$cid, $entry);
+				$attributes = ldap_get_attributes($this->connection, $entry);
+				$attributes['dn'] = ldap_get_dn($this->connection, $entry);
 				$tempEntry = array();
 				foreach ($attributes as $key => $value) {
 					$tempEntry[strtolower($key)] = $value;
 				}
 				$entries[] = $tempEntry;
 				$entries['count']++;
-				if ($entries['count'] == 1000) {
-					static::$previousEntry = $entry;
+				if ($entries['count'] == static::MAX_ENTRIES) {
+					$this->previousEntry = $entry;
 					break;
 				}
-			} while ($entry = @ldap_next_entry(static::$cid, $entry));
+			} while ($entry = @ldap_next_entry($this->connection, $entry));
 		}
 
-		static::$status['get_entries']['status'] = ldap_error(static::$cid);
+		$this->status['get_entries']['status'] = ldap_error($this->connection);
 
 		return $entries['count'] > 0
 			// Convert LDAP result character set  -> local character set
-			? static::convert_charset_array($entries, static::$ldap_charset, static::$local_charset)
+			? $this->convertCharacterSetForArray($entries, $this->ldapCharacterSet, $this->typo3CharacterSet)
 			: array();
 	}
 
 	/**
 	 * Returns next LDAP entries corresponding to a filter prepared by a call to
-	 * @see LdapUtility::search().
+	 * @see search().
 	 *
 	 * @return array
 	 */
-	static public function get_next_entries() {
-		return static::get_entries(static::$previousEntry);
+	public function getNextEntries() {
+		return $this->getEntries($this->previousEntry);
 	}
 
 	/**
-	 * Returns TRUE if last call to @see LdapUtility::get_entries()
+	 * Returns TRUE if last call to @see getEntries()
 	 * returned a partial result set.
 	 *
 	 * @return bool
 	 */
-	static public function has_more_entries() {
-		return static::$previousEntry !== NULL;
-	}
-
-	static public function get_first_entry() {
-		static::$status['get_first_entry']['status'] = ldap_error(static::$cid);
-		return (static::convert_charset_array(@ldap_get_attributes(static::$cid, static::$feid), static::$ldap_charset, static::$local_charset));
-	}
-
-	static public function get_dn() {
-		return (@ldap_get_dn(static::$cid, static::$feid));
-	}
-
-	static public function get_attributes() {
-		return (@ldap_get_attributes(static::$cid, static::$feid));
-	}
-
-	static public function get_status() {
-		return static::$status;
+	public function hasMoreEntries() {
+		return $this->previousEntry !== NULL;
 	}
 
 	/**
-	 * Disconnect.
+	 * Returns the first entry.
 	 *
+	 * @return array
+	 */
+	public function getFirstEntry() {
+		$this->status['get_first_entry']['status'] = ldap_error($this->connection);
+		$attributes = @ldap_get_attributes($this->connection, $this->firstResultEntry);
+		return ($this->convertCharacterSetForArray($attributes, $this->ldapCharacterSet, $this->typo3CharacterSet));
+	}
+
+	/**
+	 * Returns the DN.
+	 *
+	 * @return string
+	 */
+	public function getDn() {
+		return (@ldap_get_dn($this->connection, $this->firstResultEntry));
+	}
+
+	/**
+	 * Returns the attributes.
+	 *
+	 * @return array
+	 */
+	public function getAttributes() {
+		return (@ldap_get_attributes($this->connection, $this->firstResultEntry));
+	}
+
+	/**
+	 * Returns the LDAP status.
+	 *
+	 * @return array
+	 */
+	public function getStatus() {
+		return $this->status;
+	}
+
+	/**
+	 * Initializes the character set.
+	 *
+	 * @param string $characterSet
 	 * @return void
 	 */
-	static public function disconnect() {
-		if (static::$cid) {
-			@ldap_close(static::$cid);
-		}
-	}
-
-	function is_connect() {
-		return (bool)static::$cid;
-	}
-
-	static protected function init_charset($charset = NULL) {
+	protected function initializeCharacterSet($characterSet = NULL) {
 		/** @var $csObj \TYPO3\CMS\Core\Charset\CharsetConverter */
 		if ((isset($GLOBALS['TSFE'])) && (isset($GLOBALS['TSFE']->csConvObj))) {
 			$csObj = $GLOBALS['TSFE']->csConvObj;
@@ -385,29 +419,41 @@ class LdapUtility {
 		}
 
 		// LDAP server charset
-		static::$ldap_charset = $csObj->parse_charset($charset ? $charset : 'utf-8');
+		$this->ldapCharacterSet = $csObj->parse_charset($characterSet ? $characterSet : 'utf-8');
 
 		// TYPO3 charset
-		static::$local_charset = 'utf-8';
+		$this->typo3CharacterSet = 'utf-8';
 	}
 
-	static public function convert_charset_array($arr, $char1, $char2) {
+	/**
+	 * Converts entries from one character set to another.
+	 *
+	 * @param array|mixed $arr
+	 * @param string $fromCharacterSet Source character set
+	 * @param string $toCharacterSet Target character set
+	 * @return array|mixed
+	 */
+	protected function convertCharacterSetForArray($arr, $fromCharacterSet, $toCharacterSet) {
+		/** @var $csObj \TYPO3\CMS\Core\Charset\CharsetConverter */
+		static $csObj = NULL;
+
 		if (!is_array($arr)) {
 			return $arr;
 		}
 
-		/** @var $csObj \TYPO3\CMS\Core\Charset\CharsetConverter */
-		if ((isset($GLOBALS['TSFE'])) && (isset($GLOBALS['TSFE']->csConvObj))) {
-			$csObj = $GLOBALS['TSFE']->csConvObj;
-		} else {
-			$csObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
+		if ($csObj === NULL) {
+			if ((isset($GLOBALS['TSFE'])) && (isset($GLOBALS['TSFE']->csConvObj))) {
+				$csObj = $GLOBALS['TSFE']->csConvObj;
+			} else {
+				$csObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
+			}
 		}
 
 		foreach ($arr as $k => $val) {
 			if (is_array($val)) {
-				$arr[$k] = static::convert_charset_array($val, $char1, $char2);
+				$arr[$k] = $this->convertCharacterSetForArray($val, $fromCharacterSet, $toCharacterSet);
 			} else {
-				$arr[$k] = $csObj->conv($val, $char1, $char2);
+				$arr[$k] = $csObj->conv($val, $fromCharacterSet, $toCharacterSet);
 			}
 		}
 

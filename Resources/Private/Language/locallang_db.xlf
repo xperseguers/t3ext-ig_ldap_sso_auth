@@ -3,6 +3,58 @@
 	<file source-language="en" datatype="plaintext" original="messages" date="2015-02-17T16:10:14Z" product-name="ig_ldap_sso_auth">
 		<header/>
 		<body>
+			<trans-unit id="settings.checkConfiguration">
+				<source>Configuration check</source>
+			</trans-unit>
+			<trans-unit id="settings.throwExceptionAtLogin">
+				<source>Throw exception if configured incorrectly: Recommended for new installation - LDAP authentication is not compatible with loginSecurityLevel set to "challenged" or "superchallenged" since the real password can never be sent against the LDAP repository. Instead of failing silently, the extension will throw an exception at login. If the method appears to be brutal it will save a lot of headaches. Value of loginSecurityLevel should be handled manually to "normal" or even better "rsa" in the Install Tool.</source>
+			</trans-unit>
+			<trans-unit id="settings.forceLowerCaseUsername">
+				<source>Force lower-case user name: If checked, user names will be always be stored in lower-cases. Useful for case-sensitive databases.</source>
+			</trans-unit>
+			<trans-unit id="settings.enableBELDAPAuthentication">
+				<source>Backend LDAP authentication: Enable LDAP authentication for the backend.</source>
+			</trans-unit>
+			<trans-unit id="settings.TYPO3BEGroupExist">
+				<source>Backend user group must exist: If no groups are found locally, the user may not log on.</source>
+			</trans-unit>
+			<trans-unit id="settings.TYPO3BEUserExist">
+				<source>Backend user must exist: If checked, users that are not already present in TYPO3 may not log on.</source>
+			</trans-unit>
+			<trans-unit id="settings.BEfailsafe">
+				<source>Enable local Backend users: If checked, Backend users without a reference to LDAP (e.g., "admin") may log on.</source>
+			</trans-unit>
+			<trans-unit id="settings.TYPO3BEGroupsNotSynchronize">
+				<source>Disable Backend group synchronization: If checked, TYPO3 Backend user groups will not get updated.</source>
+			</trans-unit>
+			<trans-unit id="settings.keepBEGroups">
+				<source>Keep Backend groups: Keep the Backend user groups assigned locally.</source>
+			</trans-unit>
+			<trans-unit id="settings.enableFELDAPAuthentication">
+				<source>Frontend LDAP authentication: Enable LDAP authentication for the frontend.</source>
+			</trans-unit>
+			<trans-unit id="settings.TYPO3FEDeleteUserIfNoLDAPGroups">
+				<source>Purge Frontend users: Delete Frontend user upon login if no LDAP groups are found.</source>
+			</trans-unit>
+			<trans-unit id="settings.TYPO3FEDeleteUserIfNoTYPO3Groups">
+				<source>Restrict new Frontend users: Do not synchronize Frontend user if the LDAP groups they are member of are not found locally.</source>
+			</trans-unit>
+			<trans-unit id="settings.TYPO3FEGroupExist">
+				<source>Frontend user group must exist: If no groups are found locally, the user may not log on.</source>
+			</trans-unit>
+			<trans-unit id="settings.TYPO3FEUserExist">
+				<source>Frontend user must exist: If checked, users that are not already present in TYPO3 may not log on.</source>
+			</trans-unit>
+			<trans-unit id="settings.TYPO3FEGroupsNotSynchronize">
+				<source>Disable Frontend group synchronization: If checked, TYPO3 Frontend user groups will not get updated.</source>
+			</trans-unit>
+			<trans-unit id="settings.keepFEGroups">
+				<source>Keep Frontend groups: Keep the Frontend user groups assigned locally.</source>
+			</trans-unit>
+			<trans-unit id="settings.enableFESSO">
+				<source>Frontend SSO: Enable Single Sign-On for Frontend users.</source>
+			</trans-unit>
+
 			<trans-unit id="tx_igldapssoauth_config">
 				<source>Configuration LDAP / SSO</source>
 			</trans-unit>

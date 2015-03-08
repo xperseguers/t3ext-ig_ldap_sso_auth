@@ -1,50 +1,50 @@
-# cat=basic//1; type=user[EXT:ig_ldap_sso_auth/Classes/Em/ConfigurationHelper.php:\Causal\IgLdapSsoAuth\Em\ConfigurationHelper->checkConfiguration]; label=Configuration check
+# cat=basic//1; type=user[EXT:ig_ldap_sso_auth/Classes/Em/ConfigurationHelper.php:\Causal\IgLdapSsoAuth\Em\ConfigurationHelper->checkConfiguration]; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.checkConfiguration
 checkConfiguration=0
 
-# cat=basic//2; type=boolean; label=Throw exception if misconfigured: Recommended for new installation - LDAP authentication is not compatible with loginSecurityLevel set to "challenged" or "superchallenged" since the real password can never be sent against the LDAP repository. Instead of failing silently, the extension will throw an exception at login. If the method appears to be brutal it will save a lot of headaches. Value of loginSecurityLevel should be handled manually to "normal" or even better "rsa" in the Install Tool.
+# cat=basic//2; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.throwExceptionAtLogin
 throwExceptionAtLogin = 1
 
-# cat=basic//3; type=boolean; label=Force lower-case user name: If checked, user names will be always be stored in lower-cases. Useful for case-sensitive databases.
+# cat=basic//3; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.forceLowerCaseUsername
 forceLowerCaseUsername = 0
 
-# cat=backend/enable/1; type=boolean; label=Backend LDAP authentication: Enable LDAP authentication for the backend.
+# cat=backend/enable/1; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.enableBELDAPAuthentication
 enableBELDAPAuthentication = 0
 
-# cat=backend/enable; type=boolean; label=Backend user group must exist: If no groups are found locally, the user may not log on.
+# cat=backend/enable; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.TYPO3BEGroupExist
 TYPO3BEGroupExist = 0
 
-# cat=backend/enable; type=boolean; label=Backend user must exist: If checked, users that are not already present in TYPO3 may not log on.
+# cat=backend/enable; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.TYPO3BEUserExist
 TYPO3BEUserExist = 0
 
-# cat=backend/enable; type=boolean; label=Enable local Backend users: If checked, Backend users without a reference to LDAP (e.g., "admin") may log on.
+# cat=backend/enable; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.BEfailsafe
 BEfailsafe = 0
 
-# cat=backend/enable; type=boolean; label=Disable Backend group synchronization: If checked, TYPO3 Backend user groups will not get updated.
+# cat=backend/enable; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.TYPO3BEGroupsNotSynchronize
 TYPO3BEGroupsNotSynchronize = 0
 
-# cat=backend/enable; type=boolean; label=Keep Backend groups: Keep the Backend user groups assigned locally.
+# cat=backend/enable; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.keepBEGroups
 keepBEGroups = 0
 
-# cat=frontend/enable/1; type=boolean; label=Frontend LDAP authentication: Enable LDAP authentication for the frontend.
+# cat=frontend/enable/1; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.enableFELDAPAuthentication
 enableFELDAPAuthentication = 0
 
-# cat=frontend/enable; type=boolean; label=Purge Frontend users: Delete Frontend user upon login if no LDAP groups are found.
+# cat=frontend/enable; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.TYPO3FEDeleteUserIfNoLDAPGroups
 TYPO3FEDeleteUserIfNoLDAPGroups = 0
 
-# cat=frontend/enable; type=boolean; label=Restrict new Frontend users: Do not synchronize Frontend user if the LDAP groups they are member of are not found locally.
+# cat=frontend/enable; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.TYPO3FEDeleteUserIfNoTYPO3Groups
 TYPO3FEDeleteUserIfNoTYPO3Groups = 0
 
-# cat=frontend/enable; type=boolean; label=Frontend user group must exist: If no groups are found locally, the user may not log on.
+# cat=frontend/enable; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.TYPO3FEGroupExist
 TYPO3FEGroupExist = 0
 
-# cat=frontend/enable; type=boolean; label=Frontend user must exist: If checked, users that are not already present in TYPO3 may not log on.
+# cat=frontend/enable; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.TYPO3FEUserExist
 TYPO3FEUserExist = 0
 
-# cat=frontend/enable; type=boolean; label=Disable Frontend group synchronization: If checked, TYPO3 Frontend user groups will not get updated.
+# cat=frontend/enable; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.TYPO3FEGroupsNotSynchronize
 TYPO3FEGroupsNotSynchronize = 0
 
-# cat=frontend/enable; type=boolean; label=Keep Frontend groups: Keep the Frontend user groups assigned locally.
+# cat=frontend/enable; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.keepFEGroups
 keepFEGroups = 0
 
-# cat=frontend/enable; type=boolean; label=Frontend SSO: Enable Single Sign-On for Frontend users.
+# cat=frontend/enable; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.enableFESSO
 enableFESSO = 0

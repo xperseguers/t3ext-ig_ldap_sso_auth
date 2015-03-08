@@ -15,7 +15,7 @@ namespace Causal\IgLdapSsoAuth\Tests\Unit\Library;
  */
 
 /**
- * Testcase for class \Causal\IgLdapSsoAuth\Library\Configuration.
+ * Test cases for class \Causal\IgLdapSsoAuth\Library\Configuration.
  */
 class ConfigurationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 

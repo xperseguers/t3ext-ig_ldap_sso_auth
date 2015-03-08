@@ -1,0 +1,30 @@
+{
+  "count": 3,
+  "0": {
+	"cn": {
+	  "count": 1,
+	  "0": "Mathematicians"
+	},
+	"0": "cn",
+	"count": 1,
+	"dn": "ou=mathematicians,dc=example,dc=com"
+  },
+  "1": {
+	"cn": {
+	  "count": 1,
+	  "0": "Scientists"
+	},
+	"0": "cn",
+	"count": 1,
+	"dn": "ou=scientists,dc=example,dc=com"
+  },
+  "2": {
+	"cn": {
+	  "count": 1,
+	  "0": "Italians"
+	},
+	"0": "cn",
+	"count": 1,
+	"dn": "ou=italians,ou=scientists,dc=example,dc=com"
+  }
+}

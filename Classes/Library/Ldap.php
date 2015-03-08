@@ -34,17 +34,9 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface {
 
 	/**
 	 * @var \Causal\IgLdapSsoAuth\Utility\LdapUtility
+	 * @inject
 	 */
 	protected $ldapUtility;
-
-	/**
-	 * Injects an instance of \Causal\IgLdapSsoAuth\Utility\LdapUtility.
-	 *
-	 * @param \Causal\IgLdapSsoAuth\Utility\LdapUtility $ldapUtility
-	 */
-	public function injectLdapUtility(\Causal\IgLdapSsoAuth\Utility\LdapUtility $ldapUtility) {
-		$this->ldapUtility = $ldapUtility;
-	}
 
 	/**
 	 * Returns an instance of this class.

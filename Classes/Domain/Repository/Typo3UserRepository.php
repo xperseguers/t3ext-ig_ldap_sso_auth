@@ -15,6 +15,7 @@ namespace Causal\IgLdapSsoAuth\Domain\Repository;
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Causal\IgLdapSsoAuth\Exception\InvalidUserTableException;
 use Causal\IgLdapSsoAuth\Library\Configuration;
 use Causal\IgLdapSsoAuth\Utility\NotificationUtility;
 
@@ -33,11 +34,11 @@ class Typo3UserRepository {
 	 *
 	 * @param string $table Either 'be_users' or 'fe_users'
 	 * @return array
-	 * @throws \RuntimeException
+	 * @throws InvalidUserTableException
 	 */
 	static public function create($table) {
 		if (!GeneralUtility::inList('be_users,fe_users', $table)) {
-			throw new \RuntimeException('Invalid table "' . $table . '"', 1404891582);
+			throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891582);
 		}
 
 		$newUser = array();
@@ -64,11 +65,11 @@ class Typo3UserRepository {
 	 * @param string $username
 	 * @param string $dn
 	 * @return array Array of user records
-	 * @throws \RuntimeException
+	 * @throws InvalidUserTableException
 	 */
 	static public function fetch($table, $uid = 0, $pid = 0, $username = NULL, $dn = NULL) {
 		if (!GeneralUtility::inList('be_users,fe_users', $table)) {
-			throw new \RuntimeException('Invalid table "' . $table . '"', 1404891636);
+			throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891636);
 		}
 
 		$users = array();
@@ -119,11 +120,11 @@ class Typo3UserRepository {
 	 * @param string $table Either 'be_users' or 'fe_users'
 	 * @param array $data
 	 * @return array The new record
-	 * @throws \RuntimeException
+	 * @throws InvalidUserTableException
 	 */
 	static public function add($table, array $data = array()) {
 		if (!GeneralUtility::inList('be_users,fe_users', $table)) {
-			throw new \RuntimeException('Invalid table "' . $table . '"', 1404891712);
+			throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891712);
 		}
 
 		$databaseConnection = static::getDatabaseConnection();
@@ -159,11 +160,11 @@ class Typo3UserRepository {
 	 * @param string $table Either 'be_users' or 'fe_users'
 	 * @param array $data
 	 * @return bool TRUE on success, otherwise FALSE
-	 * @throws \Exception
+	 * @throws InvalidUserTableException
 	 */
 	static public function update($table, array $data = array()) {
 		if (!GeneralUtility::inList('be_users,fe_users', $table)) {
-			throw new \RuntimeException('Invalid table "' . $table . '"', 1404891732);
+			throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891732);
 		}
 
 		$databaseConnection = static::getDatabaseConnection();

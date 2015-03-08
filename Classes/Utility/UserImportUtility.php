@@ -15,6 +15,7 @@ namespace Causal\IgLdapSsoAuth\Utility;
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Causal\IgLdapSsoAuth\Exception\ImportUsersException;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3UserRepository;
 use Causal\IgLdapSsoAuth\Library\Authentication;
 use Causal\IgLdapSsoAuth\Library\Configuration;
@@ -181,7 +182,7 @@ class UserImportUtility {
 	 * @param array $ldapUser LDAP user information
 	 * @param string $restoreBehavior How to restore users (only for update)
 	 * @return array Modified user data
-	 * @throws \Exception
+	 * @throws ImportUsersException
 	 */
 	public function import($user, $ldapUser, $restoreBehavior = 'both') {
 		// Store the extra data for later restore and remove it
@@ -246,7 +247,7 @@ class UserImportUtility {
 					if ($postProcessor instanceof \Causal\IgLdapSsoAuth\Utility\ExtraDataProcessorInterface) {
 						$postProcessor->processExtraData($this->userTable, $user);
 					} else {
-						throw new \Exception(
+						throw new ImportUsersException(
 							sprintf(
 								'Invalid post-processing class %s. It must implement the \\Causal\\IgLdapSsoAuth\\Utility\\ExtraDataProcessorInterface interface',
 								$className

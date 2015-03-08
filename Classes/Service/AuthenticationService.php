@@ -15,6 +15,8 @@ namespace Causal\IgLdapSsoAuth\Service;
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Causal\IgLdapSsoAuth\Exception\UnsupportedLoginSecurityLevelException;
+use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
 use Causal\IgLdapSsoAuth\Library\Authentication;
 use Causal\IgLdapSsoAuth\Library\Configuration;
 use Causal\IgLdapSsoAuth\Utility\DebugUtility;
@@ -53,7 +55,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 	 * Find a user (eg. look up the user record in database when a login is sent)
 	 *
 	 * @return mixed user array or FALSE
-	 * @throws \RuntimeException
+	 * @throws UnsupportedLoginSecurityLevelException
 	 */
 	public function getUser() {
 		$user = FALSE;
@@ -118,13 +120,13 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 				$loginSecurityLevel = $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['loginSecurityLevel'];
 				// normal case
 				// Check if $loginSecurityLevel is set to "challenged" or "superchallenged" and throw an error if the configuration allows it
-				// By default, it will not throw an Exception
+				// By default, it will not throw an exception
 				if (isset($this->config['throwExceptionAtLogin']) && $this->config['throwExceptionAtLogin'] == 1) {
 					if ($loginSecurityLevel === 'challenged' || $loginSecurityLevel === 'superchallenged') {
 						$message = "ig_ldap_sso_auth error: current login security level '" . $loginSecurityLevel . "' is not supported.";
-						$message .= " Try to use 'normal' or 'rsa' (recommended but would need more settings): ";
-						$message .= "\$TYPO3_CONF_VARS['BE']['loginSecurityLevel'] = 'normal';";
-						throw new \RuntimeException($message, 1324313489);
+						$message .= " Try to use 'normal' or 'rsa' (highly recommended): ";
+						$message .= "\$GLOBALS['TYPO3_CONF_VARS']['" . TYPO3_MODE . "']['loginSecurityLevel'] = 'rsa';";
+						throw new UnsupportedLoginSecurityLevelException($message, 1324313489);
 					}
 				}
 
@@ -138,7 +140,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 						// Could not decrypt password
 						$userRecordOrIsValid = FALSE;
 					}
-				} catch (\Exception $e) {
+				} catch (UnresolvedPhpDependencyException $e) {
 					// Possible known exception: 1409566275, LDAP extension is not available for PHP
 					$userRecordOrIsValid = FALSE;
 				}

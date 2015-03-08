@@ -190,7 +190,7 @@ class tx_igldapssoauth_utility_Ldap {
 	 * @param integer $serverType 0 = OpenLDAP, 1 = Active Directory / Novell eDirectory
 	 * @param bool $tls
 	 * @return bool TRUE if connection succeeded.
-	 * @throws \Exception when LDAP extension for PHP is not available
+	 * @throws \Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException when LDAP extension for PHP is not available
 	 * @deprecated since 3.0 will be removed in 3.2, use \Causal\IgLdapSsoAuth\Utility\LdapUtility::connect() instead
 	 */
 	static public function connect($host = NULL, $port = NULL, $protocol = NULL, $charset = NULL, $serverType = 0, $tls = FALSE) {

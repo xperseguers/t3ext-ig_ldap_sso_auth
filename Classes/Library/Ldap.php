@@ -65,6 +65,7 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface {
 	 *
 	 * @param array $config
 	 * @return bool
+	 * @throws \Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException when LDAP extension for PHP is not available
 	 */
 	public function connect(array $config = array()) {
 		$debugConfiguration = array(

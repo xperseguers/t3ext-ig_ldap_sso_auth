@@ -15,6 +15,7 @@ namespace Causal\IgLdapSsoAuth\Utility;
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
 
 /**
  * Class LdapUtility.
@@ -102,12 +103,12 @@ class LdapUtility {
 	 * @param integer $serverType 0 = OpenLDAP, 1 = Active Directory / Novell eDirectory
 	 * @param bool $tls
 	 * @return bool TRUE if connection succeeded.
-	 * @throws \Exception when LDAP extension for PHP is not available
+	 * @throws UnresolvedPhpDependencyException when LDAP extension for PHP is not available
 	 */
 	public function connect($host = NULL, $port = NULL, $protocol = NULL, $characterSet = NULL, $serverType = 0, $tls = FALSE) {
 		// Valid if php load ldap module.
 		if (!extension_loaded('ldap')) {
-			throw new \Exception('Your PHP version seems to lack LDAP support. Please install/activate the extension.', 1409566275);
+			throw new UnresolvedPhpDependencyException('Your PHP version seems to lack LDAP support. Please install/activate the extension.', 1409566275);
 		}
 
 		// Connect to ldap server.

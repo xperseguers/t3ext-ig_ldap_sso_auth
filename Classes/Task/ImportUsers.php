@@ -15,6 +15,7 @@ namespace Causal\IgLdapSsoAuth\Task;
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Causal\IgLdapSsoAuth\Exception\ImportUsersException;
 use Causal\IgLdapSsoAuth\Library\Authentication;
 use Causal\IgLdapSsoAuth\Library\Configuration;
 use Causal\IgLdapSsoAuth\Library\Ldap;
@@ -63,8 +64,8 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 	/**
 	 * Performs the synchronization of LDAP users according to selected parameters.
 	 *
-	 * @throws \Exception
 	 * @return boolean Returns TRUE on successful execution, FALSE on error
+	 * @throws ImportUsersException
 	 */
 	public function execute() {
 
@@ -143,7 +144,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 		// If some failures were registered, rollback the whole transaction and report error
 		if ($failures > 0) {
 			$this->getDatabaseConnection()->sql_query('ROLLBACK');
-			throw new \Exception(
+			throw new ImportUsersException(
 				'Some or all imports failed. Synchronisation was aborted. Check your settings or your network connection',
 				1410774015
 			);

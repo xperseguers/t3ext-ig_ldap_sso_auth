@@ -15,6 +15,7 @@ namespace Causal\IgLdapSsoAuth\Domain\Repository;
  */
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Causal\IgLdapSsoAuth\Exception\InvalidUserGroupTableException;
 use Causal\IgLdapSsoAuth\Library\Authentication;
 use Causal\IgLdapSsoAuth\Utility\NotificationUtility;
 
@@ -33,11 +34,11 @@ class Typo3GroupRepository {
 	 *
 	 * @param string $table Either 'be_groups' or 'fe_groups'
 	 * @return array
-	 * @throws \RuntimeException
+	 * @throws InvalidUserGroupTableException
 	 */
 	static public function create($table) {
 		if (!GeneralUtility::inList('be_groups,fe_groups', $table)) {
-			throw new \RuntimeException('Invalid table "' . $table . '"', 1404892331);
+			throw new InvalidUserGroupTableException('Invalid table "' . $table . '"', 1404892331);
 		}
 
 		$newGroup = array();
@@ -62,11 +63,11 @@ class Typo3GroupRepository {
 	 * @param int $pid
 	 * @param string $dn
 	 * @return array|NULL
-	 * @throws \RuntimeException
+	 * @throws InvalidUserGroupTableException
 	 */
 	static public function fetch($table, $uid = 0, $pid = NULL, $dn = NULL) {
 		if (!GeneralUtility::inList('be_groups,fe_groups', $table)) {
-			throw new \RuntimeException('Invalid table "' . $table . '"', 1404891809);
+			throw new InvalidUserGroupTableException('Invalid table "' . $table . '"', 1404891809);
 		}
 
 		$databaseConnection = static::getDatabaseConnection();
@@ -95,11 +96,11 @@ class Typo3GroupRepository {
 	 * @param string $table Either 'be_groups' or 'fe_groups'
 	 * @param array $data
 	 * @return array The new record
-	 * @throws \RuntimeException
+	 * @throws InvalidUserGroupTableException
 	 */
 	static public function add($table, array $data = array()) {
 		if (!GeneralUtility::inList('be_groups,fe_groups', $table)) {
-			throw new \RuntimeException('Invalid table "' . $table . '"', 1404891833);
+			throw new InvalidUserGroupTableException('Invalid table "' . $table . '"', 1404891833);
 		}
 
 		$databaseConnection = static::getDatabaseConnection();
@@ -135,11 +136,11 @@ class Typo3GroupRepository {
 	 * @param string $table Either 'be_groups' or 'fe_groups'
 	 * @param array $data
 	 * @return bool TRUE on success, otherwise FALSE
-	 * @throws \Exception
+	 * @throws InvalidUserGroupTableException
 	 */
 	static public function update($table, array $data = array()) {
 		if (!GeneralUtility::inList('be_groups,fe_groups', $table)) {
-			throw new \RuntimeException('Invalid table "' . $table . '"', 1404891867);
+			throw new InvalidUserGroupTableException('Invalid table "' . $table . '"', 1404891867);
 		}
 
 		$databaseConnection = static::getDatabaseConnection();

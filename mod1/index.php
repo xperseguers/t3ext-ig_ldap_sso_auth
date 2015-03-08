@@ -23,6 +23,7 @@ $GLOBALS['BE_USER']->modAccess($MCONF, 1);
 
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3GroupRepository;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3UserRepository;
 use Causal\IgLdapSsoAuth\Library\Authentication;
@@ -304,7 +305,7 @@ CSS;
 
 			try {
 				Ldap::getInstance()->connect($ldapConfiguration);
-			} catch (Exception $e) {
+			} catch (UnresolvedPhpDependencyException $e) {
 				// Possible known exception: 1409566275, LDAP extension is not available for PHP
 				/** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
 				$flashMessage = GeneralUtility::makeInstance(
@@ -485,7 +486,7 @@ CSS;
 
 		try {
 			$success = Ldap::getInstance()->connect(Configuration::getLdapConfiguration());
-		} catch (\Exception $e) {
+		} catch (UnresolvedPhpDependencyException $e) {
 			// Possible known exception: 1409566275, LDAP extension is not available for PHP
 			$this->enqueueFlashMessage(
 				$e->getMessage(),
@@ -1071,7 +1072,7 @@ HTML;
 	protected function checkLdapConnection() {
 		try {
 			$success = Ldap::getInstance()->connect(Configuration::getLdapConfiguration());
-		} catch (\Exception $e) {
+		} catch (UnresolvedPhpDependencyException $e) {
 			// Possible known exception: 1409566275, LDAP extension is not available for PHP
 			$this->enqueueFlashMessage(
 				$e->getMessage(),

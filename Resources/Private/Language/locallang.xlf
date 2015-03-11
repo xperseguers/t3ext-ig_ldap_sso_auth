@@ -145,6 +145,39 @@
 			<trans-unit id="module_search">
 				<source>Search wizard</source>
 			</trans-unit>
+			<trans-unit id="module_search_type">
+				<source>Type</source>
+			</trans-unit>
+			<trans-unit id="module_search_type.frontendUsers">
+				<source>Frontend users</source>
+			</trans-unit>
+			<trans-unit id="module_search_type.frontendUserGroups">
+				<source>Frontend user groups</source>
+			</trans-unit>
+			<trans-unit id="module_search_type.backendUsers">
+				<source>Backend users</source>
+			</trans-unit>
+			<trans-unit id="module_search_type.backendUserGroups">
+				<source>Backend user groups</source>
+			</trans-unit>
+			<trans-unit id="module_search_options">
+				<source>Options</source>
+			</trans-unit>
+			<trans-unit id="module_search_options.firstEntry">
+				<source>First entry only</source>
+			</trans-unit>
+			<trans-unit id="module_search_options.status">
+				<source>Show status</source>
+			</trans-unit>
+			<trans-unit id="module_search_basedn">
+				<source>Base DN</source>
+			</trans-unit>
+			<trans-unit id="module_search_filter">
+				<source>Filter</source>
+			</trans-unit>
+			<trans-unit id="module_search.action.search">
+				<source>search</source>
+			</trans-unit>
 			<trans-unit id="module_search_status">
 				<source>LDAP search status</source>
 			</trans-unit>

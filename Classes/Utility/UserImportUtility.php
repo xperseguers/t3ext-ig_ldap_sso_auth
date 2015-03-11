@@ -132,8 +132,8 @@ class UserImportUtility {
 		$ldapUsers = array();
 		if (!empty($this->configuration['users']['basedn'])) {
 			if (!$partial) {
-				$filter = Configuration::replace_filter_markers($this->configuration['users']['filter']);
-				$attributes = Configuration::get_ldap_attributes($this->configuration['users']['mapping']);
+				$filter = Configuration::replaceFilterMarkers($this->configuration['users']['filter']);
+				$attributes = Configuration::getLdapAttributes($this->configuration['users']['mapping']);
 				$ldapUsers = Ldap::getInstance()->search($this->configuration['users']['basedn'], $filter, $attributes);
 			} else {
 				$ldapUsers = Ldap::getInstance()->searchNext();
@@ -197,12 +197,12 @@ class UserImportUtility {
 			Configuration::setMode($this->context);
 			$user['username'] = Typo3UserRepository::setUsername($user['username']);
 			$user['password'] = Typo3UserRepository::setRandomPassword();
-			$typo3Groups = Authentication::get_user_groups($ldapUser, $this->configuration, $this->groupTable);
+			$typo3Groups = Authentication::getUserGroups($ldapUser, $this->configuration, $this->groupTable);
 			if ($typo3Groups === NULL) {
 				// Required LDAP groups are missing: quit!
 				return $user;
 			}
-			$user = Typo3UserRepository::set_usergroup($typo3Groups, $user);
+			$user = Typo3UserRepository::setUserGroups($user, $typo3Groups);
 
 			$user = Typo3UserRepository::add($this->userTable, $user);
 			$this->usersAdded++;
@@ -222,10 +222,10 @@ class UserImportUtility {
 					$user[$GLOBALS['TCA'][$this->userTable]['ctrl']['enablecolumns']['disabled']] = 0;
 					$user[$GLOBALS['TCA'][$this->userTable]['ctrl']['delete']] = 0;
 			}
-			$typo3Groups = Authentication::get_user_groups($ldapUser, $this->configuration, $this->groupTable);
-			$user = Typo3UserRepository::set_usergroup(
-				($typo3Groups === NULL) ? array() : $typo3Groups,
-				$user
+			$typo3Groups = Authentication::getUserGroups($ldapUser, $this->configuration, $this->groupTable);
+			$user = Typo3UserRepository::setUserGroups(
+				$user,
+				($typo3Groups === NULL) ? array() : $typo3Groups
 			);
 			$success = Typo3UserRepository::update($this->userTable, $user);
 			if ($success) {

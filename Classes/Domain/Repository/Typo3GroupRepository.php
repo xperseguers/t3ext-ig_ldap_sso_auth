@@ -165,6 +165,14 @@ class Typo3GroupRepository {
 		return $success;
 	}
 
+	/**
+	 * Returns the title for a given user.
+	 *
+	 * @param array $ldap_user
+	 * @param array $mapping
+	 * @return null|string
+	 * @deprecated since 3.0, will be removed in 3.2
+	 */
 	static public function get_title($ldap_user = array(), $mapping = array()) {
 		if (!$mapping) {
 			return NULL;

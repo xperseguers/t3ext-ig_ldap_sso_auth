@@ -76,11 +76,26 @@ class Authentication {
 	 * @param string $password
 	 * @return bool|array TRUE or array of user info on success, otherwise FALSE
 	 * @throws \Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException when LDAP extension for PHP is not available
+	 * @deprecated since 3.0, will be removed in 3.2, use ldapAuthenticate() instead
 	 */
 	static public function ldap_auth($username = NULL, $password = NULL) {
+		GeneralUtility::logDeprecatedFunction();
+		return static::ldapAuthenticate($username, $password);
+	}
+
+	/**
+	 * Authenticates using LDAP and returns a user record or FALSE
+	 * if operation fails.
+	 *
+	 * @param string $username
+	 * @param string $password
+	 * @return bool|array TRUE or array of user info on success, otherwise FALSE
+	 * @throws \Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException when LDAP extension for PHP is not available
+	 */
+	static public function ldapAuthenticate($username, $password = NULL) {
 		static::$lastAuthenticationDiagnostic = '';
 
-		if ($username && Configuration::is_enable('forceLowerCaseUsername')) {
+		if ($username && Configuration::getValue('forceLowerCaseUsername')) {
 			// Possible enhancement: use \TYPO3\CMS\Core\Charset\CharsetConverter::conv_case instead
 			$username = strtolower($username);
 		}
@@ -138,15 +153,15 @@ class Authentication {
 	 */
 	static public function synchroniseUser($userdn, $username = NULL) {
 		// User is valid. Get it from DN.
-		$ldap_user = static::get_ldap_user($userdn);
+		$ldapUser = static::getLdapUser($userdn);
 
-		if ($ldap_user === NULL) {
+		if ($ldapUser === NULL) {
 			return FALSE;
 		}
 
 		if (!$username) {
-			$userAttribute = Configuration::get_username_attribute(static::$config['users']['filter']);
-			$username = $ldap_user[$userAttribute][0];
+			$userAttribute = Configuration::getUsernameAttribute(static::$config['users']['filter']);
+			$username = $ldapUser[$userAttribute][0];
 		}
 		// Get user pid from user mapping.
 		$typo3_users_pid = Configuration::getPid(static::$config['users']['mapping']);
@@ -161,17 +176,17 @@ class Authentication {
 		// Get LDAP and TYPO3 user groups for user
 		// First reset the LDAP groups
 		static::$ldapGroups = NULL;
-		$typo3_groups = static::get_user_groups($ldap_user);
+		$typo3_groups = static::getUserGroups($ldapUser);
 		if ($typo3_groups === NULL) {
 			// Required LDAP groups are missing
 			static::$lastAuthenticationDiagnostic = 'Missing required LDAP groups.';
 			return FALSE;
 		}
 
-		if (Configuration::is_enable('IfUserExist') && !$typo3_user['uid']) {
+		if (Configuration::getValue('IfUserExist') && !$typo3_user['uid']) {
 			return FALSE;
 			// User does not exist in TYPO3.
-		} elseif (!$typo3_user['uid'] && (!empty($typo3_groups) || !Configuration::is_enable('DeleteUserIfNoTYPO3Groups'))) {
+		} elseif (!$typo3_user['uid'] && (!empty($typo3_groups) || !Configuration::getValue('DeleteUserIfNoTYPO3Groups'))) {
 			// Insert new user: use TCA configuration to override default values
 			$table = static::$authenticationService->authInfo['db_user']['table'];
 			if (is_array($GLOBALS['TCA'][$table]['columns'])) {
@@ -194,22 +209,22 @@ class Authentication {
 
 			$typo3_user['password'] = Typo3UserRepository::setRandomPassword();
 
-			if ((empty($typo3_groups) && Configuration::is_enable('DeleteUserIfNoTYPO3Groups'))) {
+			if ((empty($typo3_groups) && Configuration::getValue('DeleteUserIfNoTYPO3Groups'))) {
 				$typo3_user['deleted'] = 1;
 				$typo3_user['endtime'] = $GLOBALS['EXEC_TIME'];
 			}
 			// Delete user if no LDAP groups found.
-			if (Configuration::is_enable('DeleteUserIfNoLDAPGroups') && !static::$ldapGroups) {
+			if (Configuration::getValue('DeleteUserIfNoLDAPGroups') && !static::$ldapGroups) {
 				$typo3_user['deleted'] = 1;
 				$typo3_user['endtime'] = $GLOBALS['EXEC_TIME'];
 			}
 			// Set groups to user.
-			$typo3_user = Typo3UserRepository::set_usergroup($typo3_groups, $typo3_user, static::$authenticationService);
+			$typo3_user = Typo3UserRepository::setUserGroups($typo3_user, $typo3_groups);
 			// Merge LDAP user with TYPO3 user from mapping.
 			if ($typo3_user) {
-				$typo3_user = static::merge($ldap_user, $typo3_user, static::$config['users']['mapping']);
+				$typo3_user = static::merge($ldapUser, $typo3_user, static::$config['users']['mapping']);
 
-				if (Configuration::is_enable('forceLowerCaseUsername')) {
+				if (Configuration::getValue('forceLowerCaseUsername')) {
 					// Possible enhancement: use \TYPO3\CMS\Core\Charset\CharsetConverter::conv_case instead
 					$typo3_user['username'] = strtolower($typo3_user['username']);
 				}
@@ -231,7 +246,7 @@ class Authentication {
 	 * @param string $dn
 	 * @return array
 	 */
-	static protected function get_ldap_user($dn = NULL) {
+	static protected function getLdapUser($dn = NULL) {
 		// Restricting the list of returned attributes sometimes
 		// makes the ldap_search() method issue a PHP warning:
 		// Warning: ldap_search(): Array initialization wrong
@@ -259,15 +274,31 @@ class Authentication {
 	}
 
 	/**
-	 * Gets the LDAP and TYPO3 user groups for the given user.
+	 * Gets the LDAP and TYPO3 user groups for a given user.
 	 *
 	 * @param array $ldapUser LDAP user data
 	 * @param array|null $configuration Current LDAP configuration
 	 * @param string $groupTable Name of the group table (should normally be either "be_groups" or "fe_groups")
 	 * @return array|NULL Array of groups or NULL if required LDAP groups are missing
+	 * @throws \Causal\IgLdapSsoAuth\Exception\InvalidUserGroupTableException
+	 * @deprecated since 3.0, will be removed in 3.2, use getUserGroups() instead
 	 */
 	static public function get_user_groups($ldapUser, $configuration = NULL, $groupTable = '') {
-		if (!isset($configuration)) {
+		GeneralUtility::logDeprecatedFunction();
+		return static::getUserGroups($ldapUser, $configuration, $groupTable);
+	}
+
+	/**
+	 * Gets the LDAP and TYPO3 user groups for a given user.
+	 *
+	 * @param array $ldapUser LDAP user data
+	 * @param array $configuration LDAP configuration
+	 * @param string $groupTable Name of the group table (should normally be either "be_groups" or "fe_groups")
+	 * @return array|NULL Array of groups or NULL if required LDAP groups are missing
+	 * @throws \Causal\IgLdapSsoAuth\Exception\InvalidUserGroupTableException
+	 */
+	static public function getUserGroups(array $ldapUser, array $configuration = NULL, $groupTable = '') {
+		if ($configuration === NULL) {
 			$configuration = static::$config;
 		}
 		if (empty($groupTable)) {
@@ -285,11 +316,11 @@ class Authentication {
 		// User is valid only if exist in TYPO3.
 		// Get LDAP groups from LDAP user.
 		$typo3_groups = array();
-		$ldapGroups = static::get_ldap_groups($ldapUser);
+		$ldapGroups = static::getLdapGroups($ldapUser);
 		unset($ldapGroups['count']);
 
 		/** @var \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]|\TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup[] $requiredLDAPGroups */
-		$requiredLDAPGroups = Configuration::is_enable('requiredLDAPGroups');
+		$requiredLDAPGroups = Configuration::getValue('requiredLDAPGroups');
 
 		if (count($ldapGroups) === 0) {
 			if (count($requiredLDAPGroups) > 0) {
@@ -297,22 +328,22 @@ class Authentication {
 			}
 		} else {
 			// Get pid from group mapping
-			$typo3_group_pid = Configuration::getPid($configuration['groups']['mapping']);
+			$typo3GroupPid = Configuration::getPid($configuration['groups']['mapping']);
 
-			$typo3_groups_tmp = static::getTypo3Groups(
+			$typo3GroupsTemp = static::getTypo3Groups(
 				$ldapGroups,
 				$groupTable,
-				$typo3_group_pid
+				$typo3GroupPid
 			);
 
 			if (count($requiredLDAPGroups) > 0) {
 				$hasRequired = FALSE;
-				$group_Listuid = array();
-				foreach ($typo3_groups_tmp as $typo3_group) {
-					$group_Listuid[] = $typo3_group['uid'];
+				$groupUids = array();
+				foreach ($typo3GroupsTemp as $typo3Group) {
+					$groupUids[] = $typo3Group['uid'];
 				}
 				foreach ($requiredLDAPGroups as $group) {
-					if (in_array($group->getUid(), $group_Listuid)) {
+					if (in_array($group->getUid(), $groupUids)) {
 						$hasRequired = TRUE;
 						break;
 					}
@@ -322,22 +353,22 @@ class Authentication {
 				}
 			}
 
-			if (Configuration::is_enable('IfGroupExist') && count($typo3_groups_tmp) === 0) {
+			if (Configuration::getValue('IfGroupExist') && count($typo3GroupsTemp) === 0) {
 				return array();
 			}
 
 			$i = 0;
-			foreach ($typo3_groups_tmp as $typo3_group) {
-				if (Configuration::is_enable('GroupsNotSynchronize') && !$typo3_group['uid']) {
+			foreach ($typo3GroupsTemp as $typo3Group) {
+				if (Configuration::getValue('GroupsNotSynchronize') && !$typo3Group['uid']) {
 					// Groups should not get synchronized and the current group is invalid
 					continue;
 				}
-				if (Configuration::is_enable('GroupsNotSynchronize')) {
-					$typo3_groups[] = $typo3_group;
-				} elseif (!$typo3_group['uid']) {
+				if (Configuration::getValue('GroupsNotSynchronize')) {
+					$typo3_groups[] = $typo3Group;
+				} elseif (!$typo3Group['uid']) {
 					$newGroup = Typo3GroupRepository::add(
 						$groupTable,
-						$typo3_group
+						$typo3Group
 					);
 
 					$typo3_group_merged = static::merge(
@@ -351,17 +382,17 @@ class Authentication {
 						$typo3_group_merged
 					);
 
-					$typo3_group = Typo3GroupRepository::fetch(
+					$typo3Group = Typo3GroupRepository::fetch(
 						$groupTable,
 						$typo3_group_merged['uid']
 					);
-					$typo3_groups[] = $typo3_group[0];
+					$typo3_groups[] = $typo3Group[0];
 				} else {
 					// Restore group that may have been previously deleted
-					$typo3_group['deleted'] = 0;
+					$typo3Group['deleted'] = 0;
 					$typo3_group_merged = static::merge(
 						$ldapGroups[$i],
-						$typo3_group,
+						$typo3Group,
 						$configuration['groups']['mapping']
 					);
 
@@ -370,11 +401,11 @@ class Authentication {
 						$typo3_group_merged
 					);
 
-					$typo3_group = Typo3GroupRepository::fetch(
+					$typo3Group = Typo3GroupRepository::fetch(
 						$groupTable,
 						$typo3_group_merged['uid']
 					);
-					$typo3_groups[] = $typo3_group[0];
+					$typo3_groups[] = $typo3Group[0];
 				}
 
 				$i++;
@@ -384,28 +415,28 @@ class Authentication {
 	}
 
 	/**
-	 * Returns LDAP groups.
+	 * Returns LDAP groups associated to a given user.
 	 *
-	 * @param array $ldap_user
+	 * @param array $ldapUser
 	 * @return array
 	 */
-	static protected function get_ldap_groups(array $ldap_user = array()) {
+	static protected function getLdapGroups(array $ldapUser = array()) {
 		if (empty(static::$config)) {
 			static::initializeConfiguration();
 		}
 
 		// Get groups attributes from group mapping configuration.
-		$ldap_group_attributes = Configuration::get_ldap_attributes(static::$config['groups']['mapping']);
-		$ldap_groups = array('count' => 0);
+		$ldapGroupAttributes = Configuration::getLdapAttributes(static::$config['groups']['mapping']);
+		$ldapGroups = array('count' => 0);
 
-		if (Configuration::is_enable('evaluateGroupsFromMembership')) {
+		if (Configuration::getValue('evaluateGroupsFromMembership')) {
 			// Get LDAP groups from membership attribute
-			if ($membership = LdapGroup::get_membership($ldap_user, static::$config['users']['mapping'])) {
-				$ldap_groups = LdapGroup::select_from_membership(
+			if ($membership = LdapGroup::getMembership($ldapUser, static::$config['users']['mapping'])) {
+				$ldapGroups = LdapGroup::selectFromMembership(
 					$membership,
 					static::$config['groups']['basedn'],
 					static::$config['groups']['filter'],
-					$ldap_group_attributes,
+					$ldapGroupAttributes,
 					// If groups should not get synchronized, there is no need to actively check them
 					// against the LDAP server, simply accept every groups from $membership matching
 					// the baseDN for groups, because LDAP groups not existing locally will simply be
@@ -416,34 +447,20 @@ class Authentication {
 			}
 		} else {
 			// Get LDAP groups from DN of user.
-			$ldap_groups = LdapGroup::selectFromUser(
+			$ldapGroups = LdapGroup::selectFromUser(
 				static::$config['groups']['basedn'],
 				static::$config['groups']['filter'],
-				$ldap_user['dn'],
-				!empty($ldap_user['uid'][0]) ? $ldap_user['uid'][0] : '',
-				$ldap_group_attributes
+				$ldapUser['dn'],
+				!empty($ldapUser['uid'][0]) ? $ldapUser['uid'][0] : '',
+				$ldapGroupAttributes
 			);
 		}
 
-		DebugUtility::debug(sprintf('Retrieving LDAP groups for user "%s"', $ldap_user['dn']), $ldap_groups);
+		DebugUtility::debug(sprintf('Retrieving LDAP groups for user "%s"', $ldapUser['dn']), $ldapGroups);
 
 		// Store for later usage and return
-		static::$ldapGroups = $ldap_groups;
-		return $ldap_groups;
-	}
-
-	/**
-	 * Returns a TYPO3 user.
-	 *
-	 * @param string $username
-	 * @param string $userdn
-	 * @param int $pid
-	 * @return array
-	 * @deprecated since 3.0, will be removed in 3.2, use getTypo3User() instead
-	 */
-	static protected function get_typo3_user($username = NULL, $userdn = NULL, $pid = 0) {
-		GeneralUtility::logDeprecatedFunction();
-		return static::getTypo3User($username, $userdn, $pid);
+		static::$ldapGroups = $ldapGroups;
+		return $ldapGroups;
 	}
 
 	/**
@@ -459,7 +476,7 @@ class Authentication {
 
 		$typo3_users = Typo3UserRepository::fetch(static::$authenticationService->authInfo['db_user']['table'], 0, $pid, $username, $userDn);
 		if ($typo3_users) {
-			if (Configuration::is_enable('IfUserExist')) {
+			if (Configuration::getValue('IfUserExist')) {
 				// Ensure every returned record is active
 				$numberOfUsers = count($typo3_users);
 				for ($i = 0; $i < $numberOfUsers; $i++) {
@@ -477,7 +494,7 @@ class Authentication {
 			// We want to return only first user in any case, if more than one are returned (e.g.,
 			// same username/DN twice) actual authentication will fail anyway later on
 			$user = is_array($typo3_users[0]) ? $typo3_users[0] : NULL;
-		} elseif (!Configuration::is_enable('IfUserExist')) {
+		} elseif (!Configuration::getValue('IfUserExist')) {
 			$user = Typo3UserRepository::create(static::$authenticationService->authInfo['db_user']['table']);
 
 			$user['pid'] = (int)$pid;
@@ -626,7 +643,7 @@ class Authentication {
 								$passParams[$paramTemps[0]] = $paramTemps[1];
 							}
 							$newVal = $passParams['hookName'];
-							$ldapAttr = Configuration::get_ldap_attributes(array($value));
+							$ldapAttr = Configuration::getLdapAttributes(array($value));
 							// hook for processing user information once inserted or updated in the database
 							if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField']) &&
 								!empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'][$newVal])

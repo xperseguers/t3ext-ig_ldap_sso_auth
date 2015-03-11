@@ -143,7 +143,7 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface {
 				}
 
 			// If enable, SSO authentication without password
-			} elseif ($password === NULL && Configuration::is_enable('SSOAuthentication')) {
+			} elseif ($password === NULL && Configuration::getValue('SSOAuthentication')) {
 
 				return $this->ldapUtility->getDn();
 

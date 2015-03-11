@@ -90,7 +90,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 		$connectionStatus = array();
 
 		if ($ldapConfiguration['host'] !== '') {
-			$ldapConfiguration['server'] = Configuration::get_server_name($ldapConfiguration['server']);
+			$ldapConfiguration['server'] = Configuration::getServerType($ldapConfiguration['server']);
 
 			try {
 				$this->ldap->connect($ldapConfiguration);
@@ -207,11 +207,11 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 		}
 
 		if ($success) {
-			$filter = Configuration::replace_filter_markers($filter);
+			$filter = Configuration::replaceFilterMarkers($filter);
 			if ($firstEntry) {
 				$attributes = array();
 			} else {
-				$attributes = Configuration::get_ldap_attributes($config[$key]['mapping']);
+				$attributes = Configuration::getLdapAttributes($config[$key]['mapping']);
 				if (strpos($config[$key]['filter'], '{USERUID}') !== FALSE) {
 					$attributes[] = 'uid';
 					$attributes = array_unique($attributes);
@@ -503,8 +503,8 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 				$typo3ParentGroup[0]['subgroup'] = implode(',', $subGroupList);
 				Typo3GroupRepository::update($table, $typo3ParentGroup[0]);
 			} else {
-				$filter = '(&' . Configuration::replace_filter_markers($config['groups']['filter']) . '&(distinguishedName=' . $parentDn . '))';
-				$attributes = Configuration::get_ldap_attributes($config['groups']['mapping']);
+				$filter = '(&' . Configuration::replaceFilterMarkers($config['groups']['filter']) . '&(distinguishedName=' . $parentDn . '))';
+				$attributes = Configuration::getLdapAttributes($config['groups']['mapping']);
 				$ldapGroups = Ldap::getInstance()->search($config['groups']['basedn'], $filter, $attributes);
 				unset($ldapGroups['count']);
 
@@ -513,7 +513,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 
 					// Populate an array of TYPO3 group records corresponding to the LDAP groups
 					// If a given LDAP group has no associated group in TYPO3, a fresh record
-					// will be created so that $ldap_groups[i] <=> $typo3_groups[i]
+					// will be created so that $ldapGroups[i] <=> $typo3Groups[i]
 					$typo3Groups = Authentication::getTypo3Groups(
 						$ldapGroups,
 						$table,
@@ -618,8 +618,8 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 
 		$ldapGroups = array();
 		if (!empty($config['groups']['basedn'])) {
-			$filter = Configuration::replace_filter_markers($config['groups']['filter']);
-			$attributes = Configuration::get_ldap_attributes($config['groups']['mapping']);
+			$filter = Configuration::replaceFilterMarkers($config['groups']['filter']);
+			$attributes = Configuration::getLdapAttributes($config['groups']['mapping']);
 			$ldapGroups = Ldap::getInstance()->search($config['groups']['basedn'], $filter, $attributes);
 			unset($ldapGroups['count']);
 		}

@@ -13,8 +13,7 @@ namespace Causal\IgLdapSsoAuth\Library;
  *
  * The TYPO3 project - inspiring people to share!
  */
-
-use Causal\IgLdapSsoAuth\Library\Ldap;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class tx_igldapssoauth_typo3_group for the 'ig_ldap_sso_auth' extension.
@@ -35,51 +34,65 @@ class LdapGroup {
 	 * @param array $attributes
 	 * @param bool $extendedCheck TRUE if groups should be actively checked against LDAP server, FALSE to check against baseDN solely
 	 * @return array
+	 * @deprecated since 3.0, will be removed in 3.2, use selectFromMembership() instead
 	 */
 	static public function select_from_membership($membership = array(), $baseDn = NULL, $filter = NULL, $attributes = array(), $extendedCheck = TRUE) {
-		$ldap_groups['count'] = 0;
+		GeneralUtility::logDeprecatedFunction();
+		return static::selectFromMembership($membership, $baseDn, $filter, $attributes, $extendedCheck);
+	}
 
-		if (!$membership) {
-			return $ldap_groups;
-		}
-		if (!$filter) {
-			return $ldap_groups;
+	/**
+	 * Returns LDAP group records based on a list of DNs provided as $membership,
+	 * taking group's baseDN and filter into consideration.
+	 *
+	 * @param array $membership
+	 * @param string $baseDn
+	 * @param string $filter
+	 * @param array $attributes
+	 * @param bool $extendedCheck TRUE if groups should be actively checked against LDAP server, FALSE to check against baseDN solely
+	 * @return array
+	 */
+	static public function selectFromMembership(array $membership = array(), $baseDn, $filter, array $attributes = array(), $extendedCheck = TRUE) {
+		$ldapGroups['count'] = 0;
+
+		if (count($membership) === 0 || empty($filter)) {
+			return $ldapGroups;
 		}
 
 		unset($membership['count']);
 
-		foreach ($membership as $groupdn) {
-			if (substr($groupdn, -strlen($baseDn)) !== $baseDn) {
-				// Group $groupdn does not match the required baseDn for LDAP groups
+		foreach ($membership as $groupDn) {
+			if (substr($groupDn, -strlen($baseDn)) !== $baseDn) {
+				// Group $groupDn does not match the required baseDn for LDAP groups
 				continue;
 			}
 			if ($extendedCheck) {
-				$ldap_group = Ldap::getInstance()->search($groupdn, $filter, $attributes);
+				$ldapGroup = Ldap::getInstance()->search($groupDn, $filter, $attributes);
 			} else {
-				$parts = explode(',', $groupdn);
+				$parts = explode(',', $groupDn);
 				list($firstAttribute, $value) = explode('=', $parts[0]);
 				$firstAttribute = strtolower($firstAttribute);
-				$ldap_group = array(
+				$ldapGroup = array(
 					0 => array(
 						0 => $firstAttribute,
 						$firstAttribute => array(
 							0 => $value,
 							'count' => 1,
 						),
-						'dn' => $groupdn,
+						'dn' => $groupDn,
 						'count' => 1,
 					),
 					'count' => 1,
 				);
 			}
-			if (!isset($ldap_group['count']) || $ldap_group['count'] == 0) {
+			if (!isset($ldapGroup['count']) || $ldapGroup['count'] == 0) {
 				continue;
 			}
-			$ldap_groups['count']++;
-			$ldap_groups[] = $ldap_group[0];
+			$ldapGroups['count']++;
+			$ldapGroups[] = $ldapGroup[0];
 		}
 
-		return $ldap_groups;
+		return $ldapGroups;
 	}
 
 	/**
@@ -101,13 +114,28 @@ class LdapGroup {
 	}
 
 	/**
+	 * Returns the membership information for a given user.
+	 *
 	 * @param array $ldap_user
 	 * @param array $mapping
 	 * @return array|bool
+	 * @deprecated since 3.0, will be removed in 3.2, use getMembership() instead
 	 */
 	static public function get_membership($ldap_user = array(), $mapping = array()) {
+		GeneralUtility::logDeprecatedFunction();
+		return static::getMembership($ldap_user, $mapping);
+	}
+
+	/**
+	 * Returns the membership information for a given user.
+	 *
+	 * @param array $ldapUser
+	 * @param array $mapping
+	 * @return array|bool
+	 */
+	static public function getMembership(array $ldapUser = array(), array $mapping = array()) {
 		if (isset($mapping['usergroup']) && preg_match("`<([^$]*)>`", $mapping['usergroup'], $attribute)) {
-			return $ldap_user[strtolower($attribute[1])];
+			return $ldapUser[strtolower($attribute[1])];
 		}
 
 		return FALSE;

@@ -111,7 +111,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 					$remoteUser = substr($remoteUser, $pos + 1);
 				}
 
-				$userRecordOrIsValid = Authentication::ldap_auth($remoteUser);
+				$userRecordOrIsValid = Authentication::ldapAuthenticate($remoteUser);
 
 			// Authenticate user from LDAP
 			} elseif ($this->login['status'] === 'login' && $this->login['uident']) {
@@ -135,7 +135,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 
 				try {
 					if ($password !== NULL) {
-						$userRecordOrIsValid = Authentication::ldap_auth($this->login['uname'], $password);
+						$userRecordOrIsValid = Authentication::ldapAuthenticate($this->login['uname'], $password);
 					} else {
 						// Could not decrypt password
 						$userRecordOrIsValid = FALSE;
@@ -203,7 +203,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 		}
 
 		if (TYPO3_MODE === 'BE') {
-			$OK = Configuration::is_enable('BEfailsafe') ? 100 : FALSE;
+			$OK = Configuration::getValue('BEfailsafe') ? 100 : FALSE;
 		} else {
 			$OK = 100;
 		}
@@ -213,7 +213,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 		if ((($this->login['uident'] && $this->login['uname']) || $enableFrontendSso) && !empty($user['tx_igldapssoauth_dn'])) {
 			if (isset($user['tx_igldapssoauth_from'])) {
 				$OK = 200;
-			} elseif (TYPO3_MODE === 'BE' && Configuration::is_enable('BEfailsafe')) {
+			} elseif (TYPO3_MODE === 'BE' && Configuration::getValue('BEfailsafe')) {
 				return 100;
 			} else {
 				// Failed login attempt (wrong password) - write that to the log!

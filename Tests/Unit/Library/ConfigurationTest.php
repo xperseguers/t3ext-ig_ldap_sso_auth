@@ -24,7 +24,7 @@ class ConfigurationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 * @dataProvider usernameFilterProvider
 	 */
 	public function canGetUsernameAttribute($filter, $expected) {
-		$attribute = \Causal\IgLdapSsoAuth\Library\Configuration::get_username_attribute($filter);
+		$attribute = \Causal\IgLdapSsoAuth\Library\Configuration::getUsernameAttribute($filter);
 		$this->assertSame($expected, $attribute);
 	}
 

@@ -262,48 +262,69 @@ class Typo3UserRepository {
 		}
 	}
 
+	/**
+	 * Sets the user groups for a given TYPO3 user.
+	 *
+	 * @param array $typo3_groups
+	 * @param array $typo3_user
+	 * @param \Causal\IgLdapSsoAuth\Service\AuthenticationService $pObj
+	 * @return array
+	 * @deprecated since 3.0, will be removed in 3.2, use setUserGroups() instead
+	 */
 	static public function set_usergroup(array $typo3_groups = array(), array $typo3_user = array(), \Causal\IgLdapSsoAuth\Service\AuthenticationService $pObj = NULL) {
-		$group_uid = array();
+		GeneralUtility::logDeprecatedFunction();
+		return static::setUserGroups($typo3_user, $typo3_groups);
+	}
 
-		foreach ($typo3_groups as $typo3_group) {
-			if ($typo3_group['uid']) {
-				$group_uid[] = $typo3_group['uid'];
+	/**
+	 * Sets the user groups for a given TYPO3 user.
+	 *
+	 * @param array $typo3User
+	 * @param array $typo3Groups
+	 * @return array
+	 */
+	static public function setUserGroups(array $typo3User, array $typo3Groups) {
+		$groupUid = array();
+
+		foreach ($typo3Groups as $typo3Group) {
+			if ($typo3Group['uid']) {
+				$groupUid[] = $typo3Group['uid'];
 			}
 		}
 
 		/** @var \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]|\TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup[] $assignGroups */
-		$assignGroups = Configuration::is_enable('assignGroups');
+		$assignGroups = Configuration::getValue('assignGroups');
 		foreach ($assignGroups as $group) {
-			if (!in_array($group->getUid(), $group_uid)) {
-				$group_uid[] = $group->getUid();
+			if (!in_array($group->getUid(), $groupUid)) {
+				$groupUid[] = $group->getUid();
 			}
 		}
 
-		if (Configuration::is_enable('keepTYPO3Groups') && $typo3_user['usergroup']) {
-			$usergroup = GeneralUtility::intExplode(',', $typo3_user['usergroup'], TRUE);
+		if (Configuration::getValue('keepTYPO3Groups') && $typo3User['usergroup']) {
+			$usergroup = GeneralUtility::intExplode(',', $typo3User['usergroup'], TRUE);
 
 			foreach ($usergroup as $uid) {
-				if (!in_array($uid, $group_uid)) {
-					$group_uid[] = $uid;
+				if (!in_array($uid, $groupUid)) {
+					$groupUid[] = $uid;
 				}
 			}
 		}
 
 		/** @var \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]|\TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup[] $administratorGroups */
-		$administratorGroups = Configuration::is_enable('updateAdminAttribForGroups');
+		$administratorGroups = Configuration::getValue('updateAdminAttribForGroups');
 		if (count($administratorGroups) > 0) {
-			$typo3_user['admin'] = 0;
+			$typo3User['admin'] = 0;
 			foreach ($administratorGroups as $administratorGroup) {
-				if (in_array($administratorGroup->getUid(), $group_uid)) {
-					$typo3_user['admin'] = 1;
+				if (in_array($administratorGroup->getUid(), $groupUid)) {
+					$typo3User['admin'] = 1;
 					break;
 				}
 			}
 		}
 
-		$typo3_user['usergroup'] = implode(',', $group_uid);
+		$typo3User['usergroup'] = implode(',', $groupUid);
 
-		return $typo3_user;
+		return $typo3User;
 	}
 
 	/**
@@ -313,7 +334,7 @@ class Typo3UserRepository {
 	 * @return string
 	 */
 	static public function setUsername($username) {
-		if (Configuration::is_enable('forceLowerCaseUsername')) {
+		if (Configuration::getValue('forceLowerCaseUsername')) {
 			// Possible enhancement: use \TYPO3\CMS\Core\Charset\CharsetConverter::conv_case instead
 			$username = strtolower($username);
 		}

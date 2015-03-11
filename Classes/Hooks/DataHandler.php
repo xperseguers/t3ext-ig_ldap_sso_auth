@@ -51,14 +51,14 @@ class DataHandler {
 
 			if (!empty($row['be_users_basedn']) && !empty($row['be_groups_basedn'])) {
 				// Check backend mapping
-				$mapping = Configuration::make_mapping($row['be_users_mapping']);
+				$mapping = Configuration::makeMapping($row['be_users_mapping']);
 				if (!isset($mapping['usergroup'])) {
 					$warningMessageKeys[] = 'tx_igldapssoauth_config.group_membership.fe.missingUsergroupMapping';
 				}
 			}
 			if (!empty($row['fe_users_basedn']) && !empty($row['fe_groups_basedn'])) {
 				// Check frontend mapping
-				$mapping = Configuration::make_mapping($row['fe_users_mapping']);
+				$mapping = Configuration::makeMapping($row['fe_users_mapping']);
 				if (!isset($mapping['usergroup'])) {
 					$warningMessageKeys[] = 'tx_igldapssoauth_config.group_membership.be.missingUsergroupMapping';
 				}

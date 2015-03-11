@@ -102,10 +102,10 @@ class Configuration {
 		static::$be['keepTYPO3Groups'] = (bool)$globalConfiguration['keepBEGroups'];
 		static::$be['users']['basedn'] = $configuration->getBackendUsersBaseDn();
 		static::$be['users']['filter'] = $configuration->getBackendUsersFilter();
-		static::$be['users']['mapping'] = static::make_user_mapping($configuration->getBackendUsersMapping(), $configuration->getBackendUsersFilter());
+		static::$be['users']['mapping'] = static::makeUserMapping($configuration->getBackendUsersMapping(), $configuration->getBackendUsersFilter());
 		static::$be['groups']['basedn'] = $configuration->getBackendGroupsBaseDn();
 		static::$be['groups']['filter'] = $configuration->getBackendGroupsFilter();
-		static::$be['groups']['mapping'] = static::make_group_mapping($configuration->getBackendGroupsMapping());
+		static::$be['groups']['mapping'] = static::makeGroupMapping($configuration->getBackendGroupsMapping());
 
 		static::$fe['LDAPAuthentication'] = (bool)$globalConfiguration['enableFELDAPAuthentication'];
 		static::$fe['SSOAuthentication'] = (bool)$globalConfiguration['enableFESSO'];
@@ -123,10 +123,10 @@ class Configuration {
 		static::$fe['requiredLDAPGroups'] = $configuration->getFrontendGroupsRequired() ? $configuration->getFrontendGroupsRequired() : array();
 		static::$fe['users']['basedn'] = $configuration->getFrontendUsersBaseDn();
 		static::$fe['users']['filter'] = $configuration->getFrontendUsersFilter();
-		static::$fe['users']['mapping'] = static::make_user_mapping($configuration->getFrontendUsersMapping(), $configuration->getFrontendUsersFilter());
+		static::$fe['users']['mapping'] = static::makeUserMapping($configuration->getFrontendUsersMapping(), $configuration->getFrontendUsersFilter());
 		static::$fe['groups']['basedn'] = $configuration->getFrontendGroupsBaseDn();
 		static::$fe['groups']['filter'] = $configuration->getFrontendGroupsFilter();
-		static::$fe['groups']['mapping'] = static::make_group_mapping($configuration->getFrontendGroupsMapping());
+		static::$fe['groups']['mapping'] = static::makeGroupMapping($configuration->getFrontendGroupsMapping());
 
 		static::$ldap['server'] = $configuration->getLdapServer();
 		static::$ldap['charset'] = $configuration->getLdapCharset() ? $configuration->getLdapCharset() : 'utf-8';
@@ -176,15 +176,15 @@ class Configuration {
 	 * @param string $filter
 	 * @return array
 	 */
-	static protected function make_user_mapping($mapping = '', $filter = '') {
+	static protected function makeUserMapping($mapping = '', $filter = '') {
 		// Default fields : username, tx_igldapssoauth_dn
 
-		$user_mapping = static::make_mapping($mapping);
-		$user_mapping['username'] = '<' . static::get_username_attribute($filter) . '>';
-		$user_mapping['tx_igldapssoauth_dn'] = '<dn>';
-		$user_mapping['tx_igldapssoauth_id'] = static::getUid();
+		$userMapping = static::makeMapping($mapping);
+		$userMapping['username'] = '<' . static::getUsernameAttribute($filter) . '>';
+		$userMapping['tx_igldapssoauth_dn'] = '<dn>';
+		$userMapping['tx_igldapssoauth_id'] = static::getUid();
 
-		return $user_mapping;
+		return $userMapping;
 	}
 
 	/**
@@ -193,16 +193,28 @@ class Configuration {
 	 * @param string $mapping
 	 * @return array
 	 */
-	static protected function make_group_mapping($mapping = '') {
+	static protected function makeGroupMapping($mapping = '') {
 		// Default fields : title, tx_igldapssoauth_dn
 
-		$group_mapping = static::make_mapping($mapping);
-		if (!isset($group_mapping['title'])) {
-			$group_mapping['title'] = '<dn>';
+		$groupMapping = static::makeMapping($mapping);
+		if (!isset($groupMapping['title'])) {
+			$groupMapping['title'] = '<dn>';
 		}
-		$group_mapping['tx_igldapssoauth_dn'] = '<dn>';
+		$groupMapping['tx_igldapssoauth_dn'] = '<dn>';
 
-		return $group_mapping;
+		return $groupMapping;
+	}
+
+	/**
+	 * Makes a mapping.
+	 *
+	 * @param string $mapping
+	 * @return array
+	 * @deprecated since 3.0, will be removed in 3.2, use makeMapping() instead
+	 */
+	static public function make_mapping($mapping = '') {
+		GeneralUtility::logDeprecatedFunction();
+		return static::makeMapping($mapping);
 	}
 
 	/**
@@ -211,18 +223,18 @@ class Configuration {
 	 * @param string $mapping
 	 * @return array
 	 */
-	static public function make_mapping($mapping = '') {
-		$config_mapping = array();
-		$mapping_array = explode(LF, $mapping);
+	static public function makeMapping($mapping = '') {
+		$mappingConfiguration = array();
+		$mapping = explode(LF, $mapping);
 
-		foreach ($mapping_array as $field) {
-			$field_mapping = explode('=', $field);
-			if (isset($field_mapping[1]) && (bool)$field_mapping[1]) {
-				$config_mapping[trim($field_mapping[0])] = trim($field_mapping[1]);
+		foreach ($mapping as $field) {
+			$fieldMapping = explode('=', $field);
+			if (isset($fieldMapping[1]) && (bool)$fieldMapping[1]) {
+				$mappingConfiguration[trim($fieldMapping[0])] = trim($fieldMapping[1]);
 			}
 		}
 
-		return $config_mapping;
+		return $mappingConfiguration;
 	}
 
 	/**
@@ -266,8 +278,20 @@ class Configuration {
 	 *
 	 * @param string $filter
 	 * @return string
+	 * @deprecated since 3.0, will be removed in 3.2, use getUsernameAttribute() instead
 	 */
 	static public function get_username_attribute($filter = NULL) {
+		GeneralUtility::logDeprecatedFunction();
+		return static::getUsernameAttribute();
+	}
+
+	/**
+	 * Returns the LDAP attribute holding the username.
+	 *
+	 * @param string $filter
+	 * @return string
+	 */
+	static public function getUsernameAttribute($filter = NULL) {
 		if ($filter && preg_match('/(\\w*)=\\{USERNAME\\}/', $filter, $matches)) {
 			return $matches[1];
 		}
@@ -375,10 +399,8 @@ class Configuration {
 	 * Gets the uid.
 	 *
 	 * @return int
-	 * @deprecated since 3.0, will be removed in 3.2
 	 */
 	static public function getUid() {
-		GeneralUtility::logDeprecatedFunction();
 		return static::$configuration->getUid();
 	}
 
@@ -393,7 +415,27 @@ class Configuration {
 		return self::$configuration->getName();
 	}
 
+	/**
+	 * Returns the configuration value of a given feature or FALSE if
+	 * the corresponding feature is disabled.
+	 *
+	 * @param string $feature
+	 * @return mixed|FALSE
+	 * @deprecated since 3.0, will be removed in 3.2, use getValue() instead
+	 */
 	static public function is_enable($feature = NULL) {
+		GeneralUtility::logDeprecatedFunction();
+		return static::getValue($feature);
+	}
+
+	/**
+	 * Returns the configuration value of a given feature or FALSE if
+	 * the corresponding feature is disabled.
+	 *
+	 * @param string $feature
+	 * @return mixed|FALSE
+	 */
+	static public function getValue($feature) {
 		$config = (static::$mode === 'be')
 			? static::getBackendConfiguration()
 			: static::getFrontendConfiguration();
@@ -401,23 +443,59 @@ class Configuration {
 		return (isset($config[$feature]) ? $config[$feature] : FALSE);
 	}
 
+	/**
+	 * Returns the list of LDAP attributes used by a mapping configuration.
+	 *
+	 * @param array|string $mapping
+	 * @return array
+	 * @deprecated since 3.0, will be removed in 3.2, use getLdapAttributes() instead
+	 */
 	static public function get_ldap_attributes($mapping = array()) {
-		$ldap_attributes = array();
+		GeneralUtility::logDeprecatedFunction();
+		return static::getLdapAttributes($mapping);
+	}
+
+	/**
+	 * Returns the list of LDAP attributes used by a mapping configuration.
+	 *
+	 * @param array|string $mapping
+	 * @return array
+	 */
+	static public function getLdapAttributes($mapping = array()) {
+		$ldapAttributes = array();
 		if (is_array($mapping)) {
 			foreach ($mapping as $attribute) {
 				if (preg_match_all('/<(.+?)>/', $attribute, $matches)) {
 					foreach ($matches[1] as $matchedAttribute) {
-						$ldap_attributes[] = strtolower($matchedAttribute);
+						$ldapAttributes[] = strtolower($matchedAttribute);
 					}
 				}
 			}
 		}
 
-		return array_values(array_unique($ldap_attributes));
+		return array_values(array_unique($ldapAttributes));
 	}
 
+	/**
+	 * Returns the type of server.
+	 *
+	 * @param int $uid
+	 * @return string
+	 * @deprecated since 3.0, will be removed in 3.2, use getServerName() instead
+	 */
 	static public function get_server_name($uid = NULL) {
-		switch ($uid) {
+		GeneralUtility::logDeprecatedFunction();
+		return static::getServerType($uid);
+	}
+
+	/**
+	 * Returns the type of server.
+	 *
+	 * @param int $type
+	 * @return string
+	 */
+	static public function getServerType($type = NULL) {
+		switch ($type) {
 			case 0:
 				$server = 'OpenLDAP';
 				break;
@@ -440,8 +518,23 @@ class Configuration {
 	 *
 	 * @param string $filter
 	 * @return string
+	 * @deprecated since 3.0, will be removed in 3.2, use replaceFilterMarkers() instead
 	 */
 	static public function replace_filter_markers($filter) {
+		GeneralUtility::logDeprecatedFunction();
+		return static::replaceFilterMarkers($filter);
+	}
+
+	/**
+	 * Replaces following markers with a wildcard in a LDAP filter:
+	 * - {USERNAME}
+	 * - {USERDN}
+	 * - {USERUID}
+	 *
+	 * @param string $filter
+	 * @return string
+	 */
+	static public function replaceFilterMarkers($filter) {
 		$filter = str_replace(array('{USERNAME}', '{USERDN}', '{USERUID}'), '*', $filter);
 		return $filter;
 	}

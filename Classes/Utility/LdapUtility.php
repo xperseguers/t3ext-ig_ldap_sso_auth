@@ -194,9 +194,9 @@ class LdapUtility {
 			if ($this->serverType === 1) {
 				// We need to get the diagnostic message right after the call to ldap_bind(),
 				// before any other LDAP operation
-				ldap_get_option($this->connection, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extended_error);
-				if (!empty($extended_error)) {
-					$this->status['bind']['diagnostic'] = $this->extractDiagnosticMessage($extended_error);
+				ldap_get_option($this->connection, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extendedError);
+				if (!empty($extendedError)) {
+					$this->status['bind']['diagnostic'] = $this->extractDiagnosticMessage($extendedError);
 				}
 			}
 

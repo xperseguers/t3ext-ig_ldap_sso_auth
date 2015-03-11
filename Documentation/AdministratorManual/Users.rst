@@ -6,18 +6,19 @@
 .. include:: ../Includes.txt
 
 
-.. _admin-manual-beusers:
 .. _admin-manual-feusers:
+.. _admin-manual-beusers:
 
-BE_USERS and FE_USERS
+
+FE_USERS and BE_USERS
 ---------------------
 
-The third tab and the fifth tabs can be fill exactly the same way. The only difference between them is that BE_USERS
-stores the configuration options for the backend LDAP user authentication and FE_USERS stores the configuration options
-for the frontend LDAP user authentication.
+The third tab and the fifth tabs can be fill exactly the same way. The only difference between them is that FE_USERS
+stores the configuration options for the frontend LDAP user authentication and BE_USERS stores the configuration options
+for the backend LDAP user authentication.
 
-You may only fill the section you need. That is, BE_USERS if you need backend authentication and FE_USERS if you need
-frontend authentication.
+You may only fill the sections you need; that is, FE_USERS if you need frontend authentication and BE_USERS if you need
+backend authentication.
 
 - **Base DN:** Full DN path of the directory containing all the users that you want to use with your TYPO3
   authentification.

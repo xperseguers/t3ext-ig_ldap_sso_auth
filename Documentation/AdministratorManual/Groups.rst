@@ -6,17 +6,21 @@
 .. include:: ../Includes.txt
 
 
-.. _admin-manual-begroups:
 .. _admin-manual-fegroups:
+.. _admin-manual-begroups:
 
-BE_GROUPS and FE_GROUPS
+FE_GROUPS and BE_GROUPS
 -----------------------
 
-The fourth and sixth tabs can be fill exactly the same way. The only difference between them is that BE\_GROUPS stores
-the configurations for the backend LDAP usergroup association and FE\_GROUPS stores the configurations for the frontend
-LDAP user group association. You will only fill the sections you need, BE\_GROUPS if you need backend authentication and
-FE\_GROUPS if you need frontend authentication. You can skip this entire section if you just want to validate the
-authentication and do not want to use groups from LDAP.
+The fourth and sixth tabs can be fill exactly the same way. The only difference between them is that FE_GROUPS stores
+the configurations for the frontend LDAP user group association and BE_GROUPS stores the configurations for the backend
+LDAP user group association.
+
+You may only fill the sections you need; that is, FE_GROUPS if you need frontend authentication and BE_GROUPS if you
+need backend authentication.
+
+You should skip this entire section if you just want to validate the authentication and do not want to use any groups
+coming from LDAP.
 
 - **Base DN:** Full DN path of the directory containing all the groups that are related to your LDAP users and you want
   to use in your TYPO3 website.

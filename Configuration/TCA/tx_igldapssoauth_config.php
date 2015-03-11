@@ -36,14 +36,14 @@ return array(
 						ldap_server;;1,
 					--palette--;LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:palette.connection;connection,
 						ldap_binddn, ldap_password, group_membership,
-					--div--;BE_USERS,
-						be_users_basedn, be_users_filter, be_users_mapping, be_groups_required, be_groups_assigned,
-					--div--;BE_GROUPS,
-						be_groups_basedn, be_groups_filter, be_groups_mapping, be_groups_admin,
 					--div--;FE_USERS,
 						fe_users_basedn, fe_users_filter, fe_users_mapping, fe_groups_required, fe_groups_assigned,
 					--div--;FE_GROUPS,
-						fe_groups_basedn, fe_groups_filter, fe_groups_mapping'
+						fe_groups_basedn, fe_groups_filter, fe_groups_mapping,
+					--div--;BE_USERS,
+						be_users_basedn, be_users_filter, be_users_mapping, be_groups_required, be_groups_assigned,
+					--div--;BE_GROUPS,
+						be_groups_basedn, be_groups_filter, be_groups_mapping, be_groups_admin'
 		),
 	),
 	'palettes' => array(

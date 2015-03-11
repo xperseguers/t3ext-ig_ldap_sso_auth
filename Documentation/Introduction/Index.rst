@@ -39,17 +39,17 @@ Screenshots
 	Configuration of the connection to the LDAP server
 
 
-.. figure:: ../Images/configuration-be-groups.png
-	:alt: Configuration of backend groups
-
-	Configuration of the retrieval of backend user groups
-
-
 .. figure:: ../Images/configuration-fe-users.png
 	:alt: Configuration of the frontend users
 
 	Configuration of the frontend authentication, how to map LDAP attributes to TYPO3 fields and which groups are
 	required or should be automatically assigned
+
+
+.. figure:: ../Images/configuration-be-groups.png
+	:alt: Configuration of backend groups
+
+	Configuration of the retrieval of backend user groups
 
 
 .. figure:: ../Images/status.png
@@ -79,7 +79,7 @@ Full user import was sponsored by the Ecole d'Etudes Sociales et Pédagogiques, 
 
 Further information:
 
-- Causal Sàrl: https://www.causal.ch/
-- Centre électronique de gestion (CEG): `http://www.neuchatelville.ch/ <http://www.neuchatelville.ch/ceg>`_
-- Ecole d'Etudes Sociales et Pédagogiques (EESP): http://www.eesp.ch/
-- Infoglobe: http://www.infoglobe.ca/
+- Causal Sàrl: https://www.causal.ch
+- Centre électronique de gestion (CEG): `http://www.neuchatelville.ch <http://www.neuchatelville.ch/ceg>`_
+- Ecole d'Etudes Sociales et Pédagogiques (EESP): http://www.eesp.ch
+- Infoglobe: http://www.infoglobe.ca

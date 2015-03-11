@@ -21,7 +21,7 @@ In case of use in an intranet environment, this extension is a perfect match sin
 	'conflicts' => '',
 	'priority' => '',
 	'loadOrder' => '',
-	'module' => 'mod1',
+	'module' => '',
 	'state' => 'stable',
 	'uploadfolder' => 0,
 	'createDirs' => '',

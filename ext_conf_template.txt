@@ -1,4 +1,4 @@
-# cat=basic//1; type=user[EXT:ig_ldap_sso_auth/Classes/Em/ConfigurationHelper.php:\Causal\IgLdapSsoAuth\Em\ConfigurationHelper->checkConfiguration]; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.checkConfiguration
+# cat=basic//1; type=user[EXT:ig_ldap_sso_auth/Classes/Em/ConfigurationHelper.php:Causal\IgLdapSsoAuth\Em\ConfigurationHelper->checkConfiguration]; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.checkConfiguration
 checkConfiguration=0
 
 # cat=basic//2; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.throwExceptionAtLogin

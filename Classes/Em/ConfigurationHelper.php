@@ -14,9 +14,6 @@ namespace Causal\IgLdapSsoAuth\Em;
  * The TYPO3 project - inspiring people to share!
  */
 
-// Make sure that we are executed only in TYPO3 context
-defined('TYPO3_MODE') or die();
-
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 
@@ -81,36 +78,16 @@ class ConfigurationHelper {
 			$errorlevel = 'warning';
 		}
 
-		if ($loginSecurityLevelBE === 'challenged' || $loginSecurityLevelBE === 'superchallenged' || $loginSecurityLevelBE === '') {
+		if ($loginSecurityLevelFE === 'challenged' || $loginSecurityLevelFE === 'superchallenged' || $loginSecurityLevelFE === '') {
 			$this->setErrorLevel($errorlevel);
 
-			$problems[] = <<<EOT
-LDAP authentification for backend is not compatible with loginSecurityLevel set to "challenged" or "superchallenged" since the real password can never be sent against the LDAP repository.
-
-Value of loginSecurityLevel should be changed manually to "normal" or even better "rsa" in the Install Tool.<br/><br/>
-
-	\$GLOBALS['TYPO3_CONF_VARS']['BE']['loginSecurityLevel'] = 'normal';<br/>
-	\$GLOBALS['TYPO3_CONF_VARS']['BE']['loginSecurityLevel'] = 'rsa';
-EOT;
-
-			$problems[] = 'Current value for backend is: "' . $loginSecurityLevelBE . '"' . "<br />\n" .
-				'Current value for frontend is: "' . $loginSecurityLevelFE . '"';
-
-		} elseif ($loginSecurityLevelFE === 'challenged' || $loginSecurityLevelFE === 'superchallenged' || $loginSecurityLevelFE === '') {
+			$problems[] = $this->translate('settings.errors.invalidFrontendSecurityLevel');
+			$problems[] = $this->translate('settings.errors.currentSecurityLevel', array($loginSecurityLevelFE, $loginSecurityLevelBE));
+		} elseif ($loginSecurityLevelBE === 'challenged' || $loginSecurityLevelBE === 'superchallenged' || $loginSecurityLevelBE === '') {
 			$this->setErrorLevel($errorlevel);
 
-			$problems[] = <<< EOT
-LDAP authentification for Website-Users (FE) is not compatible with loginSecurityLevel set to "challenged" or "superchallenged" since the real password can never be sent against the LDAP repository.
-
-Value of loginSecurityLevel should be changed manually to "normal" or even better "rsa" in the Install Tool.<br/><br/>
-
-	\$GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'] = 'normal';<br/>
-	\$GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'] = 'rsa';
-EOT;
-
-			$problems[] = 'Current value for backend is: "' . $loginSecurityLevelBE . '"' . "<br />\n" .
-				'Current value for frontend is: "' . $loginSecurityLevelFE . '"';
-
+			$problems[] = $this->translate('settings.errors.invalidBackendSecurityLevel');
+			$problems[] = $this->translate('settings.errors.currentSecurityLevel', array($loginSecurityLevelFE, $loginSecurityLevelBE));
 		} else {
 			$this->setErrorLevel('ok');
 			$problems = array();
@@ -131,29 +108,22 @@ EOT;
 		switch ($level) {
 			case 'error':
 				$this->errorType = FlashMessage::ERROR;
-				$this->header = 'Errors found in your configuration';
+				$this->header = $this->translate('settings.errors.error');
 				$this->preText = '<br />';
 				break;
 			case 'warning':
 				if ($this->errorType < FlashMessage::ERROR) {
 					$this->errorType = FlashMessage::WARNING;
-					$this->header = 'Warnings about your configuration';
-					$this->preText = '<br />';
-				}
-				break;
-			case 'info':
-				if ($this->errorType < FlashMessage::WARNING) {
-					$this->errorType = FlashMessage::INFO;
-					$this->header = 'Additional information';
+					$this->header = $this->translate('settings.errors.warning');
 					$this->preText = '<br />';
 				}
 				break;
 			case 'ok':
-				// TODO: Remove INFO condition as it has lower importance
-				if ($this->errorType < FlashMessage::WARNING && $this->errorType != FlashMessage::INFO) {
+			default:
+				if ($this->errorType < FlashMessage::WARNING) {
 					$this->errorType = FlashMessage::OK;
-					$this->header = 'No errors were found';
-					$this->preText = 'Configuration has been configured correctly.<br />';
+					$this->header = $this->translate('settings.errors.ok');
+					$this->preText = $this->translate('settings.errors.success');
 				}
 				break;
 		}
@@ -191,6 +161,24 @@ EOT;
 		);
 
 		return $flashMessage->render();
+	}
+
+	/**
+	 * Translates a label.
+	 *
+	 * @param string $id
+	 * @param array $arguments
+	 * @return string
+	 */
+	protected function translate($id, array $arguments = NULL) {
+		$value = $GLOBALS['LANG']->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:' . $id);
+		$value = empty($value) ? $id : $value;
+
+		if (is_array($arguments) && $value !== NULL) {
+			return vsprintf($value, $arguments);
+		} else {
+			return $value;
+		}
 	}
 
 }

@@ -83,9 +83,9 @@ class UserImportUtility {
 		Configuration::initialize($context, $configuration);
 		// Store current context and get related configuration
 		$this->context = $context;
-		$this->configuration = ($context === 'be')
-			? Configuration::getBackendConfiguration()
-			: Configuration::getFrontendConfiguration();
+		$this->configuration = ($context === 'fe')
+			? Configuration::getFrontendConfiguration()
+			: Configuration::getBackendConfiguration();
 		// Define related tables
 		if ($context === 'be') {
 			$this->userTable = 'be_users';

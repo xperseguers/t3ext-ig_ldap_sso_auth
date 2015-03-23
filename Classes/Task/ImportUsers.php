@@ -98,7 +98,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 				/** @var \Causal\IgLdapSsoAuth\Utility\UserImportUtility $importUtility */
 				$importUtility = GeneralUtility::makeInstance(
 					'Causal\\IgLdapSsoAuth\\Utility\\UserImportUtility',
-					$configuration['uid'],
+					$configuration,
 					$aContext
 				);
 				// Start by connecting to the designated LDAP/AD server

@@ -93,6 +93,13 @@ class Tx_IgLdapSsoAuth_Task_ImportUsers extends tx_scheduler_Task {
 					$aConfiguration['uid'],
 					$aContext
 				);
+
+				$config = $importUtility->getConfiguration();
+				if (empty($config['users']['filter'])) {
+					// Current context is not configured for this LDAP configuration record
+					continue;
+				}
+
 				// Start by connecting to the designated LDAP/AD server
 				$success = tx_igldapssoauth_ldap::connect(tx_igldapssoauth_config::getLdapConfiguration());
 				// Proceed with import if successful
@@ -112,7 +119,6 @@ class Tx_IgLdapSsoAuth_Task_ImportUsers extends tx_scheduler_Task {
 							$importUtility->deleteUsers();
 						}
 						$typo3Users = $importUtility->fetchTypo3Users($ldapUsers);
-						$config = $importUtility->getConfiguration();
 
 						// Loop on all users and import them
 						foreach ($ldapUsers as $index => $aUser) {

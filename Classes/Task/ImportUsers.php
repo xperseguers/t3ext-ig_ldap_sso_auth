@@ -101,6 +101,13 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 					$configuration,
 					$aContext
 				);
+
+				$config = $importUtility->getConfiguration();
+				if (empty($config['users']['filter'])) {
+					// Current context is not configured for this LDAP configuration record
+					continue;
+				}
+
 				// Start by connecting to the designated LDAP/AD server
 				$success = Ldap::getInstance()->connect(Configuration::getLdapConfiguration());
 				// Proceed with import if successful
@@ -120,7 +127,6 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 							$importUtility->deleteUsers();
 						}
 						$typo3Users = $importUtility->fetchTypo3Users($ldapUsers);
-						$config = $importUtility->getConfiguration();
 
 						// Loop on all users and import them
 						foreach ($ldapUsers as $index => $aUser) {

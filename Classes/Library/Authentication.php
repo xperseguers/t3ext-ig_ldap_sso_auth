@@ -667,7 +667,7 @@ class Authentication {
 				}
 
 				// If field exists in TYPO3, set it to the mapped value
-				if (isset($typo3[$field])) {
+				if (array_key_exists($field, $typo3)) {
 					$typo3[$field] = $mappedValue;
 
 				// Otherwise, it is some extra value, which we store in a special sub-array

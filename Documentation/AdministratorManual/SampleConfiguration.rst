@@ -84,24 +84,32 @@ Mapping                             | title = <cn>
 Test Users and Groups
 ^^^^^^^^^^^^^^^^^^^^^
 
-As of August 2014, three groups and a few users are available:
+As of April 2015, four groups and a few users are available:
 
-- Mathematicians
+- **Mathematicians**
 
-  - euclid
-  - euler
-  - gauss
-  - riemann
+  - **euclid**    (Euclid)
+  - **euler**     (Leonhard Euler)
+  - **gauss**     (Carl Friedrich Gauss)
+  - **riemann**   (Bernhard Riemann)
 
-- Scientists
+- **Scientists**
 
-  - einstein
-  - galieleo
-  - newton
-  - tesla
+  - **einstein**  (Albert Einstein)
+  - **galieleo**  (Galileo Galilei)
+  - **newton**    (Issac Newton) -- *known typo: (Isaac)*
+  - **tesla**     (Nikola Tesla)
 
-- Italians
+- **Italians**
 
-  - tesla
+  - **tesla**     (Nikola Tesla)
+
+- **Chemists**
+
+  - **boyle**     (Robert Boyle)
+  - **curie**     (Marie Curie)
+  - **nobel**     (Alfred Nobel)
+  - **pastuer**   (Louis Pastuer) -- *known typo: (Pasteur)*
+
 
 .. note:: All user passwords are "password".

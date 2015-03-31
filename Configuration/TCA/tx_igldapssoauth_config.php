@@ -295,7 +295,7 @@ return array(
 			'config' => array(
 				'type' => 'select',
 				'foreign_table' => 'be_groups',
-				'foreign_table_where' => 'AND be_groups.tx_igldapssoauth_dn<>\'\' ORDER BY be_groups.title',
+				'foreign_table_where' => 'AND be_groups.tx_igldapssoauth_dn<>\'\' AND be_groups.tx_igldapssoauth_dn IS NOT NULL ORDER BY be_groups.title',
 				'size' => 6,
 				'minitems' => 0,
 				'maxitems' => 30,
@@ -312,7 +312,7 @@ return array(
 			'config' => array(
 				'type' => 'select',
 				'foreign_table' => 'be_groups',
-				'foreign_table_where' => 'AND be_groups.tx_igldapssoauth_dn=\'\' ORDER BY be_groups.title',
+				'foreign_table_where' => 'AND (be_groups.tx_igldapssoauth_dn=\'\' OR be_groups.tx_igldapssoauth_dn IS NULL) ORDER BY be_groups.title',
 				'size' => 10,
 				'minitems' => 0,
 				'maxitems' => 30,
@@ -440,7 +440,7 @@ return array(
 			'config' => array(
 				'type' => 'select',
 				'foreign_table' => 'fe_groups',
-				'foreign_table_where' => 'AND fe_groups.tx_igldapssoauth_dn<>\'\' ORDER BY fe_groups.title',
+				'foreign_table_where' => 'AND fe_groups.tx_igldapssoauth_dn<>\'\' AND fe_groups.tx_igldapssoauth_dn IS NOT NULL ORDER BY fe_groups.title',
 				'size' => 10,
 				'minitems' => 0,
 				'maxitems' => 99,
@@ -457,7 +457,7 @@ return array(
 			'config' => array(
 				'type' => 'select',
 				'foreign_table' => 'fe_groups',
-				'foreign_table_where' => 'AND fe_groups.tx_igldapssoauth_dn=\'\' ORDER BY fe_groups.title',
+				'foreign_table_where' => 'AND (fe_groups.tx_igldapssoauth_dn=\'\' OR fe_groups.tx_igldapssoauth_dn IS NULL) ORDER BY fe_groups.title',
 				'size' => 10,
 				'minitems' => 0,
 				'maxitems' => 99,

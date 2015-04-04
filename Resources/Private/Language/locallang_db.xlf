@@ -211,8 +211,21 @@ Current value for backend is: "%s"]]></source>
 			<trans-unit id="tx_igldapssoauth_config.fe_groups_assigned">
 				<source>Local groups to be assigned:</source>
 			</trans-unit>
-			<trans-unit id="tx_igldapssoauth_config.fe_groups.tx_igldapssoauth_dn">
-				<source>Groups DN (Distinguished Name)</source>
+
+			<trans-unit id="be_groups.tx_igldapssoauth_dn">
+				<source>Group's DN (Distinguished Name)</source>
+			</trans-unit>
+
+			<trans-unit id="be_users.tx_igldapssoauth_dn">
+				<source>User's DN (Distinguished Name)</source>
+			</trans-unit>
+
+			<trans-unit id="fe_groups.tx_igldapssoauth_dn">
+				<source>Group's DN (Distinguished Name)</source>
+			</trans-unit>
+
+			<trans-unit id="fe_users.tx_igldapssoauth_dn">
+				<source>User's DN (Distinguished Name)</source>
 			</trans-unit>
 
 			<trans-unit id="tt_content.list_type_pi1">

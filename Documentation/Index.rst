@@ -39,10 +39,10 @@ LDAP / SSO Authentication
 		2000-2015
 
 	:Author:
-		Xavier Perseguers, Team Infoglobe
+		Xavier Perseguers
 
 	:Email:
-		xavier@typo3.org, contact@infoglobe.ca
+		xavier@typo3.org
 
 	:License:
 		This document is published under the Open Content License

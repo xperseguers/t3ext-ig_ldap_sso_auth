@@ -12,7 +12,7 @@ conf.py:
   - - Index
     - ig_ldap_sso_auth.tex
     - LDAP / SSO Authentication
-    - Xavier Perseguers \and Team Infoglobe
+    - Xavier Perseguers
     - manual
   latex_elements:
     papersize: a4paper

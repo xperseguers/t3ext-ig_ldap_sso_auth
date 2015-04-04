@@ -28,7 +28,7 @@ In case of use in an intranet environment, this extension is a perfect match sin
 	'modify_tables' => 'be_groups,be_users,fe_groups,fe_users',
 	'clearcacheonload' => 0,
 	'lockType' => '',
-	'author' => 'Xavier Perseguers, Team Infoglobe',
+	'author' => 'Xavier Perseguers',
 	'author_email' => 'xavier@typo3.org',
 	'author_company' => '',
 	'CGLcompliance' => '',

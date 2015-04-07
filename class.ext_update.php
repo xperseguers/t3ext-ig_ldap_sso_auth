@@ -121,7 +121,7 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	 * @return bool
 	 */
 	protected function checkV2xToV30() {
-		if (!TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('scheduler')) {
+		if (!\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('scheduler')) {
 			return FALSE;
 		}
 		$oldTaskRecords = $this->databaseConnection->exec_SELECTcountRows(

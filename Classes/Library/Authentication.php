@@ -411,6 +411,18 @@ class Authentication {
 				$i++;
 			}
 		}
+		// Hook for processing the groups
+		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['getGroupsProcessing'])) {
+			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['getGroupsProcessing'] as $className) {
+				/** @var $postProcessor \Causal\IgLdapSsoAuth\Utility\GetGroupsProcessorInterface */
+				$postProcessor = GeneralUtility::getUserObj($className);
+				if ($postProcessor instanceof \Causal\IgLdapSsoAuth\Utility\GetGroupsProcessorInterface) {
+					$postProcessor->getUserGroups($groupTable, $ldapUser, $typo3_groups);
+				} else {
+					throw new \RuntimeException('Processor ' . get_class($postProcessor) . ' must implement the \\Causal\\IgLdapSsoAuth\\Utility\\GetGroupsProcessorInterface interface', 1431340191);
+				}
+			}
+		}
 		return $typo3_groups;
 	}
 

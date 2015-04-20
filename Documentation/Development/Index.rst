@@ -22,3 +22,4 @@ Hooks
 	Hooks/AttributesProcessing
 	Hooks/ExtraDataProcessing
 	Hooks/ExtraMergeField
+	Hooks/GetGroupsProcessing

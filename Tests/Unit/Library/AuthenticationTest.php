@@ -20,13 +20,19 @@ namespace Causal\IgLdapSsoAuth\Tests\Unit\Library;
 class AuthenticationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 
 	/** @var array */
-	protected $ldapFixture;
+	protected $ldapUserFixture;
 
 	/** @var array */
-	protected $typo3Fixture;
+	protected $ldapGroupFixture;
+
+	/** @var array */
+	protected $typo3UserFixture;
+
+	/** @var array */
+	protected $typo3GroupFixture;
 
 	protected function setUp() {
-		$this->ldapFixture = array(
+		$this->ldapUserFixture = array(
 			'dn' => 'uid=newton,dc=example,dc=com',
 			0 => 'sn',
 			'sn' => array(
@@ -82,7 +88,35 @@ class AuthenticationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 			),
 		);
 
-		$this->typo3Fixture = array(
+		$this->ldapGroupFixture = array(
+			'dn' => 'ou=scientists,dc=example,dc=com',
+			0 => 'uniqueMember',
+			'uniqueMember' => array(
+				0 => 'uid=einstein,dc=example,dc=com',
+				1 => 'uid=galieleo,dc=example,dc=com',
+				2 => 'uid=tesla,dc=example,dc=com',
+				3 => 'uid=newton,dc=example,dc=com',
+				'count' => 4,
+			),
+			1 => 'ou',
+			'ou' => array(
+				0 => 'scientists',
+				'count' => 1,
+			),
+			2 => 'cn',
+			'cn' => array(
+				0 => 'Scientists',
+				'count' => 1,
+			),
+			3 => 'objectClass',
+			'objectClass' => array(
+				0 => 'groupOfUniqueNames',
+				1 => 'top',
+				'count' => 2,
+			),
+		);
+
+		$this->typo3UserFixture = array(
 			'pid' => 0,
 			'tstamp' => 0,
 			'username' => '',
@@ -100,6 +134,15 @@ class AuthenticationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 			'country' => '',
 			'www' => '',
 			'company' => '',
+			'tx_igldapssoauth_dn' => '',
+		);
+
+		$this->typo3GroupFixture = array(
+			'pid' => 0,
+			'tstamp' => 0,
+			'title' => '',
+			'description' => '',
+			'subgroup' => NULL,
 			'tx_igldapssoauth_dn' => '',
 		);
 	}
@@ -147,7 +190,7 @@ EOT;
 		);
 
 		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
-		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapFixture, $this->typo3Fixture, $mapping);
+		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapUserFixture, $this->typo3UserFixture, $mapping);
 
 		$this->assertEquals($expected, $user);
 	}
@@ -161,7 +204,7 @@ EOT;
 EOT;
 
 		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
-		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapFixture, $this->typo3Fixture, $mapping);
+		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapUserFixture, $this->typo3UserFixture, $mapping);
 
 		$this->assertEquals('newton@ldap.forumsys.com', $user['email']);
 	}
@@ -178,7 +221,7 @@ EOT;
 EOT;
 
 		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
-		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapFixture, $this->typo3Fixture, $mapping);
+		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapUserFixture, $this->typo3UserFixture, $mapping);
 
 		$this->assertEquals($GLOBALS['EXEC_TIME'], $user['tstamp']);
 	}
@@ -195,7 +238,7 @@ tx_igldapssoauth_dn = <dn>
 EOT;
 
 		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
-		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapFixture, $this->typo3Fixture, $mapping);
+		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapUserFixture, $this->typo3UserFixture, $mapping);
 
 		$this->assertEquals('Isaac Newton', $user['name']);
 		$this->assertEquals('Newton', $user['last_name']);
@@ -210,7 +253,7 @@ EOT;
 EOT;
 
 		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
-		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapFixture, $this->typo3Fixture, $mapping);
+		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapUserFixture, $this->typo3UserFixture, $mapping);
 
 		$this->assertEquals('NG33', $user['zip']);
 	}
@@ -224,7 +267,7 @@ EOT;
 EOT;
 
 		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
-		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapFixture, $this->typo3Fixture, $mapping);
+		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapUserFixture, $this->typo3UserFixture, $mapping);
 
 		$this->assertEquals('Woolsthorpe Manor, NG33 Woolsthorpe-by-Colsterworth, England', $user['address']);
 	}
@@ -239,7 +282,7 @@ EOT;
 EOT;
 
 		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
-		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapFixture, $this->typo3Fixture, $mapping);
+		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapUserFixture, $this->typo3UserFixture, $mapping);
 
 		$this->assertArrayHasKey('__extraData', $user);
 
@@ -260,11 +303,11 @@ EOT;
 			last_name.wrap = |-suffix
 EOT;
 
-		$expected = $this->typo3Fixture;
+		$expected = $this->typo3UserFixture;
 		$expected['last_name'] = 'Newton-suffix';
 
 		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
-		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapFixture, $this->typo3Fixture, $mapping);
+		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapUserFixture, $this->typo3UserFixture, $mapping);
 
 		$this->assertEquals($expected, $user);
 	}
@@ -289,7 +332,7 @@ EOT;
 EOT;
 
 		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
-		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapFixture, $this->typo3Fixture, $mapping);
+		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapUserFixture, $this->typo3UserFixture, $mapping);
 
 		$this->assertEquals('inetOrgPerson, organizationalPerson, person, top', $user['usergroup']);
 	}
@@ -309,9 +352,31 @@ EOT;
 EOT;
 
 		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
-		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapFixture, $this->typo3Fixture, $mapping);
+		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapUserFixture, $this->typo3UserFixture, $mapping);
 
 		$this->assertEquals('Isaac', $user['first_name']);
+	}
+
+	/**
+	 * @test
+	 */
+	public function parentGroupIsNotMerged() {
+		$mapping = <<<EOT
+			pid = 1
+			title = <cn>
+			description = LDAP Group <cn>
+			parentGroup = <memberOf>
+EOT;
+
+		$expected = $this->typo3GroupFixture;
+		$expected['pid'] = '1';
+		$expected['title'] = 'Scientists';
+		$expected['description'] = 'LDAP Group Scientists';
+
+		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
+		$group = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapGroupFixture, $this->typo3GroupFixture, $mapping);
+
+		$this->assertEquals($expected, $group);
 	}
 
 }

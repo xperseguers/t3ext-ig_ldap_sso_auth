@@ -623,10 +623,10 @@ class Authentication {
 		$out = $typo3;
 		$typoScriptKeys = array();
 
-		// Process every field, except "usergroup", which is not a TypoScript definition
+		// Process every field (except "usergroup" and "parentGroup") which is not a TypoScript definition
 		foreach ($mapping as $field => $value) {
 			if (substr($field, -1) !== '.') {
-				if ($field !== 'usergroup') {
+				if ($field !== 'usergroup' && $field !== 'parentGroup') {
 					$out = static::mergeSimple($ldap, $out, $field, $value);
 				}
 			} else {

@@ -434,7 +434,6 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 
 			// Merge LDAP and TYPO3 information
 			$group = Authentication::merge($ldapGroup, $typo3Groups[0], $config['groups']['mapping']);
-			unset($group['parentGroup']);
 
 			if ((int)$group['uid'] === 0) {
 				$group = Typo3GroupRepository::add($table, $group);
@@ -522,7 +521,6 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 
 					foreach ($ldapGroups as $index => $ldapGroup) {
 						$typo3Group = Authentication::merge($ldapGroup, $typo3Groups[$index], $config['groups']['mapping']);
-						unset($typo3Group['parentGroup']);
 						$typo3Group['subgroup'] = $childUid;
 						$typo3Group = Typo3GroupRepository::add($table, $typo3Group);
 

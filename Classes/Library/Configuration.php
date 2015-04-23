@@ -225,12 +225,16 @@ class Configuration {
 	 */
 	static public function makeMapping($mapping = '') {
 		$mappingConfiguration = array();
-		$mapping = explode(LF, $mapping);
+		$mapping = GeneralUtility::trimExplode(LF, $mapping, TRUE);
 
 		foreach ($mapping as $field) {
-			$fieldMapping = explode('=', $field);
-			if (isset($fieldMapping[1]) && (bool)$fieldMapping[1]) {
-				$mappingConfiguration[trim($fieldMapping[0])] = trim($fieldMapping[1]);
+			// We do not use GeneralUtility::trimExplode() here to keep possible spaces
+			// around "=" if used within a mapping value
+			$fieldMapping = explode('=', $field, 2);
+			if (!empty($fieldMapping[1])) {
+				$key = trim($fieldMapping[0]);
+				$value = trim($fieldMapping[1]);
+				$mappingConfiguration[$key] = $value;
 			}
 		}
 

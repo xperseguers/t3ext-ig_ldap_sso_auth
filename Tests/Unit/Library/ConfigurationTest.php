@@ -39,4 +39,90 @@ class ConfigurationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 		);
 	}
 
+	/**
+	 * @test
+	 */
+	public function emptyLinesAreRemovedFromMapping() {
+		$mapping = <<<EOT
+
+			pid = 1
+			tstamp = {DATE}
+
+			email = <mail>
+
+
+			first_name = <givenName>
+			last_name = <sn>
+
+EOT;
+		$expected = array(
+			'pid' => '1',
+			'tstamp' => '{DATE}',
+			'email' => '<mail>',
+			'first_name' => '<givenName>',
+			'last_name' => '<sn>',
+		);
+
+		$actual = \Causal\IgLdapSsoAuth\Library\Configuration::makeMapping($mapping);
+		$this->assertEquals($expected, $actual);
+	}
+
+	/**
+	 * @test
+	 */
+	public function commentsOrInvalidMappingLinesAreIgnored() {
+		$mapping = <<<EOT
+			// This is a comment
+			pid = 1
+			tstamp = {DATE}
+
+			// Another comment
+			email = <mail>
+
+			partial_definition =
+EOT;
+		$expected = array(
+			'pid' => '1',
+			'tstamp' => '{DATE}',
+			'email' => '<mail>',
+		);
+
+		$actual = \Causal\IgLdapSsoAuth\Library\Configuration::makeMapping($mapping);
+		$this->assertEquals($expected, $actual);
+	}
+
+	/**
+	 * @test
+	 */
+	public function canCombineLdapAttributeAndStaticContentInMapping() {
+		$mapping = <<<EOT
+			name = <sn>, <givenName>
+			telephone = Tel. <telephoneNumber>
+EOT;
+		$expected = array(
+			'name' => '<sn>, <givenName>',
+			'telephone' => 'Tel. <telephoneNumber>',
+		);
+
+		$actual = \Causal\IgLdapSsoAuth\Library\Configuration::makeMapping($mapping);
+		$this->assertEquals($expected, $actual);
+	}
+
+	/**
+	 * @test
+	 */
+	public function canUseEqualSignInMapping() {
+		$mapping = <<<EOT
+			myfield = <sn> =   <givenName>
+			other = <sn> <=> <givenName>
+EOT;
+		$expected = array(
+			'myfield' => '<sn> =   <givenName>',
+			'other' => '<sn> <=> <givenName>',
+		);
+
+		$actual = \Causal\IgLdapSsoAuth\Library\Configuration::makeMapping($mapping);
+		$this->assertEquals($expected, $actual);
+	}
+
 }

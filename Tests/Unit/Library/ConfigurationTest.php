@@ -63,7 +63,7 @@ EOT;
 			'last_name' => '<sn>',
 		);
 
-		$actual = \Causal\IgLdapSsoAuth\Library\Configuration::makeMapping($mapping);
+		$actual = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
 		$this->assertEquals($expected, $actual);
 	}
 
@@ -87,7 +87,7 @@ EOT;
 			'email' => '<mail>',
 		);
 
-		$actual = \Causal\IgLdapSsoAuth\Library\Configuration::makeMapping($mapping);
+		$actual = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
 		$this->assertEquals($expected, $actual);
 	}
 
@@ -104,7 +104,7 @@ EOT;
 			'telephone' => 'Tel. <telephoneNumber>',
 		);
 
-		$actual = \Causal\IgLdapSsoAuth\Library\Configuration::makeMapping($mapping);
+		$actual = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
 		$this->assertEquals($expected, $actual);
 	}
 
@@ -121,7 +121,51 @@ EOT;
 			'other' => '<sn> <=> <givenName>',
 		);
 
-		$actual = \Causal\IgLdapSsoAuth\Library\Configuration::makeMapping($mapping);
+		$actual = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
+		$this->assertEquals($expected, $actual);
+	}
+
+	/**
+	 * @test
+	 */
+	public function canParseSimpleTypoScriptWrap() {
+		$mapping = <<<EOT
+			name = <sn>, <givenName>
+			name.wrap = prefix- | -suffix
+EOT;
+
+		$expected = array(
+			'name' => '<sn>, <givenName>',
+			'name.' => array(
+				'wrap' => 'prefix- | -suffix',
+			),
+		);
+
+		$actual = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
+		$this->assertEquals($expected, $actual);
+	}
+
+	/**
+	 * @test
+	 */
+	public function canParseMultiLineTypoScript() {
+		$mapping = <<<EOT
+			name = <sn>, <givenName>
+			name {
+				wrap = prefix- |
+				wrap2 = | -suffix
+			}
+EOT;
+
+		$expected = array(
+			'name' => '<sn>, <givenName>',
+			'name.' => array(
+				'wrap' => 'prefix- |',
+				'wrap2' => '| -suffix',
+			),
+		);
+
+		$actual = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
 		$this->assertEquals($expected, $actual);
 	}
 

@@ -53,10 +53,13 @@ Option                              Value
 =================================== ===========================================
 Base DN                             dc=example,dc=com
 Filter                              (uid={USERNAME})
-Mapping                             | email = <mail>
-                                    | realName = <cn>
-                                    | tstamp = {DATE}
-                                    | *admin = 1*
+Mapping                             .. code-block:: typoscript
+
+                                        email = <mail>
+                                        realName = <cn>
+                                        tstamp = {DATE}
+                                        admin = 1
+
 =================================== ===========================================
 
 .. warning::
@@ -74,10 +77,42 @@ Option                              Value
 =================================== ===========================================
 Base DN                             dc=example,dc=com
 Filter                              (&(uniqueMember={USERDN})(ou=*))
-Mapping                             | title = <cn>
-                                    | tstamp = {DATE}
+Mapping                             .. code-block:: typoscript
+
+                                        title = <cn>
+                                        tstamp = {DATE}
+
 =================================== ===========================================
 
+.. _admin-manual-sample-feusers:
+
+FE_USERS
+^^^^^^^^
+
+=================================== ===========================================
+Option                              Value
+=================================== ===========================================
+Base DN                             dc=example,dc=com
+Filter                              (uid={USERNAME})
+Mapping                             .. code-block:: typoscript
+
+                                        pid = *id of your storage folder*
+                                        tstamp = {DATE}
+                                        email = <mail>
+                                        name = <cn>
+                                        last_name = <sn>
+
+                                        # <cn> is of the form "Albert Einstein"
+                                        # Extract first name as what comes
+                                        # before last "word"/blank space
+                                        first_name = <cn>
+                                        first_name.replacement.10 {
+                                            search = /^(.*) ([^ ]+)$/
+                                            replace = $1
+                                            useRegExp = 1
+                                        }
+
+=================================== ===========================================
 
 .. _admin-manual-sample-testusersgroups:
 

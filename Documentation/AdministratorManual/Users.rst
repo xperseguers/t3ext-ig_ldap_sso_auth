@@ -81,6 +81,12 @@ backend authentication.
 
     - ``{hook parameters}``: will only be useful if an extension hooks into ig_ldap_sso_auth
 
+    - :ref:`t3tsref:stdWrap` properties: TypoScript post-processing. Multi-valued LDAP attributes are available
+      using ``field`` where values have been joined together using a line-feed character (``\\n``). **BEWARE:** LDAP
+      field names are lower case
+
+  |
+
   **Example (BE_USERS):**
 
   ::
@@ -105,6 +111,24 @@ backend authentication.
       zip = <postalCode>
       city = <l>
       telephone = <telephoneNumber>
+
+  **Example with TypoScript**
+
+  ::
+
+      name = <cn>
+      name.wrap = |-LDAP
+
+      telephone {
+          field = telephonenumber
+          split {
+              token.char = 10
+              cObjNum = 1
+              1.current = 1
+              1.noTrimWrap = ||, |
+          }
+          substring = 0,-2
+      }
 
   .. tip::
       You may combine multiple markers as well, e.g., ::

@@ -146,7 +146,7 @@ EOT;
 			'tx_igldapssoauth_dn' => '',
 		);
 
-		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::makeMapping($mapping);
+		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
 		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapFixture, $this->typo3Fixture, $mapping);
 
 		$this->assertEquals($expected, $user);
@@ -160,7 +160,7 @@ EOT;
 			email = <mail>
 EOT;
 
-		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::makeMapping($mapping);
+		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
 		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapFixture, $this->typo3Fixture, $mapping);
 
 		$this->assertEquals('newton@ldap.forumsys.com', $user['email']);
@@ -177,7 +177,7 @@ EOT;
 			tstamp = {DATE}
 EOT;
 
-		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::makeMapping($mapping);
+		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
 		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapFixture, $this->typo3Fixture, $mapping);
 
 		$this->assertEquals($GLOBALS['EXEC_TIME'], $user['tstamp']);
@@ -191,14 +191,16 @@ EOT;
 name = <cn>
 last_name = <sn>
 city = <l>
+tx_igldapssoauth_dn = <dn>
 EOT;
 
-		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::makeMapping($mapping);
+		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
 		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapFixture, $this->typo3Fixture, $mapping);
 
 		$this->assertEquals('Isaac Newton', $user['name']);
 		$this->assertEquals('Newton', $user['last_name']);
 		$this->assertEquals('Woolsthorpe-by-Colsterworth', $user['city']);
+		$this->assertEquals('uid=newton,dc=example,dc=com', $user['tx_igldapssoauth_dn']);
 	}
 
 	public function canMapMixCasedAttribute() {
@@ -207,7 +209,7 @@ EOT;
 			zip = <postalCode>
 EOT;
 
-		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::makeMapping($mapping);
+		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
 		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapFixture, $this->typo3Fixture, $mapping);
 
 		$this->assertEquals('NG33', $user['zip']);
@@ -221,7 +223,7 @@ EOT;
 			address = <street>, <postalCode> <l>, <co>
 EOT;
 
-		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::makeMapping($mapping);
+		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
 		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapFixture, $this->typo3Fixture, $mapping);
 
 		$this->assertEquals('Woolsthorpe Manor, NG33 Woolsthorpe-by-Colsterworth, England', $user['address']);
@@ -236,7 +238,7 @@ EOT;
 			custom_field2 = <l> (<postalCode>)
 EOT;
 
-		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::makeMapping($mapping);
+		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
 		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapFixture, $this->typo3Fixture, $mapping);
 
 		$this->assertArrayHasKey('__extraData', $user);
@@ -247,6 +249,69 @@ EOT;
 		);
 
 		$this->assertEquals($expectedData, $user['__extraData']);
+	}
+
+	/**
+	 * @test
+	 */
+	public function canWrapFieldWithTypoScript() {
+		$mapping = <<<EOT
+			last_name = <sn>
+			last_name.wrap = |-suffix
+EOT;
+
+		$expected = $this->typo3Fixture;
+		$expected['last_name'] = 'Newton-suffix';
+
+		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
+		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapFixture, $this->typo3Fixture, $mapping);
+
+		$this->assertEquals($expected, $user);
+	}
+
+	/**
+	 * @test
+	 */
+	public function canCombineMultiValuedAttribute() {
+		$mapping = <<<EOT
+			# Populate the "value" of usergroup with every object class attribute from LDAP
+			# These LDAP values are automatically pre-processed and separated by a line-feed ("\n")
+			usergroup {
+				field = objectclass
+				split {
+					token.char = 10
+					cObjNum = 1
+					1.current = 1
+					1.noTrimWrap = ||, |
+				}
+				substring = 0,-2
+			}
+EOT;
+
+		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
+		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapFixture, $this->typo3Fixture, $mapping);
+
+		$this->assertEquals('inetOrgPerson, organizationalPerson, person, top', $user['usergroup']);
+	}
+
+	/**
+	 * @test
+	 */
+	public function canExtractGivenNameFromFullName() {
+		$mapping = <<<EOT
+			first_name = <cn>
+			# Extract everything up to the last blank space
+			first_name.replacement.10 {
+				search = /^(.*) ([^ ]+)$/
+				replace = $1
+				useRegExp = 1
+			}
+EOT;
+
+		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
+		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapFixture, $this->typo3Fixture, $mapping);
+
+		$this->assertEquals('Isaac', $user['first_name']);
 	}
 
 }

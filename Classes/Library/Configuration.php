@@ -179,7 +179,7 @@ class Configuration {
 	static protected function makeUserMapping($mapping = '', $filter = '') {
 		// Default fields : username, tx_igldapssoauth_dn
 
-		$userMapping = static::makeMapping($mapping);
+		$userMapping = static::parseMapping($mapping);
 		$userMapping['username'] = '<' . static::getUsernameAttribute($filter) . '>';
 		$userMapping['tx_igldapssoauth_dn'] = '<dn>';
 		$userMapping['tx_igldapssoauth_id'] = static::getUid();
@@ -196,7 +196,7 @@ class Configuration {
 	static protected function makeGroupMapping($mapping = '') {
 		// Default fields : title, tx_igldapssoauth_dn
 
-		$groupMapping = static::makeMapping($mapping);
+		$groupMapping = static::parseMapping($mapping);
 		if (!isset($groupMapping['title'])) {
 			$groupMapping['title'] = '<dn>';
 		}
@@ -210,35 +210,33 @@ class Configuration {
 	 *
 	 * @param string $mapping
 	 * @return array
-	 * @deprecated since 3.0, will be removed in 3.2, use makeMapping() instead
+	 * @deprecated since 3.0, will be removed in 3.2, use parseMapping() instead
 	 */
 	static public function make_mapping($mapping = '') {
 		GeneralUtility::logDeprecatedFunction();
-		return static::makeMapping($mapping);
+		return static::parseMapping($mapping);
 	}
 
 	/**
-	 * Makes a mapping.
+	 * Parses a mapping definition.
 	 *
 	 * @param string $mapping
 	 * @return array
 	 */
-	static public function makeMapping($mapping = '') {
-		$mappingConfiguration = array();
-		$mapping = GeneralUtility::trimExplode(LF, $mapping, TRUE);
+	static public function parseMapping($mapping = '') {
+		$setup = \Causal\IgLdapSsoAuth\Utility\TypoScriptUtility::loadTypoScript($mapping);
 
-		foreach ($mapping as $field) {
-			// We do not use GeneralUtility::trimExplode() here to keep possible spaces
-			// around "=" if used within a mapping value
-			$fieldMapping = explode('=', $field, 2);
-			if (!empty($fieldMapping[1])) {
-				$key = trim($fieldMapping[0]);
-				$value = trim($fieldMapping[1]);
-				$mappingConfiguration[$key] = $value;
+		// Remove partial definitions
+		$keys = array_keys($setup);
+		foreach ($keys as $key) {
+			if (substr($key, -1) !== '.') {
+				if (empty($setup[$key])) {
+					unset($setup[$key]);
+				}
 			}
 		}
 
-		return $mappingConfiguration;
+		return $setup;
 	}
 
 	/**
@@ -468,7 +466,11 @@ class Configuration {
 	static public function getLdapAttributes($mapping = array()) {
 		$ldapAttributes = array();
 		if (is_array($mapping)) {
-			foreach ($mapping as $attribute) {
+			foreach ($mapping as $field => $attribute) {
+				if (substr($field, -1) === '.') {
+					// This is a TypoScript configuration
+					continue;
+				}
 				if (preg_match_all('/<(.+?)>/', $attribute, $matches)) {
 					foreach ($matches[1] as $matchedAttribute) {
 						$ldapAttributes[] = strtolower($matchedAttribute);

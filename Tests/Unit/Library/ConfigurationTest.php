@@ -48,11 +48,11 @@ class ConfigurationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 			pid = 1
 			tstamp = {DATE}
 
-			email = <mail>
+			email=<mail>
 
 
-			first_name = <givenName>
-			last_name = <sn>
+			first_name =  <givenName>
+			last_name   =<sn>
 
 EOT;
 		$expected = array(

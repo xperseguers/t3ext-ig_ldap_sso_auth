@@ -389,12 +389,12 @@ class Configuration {
 	 *
 	 * @param string $mode TYPO3 mode, either 'be' or 'fe'
 	 * @return void
-	 * @throws \RuntimeException
+	 * @throws \UnexpectedValueException
 	 */
 	static public function setMode($mode) {
 		$mode = strtolower($mode);
 		if (!GeneralUtility::inList('be,fe', $mode)) {
-			throw new \RuntimeException('$mode must be either "be" or "fe"', 1425123719);
+			throw new \UnexpectedValueException('$mode must be either "be" or "fe"', 1425123719);
 		}
 		static::$mode = $mode;
 	}

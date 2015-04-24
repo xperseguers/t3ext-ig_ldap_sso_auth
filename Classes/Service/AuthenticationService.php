@@ -160,7 +160,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 					array(
 						'username' => $this->login['uname'],
 						'diagnostic' => $diagnostic,
-						'configUid' => $configurationRecord['uid'],
+						'configUid' => $configurationRecord->getUid(),
 					)
 				);
 			}

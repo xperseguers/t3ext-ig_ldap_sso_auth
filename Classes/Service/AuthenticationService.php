@@ -32,6 +32,26 @@ use Causal\IgLdapSsoAuth\Utility\NotificationUtility;
  */
 class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 
+	/**
+	 * TRUE - this service was able to authenticate the user
+	 */
+	const STATUS_AUTHENTICATION_SUCCESS_CONTINUE = TRUE;
+
+	/**
+	 * 200 - authenticated and no more checking needed
+	 */
+	const STATUS_AUTHENTICATION_SUCCESS_BREAK = 200;
+
+	/**
+	 * FALSE - this service was the right one to authenticate the user but it failed
+	 */
+	const STATUS_AUTHENTICATION_FAILURE_BREAK = FALSE;
+
+	/**
+	 * 100 - just go on. User is not authenticated but there's still no reason to stop
+	 */
+	const STATUS_AUTHENTICATION_FAILURE_CONTINUE = 100;
+
 	var $prefixId = 'tx_igldapssoauth_sv1'; // Keep class name
 	var $scriptRelPath = 'Classes/Service/AuthenticationService.php'; // Path to this script relative to the extension dir.
 	var $extKey = 'ig_ldap_sso_auth'; // The extension key.
@@ -190,13 +210,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 
 	/**
 	 * Authenticates a user (Check various conditions for the user that might invalidate its
-	 * authentication, eg. password match, domain, IP, etc.).
-	 *
-	 * The return value is defined like that:
-	 *
-	 * FALSE -> login failed and authentication should stop
-	 * 100 -> login failed but authentication should try next service
-	 * 200 -> login succeeded
+	 * authentication, e.g., password match, domain, IP, etc.).
 	 *
 	 * @param array $user Data of user.
 	 * @return int|FALSE
@@ -204,22 +218,24 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 	public function authUser(array $user) {
 		if (!Configuration::isInitialized()) {
 			// Early return since LDAP is not configured
-			return 100;
+			return static::STATUS_AUTHENTICATION_FAILURE_CONTINUE;
 		}
 
 		if (TYPO3_MODE === 'BE') {
-			$OK = Configuration::getValue('BEfailsafe') ? 100 : FALSE;
+			$status = Configuration::getValue('BEfailsafe')
+				? static::STATUS_AUTHENTICATION_FAILURE_CONTINUE
+				: static::STATUS_AUTHENTICATION_FAILURE_BREAK;
 		} else {
-			$OK = 100;
+			$status = static::STATUS_AUTHENTICATION_FAILURE_CONTINUE;
 		}
 
 		$enableFrontendSso = TYPO3_MODE === 'FE' && (bool)$this->config['enableFESSO'] && !empty($_SERVER['REMOTE_USER']);
 
 		if ((($this->login['uident'] && $this->login['uname']) || $enableFrontendSso) && !empty($user['tx_igldapssoauth_dn'])) {
 			if (isset($user['tx_igldapssoauth_from'])) {
-				$OK = 200;
+				$status = static::STATUS_AUTHENTICATION_SUCCESS_BREAK;
 			} elseif (TYPO3_MODE === 'BE' && Configuration::getValue('BEfailsafe')) {
-				return 100;
+				return static::STATUS_AUTHENTICATION_FAILURE_CONTINUE;
 			} else {
 				// Failed login attempt (wrong password) - write that to the log!
 				$this->writelog(255, 3, 3, 1,
@@ -227,21 +243,21 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 					array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $this->login['uname']));
 
 				DebugUtility::warning('Password not accepted: ' . $this->login['uident']);
-				$OK = FALSE;
+				$status = static::STATUS_AUTHENTICATION_FAILURE_BREAK;
 			}
 
 			// Checking the domain (lockToDomain)
-			if ($OK && $user['lockToDomain'] && $user['lockToDomain'] != $this->authInfo['HTTP_HOST']) {
+			if ($status && $user['lockToDomain'] && $user['lockToDomain'] != $this->authInfo['HTTP_HOST']) {
 
 				// Lock domain didn't match, so error:
 				$this->writelog(255, 3, 3, 1,
 					"Login-attempt from %s (%s), username '%s', locked domain '%s' did not match '%s'!",
 					array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $user[$this->db_user['username_column']], $user['lockToDomain'], $this->authInfo['HTTP_HOST']));
-				$OK = FALSE;
+				$status = static::STATUS_AUTHENTICATION_FAILURE_BREAK;
 			}
 		}
 
-		return $OK;
+		return $status;
 	}
 
 	/**

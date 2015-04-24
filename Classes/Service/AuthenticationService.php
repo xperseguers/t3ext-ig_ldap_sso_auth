@@ -71,13 +71,9 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 			return $user;
 		}
 
-		$configurationRecords = $this->getDatabaseConnection()->exec_SELECTgetRows(
-			'uid',
-			'tx_igldapssoauth_config',
-			'deleted=0 AND hidden=0',
-			'',
-			'sorting'
-		);
+		/** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
+		$configurationRepository = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Repository\\ConfigurationRepository');
+		$configurationRecords = $configurationRepository->findAll();
 
 		if (count($configurationRecords) === 0) {
 			// Early return since LDAP is not configured
@@ -86,11 +82,11 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 		}
 
 		foreach ($configurationRecords as $configurationRecord) {
-			Configuration::init(TYPO3_MODE, $configurationRecord['uid']);
+			Configuration::initialize(TYPO3_MODE, $configurationRecord);
 			if (!Configuration::isEnabledForCurrentHost()) {
 				$msg = sprintf(
 					'Configuration record #%s is not enabled for domain %s',
-					$configurationRecord['uid'],
+					$configurationRecord->getUid(),
 					GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY')
 				);
 				DebugUtility::info($msg);

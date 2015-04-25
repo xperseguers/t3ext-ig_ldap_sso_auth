@@ -83,7 +83,7 @@ class UserImportUtility {
 		Configuration::initialize($context, $configuration);
 		// Store current context and get related configuration
 		$this->context = $context;
-		$this->configuration = ($context === 'fe')
+		$this->configuration = (strtolower($context) === 'fe')
 			? Configuration::getFrontendConfiguration()
 			: Configuration::getBackendConfiguration();
 		// Define related tables

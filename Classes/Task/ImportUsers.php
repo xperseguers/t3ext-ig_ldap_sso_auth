@@ -105,27 +105,34 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 				$config = $importUtility->getConfiguration();
 				if (empty($config['users']['filter'])) {
 					// Current context is not configured for this LDAP configuration record
+					unset($importUtility);
 					continue;
 				}
 
 				// Start by connecting to the designated LDAP/AD server
 				$success = Ldap::getInstance()->connect(Configuration::getLdapConfiguration());
 				// Proceed with import if successful
-				if ($success) {
+				if (!$success) {
+					$failures++;
+					unset($importUtility);
+					continue;
+				}
 
-					$ldapUsers = $importUtility->fetchLdapUsers();
-					// Consider that fetching no users from LDAP is an error
-					if (count($ldapUsers) == 0) {
-						$failures++;
+				$ldapUsers = $importUtility->fetchLdapUsers();
 
-					// Otherwise proceed with import
-					} else {
-						// Disable or delete users, according to settings
-						if ($this->missingUsersHandling == 'disable') {
-							$importUtility->disableUsers();
-						} elseif ($this->missingUsersHandling == 'delete') {
-							$importUtility->deleteUsers();
-						}
+				// Consider that fetching no users from LDAP is an error
+				if (count($ldapUsers) === 0) {
+					$failures++;
+				} else {
+					// Disable or delete users, according to settings
+					if ($this->missingUsersHandling === 'disable') {
+						$importUtility->disableUsers();
+					} elseif ($this->missingUsersHandling === 'delete') {
+						$importUtility->deleteUsers();
+					}
+
+					// Proceed with import (handle partial result sets until every LDAP record has been returned)
+					do {
 						$typo3Users = $importUtility->fetchTypo3Users($ldapUsers);
 
 						// Loop on all users and import them
@@ -137,13 +144,18 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 							$importUtility->import($user, $aUser, $this->restoredUsersHandling);
 						}
 
-					}
-					// Clean up
-					unset($importUtility);
-					Ldap::getInstance()->disconnect();
-				} else {
-					$failures++;
+						// Free memory before going on
+						$typo3Users = NULL;
+						$ldapUsers = NULL;
+						$ldapUsers = $importUtility->hasMoreLdapUsers()
+							? $importUtility->fetchLdapUsers(TRUE)
+							: array();
+					} while (count($ldapUsers) > 0);
 				}
+
+				// Clean up
+				unset($importUtility);
+				Ldap::getInstance()->disconnect();
 			}
 		}
 

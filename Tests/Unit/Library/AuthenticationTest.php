@@ -66,8 +66,8 @@ class AuthenticationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 				0 => 'Woolsthorpe-by-Colsterworth',
 				'count' => 1,
 			),
-			6 => 'postalcode',
-			'postalcode' => array(
+			6 => 'postalCode',
+			'postalCode' => array(
 				0 => 'NG33',
 				'count' => 1,
 			),
@@ -246,16 +246,19 @@ EOT;
 		$this->assertEquals('uid=newton,dc=example,dc=com', $user['tx_igldapssoauth_dn']);
 	}
 
+	/**
+	 * @test
+	 */
 	public function canMapMixCasedAttribute() {
 		$mapping = <<<EOT
-			// Actual LDAP attribute is "postalcode" (lowercase)
-			zip = <postalCode>
+			// Actual LDAP attribute is "objectclass" (lowercase)
+			title = <objectClass>
 EOT;
 
 		$mapping = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
 		$user = \Causal\IgLdapSsoAuth\Library\Authentication::merge($this->ldapUserFixture, $this->typo3UserFixture, $mapping);
 
-		$this->assertEquals('NG33', $user['zip']);
+		$this->assertEquals('inetOrgPerson', $user['title']);
 	}
 
 	/**

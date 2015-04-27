@@ -251,6 +251,21 @@
 			<trans-unit id="task.import_users.description">
 				<source>Import LDAP for one or all configurations, for FE, BE or both. Users missing on the LDAP side will be disabled.</source>
 			</trans-unit>
+			<trans-unit id="task.import_users.field.mode">
+				<source>Mode</source>
+			</trans-unit>
+			<trans-unit id="task.import_users.field.mode.import">
+				<source>Import missing LDAP users and synchronize existing TYPO3 users</source>
+			</trans-unit>
+			<trans-unit id="task.import_users.field.mode.sync">
+				<source>Only synchronize existing TYPO3 users</source>
+			</trans-unit>
+			<trans-unit id="task.import_users.field.mode.import.short">
+				<source><![CDATA[Import & synchronize]]></source>
+			</trans-unit>
+			<trans-unit id="task.import_users.field.mode.sync.short">
+				<source>Synchronize</source>
+			</trans-unit>
 			<trans-unit id="task.import_users.field.context">
 				<source>Context</source>
 			</trans-unit>
@@ -271,6 +286,10 @@
 			</trans-unit>
 			<trans-unit id="task.import_users.additional_information">
 				<source>Context: %s, Configuration: %s</source>
+				<note from="developer">This label is deprecated (not used anymore) as of IG_LDAP_SSO_AUTH v.3.0.</note>
+			</trans-unit>
+			<trans-unit id="task.import_users.additionalinformation">
+				<source>Mode: %s, Context: %s, Configuration: %s</source>
 			</trans-unit>
 			<trans-unit id="task.import_users.field.missinguserhandling">
 				<source>Handling of missing users</source>

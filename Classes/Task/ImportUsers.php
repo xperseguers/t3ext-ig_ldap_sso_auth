@@ -62,6 +62,14 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 	protected $restoredUsersHandling = 'nothing';
 
 	/**
+	 * Defines whether missing users in TYPO3 should be imported ("imported") or if only already existing
+	 * users in TYPO3 should be synchronized ("sync") with LDAP.
+	 *
+	 * @var string
+	 */
+	protected $mode = 'import';
+
+	/**
 	 * Performs the synchronization of LDAP users according to selected parameters.
 	 *
 	 * @return boolean Returns TRUE on successful execution, FALSE on error
@@ -81,11 +89,13 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 				$ldapConfigurations[] = $configuration;
 			}
 		}
-		if ($this->context == 'both') {
+		if ($this->context === 'both') {
 			$executionContexts = array('fe', 'be');
 		} else {
 			$executionContexts = array($this->context);
 		}
+
+		$mode = $this->getMode();
 
 		// Start a database transaction with all our changes
 		// Syntax is compatible with MySQL, Oracle, MSSQL and PostgreSQL
@@ -147,6 +157,11 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 
 						// Loop on all users and import them
 						foreach ($ldapUsers as $index => $aUser) {
+							if ($mode === 'sync' && empty($typo3Users[$index]['uid'])) {
+								// New LDAP user => skip it since only existing TYPO3 users should get synchronized
+								continue;
+							}
+
 							// Merge LDAP and TYPO3 information
 							$user = Authentication::merge($aUser, $typo3Users[$index], $config['users']['mapping']);
 
@@ -193,23 +208,44 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 	 * @return	string	Information to display
 	 */
 	public function getAdditionalInformation() {
+		$languageService = $this->getLanguageService();
+
 		if (empty($this->configuration)) {
-			$configurationName = $this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.configuration.all');
+			$configurationName = $languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.configuration.all');
 		} else {
 			$configurationName = $this->getConfigurationName();
 		}
 		$info = sprintf(
-			$this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.additional_information'),
-			$this->getContext(),
+			$languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.additionalinformation'),
+			$languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.mode.' . $this->getMode() . '.short'),
+			$languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.context.' . strtolower($this->getContext())),
 			$configurationName
 		);
 		return $info;
 	}
 
 	/**
+	 * Sets the mode.
+	 *
+	 * @param string $mode
+	 */
+	public function setMode($mode) {
+		$this->mode = $mode;
+	}
+
+	/**
+	 * Returns the mode.
+	 *
+	 * @return string
+	 */
+	public function getMode() {
+		return $this->mode;
+	}
+
+	/**
 	 * Sets the context parameter.
 	 *
-	 * @param $context
+	 * @param string $context
 	 */
 	public function setContext($context) {
 		$this->context = $context;
@@ -218,7 +254,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 	/**
 	 * Returns the context parameter.
 	 *
-	 * @return mixed
+	 * @return string
 	 */
 	public function getContext() {
 		return $this->context;
@@ -227,7 +263,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 	/**
 	 * Sets the configuration.
 	 *
-	 * @param $configuration
+	 * @param int $configuration
 	 */
 	public function setConfiguration($configuration) {
 		$this->configuration = (int)$configuration;

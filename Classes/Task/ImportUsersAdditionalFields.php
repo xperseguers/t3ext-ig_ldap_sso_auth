@@ -40,6 +40,19 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
 		/** @var \Causal\IgLdapSsoAuth\Task\ImportUsers $task */
 		$additionalFields = array();
 
+		// Process the mode field
+		$parameters = array(
+			'field' => 'mode',
+			'label' => 'task.import_users.field.mode',
+			'options' => array(
+				'import' => 'LLL:task.import_users.field.mode.import',
+				'sync' => 'LLL:task.import_users.field.mode.sync',
+			),
+			'value' => $task ? $task->getMode() : NULL,
+			'css' => 'wide',
+		);
+		$this->registerSelect($taskInfo, $schedulerModule->CMD, $parameters, $additionalFields);
+
 		// Process the context field
 		$parameters = array(
 			'field' => 'context',
@@ -131,7 +144,11 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
 
 		// Write the code for the field
 		$fieldID = 'task_' . $fieldName;
-		$fieldCode = '<select name="tx_scheduler[' . $fieldName . ']" id="' . $fieldID . '" class="form-control">';
+		$cssClass = 'form-control';
+		if (isset($parameters['css'])) {
+			$cssClass .= ' ' . $parameters['css'];
+		}
+		$fieldCode = '<select name="tx_scheduler[' . htmlspecialchars($fieldName) . ']" id="' . htmlspecialchars($fieldID) . '" class="' . htmlspecialchars($cssClass) . '">';
 
 		// Assemble selector options
 		foreach ($parameters['options'] as $optionKey => $label) {
@@ -178,6 +195,7 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
 	 */
 	public function saveAdditionalFields(array $submittedData, \TYPO3\CMS\Scheduler\Task\AbstractTask $task) {
 		/** @var \Causal\IgLdapSsoAuth\Task\ImportUsers $task */
+		$task->setMode($submittedData['tx_igldapssoauth_mode']);
 		$task->setContext($submittedData['tx_igldapssoauth_context']);
 		$task->setConfiguration($submittedData['tx_igldapssoauth_configuration']);
 		$task->setMissingUsersHandling($submittedData['tx_igldapssoauth_missinguserhandling']);

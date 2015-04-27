@@ -616,10 +616,11 @@ class Authentication {
 	 * @param array $ldap
 	 * @param array $typo3
 	 * @param array $mapping Parsed mapping definition
+	 * @param bool $reportErrors
 	 * @return array
 	 * @see \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping()
 	 */
-	static public function merge(array $ldap = array(), array $typo3 = array(), array $mapping = array()) {
+	static public function merge(array $ldap = array(), array $typo3 = array(), array $mapping = array(), $reportErrors = FALSE) {
 		$out = $typo3;
 		$typoScriptKeys = array();
 
@@ -627,7 +628,13 @@ class Authentication {
 		foreach ($mapping as $field => $value) {
 			if (substr($field, -1) !== '.') {
 				if ($field !== 'usergroup' && $field !== 'parentGroup') {
-					$out = static::mergeSimple($ldap, $out, $field, $value);
+					try {
+						$out = static::mergeSimple($ldap, $out, $field, $value);
+					} catch (\UnexpectedValueException $uve) {
+						if ($reportErrors) {
+							$out['__errors'][] = $uve->getMessage();
+						}
+					}
 				}
 			} else {
 				$typoScriptKeys[] = $field;
@@ -685,10 +692,11 @@ class Authentication {
 	 * @param string $field
 	 * @param string $value
 	 * @return array Modified $typo3 array
+	 * @throws \UnexpectedValueException
 	 */
 	static protected function mergeSimple(array $ldap, array $typo3, $field, $value) {
 		// Standard marker or custom function
-		if (preg_match("`{([^$]*)}`", $value, $match)) {
+		if (preg_match("`{([^$]*)}`", $value, $matches)) {
 			switch ($value) {
 				case '{DATE}' :
 					$mappedValue = $GLOBALS['EXEC_TIME'];
@@ -698,22 +706,28 @@ class Authentication {
 					break;
 				default:
 					$mappedValue = '';
-					$params = explode(';', $match[1]);
-					$passParams = array();
+					$parameters = explode(';', $matches[1]);
+					$hookParameters = array();
 
-					foreach ($params as $param) {
-						$paramTemps = explode('|', $param);
-						$passParams[$paramTemps[0]] = $paramTemps[1];
+					foreach ($parameters as $parameter) {
+						list($parameterKey, $parameterValue) = explode('|', $parameter, 2);
+						$hookParameters[trim($parameterKey)] = $parameterValue;
 					}
-					$newVal = $passParams['hookName'];
-					$ldapAttr = Configuration::getLdapAttributes(array($value));
+					if (empty($hookParameters['hookName'])) {
+						throw new \UnexpectedValueException(sprintf('Custom marker hook parameter "hookName" is undefined: %s', $matches[0]), 1430138379);
+					}
+					$hookName = $hookParameters['hookName'];
+					$ldapAttributes = Configuration::getLdapAttributes(array($value));
 					// hook for processing user information once inserted or updated in the database
 					if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField']) &&
-						!empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'][$newVal])
+						!empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'][$hookName])
 					) {
 
-						$_procObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'][$newVal]);
-						$mappedValue = $_procObj->extraMerge($field, $typo3, $ldap, $ldapAttr, $passParams);
+						$_procObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'][$hookName]);
+						if (!is_callable(array($_procObj, 'extraMerge'))) {
+							throw new \UnexpectedValueException(sprintf('Custom marker hook "%s" does not have a method "extraMerge"', $hookName), 1430140817);
+						}
+						$mappedValue = $_procObj->extraMerge($field, $typo3, $ldap, $ldapAttributes, $hookParameters);
 					}
 					break;
 			}

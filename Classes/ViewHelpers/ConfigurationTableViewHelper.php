@@ -90,6 +90,9 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
 	 * @return string
 	 */
 	protected function renderValueCell($value, $key, $depth, &$hasError) {
+		if ($key === '__errors') {
+			$hasError = TRUE;
+		}
 		if (is_array($value)) {
 			return sprintf('<td>%s</td>', $this->renderTable($value, FALSE, $depth + 1, $hasError));
 		}

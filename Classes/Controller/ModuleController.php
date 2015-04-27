@@ -236,7 +236,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 					$mapping = $config['groups']['mapping'];
 					$blankTypo3Record = Typo3GroupRepository::create($type);
 				}
-				$preview = Authentication::merge($resultset, $blankTypo3Record, $mapping);
+				$preview = Authentication::merge($resultset, $blankTypo3Record, $mapping, TRUE);
 
 				// Remove empty lines
 				$keys = array_keys($preview);

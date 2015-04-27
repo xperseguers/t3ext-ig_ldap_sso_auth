@@ -144,7 +144,8 @@ markers available at the moment:
 - ``{USERNAME}``: the username from the login form (the username will automatically fill the needed field. This marker
   is only used if you want to put the username in another field than the one by default);
 
-- ``{hook parameters}``: will only be useful if an extension hooks into ig_ldap_sso_auth.
+- ``{hook parameters}``: will only be useful if an extension
+  :ref:`hooks into ig_ldap_sso_auth <development-extramergefield>`.
 
 
 .. _admin-manual-feusers-mapping-examples:

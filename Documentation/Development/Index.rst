@@ -20,3 +20,4 @@ Hooks
 	:maxdepth: 1
 
 	Hooks/ExtraDataProcessing
+	Hooks/ExtraMergeField

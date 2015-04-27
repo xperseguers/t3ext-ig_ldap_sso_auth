@@ -20,19 +20,26 @@ Defining such data is easy. With the usual mapping syntax::
 
 	local_field = ldap_field
 
-Any "local_field" that does not exist in the mapped users table will be considered "extra data". The "local_field" may
-have any special syntax that suits your needs (for example "table.field") as long as it does not mess with the mappings
-configuration itself.
+Any ``local_field`` that does not exist in the mapped users table will be considered "extra data". The ``local_field``
+may have any special syntax that suits your needs (for example "table__field") as long as it does not mess with the
+mapping configuration itself.
+
+.. warning::
+	In previous versions of this extension (2.x) it was possible to use a dot for ``local_field`` (e.g.,
+	``table.field``).
+
+	This is not supported anymore since you may use :ref:`TypoScript <admin-manual-feusers-mapping>` to post-process the
+	mapping. We suggest that you use a double underscore character instead (``__``) as in ``table__field``.
 
 All fields considered to be extra data will be mapped to LDAP values as any other field, but stored separately and
 passed to the hook.
 
-In your extension (in the :file:`ext_localconf.php` file), register with the hook using a code like:
+In your extension (in the :file:`ext_localconf.php` file), register the hook using a code like:
 
 .. code-block:: php
 
 	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'][]
-		= 'EXT:extension/Path/To/Class/ClassName.php:ClassName';
+		= 'EXT:extension/Path/To/Class/ClassName.php:VendorName\\ClassName';
 
 Your class has to implement the :code:`\Causal\IgLdapSsoAuth\Utility\ExtraDataProcessorInterface` interface.
 This implies implementing a method called :code:`processExtraData` which will receive the following arguments:

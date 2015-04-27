@@ -133,7 +133,13 @@ class UserImportUtility {
 		if (!empty($this->configuration['users']['basedn'])) {
 			if (!$partial) {
 				$filter = Configuration::replaceFilterMarkers($this->configuration['users']['filter']);
-				$attributes = Configuration::getLdapAttributes($this->configuration['users']['mapping']);
+				if (Configuration::hasExtendedMapping($this->configuration['users']['mapping'])) {
+					// Fetch all attributes so that hooks may do whatever they want on any LDAP attribute
+					$attributes = array();
+				} else {
+					// Optimize the LDAP call by retrieving only attributes in use for the mapping
+					$attributes = Configuration::getLdapAttributes($this->configuration['users']['mapping']);
+				}
 				$ldapUsers = Ldap::getInstance()->search($this->configuration['users']['basedn'], $filter, $attributes);
 			} else {
 				$ldapUsers = Ldap::getInstance()->searchNext();

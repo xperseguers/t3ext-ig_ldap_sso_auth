@@ -247,18 +247,19 @@ class Authentication {
 	 * @return array
 	 */
 	static protected function getLdapUser($dn = NULL) {
-		// Restricting the list of returned attributes sometimes
-		// makes the ldap_search() method issue a PHP warning:
-		// Warning: ldap_search(): Array initialization wrong
-		/*
-		$attributes = Configuration::get_ldap_attributes(static::$config['users']['mapping']);
-		if (strpos(static::$config['groups']['filter'], '{USERUID}') !== FALSE) {
-			$attributes[] = 'uid';
-			$attributes = array_unique($attributes);
+		// Restricting the list of returned attributes sometimes makes the ldap_search() method issue a PHP warning:
+		//     Warning: ldap_search(): Array initialization wrong
+		// so we just ask for every attribute ("TRUE" below)!
+		if (TRUE || Configuration::hasExtendedMapping(static::$config['users']['mapping'])) {
+			$attributes = array();
+		} else {
+			// Currently never called ever again due to the warning found sometimes (see above)
+			$attributes = Configuration::getLdapAttributes(static::$config['users']['mapping']);
+			if (strpos(static::$config['groups']['filter'], '{USERUID}') !== FALSE) {
+				$attributes[] = 'uid';
+				$attributes = array_unique($attributes);
+			}
 		}
-		*/
-		// so we just ask for every attribute!
-		$attributes = array();
 
 		$users = Ldap::getInstance()->search(
 			$dn,
@@ -698,10 +699,10 @@ class Authentication {
 		// Standard marker or custom function
 		if (preg_match("`{([^$]*)}`", $value, $matches)) {
 			switch ($value) {
-				case '{DATE}' :
+				case '{DATE}':
 					$mappedValue = $GLOBALS['EXEC_TIME'];
 					break;
-				case '{RAND}' :
+				case '{RAND}':
 					$mappedValue = rand();
 					break;
 				default:

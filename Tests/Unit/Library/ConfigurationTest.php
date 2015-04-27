@@ -14,6 +14,8 @@ namespace Causal\IgLdapSsoAuth\Tests\Unit\Library;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Causal\IgLdapSsoAuth\Library\Configuration;
+
 /**
  * Test cases for class \Causal\IgLdapSsoAuth\Library\Configuration.
  */
@@ -24,7 +26,7 @@ class ConfigurationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 	 * @dataProvider usernameFilterProvider
 	 */
 	public function canGetUsernameAttribute($filter, $expected) {
-		$attribute = \Causal\IgLdapSsoAuth\Library\Configuration::getUsernameAttribute($filter);
+		$attribute = Configuration::getUsernameAttribute($filter);
 		$this->assertSame($expected, $attribute);
 	}
 
@@ -63,7 +65,7 @@ EOT;
 			'last_name' => '<sn>',
 		);
 
-		$actual = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
+		$actual = Configuration::parseMapping($mapping);
 		$this->assertEquals($expected, $actual);
 	}
 
@@ -87,7 +89,7 @@ EOT;
 			'email' => '<mail>',
 		);
 
-		$actual = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
+		$actual = Configuration::parseMapping($mapping);
 		$this->assertEquals($expected, $actual);
 	}
 
@@ -104,7 +106,7 @@ EOT;
 			'telephone' => 'Tel. <telephoneNumber>',
 		);
 
-		$actual = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
+		$actual = Configuration::parseMapping($mapping);
 		$this->assertEquals($expected, $actual);
 	}
 
@@ -121,7 +123,7 @@ EOT;
 			'other' => '<sn> <=> <givenName>',
 		);
 
-		$actual = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
+		$actual = Configuration::parseMapping($mapping);
 		$this->assertEquals($expected, $actual);
 	}
 
@@ -141,7 +143,7 @@ EOT;
 			),
 		);
 
-		$actual = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
+		$actual = Configuration::parseMapping($mapping);
 		$this->assertEquals($expected, $actual);
 	}
 
@@ -165,8 +167,70 @@ EOT;
 			),
 		);
 
-		$actual = \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping($mapping);
+		$actual = Configuration::parseMapping($mapping);
 		$this->assertEquals($expected, $actual);
+	}
+
+	/**
+	 * @test
+	 */
+	public function simpleMappingIsNotExtended() {
+		$mapping = <<<EOT
+			name = <sn>, <givenName>
+			first_name = <givenName>
+			last_name = <sn>
+			address = <street>, <postalCode> <l>, <co>
+EOT;
+
+		$mapping = Configuration::parseMapping($mapping);
+		$result = Configuration::hasExtendedMapping($mapping);
+
+		$this->assertFalse($result);
+	}
+
+	/**
+	 * @test
+	 */
+	public function mappingWithHooksIsExtended() {
+		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'] = array('foo');
+		$mapping = <<<EOT
+			name = {special}
+EOT;
+
+		$mapping = Configuration::parseMapping($mapping);
+		$result = Configuration::hasExtendedMapping($mapping);
+
+		$this->assertTrue($result);
+	}
+
+	/**
+	 * @test
+	 */
+	public function mappingWithExtraDatasIsExtended() {
+		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'] = array('foo');
+		$mapping = <<<EOT
+			custom-field = foobar
+EOT;
+
+		$mapping = Configuration::parseMapping($mapping);
+		$result = Configuration::hasExtendedMapping($mapping);
+
+		$this->assertTrue($result);
+	}
+
+	/**
+	 * @test
+	 */
+	public function mappingWithTypoScriptIsExtended() {
+		$mapping = <<<EOT
+			name = <sn>, <givenName>
+			name.wrap = |
+EOT;
+
+		$mapping = Configuration::parseMapping($mapping);
+		$result = Configuration::hasExtendedMapping($mapping);
+
+		$this->assertTrue($result);
 	}
 
 }

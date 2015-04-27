@@ -483,6 +483,33 @@ class Configuration {
 	}
 
 	/**
+	 * Returns TRUE if the mapping contains some extended construct such
+	 * as parameters for a hook or TypoScript.
+	 *
+	 * @param array|string $mapping
+	 * @return bool
+	 */
+	static public function hasExtendedMapping($mapping = array()) {
+		// Shortcut: if hooks are registered, take for granted extended syntax will be used
+		$extended = is_array($mapping)
+			&& (
+				is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'])
+				|| is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'])
+			);
+
+		if (is_array($mapping) && !$extended) {
+			foreach ($mapping as $field => $attribute) {
+				if (substr($field, -1) === '.') {
+					$extended = TRUE;
+					break;
+				}
+			}
+		}
+
+		return $extended;
+	}
+
+	/**
 	 * Returns the type of server.
 	 *
 	 * @param int $uid

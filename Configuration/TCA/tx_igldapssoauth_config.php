@@ -31,7 +31,7 @@ return array(
 		'1' => array(
 			'showitem' => '
 					--div--;GENERAL,
-						name, domains,
+						hidden, name, domains,
 					--div--;LDAP,
 						ldap_server;;1,
 					--palette--;LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:palette.connection;connection,

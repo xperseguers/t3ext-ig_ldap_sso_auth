@@ -11,7 +11,7 @@
 LDAP
 ----
 
-The second tab is the global configurations about a single LDAP server.
+The second tab is the global configuration about a single LDAP server.
 
 .. only:: html
 
@@ -27,7 +27,8 @@ The second tab is the global configurations about a single LDAP server.
 Server
 ^^^^^^
 
-Choose your LDAP type (OpenLDAP or Active Directory / Novell eDirectory).
+Choose your LDAP type (OpenLDAP or Active Directory / Novell eDirectory). This is used internally to follow (or not)
+referrals returned by the LDAP server and to help you with suggested mapping configuration.
 
 
 .. _admin-manual-ldap-protocol:
@@ -60,7 +61,7 @@ Host of your LDAP. You may use either a host name / IP address or prefix it with
 Port
 ^^^^
 
-Port your LDAP uses. Default LDAP port is 389 (``ldap://``) and 636 (``ldaps://``).
+Port your LDAP uses. Default LDAP ports are 389 (``ldap://``) and 636 (``ldaps://``).
 
 
 .. _admin-manual-ldap-tls:

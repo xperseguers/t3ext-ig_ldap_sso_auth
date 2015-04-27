@@ -26,6 +26,10 @@ The options are the following:
 - **Mode:** Choose to import LDAP users who are not yet available in TYPO3 or only synchronize existing TYPO3 users with
   changes from LDAP.
 
+  .. note::
+
+      This setting will be used for corresponding user groups as well.
+
 - **Context:** Choose to import only frontend users, backend users or both.
 
 - **Configuration:** Choose which configuration to use, or choose "All" to automate import of users from all available

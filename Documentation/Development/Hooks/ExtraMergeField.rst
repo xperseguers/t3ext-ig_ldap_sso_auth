@@ -58,6 +58,6 @@ $ldapAttributes
 	An array containing LDAP attributes found in your mapping definition.
 
 $hookParameters
-	An associative array with every hook parameters found in your mapping definition.
+	An associative array with all hook parameters found in your mapping definition (thus including ``hookName``).
 
 Your method should simply return a string for the value to be given to ``$field``.

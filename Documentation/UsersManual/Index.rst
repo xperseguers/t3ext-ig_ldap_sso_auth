@@ -16,7 +16,7 @@ Users manual
 	This chapter describes how to use the extension from a user point of view.
 
 
-When a user tries to log on the extension passes her credentials to the LDAP server(s) and verifies them. When a LDAP
+When a user tries to log on, the extension passes her credentials to the LDAP server(s) and verifies them. When a LDAP
 server can authenticate the user, she is logged on. New users (in the directory but not in the TYPO3 database) are
 imported after authentication. Records of existing users are updated.
 

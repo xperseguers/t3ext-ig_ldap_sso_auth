@@ -13,7 +13,7 @@ Administrator manual
 
 .. only:: html
 
-	This chapter describes how to manage the extension from a superuser point of view.
+	This chapter describes how to manage the extension from an administrator point of view.
 
 
 First step for configuring your LDAP authentication is to create one or more server configuration records. To do this,

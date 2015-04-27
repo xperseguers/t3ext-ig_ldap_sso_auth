@@ -12,7 +12,7 @@
 FE_GROUPS and BE_GROUPS
 -----------------------
 
-The fourth and sixth tabs can be fill exactly the same way. The only difference between them is that FE_GROUPS stores
+The fourth and sixth tabs can be filled exactly the same way. The only difference between them is that FE_GROUPS stores
 the configurations for the frontend LDAP user group association and BE_GROUPS stores the configurations for the backend
 LDAP user group association.
 
@@ -78,7 +78,7 @@ configuration using the wizard in the backend module.
 
 .. warning::
 	When using ActiveDirectory, you typically set the option ``Relation between groups and users`` to
-	``User contains the list of its associated groups`` If so, you **must** add a line mapping the "usergroup" for
+	``User contains the list of its associated groups``. If so, you **must** add a line mapping the "usergroup" for
 	your user. This mapping *will not* be actually used by TYPO3 but will let the LDAP engine know which attribute is
 	used to evaluate the group membership.
 

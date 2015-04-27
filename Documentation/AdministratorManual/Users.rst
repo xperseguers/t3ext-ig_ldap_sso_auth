@@ -13,9 +13,9 @@
 FE_USERS and BE_USERS
 ---------------------
 
-The third tab and the fifth tabs can be fill exactly the same way. The only difference between them is that FE_USERS
-stores the configuration options for the frontend LDAP user authentication and BE_USERS stores the configuration options
-for the backend LDAP user authentication.
+The third and fifth tab can be filled exactly the same way. The only difference between them is that FE_USERS stores the
+configuration options for the frontend LDAP user authentication and BE_USERS stores the configuration options for the
+backend LDAP user authentication.
 
 You may only fill the sections you need; that is, FE_USERS if you need frontend authentication and BE_USERS if you need
 backend authentication.
@@ -63,7 +63,7 @@ this field is the standard LDAP search syntax.
 
 ::
 
-	(&(uid={USERNAME})(objectClass=posixAccount)
+	(&(uid={USERNAME})(objectClass=posixAccount))
 
 .. note::
 	The string ``{USERNAME}`` will be substituted by the username entered in the login form. In case the filter is
@@ -87,8 +87,17 @@ There are three possible value types you may use:
 - a LDAP attribute value;
 - a custom marker;
 
-In addition, every field supports :ref:`t3tsref:stdWrap` properties. Multi-valued LDAP attributes are available using
-``field`` where values have been joined together using a line-feed character (``\n``).
+.. Cross-linking does not seem to work when rendering as PDF, at least locally with EXT:sphinx
+
+.. only:: html
+
+	In addition, every field supports :ref:`t3tsref:stdWrap` properties. Multi-valued LDAP attributes are available
+	using ``field`` where values have been joined together using a line-feed character (``\n``).
+
+.. only:: latex
+
+	In addition, every field supports stdWrap properties. Multi-valued LDAP attributes are available
+	using ``field`` where values have been joined together using a line-feed character (``\n``).
 
 .. warning::
 	LDAP field names are always lowercase when accessed in TypoScript.

@@ -39,173 +39,122 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
 	public function getAdditionalFields(array &$taskInfo, $task, \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule) {
 		/** @var \Causal\IgLdapSsoAuth\Task\ImportUsers $task */
 		$additionalFields = array();
-		$languageService = $this->getLanguageService();
 
 		// Process the context field
-		$fieldName = 'tx_igldapssoauth_context';
-		// Initialize extra field value, if not yet defined
-		if (empty($taskInfo[$fieldName])) {
-			if ($schedulerModule->CMD == 'add') {
-				$taskInfo[$fieldName] = 'both';
-			} elseif ($schedulerModule->CMD == 'edit') {
-				// In case of edit, set to internal value if no data was submitted already
-				$taskInfo[$fieldName] = $task->getContext();
-			}
-		}
-
-		// Write the code for the field
-		$fieldID = 'task_' . $fieldName;
-		$fieldCode  = '<select name="tx_scheduler[' . $fieldName . ']" id="' . $fieldID . '" class="form-control">';
-		// Assemble selector options
-		$selected = '';
-		if ($taskInfo[$fieldName] == 'both') {
-			$selected = ' selected="selected"';
-		}
-		$fieldCode .= '<option value="both"' . $selected . '>' . $languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.context.both', TRUE) . '</option>';
-		$selected = '';
-		if ($taskInfo[$fieldName] == 'FE') {
-			$selected = ' selected="selected"';
-		}
-		$fieldCode .= '<option value="FE"' . $selected . '>' . $languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.context.fe', TRUE) . '</option>';
-		$selected = '';
-		if ($taskInfo[$fieldName] == 'BE') {
-			$selected = ' selected="selected"';
-		}
-		$fieldCode .= '<option value="BE"' . $selected . '>' . $languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.context.be', TRUE) . '</option>';
-		$fieldCode .= '</select>';
-		// Register the field
-		$additionalFields[$fieldID] = array(
-			'code'     => $fieldCode,
-			'label'    => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.context',
-			'cshLabel' => $fieldID
+		$parameters = array(
+			'field' => 'context',
+			'label' => 'task.import_users.field.context',
+			'options' => array(
+				'both' => 'LLL:task.import_users.field.context.both',
+				'FE' => 'LLL:task.import_users.field.context.fe',
+				'BE' => 'LLL:task.import_users.field.context.be',
+			),
+			'value' => $task ? $task->getContext() : NULL,
 		);
+		$this->registerSelect($taskInfo, $schedulerModule->CMD, $parameters, $additionalFields);
 
 		// Process the configuration field
-		$fieldName = 'tx_igldapssoauth_configuration';
-		// Initialize extra field value, if not yet defined
-		if (empty($taskInfo[$fieldName])) {
-			if ($schedulerModule->CMD == 'add') {
-				$taskInfo[$fieldName] = 0;
-			} elseif ($schedulerModule->CMD == 'edit') {
-				// In case of edit, set to internal value if no data was submitted already
-				$taskInfo[$fieldName] = $task->getConfiguration();
-			}
-		}
-
-		// Write the code for the field
-		$fieldID = 'task_' . $fieldName;
-		$fieldCode  = '<select name="tx_scheduler[' . $fieldName . ']" id="' . $fieldID . '" class="form-control">';
-		// Assemble selector options
-		$selected = '';
-		$taskInfo[$fieldName] = intval($taskInfo[$fieldName]);
-		if ($taskInfo[$fieldName] === 0) {
-			$selected = ' selected="selected"';
-		}
-		$fieldCode .= '<option value="0"' . $selected . '>' . $languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.configuration.all', TRUE) . '</option>';
+		$parameters = array(
+			'field' => 'configuration',
+			'label' => 'task.import_users.field.configuration',
+			'options' => array(
+				0 => 'LLL:task.import_users.field.configuration.all',
+			),
+			'value' => $task ? $task->getConfiguration() : NULL,
+		);
 		// Get the existing LDAP configurations
 		/** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
 		$configurationRepository = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Repository\\ConfigurationRepository');
 		$ldapConfigurations = $configurationRepository->findAll();
 		foreach ($ldapConfigurations as $configuration) {
 			$uid = $configuration->getUid();
-			$selected = '';
-			if ($taskInfo[$fieldName] == $uid) {
-				$selected = ' selected="selected"';
-			}
-			$fieldCode .= '<option value="' . $uid . '"' . $selected . '>' . htmlspecialchars($configuration->getName()) . '</option>';
+			$parameters['options'][$uid] = $configuration->getName();
 		}
-		$fieldCode .= '</select>';
-		// Register the field
-		$additionalFields[$fieldID] = array(
-			'code'     => $fieldCode,
-			'label'    => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.configuration',
-			'cshLabel' => $fieldID
-		);
+		$this->registerSelect($taskInfo, $schedulerModule->CMD, $parameters, $additionalFields);
 
 		// Process the missing user handling field
-		$fieldName = 'tx_igldapssoauth_missinguserhandling';
-		// Initialize extra field value, if not yet defined
-		if (empty($taskInfo[$fieldName])) {
-			if ($schedulerModule->CMD == 'add') {
-				$taskInfo[$fieldName] = 'nothing';
-			} elseif ($schedulerModule->CMD == 'edit') {
-				// In case of edit, set to internal value if no data was submitted already
-				$taskInfo[$fieldName] = $task->getMissingUsersHandling();
-			}
-		}
-
-		// Write the code for the field
-		$fieldID = 'task_' . $fieldName;
-		$fieldCode  = '<select name="tx_scheduler[' . $fieldName . ']" id="' . $fieldID . '" class="form-control">';
-		// Assemble selector options
-		$selected = '';
-		if ($taskInfo[$fieldName] == 'disable') {
-			$selected = ' selected="selected"';
-		}
-		$fieldCode .= '<option value="disable"' . $selected . '>' . $languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.missinguserhandling.disable', TRUE) . '</option>';
-		$selected = '';
-		if ($taskInfo[$fieldName] == 'delete') {
-			$selected = ' selected="selected"';
-		}
-		$fieldCode .= '<option value="delete"' . $selected . '>' . $languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.missinguserhandling.delete', TRUE) . '</option>';
-		$selected = '';
-		if ($taskInfo[$fieldName] == 'nothing') {
-			$selected = ' selected="selected"';
-		}
-		$fieldCode .= '<option value="nothing"' . $selected . '>' . $languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.missinguserhandling.nothing', TRUE) . '</option>';
-		$fieldCode .= '</select>';
-		// Register the field
-		$additionalFields[$fieldID] = array(
-			'code'     => $fieldCode,
-			'label'    => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.missinguserhandling',
-			'cshLabel' => $fieldID
+		$parameters = array(
+			'field' => 'missinguserhandling',
+			'label' => 'task.import_users.field.missinguserhandling',
+			'options' => array(
+				'nothing' => 'LLL:task.import_users.field.missinguserhandling.nothing',
+				'disable' => 'LLL:task.import_users.field.missinguserhandling.disable',
+				'delete' => 'LLL:task.import_users.field.missinguserhandling.delete',
+			),
+			'value' => $task ? $task->getMissingUsersHandling() : NULL,
 		);
+		$this->registerSelect($taskInfo, $schedulerModule->CMD, $parameters, $additionalFields);
 
 		// Process the restored user handling field
-		$fieldName = 'tx_igldapssoauth_restoreduserhandling';
+		$parameters = array(
+			'field' => 'restoreduserhandling',
+			'label' => 'task.import_users.field.restoreduserhandling',
+			'options' => array(
+				'nothing' => 'LLL:task.import_users.field.restoreduserhandling.nothing',
+				'enable' => 'LLL:task.import_users.field.restoreduserhandling.enable',
+				'undelete' => 'LLL:task.import_users.field.restoreduserhandling.undelete',
+				'both' => 'LLL:task.import_users.field.restoreduserhandling.both',
+			),
+			'value' => $task ? $task->getRestoredUsersHandling() : NULL,
+		);
+		$this->registerSelect($taskInfo, $schedulerModule->CMD, $parameters, $additionalFields);
+
+		return $additionalFields;
+	}
+
+	/**
+	 * Generates and registers a HTML select field.
+	 *
+	 * @param array $taskInfo Values of the fields from the add/edit task form
+	 * @param string $command
+	 * @param array $parameters
+	 * @param array $additionalFields
+	 * @return void
+	 */
+	protected function registerSelect(array &$taskInfo, $command, array $parameters, array &$additionalFields) {
+		$languageService = $this->getLanguageService();
+		$extensionKey = 'ig_ldap_sso_auth';
+		$prefix = 'tx_igldapssoauth_';
+		$localizationPrefix = 'LLL:EXT:' . $extensionKey . '/Resources/Private/Language/locallang.xlf:';
+
+		$fieldName = $prefix . $parameters['field'];
+
 		// Initialize extra field value, if not yet defined
 		if (empty($taskInfo[$fieldName])) {
-			if ($schedulerModule->CMD == 'add') {
-				$taskInfo[$fieldName] = 'nothing';
-			} elseif ($schedulerModule->CMD == 'edit') {
+			if ($command === 'add') {
+				$taskInfo[$fieldName] = current($parameters['options']);
+			} elseif ($command === 'edit') {
 				// In case of edit, set to internal value if no data was submitted already
-				$taskInfo[$fieldName] = $task->getRestoredUsersHandling();
+				$taskInfo[$fieldName] = $parameters['value'];
 			}
 		}
 
 		// Write the code for the field
 		$fieldID = 'task_' . $fieldName;
-		$fieldCode  = '<select name="tx_scheduler[' . $fieldName . ']" id="' . $fieldID . '" class="form-control">';
+		$fieldCode = '<select name="tx_scheduler[' . $fieldName . ']" id="' . $fieldID . '" class="form-control">';
+
 		// Assemble selector options
-		$selected = '';
-		if ($taskInfo[$fieldName] == 'enable') {
-			$selected = ' selected="selected"';
+		foreach ($parameters['options'] as $optionKey => $label) {
+			$selected = '';
+			if ((string)$taskInfo[$fieldName] === (string)$optionKey) {
+				$selected = ' selected="selected"';
+			}
+			if (strpos($label, 'LLL:') === 0) {
+				$optionLabel = $languageService->sL($localizationPrefix . substr($label, 4), TRUE);
+			} else {
+				$optionLabel = htmlspecialchars($label);
+			}
+			$fieldCode .= '<option value="' . htmlspecialchars($optionKey) . '"' . $selected . '>' . $optionLabel . '</option>';
 		}
-		$fieldCode .= '<option value="enable"' . $selected . '>' . $languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.restoreduserhandling.enable', TRUE) . '</option>';
-		$selected = '';
-		if ($taskInfo[$fieldName] == 'undelete') {
-			$selected = ' selected="selected"';
-		}
-		$fieldCode .= '<option value="undelete"' . $selected . '>' . $languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.restoreduserhandling.undelete', TRUE) . '</option>';
-		$selected = '';
-		if ($taskInfo[$fieldName] == 'both') {
-			$selected = ' selected="selected"';
-		}
-		$fieldCode .= '<option value="both"' . $selected . '>' . $languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.restoreduserhandling.both', TRUE) . '</option>';
-		$selected = '';
-		if ($taskInfo[$fieldName] == 'nothing') {
-			$selected = ' selected="selected"';
-		}
-		$fieldCode .= '<option value="nothing"' . $selected . '>' . $languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.restoreduserhandling.nothing', TRUE) . '</option>';
+
 		$fieldCode .= '</select>';
+
 		// Register the field
 		$additionalFields[$fieldID] = array(
 			'code'     => $fieldCode,
-			'label'    => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.restoreduserhandling',
+			'label'    => $localizationPrefix . $parameters['label'],
 			'cshLabel' => $fieldID
 		);
-
-		return $additionalFields;
 	}
 
 	/**

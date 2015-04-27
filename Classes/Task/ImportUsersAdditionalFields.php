@@ -54,7 +54,7 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
 
 		// Write the code for the field
 		$fieldID = 'task_' . $fieldName;
-		$fieldCode  = '<select name="tx_scheduler[' . $fieldName . ']" id="' . $fieldID . '">';
+		$fieldCode  = '<select name="tx_scheduler[' . $fieldName . ']" id="' . $fieldID . '" class="form-control">';
 		// Assemble selector options
 		$selected = '';
 		if ($taskInfo[$fieldName] == 'both') {
@@ -93,7 +93,7 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
 
 		// Write the code for the field
 		$fieldID = 'task_' . $fieldName;
-		$fieldCode  = '<select name="tx_scheduler[' . $fieldName . ']" id="' . $fieldID . '">';
+		$fieldCode  = '<select name="tx_scheduler[' . $fieldName . ']" id="' . $fieldID . '" class="form-control">';
 		// Assemble selector options
 		$selected = '';
 		$taskInfo[$fieldName] = intval($taskInfo[$fieldName]);
@@ -135,7 +135,7 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
 
 		// Write the code for the field
 		$fieldID = 'task_' . $fieldName;
-		$fieldCode  = '<select name="tx_scheduler[' . $fieldName . ']" id="' . $fieldID . '">';
+		$fieldCode  = '<select name="tx_scheduler[' . $fieldName . ']" id="' . $fieldID . '" class="form-control">';
 		// Assemble selector options
 		$selected = '';
 		if ($taskInfo[$fieldName] == 'disable') {
@@ -174,7 +174,7 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
 
 		// Write the code for the field
 		$fieldID = 'task_' . $fieldName;
-		$fieldCode  = '<select name="tx_scheduler[' . $fieldName . ']" id="' . $fieldID . '">';
+		$fieldCode  = '<select name="tx_scheduler[' . $fieldName . ']" id="' . $fieldID . '" class="form-control">';
 		// Assemble selector options
 		$selected = '';
 		if ($taskInfo[$fieldName] == 'enable') {

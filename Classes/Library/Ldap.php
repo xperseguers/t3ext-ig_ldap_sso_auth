@@ -14,7 +14,6 @@ namespace Causal\IgLdapSsoAuth\Library;
  * The TYPO3 project - inspiring people to share!
  */
 
-use Causal\IgLdapSsoAuth\Utility\LdapUtility;
 use Causal\IgLdapSsoAuth\Utility\DebugUtility;
 
 /**

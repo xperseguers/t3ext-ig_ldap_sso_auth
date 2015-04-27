@@ -48,7 +48,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 	 * @return void
 	 */
 	public function initializeAction() {
-		$vars = \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('tx_igldapssoauth_system_igldapssoauthtxigldapssoauthm1');
+		$vars = GeneralUtility::_GET('tx_igldapssoauth_system_igldapssoauthtxigldapssoauthm1');
 		if (!isset($vars['redirect']) && !isset($vars['action']) && is_array($GLOBALS['BE_USER']->uc['ig_ldap_sso_auth']['selection'])) {
 			$previousSelection = $GLOBALS['BE_USER']->uc['ig_ldap_sso_auth']['selection'];
 			if (!empty($previousSelection['action']) && !empty($previousSelection['configuration'])) {

@@ -657,7 +657,7 @@ class Authentication {
 			$backupTSFE = $GLOBALS['TSFE'];
 
 			// Advanced stdWrap methods require a valid $GLOBALS['TSFE'] => create the most lightweight one
-			$GLOBALS['TSFE'] = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+			$GLOBALS['TSFE'] = GeneralUtility::makeInstance(
 				'TYPO3\\CMS\\Frontend\Controller\\TypoScriptFrontendController',
 				$GLOBALS['TYPO3_CONF_VARS'],
 				0,

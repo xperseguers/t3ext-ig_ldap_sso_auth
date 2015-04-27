@@ -68,7 +68,7 @@ class DataHandler {
 				/** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
 				$flashMessage = GeneralUtility::makeInstance(
 					'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-					$GLOBALS['LANG']->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:' . $key, TRUE),
+					$this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:' . $key, TRUE),
 					'',
 					\TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
 					TRUE
@@ -80,6 +80,15 @@ class DataHandler {
 				$defaultFlashMessageQueue->enqueue($flashMessage);
 			}
 		}
+	}
+
+	/**
+	 * Returns the LanguageService.
+	 *
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected function getLanguageService() {
+		return $GLOBALS['LANG'];
 	}
 
 }

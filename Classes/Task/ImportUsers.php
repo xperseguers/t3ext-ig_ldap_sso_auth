@@ -181,12 +181,12 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 	 */
 	public function getAdditionalInformation() {
 		if (empty($this->configuration)) {
-			$configurationName = $GLOBALS['LANG']->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.configuration.all');
+			$configurationName = $this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.configuration.all');
 		} else {
 			$configurationName = $this->getConfigurationName();
 		}
 		$info = sprintf(
-			$GLOBALS['LANG']->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.additional_information'),
+			$this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.additional_information'),
 			$this->getContext(),
 			$configurationName
 		);
@@ -292,6 +292,15 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 	 */
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Returns the LanguageService.
+	 *
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected function getLanguageService() {
+		return $GLOBALS['LANG'];
 	}
 
 }

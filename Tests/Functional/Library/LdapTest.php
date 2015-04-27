@@ -200,7 +200,7 @@ class LdapTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 			foreach ($rows as $row) {
 				$testRow = $row;
 				if (!isset($testRow[$key]) && !empty($testRow['dn'])) {
-					list($firstSegment, $_) = explode(',', $testRow['dn'], 2);
+					list($firstSegment, ) = explode(',', $testRow['dn'], 2);
 					list ($firstSegmentKey, $value) = explode('=', $firstSegment, 2);
 					$testRow[$firstSegmentKey] = $value;
 				}

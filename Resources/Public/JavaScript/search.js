@@ -15,7 +15,7 @@ IgLdapSsoAuthSearch = {
 	},
 
 	updateForm: function (type) {
-		self = IgLdapSsoAuthSearch;
+		var self = IgLdapSsoAuthSearch;
 		self.type = type;
 
 		self.$.ajax({
@@ -31,7 +31,7 @@ IgLdapSsoAuthSearch = {
 	},
 
 	search: function() {
-		self = IgLdapSsoAuthSearch;
+		var self = IgLdapSsoAuthSearch;
 
 		self.$.ajax({
 			type: 'POST',

@@ -7,7 +7,7 @@ IgLdapSsoAuthImport = {
 	},
 
 	ldapImport: function (row) {
-		self = IgLdapSsoAuthImport;
+		var self = IgLdapSsoAuthImport;
 
 		// Deactivate the button
 		row.find('button').prop('disabled', true);

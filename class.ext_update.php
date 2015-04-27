@@ -354,12 +354,12 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 
 		if ($shouldAutomaticallyImportBackendGroups && $this->configuration['TYPO3BEGroupsNotSynchronize'] == '1') {
 			$out[] = $this->formatWarning('eu_ldap was configured to automatically import backend groups but this extension does not. You should set TYPO3BEGroupsNotSynchronize = 0.');
-		} elseif (!$shouldAutomaticallyImportBackendGroups && $this->configure['TYPO3BEGroupsNotSynchronize'] == '0') {
+		} elseif (!$shouldAutomaticallyImportBackendGroups && $this->configuration['TYPO3BEGroupsNotSynchronize'] == '0') {
 			$out[] = $this->formatWarning('eu_ldap was configured to NEVER automatically import backend group but this extension does. You should set TYPO3BEGroupsNotSynchronize = 1.');
 		}
 		if ($shouldAutomaticallyImportFrontendGroups && $this->configuration['TYPO3FEGroupsNotSynchronize'] == '1') {
 			$out[] = $this->formatWarning('eu_ldap was configured to automatically import frontend groups but this extension does not. You should set TYPO3FEGroupsNotSynchronize = 0.');
-		} elseif (!$shouldAutomaticallyImportFrontendGroups && $this->configure['TYPO3FEGroupsNotSynchronize'] == '0') {
+		} elseif (!$shouldAutomaticallyImportFrontendGroups && $this->configuration['TYPO3FEGroupsNotSynchronize'] == '0') {
 			$out[] = $this->formatWarning('eu_ldap was configured to NEVER automatically import frontend group but this extension does. You should set TYPO3FEGroupsNotSynchronize = 1.');
 		}
 	}

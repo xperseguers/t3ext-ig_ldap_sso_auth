@@ -48,15 +48,6 @@ class ConfigurationHelper {
 	protected $problems = array();
 
 	/**
-	 * Initializes this object.
-	 *
-	 * @return void
-	 */
-	protected function init() {
-		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']);
-	}
-
-	/**
 	 * Checks the backend configuration and shows a message if necessary.
 	 *
 	 * @param array $params Field information to be rendered
@@ -171,7 +162,7 @@ EOT;
 	 * @return string
 	 */
 	protected function translate($id, array $arguments = NULL) {
-		$value = $GLOBALS['LANG']->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:' . $id);
+		$value = $this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:' . $id);
 		$value = empty($value) ? $id : $value;
 
 		if (is_array($arguments) && $value !== NULL) {
@@ -179,6 +170,15 @@ EOT;
 		} else {
 			return $value;
 		}
+	}
+
+	/**
+	 * Returns the LanguageService.
+	 *
+	 * @return \TYPO3\CMS\Lang\LanguageService
+	 */
+	protected function getLanguageService() {
+		return $GLOBALS['LANG'];
 	}
 
 }

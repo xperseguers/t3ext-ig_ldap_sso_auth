@@ -155,7 +155,7 @@ class LdapUtility {
 	 * @return bool
 	 */
 	public function isConnected() {
-		return (bool)$this->$connection;
+		return (bool)$this->connection;
 	}
 
 	/**

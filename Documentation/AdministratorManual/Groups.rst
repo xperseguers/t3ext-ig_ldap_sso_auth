@@ -22,52 +22,81 @@ need backend authentication.
 You should skip this entire section if you just want to validate the authentication and do not want to use any groups
 coming from LDAP.
 
-- **Base DN:** Full DN path of the directory containing all the groups that are related to your LDAP users and you want
-  to use in your TYPO3 website.
+.. only:: html
 
-  **Example:**
+	**Sections:**
 
-  ::
+	.. contents::
+		:local:
+		:depth: 1
 
-      ou=groups,dc=example,dc=com
 
-- **Filter:** To be used to add restrictions that allow you to exclude objects from specific properties. The
-  syntax used in this field is the standard LDAP search syntax.
+.. _admin-manual-fegroups-basedn:
+.. _admin-manual-begroups-basedn:
 
-  This field should not be left empty although it is not marked as required. Be sure to always double-check your
-  configuration using the wizard in the backend module.
+Base DN
+^^^^^^^
 
-  **Example:**
+Full DN path of the directory containing all the groups that are related to your LDAP users and you want to use in your
+TYPO3 website.
 
-  ::
+**Example:**
 
-      (objectClass=posixGroup)
+::
 
-  .. note::
-      The string ``{USERDN}`` will be substituted by the Distinguished Name (DN) of the authenticated user, the
-      string ``{USERUID}`` will be substituted by the uid attribute of the authenticated user.
+	ou=groups,dc=example,dc=com
 
-  .. hint::
-      When using OpenLDAP, the group membership is usually stored within attribute ``memberUid`` of the group itself,
-      and not within attribute ``memberOf`` of the user. In order to properly retrieve and associate groups for the
-      user, you should use a filter of the form::
 
-          (&(memberUid={USERUID})(objectClass=posixGroup))
+.. _admin-manual-fegroups-filter:
+.. _admin-manual-begroups-filter:
 
-  .. warning::
-      When using ActiveDirectory, you typically set the option ``Relation between groups and users`` to
-      ``User contains the list of its associated groups`` If so, you **must** add a line mapping the "usergroup" for
-      your user. This mapping *will not* be actually used by TYPO3 but will let the LDAP engine know which attribute is
-      used to evaluate the group membership.
+Filter
+^^^^^^
 
-      Example::
+Filter to be used to add restrictions that allow you to exclude objects from specific properties. The syntax used in
+this field is the standard LDAP search syntax.
 
-          usergroup = <memberOf>
+This field should not be left empty although it is not marked as required. Be sure to always double-check your
+configuration using the wizard in the backend module.
 
-      **Important:** This is a user mapping instruction.
+**Example:**
 
-      If you forget to do so, every group in LDAP will be imported to TYPO3 **and** your user will be a member of each
-      and every one.
+::
 
-- **Mapping:** Used to fetch other attributes form the LDAP server that we would like groups to have. Please see
-  syntax and examples in :ref:`admin-manual-beusers`.
+	(objectClass=posixGroup)
+
+.. note::
+	The string ``{USERDN}`` will be substituted by the Distinguished Name (DN) of the authenticated user, the string
+	``{USERUID}`` will be substituted by the uid attribute of the authenticated user.
+
+.. hint::
+	When using OpenLDAP, the group membership is usually stored within attribute ``memberUid`` of the group itself,
+	and not within attribute ``memberOf`` of the user. In order to properly retrieve and associate groups for the user,
+	you should use a filter of the form::
+
+		(&(memberUid={USERUID})(objectClass=posixGroup))
+
+.. warning::
+	When using ActiveDirectory, you typically set the option ``Relation between groups and users`` to
+	``User contains the list of its associated groups`` If so, you **must** add a line mapping the "usergroup" for
+	your user. This mapping *will not* be actually used by TYPO3 but will let the LDAP engine know which attribute is
+	used to evaluate the group membership.
+
+	Example::
+
+		usergroup = <memberOf>
+
+	**Important:** This is a user mapping instruction.
+
+	If you forget to do so, every group in LDAP will be imported to TYPO3 **and** your user will be a member of each
+	and every one.
+
+
+.. _admin-manual-fegroups-mapping:
+.. _admin-manual-begroups-mapping:
+
+Mapping
+^^^^^^^
+
+Mapping to be used to fetch other attributes form the LDAP server that we would like groups to have. Please see syntax
+and examples in the :ref:`description of mapping for users <admin-manual-feusers-mapping>`.

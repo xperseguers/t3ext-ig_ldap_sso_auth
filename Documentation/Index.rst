@@ -71,6 +71,8 @@ LDAP / SSO Authentication
 		Faq/Index
 		UsersManual/Index
 		AdministratorManual/Index
+		SSO/Index
+		Development/Index
 		Glossary/Index
 		Links
 		Targets
@@ -85,5 +87,7 @@ LDAP / SSO Authentication
 		Faq/Index
 		UsersManual/Index
 		AdministratorManual/Index
+		SSO/Index
+		Development/Index
 		Glossary/Index
 		Targets

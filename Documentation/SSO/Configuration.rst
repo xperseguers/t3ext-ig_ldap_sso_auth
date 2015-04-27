@@ -6,110 +6,7 @@
 .. include:: ../Includes.txt
 
 
-.. _admin-manual-kerberos-apache:
-
-Configuring Kerberos for Apache
-===============================
-
-.. note:: You should skip this chapter altogether unless you wish to configure :term:`SSO` for your TYPO3 website.
-
-.. only:: html
-
-	**Sections:**
-
-	.. contents::
-		:local:
-		:depth: 2
-
-
-.. _admin-manual-kerberos-apache-scenario:
-
-Scenario
---------
-
-Suppose you wish to restrict access to the website ``http://intranet.example.com``. Since users allowed to connect to
-this website are managed in a central directory server (LDAP / Active Directory), authentication is to be performed
-using :term:`Kerberos` and :term:`SPNEGO`.
-
-How does it work with TYPO3? What we actually want to do is as follows, from a TYPO3 point of view:
-
-#. Delegate the authentication to the Apache web server, which should restrict access using Basic Authentication
-   (theoretically by whatever means -- htpasswd file, ... -- in our case with an LDAP/Active Directory backend).
-#. Trust the authenticated user whose username is sent to PHP as ``$_SERVER['REMOTE_USER']`` and rely on the TYPO3
-   authentication services (in our case the one provided by this extension) to retrieve additional user information and
-   group membership without checking the password, since Apache did it already.
-#. To ensure these tasks are executed transparently, without having to actively authenticate in TYPO3, this extension
-   sets
-
-   .. code-block:: php
-
-       $GLOBALS['TYPO3_CONF_VARS']['SVCONF']['auth']['setup']['FE_fetchUserIfNoSession'] = 1;
-
-
-.. _admin-manual-kerberos-apache-concepts:
-
-Understanding Kerberos concepts
--------------------------------
-
-Kerberos Version 5 is a standard on all versions of Windows 2000 and ensures the highest level of security to network
-resources. The Kerberos protocol name is based on the three-headed dog figure from Greek mythology known as Kerberos.
-The three heads of Kerberos comprise the Key Distribution Center (:term:`KDC`), the client user and the server with the
-desired service to access. The KDC is installed as part of the domain controller and performs two service functions:
-
-- the Authentication Service (AS) and
-- the Ticket-Granting Service (TGS).
-
-.. figure:: ../Images/kerberos-ticket-exchange.png
-	:alt: Kerberos ticket exchange
-
-	Three exchanges are involved when the client initially access a server resource: AS exchange (circles 1 and 2), TGS
-	exchange (circles 3 and 4) and finally a client/server exchange (request shown as circle 5).
-
-
-.. _admin-manual-kerberos-apache-concepts-as:
-
-AS exchange
-"""""""""""
-
-When initially logging on to a network, users must negotiate access by providing a login name and password in order to
-be verified by the AS portion of a :term:`KDC`. The KDC has access to Active Directory user account information. Once
-successfully authenticated, the user is granted a Ticket to Get Tickets (TGT) that is valid for the local domain (in our
-example, for the realm ``example.com``). The TGT has a default lifetime of 10 hours and may be renewed throughout the
-user's log-on session without requiring the user to re-enter her password.
-
-If the KDC approves the client's request for a TGT, the reply (referred to as the AS reply) will include two sections: a
-TGT encrypted with a key that only the KDC (TGS) can decrypt and a session key encrypted with the user's password hash
-to handle future communications with the KDC. Because the client system cannot read the TGT contents, it must blindly
-present the ticket to the GTS for service tickets. The TGT includes time to live parameters, authorization data, a
-session key to use when communicating with the client and the client's name.
-
-
-.. _admin-manual-kerberos-apache-concepts-tgs:
-
-TGS exchange
-""""""""""""
-
-The user presents the TGT to the TGS portion of the :term:`KDC` when desiring access to a server service. The TGS on the
-KDC authenticates the user's TGT and creates a ticket and session key for both the client and the remote server. This
-information, known as the service ticket, is then cached locally on the client machine.
-
-The TGS receives the client's TGT and reads it using its own key. If the TGS approves of the client's request, a service
-ticket is generated for both the client and the target server. The client reads its portion using the TGS session key
-retrieved earlier from the AS reply. The client presents the server portion of the TGS reply to the target server in the
-client/server exchange coming next.
-
-
-.. _admin-manual-kerberos-apache-concepts-cs:
-
-Client/server exchange
-""""""""""""""""""""""
-
-Once the client user has the client/server service ticket, he can establish the session with the server service. The
-server can decrypt the information coming indirectly from the TGS using its own long-term key with the :term:`KDC`. The
-service ticket is then used to authenticate the client user and establish a service session between the server and
-client. After the ticket's lifetime is exceeded, the service ticket must be renewed to use the service.
-
-
+.. _sso-configuration:
 .. _admin-manual-kerberos-apache-basic-configuration:
 
 Basic Kerberos configuration of intranet.example.com
@@ -129,10 +26,11 @@ the highest difference you may allow for Kerberos to work properly).
 You may use `NTP <http://www.ntp.org/>`_ for that task.
 
 
+.. _sso-configuration-module:
 .. _admin-manual-kerberos-apache-basic-configuration-module:
 
 Installing the mod_auth_kerb authentication module
-""""""""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Within an ``intranet.example.com`` shell, install the package:
 
@@ -191,7 +89,8 @@ You should now check that Kerberos works on ``intranet.example.com``. Do a basic
 
        $ kinit einstein@EXAMPLE.COM
 
-   If everything is OK the command will ask you for ``einstein``'s domain password and terminates without an error message.
+   If everything is OK the command will ask you for ``einstein``'s domain password and terminates without an error
+   message.
 
    .. note::
 
@@ -216,10 +115,11 @@ You should now check that Kerberos works on ``intranet.example.com``. Do a basic
                renew until 01/11/2014 13:12
 
 
+.. _sso-configuration-principal:
 .. _admin-manual-kerberos-apache-basic-configuration-principal:
 
 Creating a service principal for the web server
-"""""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 :term:`SPNEGO` requires that a Kerberos service principal be created for the web server. The service name is defined to
 be ``HTTP``, so for the server ``intranet.example.com`` the required service principal name is
@@ -250,7 +150,7 @@ be ``HTTP``, so for the server ``intranet.example.com`` the required service pri
    .. warning::
 
        Even if you target recent machines such as running Windows 8.x, ``AES256-SHA1`` may not be supported either.
-       Please check section :ref:`admin-manual-kerberos-apache-pitfalls-basic-authentication` for details.
+       Please check section :ref:`sso-pitfalls-basic-authentication` for details.
 
 
 #. Copy file :file:`C:\\temp\\intranetkeytab` from the domain controller ``ws2008r2`` to the location where it should
@@ -324,10 +224,11 @@ be ``HTTP``, so for the server ``intranet.example.com`` the required service pri
                default_tgs_enctypes = rc4-hmac des-cbc-crc des-cbc-md5
 
 
+.. _sso-configuration-authentication:
 .. _admin-manual-kerberos-apache-basic-configuration-authentication:
 
 Specifying the authentication method to be used
-"""""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Apache must be told which parts of which web sites are to use authentication provided by ``mod_auth_kerb``. This is done
 using the ``AuthType`` directive with a value of ``Kerberos``.
@@ -377,10 +278,11 @@ In order to protect the whole TYPO3 website, add following snippet to your virtu
     if you are using the Negotiate method.
 
 
+.. _sso-configuration-authorization:
 .. _admin-manual-kerberos-apache-basic-configuration-authorization:
 
 Specifying a list of authorized users or user groups
-""""""""""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Having an authentication method does not by itself restrict access to the web site until you disallow access by
 anonymous users using ``Require`` directive:
@@ -414,73 +316,3 @@ website.
 
     If you are not using Microsoft Internet Explorer, you may need to configure your browser to enable Single Sign-On.
     Please refer to https://wiki.shibboleth.net/confluence/display/SHIB2/Single+sign-on+Browser+configuration.
-
-
-.. _admin-manual-kerberos-apache-pitfalls:
-
-Common pitfalls
----------------
-
-This section describes common pitfalls while configuring SSO. Please feel free to open tickets if you encounter other
-problems and found a solution.
-
-
-.. _admin-manual-kerberos-apache-pitfalls-basic-authentication:
-
-Basic authentication prompt is always shown
-"""""""""""""""""""""""""""""""""""""""""""
-
-Problem is that, although you set ``KrbMethodK5Passd off`` in your Apache configuration, the browser of your domain
-machines/computers always shows the basic authentication dialog and does not seem to silently pass your user credentials
-to the web server.
-
-Apache's error log shows:
-
-.. code-block:: none
-
-	[debug] [client X.X.X.X] kerb_authenticate_user entered with user (NULL) and auth_type Kerberos
-	[debug] [client X.X.X.X] Acquiring creds for HTTP@intranet.example.com
-	[debug] [client X.X.X.X] Verifying client data using KRB5 GSS-API
-	[debug] [client X.X.X.X] Client didn't delegate us their credential
-	[debug] [client X.X.X.X] GSS-API token of length 9 bytes will be sent back
-	[debug] [client X.X.X.X] GSS-API major_status:000d0000, minor_status:000186a5
-	[error] [client X.X.X.X] gss_accept_sec_context() failed: Unspecified GSS failure.
-	                         Minor code may provide more information (, )
-
-It turns out that although the domain controller is MS Windows Server 2008r2 and the domain machine is using MS Windows
-8.1, the account does not support Kerberos AES 256 bit encryption by default.
-
-To fix this problem, either switch to RC4 for your Apache keytab file or enable the enhanced security option for the
-user accounts on your domain controller.
-
-.. figure:: ../Images/account-properties.png
-	:alt: Windows account properties
-
-	Security properties of a Windows domain account
-
-Apache's error log when everything is working properly:
-
-.. code-block:: none
-
-	[debug] [client X.X.X.X] kerb_authenticate_user entered with user (NULL) and auth_type Kerberos
-	[debug] [client X.X.X.X] Acquiring creds for HTTP@intranet.example.com
-	[debug] [client X.X.X.X] Verifying client data using KRB5 GSS-API
-	[debug] [client X.X.X.X] Client didn't delegate us their credential
-	[debug] [client X.X.X.X] GSS-API token of length 185 bytes will be sent back
-	[debug] [client X.X.X.X] kerb_authenticate_a_name_to_local_name einstein@EXAMPLE.COM -> einstein
-
-.. hint::
-	In case you need/prefer it, a hidden option of ``mod_auth_kerb`` lets you automatically strip @EXAMPLE.COM (the
-	realm) from usernames:
-
-	.. code-block:: apache
-
-		KrbLocalUserMapping on
-
-
-**Sources:**
-
-- http://www.microhowto.info/howto/configure_apache_to_use_kerberos_authentication.html
-- http://www.grolmsnet.de/kerbtut/
-- http://technet.microsoft.com/en-us/library/bb742516.aspx
-- http://www.oracle.com/technetwork/articles/idm/weblogic-sso-kerberos-1619890.html

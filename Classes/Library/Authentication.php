@@ -17,7 +17,6 @@ namespace Causal\IgLdapSsoAuth\Library;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3GroupRepository;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3UserRepository;
-use Causal\IgLdapSsoAuth\Utility\DebugUtility;
 
 /**
  * Class Authentication for the 'ig_ldap_sso_auth' extension.
@@ -107,7 +106,7 @@ class Authentication {
 
 			// Valid user from LDAP server
 			if ($userdn = Ldap::getInstance()->validateUser($username, $password, static::$config['users']['basedn'], static::$config['users']['filter'])) {
-				DebugUtility::info(sprintf('Successfully authenticated user "%s" with LDAP', $username));
+				static::getLogger()->info(sprintf('Successfully authenticated user "%s" with LDAP', $username));
 
 				if ($userdn === TRUE) {
 					return TRUE;
@@ -116,7 +115,7 @@ class Authentication {
 			} else {
 				static::$lastAuthenticationDiagnostic = Ldap::getInstance()->getLastBindDiagnostic();
 				if (!empty(static::$lastAuthenticationDiagnostic)) {
-					DebugUtility::notice(static::$lastAuthenticationDiagnostic);
+					static::getLogger()->notice(static::$lastAuthenticationDiagnostic);
 				}
 			}
 
@@ -124,13 +123,13 @@ class Authentication {
 			Ldap::getInstance()->disconnect();
 
 			// This is a notice because it is fine to fallback to standard TYPO3 authentication
-			DebugUtility::notice(sprintf('Could not authenticate user "%s" with LDAP', $username));
+			static::getLogger()->notice(sprintf('Could not authenticate user "%s" with LDAP', $username));
 
 			return FALSE;
 		}
 
 		// LDAP authentication failed.
-		DebugUtility::warning('Cannot connect to LDAP or username is empty', array('username' => $username));
+		static::getLogger()->warning('Cannot connect to LDAP or username is empty', array('username' => $username));
 		Ldap::getInstance()->disconnect();
 		return FALSE;
 	}
@@ -269,7 +268,7 @@ class Authentication {
 
 		$user = is_array($users[0]) ? $users[0] : NULL;
 
-		DebugUtility::debug(sprintf('Retrieving LDAP user from DN "%s"', $dn), $user);
+		static::getLogger()->debug(sprintf('Retrieving LDAP user from DN "%s"', $dn), $user);
 
 		return $user;
 	}
@@ -457,7 +456,7 @@ class Authentication {
 			);
 		}
 
-		DebugUtility::debug(sprintf('Retrieving LDAP groups for user "%s"', $ldapUser['dn']), $ldapGroups);
+		static::getLogger()->debug(sprintf('Retrieving LDAP groups for user "%s"', $ldapUser['dn']), $ldapGroups);
 
 		// Store for later usage and return
 		static::$ldapGroups = $ldapGroups;
@@ -797,6 +796,20 @@ class Authentication {
 		}
 
 		return $markerString;
+	}
+
+	/**
+	 * Returns a logger.
+	 *
+	 * @return \TYPO3\CMS\Core\Log\Logger
+	 */
+	static protected function getLogger() {
+		/** @var \TYPO3\CMS\Core\Log\Logger $logger */
+		static $logger = NULL;
+		if ($logger === NULL) {
+			$logger = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
+		}
+		return $logger;
 	}
 
 }

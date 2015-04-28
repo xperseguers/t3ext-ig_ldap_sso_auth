@@ -22,6 +22,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author     Xavier Perseguers <xavier@typo3.org>
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
+ * @deprecated since 3.0 will be removed in 3.2
  */
 class DebugUtility {
 

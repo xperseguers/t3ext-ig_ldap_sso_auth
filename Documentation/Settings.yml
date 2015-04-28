@@ -33,6 +33,9 @@ conf.py:
     - http://www.typo3.org/extensions/repository/view/%s
     - 'EXT:'
   intersphinx_mapping:
+    t3api:
+    - http://docs.typo3.org/typo3cms/CoreApiReference/
+    - null
     t3tsref:
     - http://docs.typo3.org/typo3cms/TyposcriptReference/
     - null

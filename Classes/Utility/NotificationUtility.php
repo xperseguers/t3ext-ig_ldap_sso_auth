@@ -36,9 +36,6 @@ class NotificationUtility {
 	 * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
 	 */
 	static public function dispatch($signalClassName, $signalName, array $signalArguments = array()) {
-		// Log the call to ease debugging
-		DebugUtility::debug('Signal from ' . $signalClassName . ' with name ' . $signalName, $signalArguments);
-
 		return static::getSignalSlotDispatcher()->dispatch($signalClassName, $signalName, $signalArguments);
 	}
 
@@ -58,6 +55,20 @@ class NotificationUtility {
 		}
 
 		return $signalSlotDispatcher;
+	}
+
+	/**
+	 * Returns a logger.
+	 *
+	 * @return \TYPO3\CMS\Core\Log\Logger
+	 */
+	static protected function getLogger() {
+		/** @var \TYPO3\CMS\Core\Log\Logger $logger */
+		static $logger = NULL;
+		if ($logger === NULL) {
+			$logger = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
+		}
+		return $logger;
 	}
 
 }

@@ -19,7 +19,6 @@ use Causal\IgLdapSsoAuth\Exception\UnsupportedLoginSecurityLevelException;
 use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
 use Causal\IgLdapSsoAuth\Library\Authentication;
 use Causal\IgLdapSsoAuth\Library\Configuration;
-use Causal\IgLdapSsoAuth\Utility\DebugUtility;
 use Causal\IgLdapSsoAuth\Utility\NotificationUtility;
 
 /**
@@ -103,7 +102,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 
 		if (count($configurationRecords) === 0) {
 			// Early return since LDAP is not configured
-			DebugUtility::warning('Skipping LDAP authentication as extension is not yet configured');
+			static::getLogger()->warning('Skipping LDAP authentication as extension is not yet configured');
 			$this->cleanUpExtbaseDataMapper();
 			return FALSE;
 		}
@@ -116,7 +115,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 					$configurationRecord->getUid(),
 					GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY')
 				);
-				DebugUtility::info($msg);
+				static::getLogger()->info($msg);
 				continue;
 			}
 
@@ -177,20 +176,14 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 				break;
 			} else {
 				$diagnostic = Authentication::getLastAuthenticationDiagnostic();
-				if (!empty($diagnostic)) {
-					$this->writelog(255, 3, 3, 1,
-						"Login-attempt from %s (%s), username '%s': " . $diagnostic,
-						array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $this->login['uname']));
-				}
-				NotificationUtility::dispatch(
-					__CLASS__,
-					'authenticationFailed',
-					array(
-						'username' => $this->login['uname'],
-						'diagnostic' => $diagnostic,
-						'configUid' => $configurationRecord->getUid(),
-					)
+				$info = array(
+					'username' => $this->login['uname'],
+					'remote' => sprintf('%s (%s)', $this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST']),
+					'diagnostic' => $diagnostic,
+					'configUid' => $configurationRecord->getUid(),
 				);
+				static::getLogger()->error('Authentication failed', $info);
+				NotificationUtility::dispatch(__CLASS__, 'authenticationFailed', $info);
 			}
 
 			// Continue and try with next configuration record...
@@ -201,7 +194,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 		}
 
 		if (is_array($user)) {
-			DebugUtility::info('User found', $this->db_user);
+			static::getLogger()->debug(sprintf('User found: "%s"', $this->login['uname']));
 		}
 
 		$this->cleanUpExtbaseDataMapper();
@@ -238,11 +231,10 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 				return static::STATUS_AUTHENTICATION_FAILURE_CONTINUE;
 			} else {
 				// Failed login attempt (wrong password) - write that to the log!
-				$this->writelog(255, 3, 3, 1,
-					"Login-attempt from %s (%s), username '%s', password not accepted!",
-					array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $this->login['uname']));
-
-				DebugUtility::warning('Password not accepted: ' . $this->login['uident']);
+				static::getLogger()->warning('Password not accepted: ' . array(
+					'username' => $this->login['uname'],
+					'remote' => sprintf('%s (%s)', $this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST']),
+				));
 				$status = static::STATUS_AUTHENTICATION_FAILURE_BREAK;
 			}
 
@@ -250,9 +242,11 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 			if ($status && $user['lockToDomain'] && $user['lockToDomain'] != $this->authInfo['HTTP_HOST']) {
 
 				// Lock domain didn't match, so error:
-				$this->writelog(255, 3, 3, 1,
-					"Login-attempt from %s (%s), username '%s', locked domain '%s' did not match '%s'!",
-					array($this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST'], $user[$this->db_user['username_column']], $user['lockToDomain'], $this->authInfo['HTTP_HOST']));
+				static::getLogger()->error(sprintf('Locked domain "%s" did not match "%s"', $user['lockToDomain'], $this->authInfo['HTTP_HOST']), array(
+					'username' => $user[$this->db_user['username_column']],
+					'remote' => sprintf('%s (%s)', $this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST']),
+				));
+
 				$status = static::STATUS_AUTHENTICATION_FAILURE_BREAK;
 			}
 		}
@@ -369,6 +363,20 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 	 */
 	protected function getDatabaseConnection() {
 		return $GLOBALS['TYPO3_DB'];
+	}
+
+	/**
+	 * Returns a logger.
+	 *
+	 * @return \TYPO3\CMS\Core\Log\Logger
+	 */
+	static protected function getLogger() {
+		/** @var \TYPO3\CMS\Core\Log\Logger $logger */
+		static $logger = NULL;
+		if ($logger === NULL) {
+			$logger = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
+		}
+		return $logger;
 	}
 
 }

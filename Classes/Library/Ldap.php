@@ -14,7 +14,7 @@ namespace Causal\IgLdapSsoAuth\Library;
  * The TYPO3 project - inspiring people to share!
  */
 
-use Causal\IgLdapSsoAuth\Utility\DebugUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class Ldap for the 'ig_ldap_sso_auth' extension.
@@ -70,7 +70,7 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface {
 
 		// Connect to ldap server.
 		if (!$this->ldapUtility->connect($config['host'], $config['port'], $config['protocol'], $config['charset'], $config['server'], $config['tls'])) {
-			DebugUtility::error('Cannot connect', $debugConfiguration);
+			static::getLogger()->error('Cannot connect', $debugConfiguration);
 			return FALSE;
 		}
 
@@ -86,13 +86,13 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface {
 			if (!empty($this->lastBindDiagnostic)) {
 				$message .= ': ' . $this->lastBindDiagnostic;
 			}
-			DebugUtility::error($message, $debugConfiguration);
+			static::getLogger()->error($message, $debugConfiguration);
 
 			$this->disconnect();
 			return FALSE;
 		}
 
-		DebugUtility::info('Successfully connected', $debugConfiguration);
+		static::getLogger()->debug('Successfully connected', $debugConfiguration);
 		return TRUE;
 	}
 
@@ -247,6 +247,20 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface {
 			$dn = str_replace($escapeCharacter, '\\' . $escapeCharacter, $dn);
 		}
 		return $dn;
+	}
+
+	/**
+	 * Returns a logger.
+	 *
+	 * @return \TYPO3\CMS\Core\Log\Logger
+	 */
+	static protected function getLogger() {
+		/** @var \TYPO3\CMS\Core\Log\Logger $logger */
+		static $logger = NULL;
+		if ($logger === NULL) {
+			$logger = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
+		}
+		return $logger;
 	}
 
 }

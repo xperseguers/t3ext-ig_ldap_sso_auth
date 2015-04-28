@@ -105,6 +105,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 				$config = $importUtility->getConfiguration();
 				if (empty($config['users']['filter'])) {
 					// Current context is not configured for this LDAP configuration record
+					static::getLogger()->debug(sprintf('Configuration record %s is not configured for context "%s"', $configuration->getUid(), $aContext));
 					unset($importUtility);
 					continue;
 				}
@@ -122,12 +123,21 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 
 				// Consider that fetching no users from LDAP is an error
 				if (count($ldapUsers) === 0) {
+					static::getLogger()->error(sprintf(
+						'No users (%s) found for configuration record %s', $aContext, $configuration->getUid()
+					));
 					$failures++;
 				} else {
 					// Disable or delete users, according to settings
 					if ($this->missingUsersHandling === 'disable') {
+						static::getLogger()->debug(sprintf(
+							'Disabling users (%s) for configuration record %s', $aContext, $configuration->getUid()
+						));
 						$importUtility->disableUsers();
 					} elseif ($this->missingUsersHandling === 'delete') {
+						static::getLogger()->debug(
+							sprintf('Deleting users (%s) for configuration record %s', $aContext, $configuration->getUid()
+						));
 						$importUtility->deleteUsers();
 					}
 
@@ -143,6 +153,10 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 							// Import the user using information from LDAP
 							$importUtility->import($user, $aUser, $this->restoredUsersHandling);
 						}
+
+						static::getLogger()->info(sprintf(
+							'Configuration record %s: processed %s LDAP users (%s)', $configuration->getUid(), count($ldapUsers), $aContext
+						));
 
 						// Free memory before going on
 						$typo3Users = NULL;
@@ -162,10 +176,9 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 		// If some failures were registered, rollback the whole transaction and report error
 		if ($failures > 0) {
 			$this->getDatabaseConnection()->sql_query('ROLLBACK');
-			throw new ImportUsersException(
-				'Some or all imports failed. Synchronisation was aborted. Check your settings or your network connection',
-				1410774015
-			);
+			$message = 'Some or all imports failed. Synchronisation was aborted. Check your settings or your network connection';
+			static::getLogger()->error($message);
+			throw new ImportUsersException($message, 1410774015);
 
 		} else {
 			// Everything went fine, commit the changes
@@ -301,6 +314,20 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask {
 	 */
 	protected function getLanguageService() {
 		return $GLOBALS['LANG'];
+	}
+
+	/**
+	 * Returns a logger.
+	 *
+	 * @return \TYPO3\CMS\Core\Log\Logger
+	 */
+	static protected function getLogger() {
+		/** @var \TYPO3\CMS\Core\Log\Logger $logger */
+		static $logger = NULL;
+		if ($logger === NULL) {
+			$logger = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
+		}
+		return $logger;
 	}
 
 }

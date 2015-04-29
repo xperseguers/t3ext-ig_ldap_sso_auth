@@ -28,6 +28,9 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
  */
 class ConfigurationRepository {
 
+	/** @var string */
+	protected $table = 'tx_igldapssoauth_config';
+
 	/**
 	 * @var bool Set to TRUE to also fetch disabled records (according to TCA enable fields)
 	 */
@@ -62,17 +65,9 @@ class ConfigurationRepository {
 	 * @return \Causal\IgLdapSsoAuth\Domain\Model\Configuration[]
 	 */
 	public function findAll() {
-		$where = '1=1' . BackendUtility::deleteClause('tx_igldapssoauth_config');
-		if (!$this->fetchDisabledRecords) {
-			$where .= BackendUtility::BEenableFields('tx_igldapssoauth_config');
-		}
-		$rows = static::getDatabaseConnection()->exec_SELECTgetRows(
-			'*',
-			'tx_igldapssoauth_config',
-			$where,
-			'',
-			'sorting'
-		);
+		$where = '1=1' . $this->getWhereClauseForEnabledFields();
+
+		$rows = static::getDatabaseConnection()->exec_SELECTgetRows('*', $this->table, $where, '', 'sorting');
 
 		$configurations = array();
 		foreach ($rows as $row) {
@@ -92,15 +87,9 @@ class ConfigurationRepository {
 	 * @return \Causal\IgLdapSsoAuth\Domain\Model\Configuration
 	 */
 	public function findByUid($uid) {
-		$where = 'uid = ' . intval($uid) . BackendUtility::deleteClause('tx_igldapssoauth_config');
-		if (!$this->fetchDisabledRecords) {
-			$where .= BackendUtility::BEenableFields('tx_igldapssoauth_config');
-		}
-		$row = static::getDatabaseConnection()->exec_SELECTgetSingleRow(
-			'*',
-			'tx_igldapssoauth_config',
-			$where
-		);
+		$where = 'uid=' . intval($uid) . $this->getWhereClauseForEnabledFields();
+
+		$row = static::getDatabaseConnection()->exec_SELECTgetSingleRow('*', $this->table, $where);
 		if ($row) {
 			/** @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration */
 			$configuration = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Model\\Configuration');
@@ -110,6 +99,30 @@ class ConfigurationRepository {
 		}
 
 		return $configuration;
+	}
+
+	/**
+	 * Returns the WHERE clause for the enabled fields of this TCA table
+	 * depending on the context.
+	 *
+	 * @return string The additional where clause, something like " AND deleted=0 AND hidden=0"
+	 */
+	protected function getWhereClauseForEnabledFields() {
+		if (TYPO3_MODE === 'FE') {
+			// Frontend context
+			// $GLOBALS['TCA'] is not yet available/initialized:
+			// Cannot use $GLOBALS['TSFE']->sys_page->deleteClause() / ->enableFields()
+			$whereClause = ' AND deleted=0';
+			$whereClause .= ' AND hidden=0';
+
+		} else {
+			// Backend context
+			$whereClause = BackendUtility::deleteClause($this->table);
+			if (!$this->fetchDisabledRecords) {
+				$whereClause .= BackendUtility::BEenableFields($this->table);
+			}
+		}
+		return $whereClause;
 	}
 
 	/**

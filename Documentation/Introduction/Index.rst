@@ -83,3 +83,12 @@ Further information:
 - Centre électronique de gestion (CEG): `http://www.neuchatelville.ch <http://www.neuchatelville.ch/ceg>`_
 - Ecole d'Etudes Sociales et Pédagogiques (EESP): http://www.eesp.ch
 - Infoglobe: http://www.infoglobe.ca
+
+
+.. _support:
+
+Support
+-------
+
+In case you need help to configure this extension, please ask for free support in
+`TYPO3 mailing lists <https://forum.typo3.org/index.php/f/10/>`_ or contact the maintainer for paid support.

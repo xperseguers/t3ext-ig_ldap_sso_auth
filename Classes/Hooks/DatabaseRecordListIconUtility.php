@@ -22,7 +22,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * the icon associated to a FE/BE user/group record based on whether
  * the record is linked to LDAP.
  *
- * @author     Xavier Perseguers <xavier@typo3.org>
+ * @author     Xavier Perseguers <xavier@causal.ch>
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */

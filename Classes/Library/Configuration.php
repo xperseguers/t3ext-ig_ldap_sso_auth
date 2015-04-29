@@ -19,7 +19,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Class Configuration for the 'ig_ldap_sso_auth' extension.
  *
- * @author     Xavier Perseguers <xavier@typo3.org>
+ * @author     Xavier Perseguers <xavier@causal.ch>
  * @author     Michael Gagnon <mgagnon@infoglobe.ca>
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth

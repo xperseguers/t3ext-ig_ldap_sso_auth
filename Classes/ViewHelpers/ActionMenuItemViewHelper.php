@@ -17,7 +17,7 @@ namespace Causal\IgLdapSsoAuth\ViewHelpers;
 /**
  * Render an item of the menu
  *
- * @author     Xavier Perseguers <xavier@typo3.org>
+ * @author     Xavier Perseguers <xavier@causal.ch>
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */

@@ -20,7 +20,7 @@ use TYPO3\CMS\Core\Messaging\FlashMessage;
 /**
  * Class providing configuration checks for ig_ldap_sso_auth.
  *
- * @author     Xavier Perseguers <xavier@typo3.org>
+ * @author     Xavier Perseguers <xavier@causal.ch>
  * @author     Michael Miousse <michael.miousse@infoglobe.ca>
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth

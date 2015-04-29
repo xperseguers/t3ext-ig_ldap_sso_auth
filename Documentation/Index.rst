@@ -42,7 +42,7 @@ LDAP / SSO Authentication
 		Xavier Perseguers
 
 	:Email:
-		xavier@typo3.org
+		xavier@causal.ch
 
 	:License:
 		This document is published under the Open Content License

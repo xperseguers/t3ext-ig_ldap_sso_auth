@@ -24,7 +24,7 @@ use Causal\IgLdapSsoAuth\Utility\NotificationUtility;
 /**
  * LDAP / SSO authentication service.
  *
- * @author     Xavier Perseguers <xavier@typo3.org>
+ * @author     Xavier Perseguers <xavier@causal.ch>
  * @author     Michael Gagnon <mgagnon@infoglobe.ca>
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth

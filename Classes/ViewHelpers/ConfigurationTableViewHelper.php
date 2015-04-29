@@ -19,7 +19,7 @@ use TYPO3\CMS\Backend\Utility\IconUtility;
 /**
  * Render a configuration table
  *
- * @author     Xavier Perseguers <xavier@typo3.org>
+ * @author     Xavier Perseguers <xavier@causal.ch>
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */

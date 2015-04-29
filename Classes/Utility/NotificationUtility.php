@@ -19,7 +19,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Notification class.
  *
- * @author     Xavier Perseguers <xavier@typo3.org>
+ * @author     Xavier Perseguers <xavier@causal.ch>
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
@@ -55,20 +55,6 @@ class NotificationUtility {
 		}
 
 		return $signalSlotDispatcher;
-	}
-
-	/**
-	 * Returns a logger.
-	 *
-	 * @return \TYPO3\CMS\Core\Log\Logger
-	 */
-	static protected function getLogger() {
-		/** @var \TYPO3\CMS\Core\Log\Logger $logger */
-		static $logger = NULL;
-		if ($logger === NULL) {
-			$logger = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
-		}
-		return $logger;
 	}
 
 }

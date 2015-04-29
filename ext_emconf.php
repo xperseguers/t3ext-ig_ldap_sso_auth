@@ -29,7 +29,7 @@ In case of use in an intranet environment, this extension is a perfect match sin
 	'clearcacheonload' => 0,
 	'lockType' => '',
 	'author' => 'Xavier Perseguers',
-	'author_email' => 'xavier@typo3.org',
+	'author_email' => 'xavier@causal.ch',
 	'author_company' => '',
 	'CGLcompliance' => '',
 	'CGLcompliance_note' => '',

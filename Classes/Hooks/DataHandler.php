@@ -20,7 +20,7 @@ use Causal\IgLdapSsoAuth\Library\Configuration;
 /**
  * Hook into \TYPO3\CMS\Core\DataHandling\DataHandler.
  *
- * @author     Xavier Perseguers <xavier@typo3.org>
+ * @author     Xavier Perseguers <xavier@causal.ch>
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */

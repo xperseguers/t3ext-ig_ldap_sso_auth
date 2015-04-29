@@ -19,5 +19,6 @@ Hooks
 .. toctree::
 	:maxdepth: 1
 
+	Hooks/AttributesProcessing
 	Hooks/ExtraDataProcessing
 	Hooks/ExtraMergeField

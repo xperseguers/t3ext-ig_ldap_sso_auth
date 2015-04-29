@@ -45,12 +45,12 @@ Your class has to implement the :code:`\Causal\IgLdapSsoAuth\Utility\ExtraDataPr
 This implies implementing a method called :code:`processExtraData` which will receive the following arguments:
 
 $userTable
-  The name of the user table that was just handled
-  (should normally be "fe_users" or "be_users").
+	The name of the user table that was just handled
+	(should normally be "fe_users" or "be_users").
 
 $user
-  Full user record plus the extra data to handle in your extension.
-  The extra data is located in :code:`$user['__extraData']`. It
-  is up to your extension to handle it as needed.
+	Full user record plus the extra data to handle in your extension.
+	The extra data is located in :code:`$user['__extraData']`. It
+	is up to your extension to handle it as needed.
 
 .. note:: This process exists only for users, not for groups.

@@ -309,6 +309,7 @@ class LdapUtility {
 	 *
 	 * @param resource $previousEntry Used to get the remaining entries after receiving a partial result set
 	 * @return array
+	 * @throws \RuntimeException
 	 */
 	public function getEntries($previousEntry = NULL) {
 		$entries = array('count' => 0);
@@ -326,6 +327,20 @@ class LdapUtility {
 			do {
 				$attributes = ldap_get_attributes($this->connection, $entry);
 				$attributes['dn'] = ldap_get_dn($this->connection, $entry);
+
+				// Hook for processing the attributes
+				if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['attributesProcessing'])) {
+					foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['attributesProcessing'] as $className) {
+						/** @var $postProcessor \Causal\IgLdapSsoAuth\Utility\AttributesProcessorInterface */
+						$postProcessor = GeneralUtility::getUserObj($className);
+						if ($postProcessor instanceof \Causal\IgLdapSsoAuth\Utility\AttributesProcessorInterface) {
+							$postProcessor->processAttributes($this->connection, $entry, $attributes);
+						} else {
+							throw new \RuntimeException('Processor ' . get_class($postProcessor) . ' must implement the \\Causal\\IgLdapSsoAuth\\Utility\\AttributesProcessorInterface interface', 1430307683);
+						}
+					}
+				}
+
 				$tempEntry = array();
 				foreach ($attributes as $key => $value) {
 					$tempEntry[strtolower($key)] = $value;

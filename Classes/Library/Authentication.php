@@ -776,16 +776,10 @@ class Authentication {
 		preg_match_all('/<(.+?)>/', $markerString, $matches);
 
 		foreach ($matches[0] as $index => $fullMatchedMarker) {
-			$ldapProperty = $matches[1][$index];
-			$ldapPropertyLower = strtolower($ldapProperty);
-			$ldapValue = NULL;
+			$ldapProperty = strtolower($matches[1][$index]);
 
 			if (isset($ldapData[$ldapProperty])) {
 				$ldapValue = $ldapData[$ldapProperty];
-			} elseif (isset($ldapData[$ldapPropertyLower])) {
-				$ldapValue = $ldapData[$ldapPropertyLower];
-			}
-			if ($ldapValue !== NULL) {
 				if (is_array($ldapValue)) {
 					$ldapValue = $ldapValue[0];
 				}

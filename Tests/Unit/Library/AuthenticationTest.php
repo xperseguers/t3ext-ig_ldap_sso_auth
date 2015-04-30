@@ -47,7 +47,7 @@ class AuthenticationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 				0 => 'Isaac Newton',
 				'count' => 1,
 			),
-			2 => 'objectclass',
+			2 => 'objectClass',
 			'objectclass' => array(
 				0 => 'inetOrgPerson',
 				1 => 'organizationalPerson',
@@ -69,7 +69,7 @@ class AuthenticationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 				0 => 'Woolsthorpe-by-Colsterworth',
 				'count' => 1,
 			),
-			6 => 'postalcode',
+			6 => 'postalCode',
 			'postalcode' => array(
 				0 => 'NG33',
 				'count' => 1,
@@ -94,7 +94,7 @@ class AuthenticationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 		$this->ldapGroupFixture = array(
 			'dn' => 'ou=scientists,dc=example,dc=com',
 			0 => 'uniqueMember',
-			'uniqueMember' => array(
+			'uniquemember' => array(
 				0 => 'uid=einstein,dc=example,dc=com',
 				1 => 'uid=galieleo,dc=example,dc=com',
 				2 => 'uid=tesla,dc=example,dc=com',
@@ -112,7 +112,7 @@ class AuthenticationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
 				'count' => 1,
 			),
 			3 => 'objectClass',
-			'objectClass' => array(
+			'objectclass' => array(
 				0 => 'groupOfUniqueNames',
 				1 => 'top',
 				'count' => 2,

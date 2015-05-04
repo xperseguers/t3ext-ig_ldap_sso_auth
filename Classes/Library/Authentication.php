@@ -106,7 +106,7 @@ class Authentication {
 
 			// Valid user from LDAP server
 			if ($userdn = Ldap::getInstance()->validateUser($username, $password, static::$config['users']['basedn'], static::$config['users']['filter'])) {
-				static::getLogger()->info(sprintf('Successfully authenticated user "%s" with LDAP', $username));
+				static::getLogger()->info(sprintf('Successfully authenticated' . ($password === NULL ? ' SSO' : '') . ' user "%s" with LDAP', $username));
 
 				if ($userdn === TRUE) {
 					return TRUE;

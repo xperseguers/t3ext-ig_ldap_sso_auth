@@ -55,7 +55,6 @@ class ConfigurationHelper {
 	 * @return string Messages as HTML if something needs to be reported
 	 */
 	public function checkConfiguration(array $params, $pObj) {
-		$this->init();
 		$problems = array();
 
 		// Configuration of authentication service.

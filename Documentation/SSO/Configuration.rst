@@ -238,19 +238,19 @@ In order to protect the whole TYPO3 website, add following snippet to your virtu
 .. code-block:: apache
 
 	<Location />
-		AuthType Kerberos
-		AuthName "Intranet of example.com"
-		KrbMethodNegotiate on
-		KrbMethodK5Passwd off
-		# Allow shorter username (without realm):
-		KrbAuthRealms EXAMPLE.COM
-		KrbServiceName HTTP
-		Krb5Keytab /etc/apache2/http_intranet.keytab
+	    AuthType Kerberos
+	    AuthName "Intranet of example.com"
+	    KrbMethodNegotiate on
+	    KrbMethodK5Passwd off
+	    # Allow shorter username (without realm):
+	    KrbAuthRealms EXAMPLE.COM
+	    KrbServiceName HTTP
+	    Krb5Keytab /etc/apache2/http_intranet.keytab
 
-		# Disable the verification tickets against local keytab to
-		# prevent KDC spoofing attacks
-		# It should be used only for testing purposes
-		KrbVerifyKDC off
+	    # Disable the verification tickets against local keytab to
+	    # prevent KDC spoofing attacks
+	    # It should be used only for testing purposes
+	    KrbVerifyKDC off
 	</Location>
 
 .. note::
@@ -290,8 +290,8 @@ anonymous users using ``Require`` directive:
 .. code-block:: apache
 
 	<Location />
-		# ...
-		Require valid-user
+	    # ...
+	    Require valid-user
 	</Location>
 
 Please refer to the `Apache documentation`_ if you want to restrict access to certain users or groups (if so, you will

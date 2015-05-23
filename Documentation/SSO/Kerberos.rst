@@ -31,7 +31,7 @@ desired service to access. The KDC is installed as part of the domain controller
 .. _admin-manual-kerberos-apache-concepts-as:
 
 AS exchange
-^^^^^^^^^^
+^^^^^^^^^^^
 
 When initially logging on to a network, users must negotiate access by providing a login name and password in order to
 be verified by the AS portion of a :term:`KDC`. The KDC has access to Active Directory user account information. Once

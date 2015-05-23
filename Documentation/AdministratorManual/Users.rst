@@ -201,12 +201,12 @@ Examples
 	name.wrap = |-LDAP
 
 	telephone {
-		field = telephonenumber
-		split {
-			token.char = 10
-			cObjNum = 1
-			1.current = 1
-			1.noTrimWrap = ||, |
-		}
-		substring = 0,-2
+	    field = telephonenumber
+	    split {
+	        token.char = 10
+	        cObjNum = 1
+	        1.current = 1
+	        1.noTrimWrap = ||, |
+	    }
+	    substring = 0,-2
 	}

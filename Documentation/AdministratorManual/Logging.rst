@@ -33,17 +33,17 @@ entries with level "WARNING" or above to the system log, you may add following c
 .. code-block:: php
 
 	$GLOBALS['TYPO3_CONF_VARS']['LOG']['Causal']['IgLdapSsoAuth']['writerConfiguration'] = array(
-		\TYPO3\CMS\Core\Log\LogLevel::DEBUG => array(
-			'TYPO3\\CMS\\Core\\Log\\Writer\\FileWriter' => array(
-				'logFile' => 'typo3temp/logs/ldap.log'
-			),
-		),
+	    \TYPO3\CMS\Core\Log\LogLevel::DEBUG => array(
+	        'TYPO3\\CMS\\Core\\Log\\Writer\\FileWriter' => array(
+	            'logFile' => 'typo3temp/logs/ldap.log'
+	        ),
+	    ),
 
-		// Configuration for WARNING severity, including all
-		// levels with higher severity (ERROR, CRITICAL, EMERGENCY)
-		\TYPO3\CMS\Core\Log\LogLevel::WARNING => array(
-			'TYPO3\\CMS\\Core\\Log\\Writer\\SyslogWriter' => array(),
-		),
+	    // Configuration for WARNING severity, including all
+	    // levels with higher severity (ERROR, CRITICAL, EMERGENCY)
+	    \TYPO3\CMS\Core\Log\LogLevel::WARNING => array(
+	        'TYPO3\\CMS\\Core\\Log\\Writer\\SyslogWriter' => array(),
+	    ),
 	);
 
 .. hint::

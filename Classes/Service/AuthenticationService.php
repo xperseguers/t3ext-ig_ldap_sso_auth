@@ -286,7 +286,8 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 		$cacheEntries = $databaseConnection->exec_SELECTcountRows(
 			'*',
 			$table,
-			'identifier IN (' . implode(',', $quotedIdentifiers) . ')'
+			'identifier IN (' . implode(',', $quotedIdentifiers) . ')' .
+				' AND expires>' . $GLOBALS['EXEC_TIME']
 		);
 		if ((int)$cacheEntries !== 2) {
 			$this->warmUpExtbaseDataMapper();

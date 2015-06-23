@@ -266,7 +266,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 	 * @return void
 	 */
 	protected function initializeExtbaseFramework() {
-		if (TYPO3_MODE !== 'FE') {
+		if (!(TYPO3_MODE === 'FE' && is_object($GLOBALS['TSFE']))) {
 			return;
 		}
 

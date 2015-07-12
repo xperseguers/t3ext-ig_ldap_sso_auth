@@ -85,7 +85,8 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 	public function getUser() {
 		$user = FALSE;
 		$userRecordOrIsValid = FALSE;
-		$enableFrontendSso = TYPO3_MODE === 'FE' && (bool)$this->config['enableFESSO'] && !empty($_SERVER['REMOTE_USER']);
+		$remoteUser = $this->getRemoteUser();
+		$enableFrontendSso = TYPO3_MODE === 'FE' && (bool)$this->config['enableFESSO'] && $remoteUser;
 
 		// This simple check is the key to prevent your log being filled up with warnings
 		// due to the AJAX calls to maintain the session active if your configuration forces
@@ -124,8 +125,6 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 
 			// Single Sign-On authentication
 			if ($enableFrontendSso) {
-				$remoteUser = $_SERVER['REMOTE_USER'];
-
 				// Strip the domain name
 				if ($pos = strpos($remoteUser, '@')) {
 					$remoteUser = substr($remoteUser, 0, $pos);
@@ -226,7 +225,8 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 			$status = static::STATUS_AUTHENTICATION_FAILURE_CONTINUE;
 		}
 
-		$enableFrontendSso = TYPO3_MODE === 'FE' && (bool)$this->config['enableFESSO'] && !empty($_SERVER['REMOTE_USER']);
+		$remoteUser = $this->getRemoteUser();
+		$enableFrontendSso = TYPO3_MODE === 'FE' && (bool)$this->config['enableFESSO'] && $remoteUser;
 
 		if ((($this->login['uident'] && $this->login['uname']) || $enableFrontendSso) && !empty($user['tx_igldapssoauth_dn'])) {
 			if (isset($user['tx_igldapssoauth_from'])) {
@@ -359,6 +359,21 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 			$identifiers[] = str_replace('\\', '%', $className);
 		}
 		return $identifiers;
+	}
+
+	/**
+	 * Returns the remote user ($_SERVER['REMOTE_USER']).
+	 *
+	 * @return string
+	 */
+	protected function getRemoteUser() {
+		$remoteUser = !empty($_SERVER['REMOTE_USER'])
+			? $_SERVER['REMOTE_USER']
+			: (!empty($_SERVER['REDIRECT_REMOTE_USER'])
+				? $_SERVER['REDIRECT_REMOTE_USER']
+				: NULL
+			);
+		return $remoteUser;
 	}
 
 	/**

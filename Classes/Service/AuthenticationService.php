@@ -73,7 +73,6 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 		$config = $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey];
 		$this->config = $config ? unserialize($config) : array();
 		Authentication::setAuthenticationService($this);
-		$this->initializeExtbaseFramework();
 	}
 
 	/**
@@ -96,6 +95,8 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 		if ($this->login['status'] !== 'login' && !$enableFrontendSso) {
 			return $user;
 		}
+
+		$this->initializeExtbaseFramework();
 
 		/** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
 		$configurationRepository = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Repository\\ConfigurationRepository');
@@ -340,6 +341,16 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {
 			$quotedIdentifiers[] = $databaseConnection->fullQuoteStr($identifier, $table);
 		}
 		$databaseConnection->exec_DELETEquery($table, 'identifier IN (' . implode(',', $quotedIdentifiers) . ')');
+
+		// To prevent incomplete cache entries in the configuration manager we reset the configurationCache property.
+		/** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+		$objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+		/** @var \TYPO3\CMS\Extbase\Configuration\FrontendConfigurationManager $configurationManager */
+		$configurationManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Configuration\\FrontendConfigurationManager');
+		$configurationManagerReflection = new \ReflectionClass(get_class($configurationManager));
+		$configurationManagerCacheProperty = $configurationManagerReflection->getProperty('configurationCache');
+		$configurationManagerCacheProperty->setAccessible(TRUE);
+		$configurationManagerCacheProperty->setValue($configurationManager, array());
 	}
 
 	/**

@@ -136,6 +136,10 @@ LDAP attributes will be recognized by the specific characters ``<>``.
 This will set the field email of the TYPO3 user to the value of the attribute ``mail`` of the user fetched from the LDAP
 server.
 
+.. tip::
+	You may combine multiple markers as well, e.g., ::
+
+		name = <sn>, <givenName>
 
 .. _admin-manual-feusers-mapping-custommarker:
 .. _admin-manual-beusers-mapping-custommarker:
@@ -188,12 +192,11 @@ Examples
 	city = <l>
 	telephone = <telephoneNumber>
 
-.. tip::
-	You may combine multiple markers as well, e.g., ::
 
-		name = <sn>, <givenName>
 
-**TypoScript**
+**Applying TypoScript .stdWrap properties**
+
+Split a phone number
 
 ::
 
@@ -209,4 +212,16 @@ Examples
 	        1.noTrimWrap = ||, |
 	    }
 	    substring = 0,-2
+	}
+
+Fetch a specific element from a multi-valued list
+
+::
+
+	email {
+	    field = mail
+	    listNum = 3
+	    listNum {
+	        splitChar = 10
+	    }
 	}

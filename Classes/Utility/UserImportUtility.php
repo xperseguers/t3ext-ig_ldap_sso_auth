@@ -87,7 +87,7 @@ class UserImportUtility {
 			? Configuration::getFrontendConfiguration()
 			: Configuration::getBackendConfiguration();
 		// Define related tables
-		if ($context === 'be') {
+		if (strtolower($context) === 'be') {
 			$this->userTable = 'be_users';
 			$this->groupTable = 'be_groups';
 		} else {

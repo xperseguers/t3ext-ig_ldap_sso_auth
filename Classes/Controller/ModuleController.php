@@ -333,7 +333,10 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 		}
 
 		if ($success) {
-			list($filter, $baseDn) = explode(',', $dn, 2);
+			// We want to extract main rdn by splitting on comma but we
+			// make sure that any escaped comma (\,) will NOT be taken
+			// into account thanks to a look-behind assertion in pattern
+			list($filter, $baseDn) = preg_split('#(?<!\\\)\,#', $dn, 2);
 			$ldapUser = $this->ldap->search($baseDn, '(' . $filter . ')', array(), TRUE);
 			$typo3Users = $importUtility->fetchTypo3Users(array($ldapUser));
 

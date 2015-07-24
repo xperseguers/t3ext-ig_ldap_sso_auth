@@ -41,6 +41,10 @@ class Typo3UserRepository {
 			throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891582);
 		}
 
+		if (empty($GLOBALS['TCA'][$table])) {
+			\TYPO3\CMS\Core\Core\Bootstrap::getInstance()->loadCachedTca();
+		}
+
 		$newUser = array();
 		$fieldsConfiguration = static::getDatabaseConnection()->admin_get_fields($table);
 
@@ -49,6 +53,9 @@ class Typo3UserRepository {
 				$newUser[$field] = '';
 			} else {
 				$newUser[$field] = $configuration['Default'];
+			}
+			if (!empty($GLOBALS['TCA'][$table]['columns'][$field]['config']['default'])) {
+				$newUser[$field] = $GLOBALS['TCA'][$table]['columns'][$field]['config']['default'];
 			}
 		}
 

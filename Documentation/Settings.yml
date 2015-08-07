@@ -30,13 +30,13 @@ conf.py:
     - https://forge.typo3.org/issues/%s
     - 'Forge ticket #'
     ter:
-    - http://www.typo3.org/extensions/repository/view/%s
+    - https://www.typo3.org/extensions/repository/view/%s
     - 'EXT:'
   intersphinx_mapping:
     t3api:
-    - http://docs.typo3.org/typo3cms/CoreApiReference/
+    - https://docs.typo3.org/typo3cms/CoreApiReference/
     - null
     t3tsref:
-    - http://docs.typo3.org/typo3cms/TyposcriptReference/
+    - https://docs.typo3.org/typo3cms/TyposcriptReference/
     - null
 ...

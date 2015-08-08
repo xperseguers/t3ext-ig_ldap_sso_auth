@@ -21,15 +21,16 @@ namespace Causal\IgLdapSsoAuth\Utility;
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-interface ExtraDataProcessorInterface {
+interface ExtraDataProcessorInterface
+{
 
-	/**
-	 * Processes the extra data associated with the user record.
-	 *
-	 * @param string $table Name of the table into which the user was imported
-	 * @param array $user User record with merged TYPO3/LDAP data
-	 * @return void
-	 */
-	public function processExtraData($table, array $user);
+    /**
+     * Processes the extra data associated with the user record.
+     *
+     * @param string $table Name of the table into which the user was imported
+     * @param array $user User record with merged TYPO3/LDAP data
+     * @return void
+     */
+    public function processExtraData($table, array $user);
 
 }

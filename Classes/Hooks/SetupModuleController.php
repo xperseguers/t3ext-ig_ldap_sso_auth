@@ -22,25 +22,27 @@ namespace Causal\IgLdapSsoAuth\Hooks;
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class SetupModuleController {
+class SetupModuleController
+{
 
-	/**
-	 * Pre-processes the submitted data.
-	 *
-	 * @param array $params
-	 * @param \TYPO3\CMS\Setup\Controller\SetupModuleController $pObj
-	 */
-	public function preprocessData(array $params, \TYPO3\CMS\Setup\Controller\SetupModuleController $pObj) {
-		if (empty($GLOBALS['BE_USER']->user['tx_igldapssoauth_dn'])) {
-			return;
-		}
+    /**
+     * Pre-processes the submitted data.
+     *
+     * @param array $params
+     * @param \TYPO3\CMS\Setup\Controller\SetupModuleController $pObj
+     */
+    public function preprocessData(array $params, \TYPO3\CMS\Setup\Controller\SetupModuleController $pObj)
+    {
+        if (empty($GLOBALS['BE_USER']->user['tx_igldapssoauth_dn'])) {
+            return;
+        }
 
-		if (!empty($params['be_user_data']['password'])) {
-			// Silently remove new password as we cannot send a flash message for
-			// further information
-			$params['be_user_data']['password'] = '';
-			$params['be_user_data']['password2'] = '';
-		}
-	}
+        if (!empty($params['be_user_data']['password'])) {
+            // Silently remove new password as we cannot send a flash message for
+            // further information
+            $params['be_user_data']['password'] = '';
+            $params['be_user_data']['password2'] = '';
+        }
+    }
 
 }

@@ -21,16 +21,17 @@ namespace Causal\IgLdapSsoAuth\Utility;
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-interface AttributesProcessorInterface {
+interface AttributesProcessorInterface
+{
 
-	/**
-	 * Post-processes the attributes of an LDAP entry.
-	 *
-	 * @param resource $link LDAP link from ldap_connect()
-	 * @param resource $entry LDAP entry from ldap_first_entry() or ldap_next_entry()
-	 * @param array $attributes LDAP attributes
-	 * @return void
-	 */
-	public function processAttributes($link, $entry, array &$attributes);
+    /**
+     * Post-processes the attributes of an LDAP entry.
+     *
+     * @param resource $link LDAP link from ldap_connect()
+     * @param resource $entry LDAP entry from ldap_first_entry() or ldap_next_entry()
+     * @param array $attributes LDAP attributes
+     * @return void
+     */
+    public function processAttributes($link, $entry, array &$attributes);
 
 }

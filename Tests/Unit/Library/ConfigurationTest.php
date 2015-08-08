@@ -19,218 +19,231 @@ use Causal\IgLdapSsoAuth\Library\Configuration;
 /**
  * Test cases for class \Causal\IgLdapSsoAuth\Library\Configuration.
  */
-class ConfigurationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase {
+class ConfigurationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
+{
 
-	/**
-	 * @test
-	 * @dataProvider usernameFilterProvider
-	 */
-	public function canGetUsernameAttribute($filter, $expected) {
-		$attribute = Configuration::getUsernameAttribute($filter);
-		$this->assertSame($expected, $attribute);
-	}
+    /**
+     * @test
+     * @dataProvider usernameFilterProvider
+     */
+    public function canGetUsernameAttribute($filter, $expected)
+    {
+        $attribute = Configuration::getUsernameAttribute($filter);
+        $this->assertSame($expected, $attribute);
+    }
 
-	public function usernameFilterProvider() {
-		return array(
-			array('', ''),
-			array(NULL, ''),
-			array('uid={USERNAME}', 'uid'),
-			array('(uid={USERNAME})', 'uid'),
-			array('(&(uid={USERNAME})(objectClass=posixAccount)', 'uid'),
-			array('(&(objectClass=organizationalPerson)(mail=*@domain*)(sAMAccountName={USERNAME}))', 'sAMAccountName'),
-		);
-	}
+    public function usernameFilterProvider()
+    {
+        return array(
+            array('', ''),
+            array(null, ''),
+            array('uid={USERNAME}', 'uid'),
+            array('(uid={USERNAME})', 'uid'),
+            array('(&(uid={USERNAME})(objectClass=posixAccount)', 'uid'),
+            array('(&(objectClass=organizationalPerson)(mail=*@domain*)(sAMAccountName={USERNAME}))', 'sAMAccountName'),
+        );
+    }
 
-	/**
-	 * @test
-	 */
-	public function emptyLinesAreRemovedFromMapping() {
-		$mapping = <<<EOT
+    /**
+     * @test
+     */
+    public function emptyLinesAreRemovedFromMapping()
+    {
+        $mapping = <<<EOT
 
-			pid = 1
-			tstamp = {DATE}
+            pid = 1
+            tstamp = {DATE}
 
-			email=<mail>
+            email=<mail>
 
 
-			first_name =  <givenName>
-			last_name   =<sn>
+            first_name =  <givenName>
+            last_name   =<sn>
 
 EOT;
-		$expected = array(
-			'pid' => '1',
-			'tstamp' => '{DATE}',
-			'email' => '<mail>',
-			'first_name' => '<givenName>',
-			'last_name' => '<sn>',
-		);
+        $expected = array(
+            'pid' => '1',
+            'tstamp' => '{DATE}',
+            'email' => '<mail>',
+            'first_name' => '<givenName>',
+            'last_name' => '<sn>',
+        );
 
-		$actual = Configuration::parseMapping($mapping);
-		$this->assertEquals($expected, $actual);
-	}
+        $actual = Configuration::parseMapping($mapping);
+        $this->assertEquals($expected, $actual);
+    }
 
-	/**
-	 * @test
-	 */
-	public function commentsOrInvalidMappingLinesAreIgnored() {
-		$mapping = <<<EOT
-			// This is a comment
-			pid = 1
-			tstamp = {DATE}
+    /**
+     * @test
+     */
+    public function commentsOrInvalidMappingLinesAreIgnored()
+    {
+        $mapping = <<<EOT
+            // This is a comment
+            pid = 1
+            tstamp = {DATE}
 
-			// Another comment
-			email = <mail>
+            // Another comment
+            email = <mail>
 
-			partial_definition =
+            partial_definition =
 EOT;
-		$expected = array(
-			'pid' => '1',
-			'tstamp' => '{DATE}',
-			'email' => '<mail>',
-		);
+        $expected = array(
+            'pid' => '1',
+            'tstamp' => '{DATE}',
+            'email' => '<mail>',
+        );
 
-		$actual = Configuration::parseMapping($mapping);
-		$this->assertEquals($expected, $actual);
-	}
+        $actual = Configuration::parseMapping($mapping);
+        $this->assertEquals($expected, $actual);
+    }
 
-	/**
-	 * @test
-	 */
-	public function canCombineLdapAttributeAndStaticContentInMapping() {
-		$mapping = <<<EOT
-			name = <sn>, <givenName>
-			telephone = Tel. <telephoneNumber>
+    /**
+     * @test
+     */
+    public function canCombineLdapAttributeAndStaticContentInMapping()
+    {
+        $mapping = <<<EOT
+            name = <sn>, <givenName>
+            telephone = Tel. <telephoneNumber>
 EOT;
-		$expected = array(
-			'name' => '<sn>, <givenName>',
-			'telephone' => 'Tel. <telephoneNumber>',
-		);
+        $expected = array(
+            'name' => '<sn>, <givenName>',
+            'telephone' => 'Tel. <telephoneNumber>',
+        );
 
-		$actual = Configuration::parseMapping($mapping);
-		$this->assertEquals($expected, $actual);
-	}
+        $actual = Configuration::parseMapping($mapping);
+        $this->assertEquals($expected, $actual);
+    }
 
-	/**
-	 * @test
-	 */
-	public function canUseEqualSignInMapping() {
-		$mapping = <<<EOT
-			myfield = <sn> =   <givenName>
-			other = <sn> <=> <givenName>
+    /**
+     * @test
+     */
+    public function canUseEqualSignInMapping()
+    {
+        $mapping = <<<EOT
+            myfield = <sn> =   <givenName>
+            other = <sn> <=> <givenName>
 EOT;
-		$expected = array(
-			'myfield' => '<sn> =   <givenName>',
-			'other' => '<sn> <=> <givenName>',
-		);
+        $expected = array(
+            'myfield' => '<sn> =   <givenName>',
+            'other' => '<sn> <=> <givenName>',
+        );
 
-		$actual = Configuration::parseMapping($mapping);
-		$this->assertEquals($expected, $actual);
-	}
+        $actual = Configuration::parseMapping($mapping);
+        $this->assertEquals($expected, $actual);
+    }
 
-	/**
-	 * @test
-	 */
-	public function canParseSimpleTypoScriptWrap() {
-		$mapping = <<<EOT
-			name = <sn>, <givenName>
-			name.wrap = prefix- | -suffix
-EOT;
-
-		$expected = array(
-			'name' => '<sn>, <givenName>',
-			'name.' => array(
-				'wrap' => 'prefix- | -suffix',
-			),
-		);
-
-		$actual = Configuration::parseMapping($mapping);
-		$this->assertEquals($expected, $actual);
-	}
-
-	/**
-	 * @test
-	 */
-	public function canParseMultiLineTypoScript() {
-		$mapping = <<<EOT
-			name = <sn>, <givenName>
-			name {
-				wrap = prefix- |
-				wrap2 = | -suffix
-			}
+    /**
+     * @test
+     */
+    public function canParseSimpleTypoScriptWrap()
+    {
+        $mapping = <<<EOT
+            name = <sn>, <givenName>
+            name.wrap = prefix- | -suffix
 EOT;
 
-		$expected = array(
-			'name' => '<sn>, <givenName>',
-			'name.' => array(
-				'wrap' => 'prefix- |',
-				'wrap2' => '| -suffix',
-			),
-		);
+        $expected = array(
+            'name' => '<sn>, <givenName>',
+            'name.' => array(
+                'wrap' => 'prefix- | -suffix',
+            ),
+        );
 
-		$actual = Configuration::parseMapping($mapping);
-		$this->assertEquals($expected, $actual);
-	}
+        $actual = Configuration::parseMapping($mapping);
+        $this->assertEquals($expected, $actual);
+    }
 
-	/**
-	 * @test
-	 */
-	public function simpleMappingIsNotExtended() {
-		$mapping = <<<EOT
-			name = <sn>, <givenName>
-			first_name = <givenName>
-			last_name = <sn>
-			address = <street>, <postalCode> <l>, <co>
+    /**
+     * @test
+     */
+    public function canParseMultiLineTypoScript()
+    {
+        $mapping = <<<EOT
+            name = <sn>, <givenName>
+            name {
+                wrap = prefix- |
+                wrap2 = | -suffix
+            }
 EOT;
 
-		$mapping = Configuration::parseMapping($mapping);
-		$result = Configuration::hasExtendedMapping($mapping);
+        $expected = array(
+            'name' => '<sn>, <givenName>',
+            'name.' => array(
+                'wrap' => 'prefix- |',
+                'wrap2' => '| -suffix',
+            ),
+        );
 
-		$this->assertFalse($result);
-	}
+        $actual = Configuration::parseMapping($mapping);
+        $this->assertEquals($expected, $actual);
+    }
 
-	/**
-	 * @test
-	 */
-	public function mappingWithHooksIsExtended() {
-		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'] = array('foo');
-		$mapping = <<<EOT
-			name = {special}
+    /**
+     * @test
+     */
+    public function simpleMappingIsNotExtended()
+    {
+        $mapping = <<<EOT
+            name = <sn>, <givenName>
+            first_name = <givenName>
+            last_name = <sn>
+            address = <street>, <postalCode> <l>, <co>
 EOT;
 
-		$mapping = Configuration::parseMapping($mapping);
-		$result = Configuration::hasExtendedMapping($mapping);
+        $mapping = Configuration::parseMapping($mapping);
+        $result = Configuration::hasExtendedMapping($mapping);
 
-		$this->assertTrue($result);
-	}
+        $this->assertFalse($result);
+    }
 
-	/**
-	 * @test
-	 */
-	public function mappingWithExtraDatasIsExtended() {
-		$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'] = array('foo');
-		$mapping = <<<EOT
-			custom-field = foobar
+    /**
+     * @test
+     */
+    public function mappingWithHooksIsExtended()
+    {
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'] = array('foo');
+        $mapping = <<<EOT
+            name = {special}
 EOT;
 
-		$mapping = Configuration::parseMapping($mapping);
-		$result = Configuration::hasExtendedMapping($mapping);
+        $mapping = Configuration::parseMapping($mapping);
+        $result = Configuration::hasExtendedMapping($mapping);
 
-		$this->assertTrue($result);
-	}
+        $this->assertTrue($result);
+    }
 
-	/**
-	 * @test
-	 */
-	public function mappingWithTypoScriptIsExtended() {
-		$mapping = <<<EOT
-			name = <sn>, <givenName>
-			name.wrap = |
+    /**
+     * @test
+     */
+    public function mappingWithExtraDatasIsExtended()
+    {
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'] = array('foo');
+        $mapping = <<<EOT
+            custom-field = foobar
 EOT;
 
-		$mapping = Configuration::parseMapping($mapping);
-		$result = Configuration::hasExtendedMapping($mapping);
+        $mapping = Configuration::parseMapping($mapping);
+        $result = Configuration::hasExtendedMapping($mapping);
 
-		$this->assertTrue($result);
-	}
+        $this->assertTrue($result);
+    }
+
+    /**
+     * @test
+     */
+    public function mappingWithTypoScriptIsExtended()
+    {
+        $mapping = <<<EOT
+            name = <sn>, <givenName>
+            name.wrap = |
+EOT;
+
+        $mapping = Configuration::parseMapping($mapping);
+        $result = Configuration::hasExtendedMapping($mapping);
+
+        $this->assertTrue($result);
+    }
 
 }

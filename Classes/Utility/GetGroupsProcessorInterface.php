@@ -21,16 +21,17 @@ namespace Causal\IgLdapSsoAuth\Utility;
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-interface GetGroupsProcessorInterface {
+interface GetGroupsProcessorInterface
+{
 
-	/**
-	 * Post-processes the groups of a user
-	 *
-	 * @param string $groupTable Table name of the group table
-	 * @param array $ldapUser Full ldap data of the currently processed user
-	 * @param array $userGroups User groups as they have been determined before hitting this function
-	 * @return void
-	 */
-	public function getUserGroups($groupTable, array $ldapUser, array &$userGroups);
+    /**
+     * Post-processes the groups of a user
+     *
+     * @param string $groupTable Table name of the group table
+     * @param array $ldapUser Full ldap data of the currently processed user
+     * @param array $userGroups User groups as they have been determined before hitting this function
+     * @return void
+     */
+    public function getUserGroups($groupTable, array $ldapUser, array &$userGroups);
 
 }

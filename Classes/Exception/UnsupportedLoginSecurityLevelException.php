@@ -21,6 +21,7 @@ namespace Causal\IgLdapSsoAuth\Exception;
  *
  * @author Xavier Perseguers <xavier@causal.ch>
  */
-class UnsupportedLoginSecurityLevelException extends IgLdapSsoAuthException {
+class UnsupportedLoginSecurityLevelException extends IgLdapSsoAuthException
+{
 
 }

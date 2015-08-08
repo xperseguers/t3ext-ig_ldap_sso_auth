@@ -28,268 +28,279 @@ use Causal\IgLdapSsoAuth\Library\Ldap;
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class UserImportUtility {
+class UserImportUtility
+{
 
-	/**
-	 * Synchronization context (may be FE, BE or both).
-	 *
-	 * @var string
-	 */
-	protected $context;
+    /**
+     * Synchronization context (may be FE, BE or both).
+     *
+     * @var string
+     */
+    protected $context;
 
-	/**
-	 * Selected LDAP configuration.
-	 *
-	 * @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration
-	 */
-	protected $configuration;
+    /**
+     * Selected LDAP configuration.
+     *
+     * @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration
+     */
+    protected $configuration;
 
-	/**
-	 * Which table to import users into.
-	 *
-	 * @var string
-	 */
-	protected $userTable;
+    /**
+     * Which table to import users into.
+     *
+     * @var string
+     */
+    protected $userTable;
 
-	/**
-	 * Which table to import groups into.
-	 *
-	 * @var string
-	 */
-	protected $groupTable;
+    /**
+     * Which table to import groups into.
+     *
+     * @var string
+     */
+    protected $groupTable;
 
-	/**
-	 * Total users added (for reporting).
-	 *
-	 * @var int
-	 */
-	protected $usersAdded = 0;
+    /**
+     * Total users added (for reporting).
+     *
+     * @var int
+     */
+    protected $usersAdded = 0;
 
-	/**
-	 * Total users updated (for reporting).
-	 *
-	 * @var int
-	 */
-	protected $usersUpdated = 0;
+    /**
+     * Total users updated (for reporting).
+     *
+     * @var int
+     */
+    protected $usersUpdated = 0;
 
-	/**
-	 * Default constructor.
-	 *
-	 * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
-	 * @param string $context
-	 */
-	public function __construct(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration, $context) {
-		// Load the configuration
-		Configuration::initialize($context, $configuration);
-		// Store current context and get related configuration
-		$this->context = $context;
-		$this->configuration = (strtolower($context) === 'fe')
-			? Configuration::getFrontendConfiguration()
-			: Configuration::getBackendConfiguration();
-		// Define related tables
-		if (strtolower($context) === 'be') {
-			$this->userTable = 'be_users';
-			$this->groupTable = 'be_groups';
-		} else {
-			$this->userTable = 'fe_users';
-			$this->groupTable = 'fe_groups';
-		}
-	}
+    /**
+     * Default constructor.
+     *
+     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
+     * @param string $context
+     */
+    public function __construct(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration, $context)
+    {
+        // Load the configuration
+        Configuration::initialize($context, $configuration);
+        // Store current context and get related configuration
+        $this->context = $context;
+        $this->configuration = (strtolower($context) === 'fe')
+            ? Configuration::getFrontendConfiguration()
+            : Configuration::getBackendConfiguration();
+        // Define related tables
+        if (strtolower($context) === 'be') {
+            $this->userTable = 'be_users';
+            $this->groupTable = 'be_groups';
+        } else {
+            $this->userTable = 'fe_users';
+            $this->groupTable = 'fe_groups';
+        }
+    }
 
-	/**
-	 * Disables all users related to the current configuration.
-	 *
-	 * @return void
-	 */
-	public function disableUsers() {
-		Typo3UserRepository::disableForConfiguration(
-			$this->userTable,
-			Configuration::getUid()
-		);
-	}
+    /**
+     * Disables all users related to the current configuration.
+     *
+     * @return void
+     */
+    public function disableUsers()
+    {
+        Typo3UserRepository::disableForConfiguration(
+            $this->userTable,
+            Configuration::getUid()
+        );
+    }
 
-	/**
-	 * Deletes all users related to the current configuration.
-	 *
-	 * @return void
-	 */
-	public function deleteUsers() {
-		Typo3UserRepository::deleteForConfiguration(
-			$this->userTable,
-			Configuration::getUid()
-		);
-	}
+    /**
+     * Deletes all users related to the current configuration.
+     *
+     * @return void
+     */
+    public function deleteUsers()
+    {
+        Typo3UserRepository::deleteForConfiguration(
+            $this->userTable,
+            Configuration::getUid()
+        );
+    }
 
-	/**
-	 * Fetches all possible LDAP/AD users for a given configuration and context.
-	 *
-	 * @param bool $partial TRUE to fetch remaining entries when a partial result set was returned
-	 * @return array
-	 */
-	public function fetchLdapUsers($partial = FALSE) {
+    /**
+     * Fetches all possible LDAP/AD users for a given configuration and context.
+     *
+     * @param bool $partial true to fetch remaining entries when a partial result set was returned
+     * @return array
+     */
+    public function fetchLdapUsers($partial = false)
+    {
 
-		// Get the users from LDAP/AD server
-		$ldapUsers = array();
-		if (!empty($this->configuration['users']['basedn'])) {
-			if (!$partial) {
-				$filter = Configuration::replaceFilterMarkers($this->configuration['users']['filter']);
-				if (Configuration::hasExtendedMapping($this->configuration['users']['mapping'])) {
-					// Fetch all attributes so that hooks may do whatever they want on any LDAP attribute
-					$attributes = array();
-				} else {
-					// Optimize the LDAP call by retrieving only attributes in use for the mapping
-					$attributes = Configuration::getLdapAttributes($this->configuration['users']['mapping']);
-				}
-				$ldapUsers = Ldap::getInstance()->search($this->configuration['users']['basedn'], $filter, $attributes);
-			} else {
-				$ldapUsers = Ldap::getInstance()->searchNext();
-			}
-			unset($ldapUsers['count']);
-		}
+        // Get the users from LDAP/AD server
+        $ldapUsers = array();
+        if (!empty($this->configuration['users']['basedn'])) {
+            if (!$partial) {
+                $filter = Configuration::replaceFilterMarkers($this->configuration['users']['filter']);
+                if (Configuration::hasExtendedMapping($this->configuration['users']['mapping'])) {
+                    // Fetch all attributes so that hooks may do whatever they want on any LDAP attribute
+                    $attributes = array();
+                } else {
+                    // Optimize the LDAP call by retrieving only attributes in use for the mapping
+                    $attributes = Configuration::getLdapAttributes($this->configuration['users']['mapping']);
+                }
+                $ldapUsers = Ldap::getInstance()->search($this->configuration['users']['basedn'], $filter, $attributes);
+            } else {
+                $ldapUsers = Ldap::getInstance()->searchNext();
+            }
+            unset($ldapUsers['count']);
+        }
 
-		return $ldapUsers;
-	}
+        return $ldapUsers;
+    }
 
-	/**
-	 * Returns TRUE is a previous call to @see fetchLdapUsers() returned
-	 * a partial result set.
-	 *
-	 * @return bool
-	 */
-	public function hasMoreLdapUsers() {
-		return Ldap::getInstance()->isPartialSearchResult();
-	}
+    /**
+     * Returns true is a previous call to @see fetchLdapUsers() returned
+     * a partial result set.
+     *
+     * @return bool
+     */
+    public function hasMoreLdapUsers()
+    {
+        return Ldap::getInstance()->isPartialSearchResult();
+    }
 
-	/**
-	 * Fetches all existing TYPO3 users related to the given LDAP/AD users.
-	 *
-	 * @param array $ldapUsers List of LDAP/AD users
-	 * @return array
-	 */
-	public function fetchTypo3Users($ldapUsers) {
+    /**
+     * Fetches all existing TYPO3 users related to the given LDAP/AD users.
+     *
+     * @param array $ldapUsers List of LDAP/AD users
+     * @return array
+     */
+    public function fetchTypo3Users($ldapUsers)
+    {
 
-		// Populate an array of TYPO3 users records corresponding to the LDAP users
-		// If a given LDAP user has no associated user in TYPO3, a fresh record
-		// will be created so that $ldapUsers[i] <=> $typo3Users[i]
-		$typo3UserPid = Configuration::getPid($this->configuration['users']['mapping']);
-		$typo3Users = Authentication::getTypo3Users(
-			$ldapUsers,
-			$this->configuration['users']['mapping'],
-			$this->userTable,
-			$typo3UserPid
-		);
-		return $typo3Users;
-	}
+        // Populate an array of TYPO3 users records corresponding to the LDAP users
+        // If a given LDAP user has no associated user in TYPO3, a fresh record
+        // will be created so that $ldapUsers[i] <=> $typo3Users[i]
+        $typo3UserPid = Configuration::getPid($this->configuration['users']['mapping']);
+        $typo3Users = Authentication::getTypo3Users(
+            $ldapUsers,
+            $this->configuration['users']['mapping'],
+            $this->userTable,
+            $typo3UserPid
+        );
+        return $typo3Users;
+    }
 
-	/**
-	 * Imports a given user to the TYPO3 database.
-	 *
-	 * @param array $user Local user information
-	 * @param array $ldapUser LDAP user information
-	 * @param string $restoreBehavior How to restore users (only for update)
-	 * @return array Modified user data
-	 * @throws ImportUsersException
-	 */
-	public function import($user, $ldapUser, $restoreBehavior = 'both') {
-		// Store the extra data for later restore and remove it
-		if (isset($user['__extraData'])) {
-			$extraData = $user['__extraData'];
-			unset($user['__extraData']);
-		}
+    /**
+     * Imports a given user to the TYPO3 database.
+     *
+     * @param array $user Local user information
+     * @param array $ldapUser LDAP user information
+     * @param string $restoreBehavior How to restore users (only for update)
+     * @return array Modified user data
+     * @throws ImportUsersException
+     */
+    public function import($user, $ldapUser, $restoreBehavior = 'both')
+    {
+        // Store the extra data for later restore and remove it
+        if (isset($user['__extraData'])) {
+            $extraData = $user['__extraData'];
+            unset($user['__extraData']);
+        }
 
-		if (empty($user['uid'])) {
-			// Set other necessary information for a new user
-			// First make sure to be acting in the right context
-			Configuration::setMode($this->context);
-			$user['username'] = Typo3UserRepository::setUsername($user['username']);
-			$user['password'] = Typo3UserRepository::setRandomPassword();
-			$typo3Groups = Authentication::getUserGroups($ldapUser, $this->configuration, $this->groupTable);
-			if ($typo3Groups === NULL) {
-				// Required LDAP groups are missing: quit!
-				return $user;
-			}
-			$user = Typo3UserRepository::setUserGroups($user, $typo3Groups);
+        if (empty($user['uid'])) {
+            // Set other necessary information for a new user
+            // First make sure to be acting in the right context
+            Configuration::setMode($this->context);
+            $user['username'] = Typo3UserRepository::setUsername($user['username']);
+            $user['password'] = Typo3UserRepository::setRandomPassword();
+            $typo3Groups = Authentication::getUserGroups($ldapUser, $this->configuration, $this->groupTable);
+            if ($typo3Groups === null) {
+                // Required LDAP groups are missing: quit!
+                return $user;
+            }
+            $user = Typo3UserRepository::setUserGroups($user, $typo3Groups);
 
-			$user = Typo3UserRepository::add($this->userTable, $user);
-			$this->usersAdded++;
-		} else {
-			// Restore user that may have been previously deleted or disabled, depending on chosen behavior
-			// (default to both undelete and re-enable)
-			switch ($restoreBehavior) {
-				case 'enable':
-					$user[$GLOBALS['TCA'][$this->userTable]['ctrl']['enablecolumns']['disabled']] = 0;
-					break;
-				case 'undelete':
-					$user[$GLOBALS['TCA'][$this->userTable]['ctrl']['delete']] = 0;
-					break;
-				case 'nothing':
-					break;
-				default:
-					$user[$GLOBALS['TCA'][$this->userTable]['ctrl']['enablecolumns']['disabled']] = 0;
-					$user[$GLOBALS['TCA'][$this->userTable]['ctrl']['delete']] = 0;
-			}
-			$typo3Groups = Authentication::getUserGroups($ldapUser, $this->configuration, $this->groupTable);
-			$user = Typo3UserRepository::setUserGroups(
-				$user,
-				($typo3Groups === NULL) ? array() : $typo3Groups
-			);
-			$success = Typo3UserRepository::update($this->userTable, $user);
-			if ($success) {
-				$this->usersUpdated++;
-			}
-		}
+            $user = Typo3UserRepository::add($this->userTable, $user);
+            $this->usersAdded++;
+        } else {
+            // Restore user that may have been previously deleted or disabled, depending on chosen behavior
+            // (default to both undelete and re-enable)
+            switch ($restoreBehavior) {
+                case 'enable':
+                    $user[$GLOBALS['TCA'][$this->userTable]['ctrl']['enablecolumns']['disabled']] = 0;
+                    break;
+                case 'undelete':
+                    $user[$GLOBALS['TCA'][$this->userTable]['ctrl']['delete']] = 0;
+                    break;
+                case 'nothing':
+                    break;
+                default:
+                    $user[$GLOBALS['TCA'][$this->userTable]['ctrl']['enablecolumns']['disabled']] = 0;
+                    $user[$GLOBALS['TCA'][$this->userTable]['ctrl']['delete']] = 0;
+            }
+            $typo3Groups = Authentication::getUserGroups($ldapUser, $this->configuration, $this->groupTable);
+            $user = Typo3UserRepository::setUserGroups(
+                $user,
+                ($typo3Groups === null) ? array() : $typo3Groups
+            );
+            $success = Typo3UserRepository::update($this->userTable, $user);
+            if ($success) {
+                $this->usersUpdated++;
+            }
+        }
 
-		// Restore the extra data and trigger a signal
-		if (isset($extraData)) {
-			$user['__extraData'] = $extraData;
+        // Restore the extra data and trigger a signal
+        if (isset($extraData)) {
+            $user['__extraData'] = $extraData;
 
-			// Hook for processing the extra data
-			if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'])) {
-				foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'] as $className) {
-					/** @var $postProcessor \Causal\IgLdapSsoAuth\Utility\ExtraDataProcessorInterface */
-					$postProcessor = GeneralUtility::getUserObj($className);
-					if ($postProcessor instanceof \Causal\IgLdapSsoAuth\Utility\ExtraDataProcessorInterface) {
-						$postProcessor->processExtraData($this->userTable, $user);
-					} else {
-						throw new ImportUsersException(
-							sprintf(
-								'Invalid post-processing class %s. It must implement the \\Causal\\IgLdapSsoAuth\\Utility\\ExtraDataProcessorInterface interface',
-								$className
-							),
-							1414136057
-						);
-					}
-				}
-			}
-		}
+            // Hook for processing the extra data
+            if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'])) {
+                foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'] as $className) {
+                    /** @var $postProcessor \Causal\IgLdapSsoAuth\Utility\ExtraDataProcessorInterface */
+                    $postProcessor = GeneralUtility::getUserObj($className);
+                    if ($postProcessor instanceof \Causal\IgLdapSsoAuth\Utility\ExtraDataProcessorInterface) {
+                        $postProcessor->processExtraData($this->userTable, $user);
+                    } else {
+                        throw new ImportUsersException(
+                            sprintf(
+                                'Invalid post-processing class %s. It must implement the \\Causal\\IgLdapSsoAuth\\Utility\\ExtraDataProcessorInterface interface',
+                                $className
+                            ),
+                            1414136057
+                        );
+                    }
+                }
+            }
+        }
 
-		return $user;
-	}
+        return $user;
+    }
 
-	/**
-	 * Returns the current configuration.
-	 *
-	 * @return array
-	 */
-	public function getConfiguration() {
-		return $this->configuration;
-	}
+    /**
+     * Returns the current configuration.
+     *
+     * @return array
+     */
+    public function getConfiguration()
+    {
+        return $this->configuration;
+    }
 
-	/**
-	 * Returns the number of users added during the importer's lifetime.
-	 *
-	 * @return int
-	 */
-	public function getUsersAdded() {
-		return $this->usersAdded;
-	}
+    /**
+     * Returns the number of users added during the importer's lifetime.
+     *
+     * @return int
+     */
+    public function getUsersAdded()
+    {
+        return $this->usersAdded;
+    }
 
-	/**
-	 * Returns the number of users updated during the importer's lifetime.
-	 *
-	 * @return int
-	 */
-	public function getUsersUpdated() {
-		return $this->usersUpdated;
-	}
+    /**
+     * Returns the number of users updated during the importer's lifetime.
+     *
+     * @return int
+     */
+    public function getUsersUpdated()
+    {
+        return $this->usersUpdated;
+    }
 }

@@ -19,6 +19,7 @@ namespace Causal\IgLdapSsoAuth\Exception;
  *
  * @author Xavier Perseguers <xavier@causal.ch>
  */
-class UnresolvedPhpDependencyException extends IgLdapSsoAuthException {
+class UnresolvedPhpDependencyException extends IgLdapSsoAuthException
+{
 
 }

@@ -1,10 +1,12 @@
 {namespace ldap=Causal\IgLdapSsoAuth\ViewHelpers}
 
 <f:be.menus.actionMenu>
-	<f:be.menus.actionMenuItem label="{f:translate(key:'module_overview')}" controller="Module" action="index" arguments="{configuration:currentConfiguration.uid}" />
-	<f:if condition="{currentConfiguration}">
-		<f:for each="{menu}" as="item">
-			<ldap:actionMenuItem label="{f:translate(key:item.titleKey)}" controller="Module" action="{item.action}" arguments="{configuration:currentConfiguration.uid}" />
-		</f:for>
-	</f:if>
+    <f:be.menus.actionMenuItem label="{f:translate(key:'module_overview')}" controller="Module" action="index"
+                               arguments="{configuration:currentConfiguration.uid}"/>
+    <f:if condition="{currentConfiguration}">
+        <f:for each="{menu}" as="item">
+            <ldap:actionMenuItem label="{f:translate(key:item.titleKey)}" controller="Module" action="{item.action}"
+                                 arguments="{configuration:currentConfiguration.uid}"/>
+        </f:for>
+    </f:if>
 </f:be.menus.actionMenu>

@@ -26,231 +26,243 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class ConfigurationRepository {
+class ConfigurationRepository
+{
 
-	/** @var string */
-	protected $table = 'tx_igldapssoauth_config';
+    /** @var string */
+    protected $table = 'tx_igldapssoauth_config';
 
-	/**
-	 * @var bool Set to TRUE to also fetch disabled records (according to TCA enable fields)
-	 */
-	protected $fetchDisabledRecords = FALSE;
+    /**
+     * @var bool Set to true to also fetch disabled records (according to TCA enable fields)
+     */
+    protected $fetchDisabledRecords = false;
 
-	/**
-	 * Returns all available LDAP configurations.
-	 *
-	 * @return \Causal\IgLdapSsoAuth\Domain\Model\Configuration[]
-	 * @deprecated since 3.0, will be removed in 3.2, use findAll() instead
-	 */
-	public function fetchAll() {
-		GeneralUtility::logDeprecatedFunction();
-		return $this->findAll();
-	}
+    /**
+     * Returns all available LDAP configurations.
+     *
+     * @return \Causal\IgLdapSsoAuth\Domain\Model\Configuration[]
+     * @deprecated since 3.0, will be removed in 3.2, use findAll() instead
+     */
+    public function fetchAll()
+    {
+        GeneralUtility::logDeprecatedFunction();
+        return $this->findAll();
+    }
 
-	/**
-	 * Returns a single LDAP configuration.
-	 *
-	 * @param integer $uid Primary key to look up
-	 * @return \Causal\IgLdapSsoAuth\Domain\Model\Configuration
-	 * @deprecated since 3.0, will be removed in 3.2, use findByUid() instead
-	 */
-	public function fetchByUid($uid) {
-		GeneralUtility::logDeprecatedFunction();
-		return $this->findByUid($uid);
-	}
+    /**
+     * Returns a single LDAP configuration.
+     *
+     * @param integer $uid Primary key to look up
+     * @return \Causal\IgLdapSsoAuth\Domain\Model\Configuration
+     * @deprecated since 3.0, will be removed in 3.2, use findByUid() instead
+     */
+    public function fetchByUid($uid)
+    {
+        GeneralUtility::logDeprecatedFunction();
+        return $this->findByUid($uid);
+    }
 
-	/**
-	 * Returns all available LDAP configurations.
-	 *
-	 * @return \Causal\IgLdapSsoAuth\Domain\Model\Configuration[]
-	 */
-	public function findAll() {
-		$where = '1=1' . $this->getWhereClauseForEnabledFields();
+    /**
+     * Returns all available LDAP configurations.
+     *
+     * @return \Causal\IgLdapSsoAuth\Domain\Model\Configuration[]
+     */
+    public function findAll()
+    {
+        $where = '1=1' . $this->getWhereClauseForEnabledFields();
 
-		$rows = static::getDatabaseConnection()->exec_SELECTgetRows('*', $this->table, $where, '', 'sorting');
+        $rows = static::getDatabaseConnection()->exec_SELECTgetRows('*', $this->table, $where, '', 'sorting');
 
-		$configurations = array();
-		foreach ($rows as $row) {
-			/** @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration */
-			$configuration = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Model\\Configuration');
-			$this->thawProperties($configuration, $row);
-			$configurations[] = $configuration;
-		}
+        $configurations = array();
+        foreach ($rows as $row) {
+            /** @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration */
+            $configuration = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Model\\Configuration');
+            $this->thawProperties($configuration, $row);
+            $configurations[] = $configuration;
+        }
 
-		return $configurations;
-	}
+        return $configurations;
+    }
 
-	/**
-	 * Returns a single LDAP configuration.
-	 *
-	 * @param integer $uid Primary key to look up
-	 * @return \Causal\IgLdapSsoAuth\Domain\Model\Configuration
-	 */
-	public function findByUid($uid) {
-		$where = 'uid=' . intval($uid) . $this->getWhereClauseForEnabledFields();
+    /**
+     * Returns a single LDAP configuration.
+     *
+     * @param integer $uid Primary key to look up
+     * @return \Causal\IgLdapSsoAuth\Domain\Model\Configuration
+     */
+    public function findByUid($uid)
+    {
+        $where = 'uid=' . intval($uid) . $this->getWhereClauseForEnabledFields();
 
-		$row = static::getDatabaseConnection()->exec_SELECTgetSingleRow('*', $this->table, $where);
-		if ($row) {
-			/** @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration */
-			$configuration = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Model\\Configuration');
-			$this->thawProperties($configuration, $row);
-		} else {
-			$configuration = NULL;
-		}
+        $row = static::getDatabaseConnection()->exec_SELECTgetSingleRow('*', $this->table, $where);
+        if ($row) {
+            /** @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration */
+            $configuration = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Model\\Configuration');
+            $this->thawProperties($configuration, $row);
+        } else {
+            $configuration = null;
+        }
 
-		return $configuration;
-	}
+        return $configuration;
+    }
 
-	/**
-	 * Returns the WHERE clause for the enabled fields of this TCA table
-	 * depending on the context.
-	 *
-	 * @return string The additional where clause, something like " AND deleted=0 AND hidden=0"
-	 */
-	protected function getWhereClauseForEnabledFields() {
-		if (TYPO3_MODE === 'FE') {
-			// Frontend context
-			// $GLOBALS['TCA'] is not yet available/initialized:
-			// Cannot use $GLOBALS['TSFE']->sys_page->deleteClause() / ->enableFields()
-			$whereClause = ' AND deleted=0';
-			$whereClause .= ' AND hidden=0';
+    /**
+     * Returns the WHERE clause for the enabled fields of this TCA table
+     * depending on the context.
+     *
+     * @return string The additional where clause, something like " AND deleted=0 AND hidden=0"
+     */
+    protected function getWhereClauseForEnabledFields()
+    {
+        if (TYPO3_MODE === 'FE') {
+            // Frontend context
+            // $GLOBALS['TCA'] is not yet available/initialized:
+            // Cannot use $GLOBALS['TSFE']->sys_page->deleteClause() / ->enableFields()
+            $whereClause = ' AND deleted=0';
+            $whereClause .= ' AND hidden=0';
 
-		} else {
-			// Backend context
-			$whereClause = BackendUtility::deleteClause($this->table);
-			if (!$this->fetchDisabledRecords) {
-				$whereClause .= BackendUtility::BEenableFields($this->table);
-			}
-		}
-		return $whereClause;
-	}
+        } else {
+            // Backend context
+            $whereClause = BackendUtility::deleteClause($this->table);
+            if (!$this->fetchDisabledRecords) {
+                $whereClause .= BackendUtility::BEenableFields($this->table);
+            }
+        }
+        return $whereClause;
+    }
 
-	/**
-	 * Sets the flag for fetching disabled records or not.
-	 *
-	 * @param boolean $flag Set to TRUE to enable fetching of disabled record
-	 * @return void
-	 */
-	public function setFetchDisabledRecords($flag) {
-		$this->fetchDisabledRecords = (bool)$flag;
-	}
+    /**
+     * Sets the flag for fetching disabled records or not.
+     *
+     * @param boolean $flag Set to true to enable fetching of disabled record
+     * @return void
+     */
+    public function setFetchDisabledRecords($flag)
+    {
+        $this->fetchDisabledRecords = (bool)$flag;
+    }
 
-	/**
-	 * Sets the given properties on the object.
-	 *
-	 * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $object The object to set properties on
-	 * @param array $row
-	 * @return void
-	 */
-	protected function thawProperties(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $object, array $row) {
-		$object->_setProperty('uid', (int)$row['uid']);
+    /**
+     * Sets the given properties on the object.
+     *
+     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $object The object to set properties on
+     * @param array $row
+     * @return void
+     */
+    protected function thawProperties(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $object, array $row)
+    {
+        $object->_setProperty('uid', (int)$row['uid']);
 
-		// Mapping for properties to be set without any transformation
-		$mapping = array(
-			'name'               => 'name',
-			'domains'            => 'domains',
-			'ldap_charset'       => 'ldapCharset',
-			'ldap_host'          => 'ldapHost',
-			'ldap_binddn'        => 'ldapBindDn',
-			'ldap_password'      => 'ldapPassword',
-			'be_users_basedn'    => 'backendUsersBaseDn',
-			'be_users_filter'    => 'backendUsersFilter',
-			'be_users_mapping'   => 'backendUsersMapping',
-			'be_groups_basedn'   => 'backendGroupsBaseDn',
-			'be_groups_filter'   => 'backendGroupsFilter',
-			'be_groups_mapping'  => 'backendGroupsMapping',
-			'fe_users_basedn'    => 'frontendUsersBaseDn',
-			'fe_users_filter'    => 'frontendUsersFilter',
-			'fe_users_mapping'   => 'frontendUsersMapping',
-			'fe_groups_basedn'   => 'frontendGroupsBaseDn',
-			'fe_groups_filter'   => 'frontendGroupsFilter',
-			'fe_groups_mapping'  => 'frontendGroupsMapping',
-		);
+        // Mapping for properties to be set without any transformation
+        $mapping = array(
+            'name' => 'name',
+            'domains' => 'domains',
+            'ldap_charset' => 'ldapCharset',
+            'ldap_host' => 'ldapHost',
+            'ldap_binddn' => 'ldapBindDn',
+            'ldap_password' => 'ldapPassword',
+            'be_users_basedn' => 'backendUsersBaseDn',
+            'be_users_filter' => 'backendUsersFilter',
+            'be_users_mapping' => 'backendUsersMapping',
+            'be_groups_basedn' => 'backendGroupsBaseDn',
+            'be_groups_filter' => 'backendGroupsFilter',
+            'be_groups_mapping' => 'backendGroupsMapping',
+            'fe_users_basedn' => 'frontendUsersBaseDn',
+            'fe_users_filter' => 'frontendUsersFilter',
+            'fe_users_mapping' => 'frontendUsersMapping',
+            'fe_groups_basedn' => 'frontendGroupsBaseDn',
+            'fe_groups_filter' => 'frontendGroupsFilter',
+            'fe_groups_mapping' => 'frontendGroupsMapping',
+        );
 
-		foreach ($mapping as $fieldName => $propertyName) {
-			$object->_setProperty($propertyName, $row[$fieldName]);
-		}
+        foreach ($mapping as $fieldName => $propertyName) {
+            $object->_setProperty($propertyName, $row[$fieldName]);
+        }
 
-		// Mapping for backend / frontend user groups
-		$groupsMapping = array(
-			'be_groups_required' => 'backendGroupsRequired',
-			'be_groups_assigned' => 'backendGroupsAssigned',
-			'be_groups_admin'    => 'backendGroupsAdministrator',
-			'fe_groups_required' => 'frontendGroupsRequired',
-			'fe_groups_assigned' => 'frontendGroupsAssigned',
-		);
+        // Mapping for backend / frontend user groups
+        $groupsMapping = array(
+            'be_groups_required' => 'backendGroupsRequired',
+            'be_groups_assigned' => 'backendGroupsAssigned',
+            'be_groups_admin' => 'backendGroupsAdministrator',
+            'fe_groups_required' => 'frontendGroupsRequired',
+            'fe_groups_assigned' => 'frontendGroupsAssigned',
+        );
 
-		foreach ($groupsMapping as $fieldName => $propertyName) {
-			$groups = array();
-			$groupUids = GeneralUtility::intExplode(',', $row[$fieldName], TRUE);
-			if (count($groupUids) > 0) {
-				$repository = substr($fieldName, 0, 3) === 'be_'
-					? static::getBackendUserGroupRepository()
-					: static::getFrontendUserGroupRepository();
-				foreach ($groupUids as $groupUid) {
-					$group = $repository->findByUid($groupUid);
-					if ($group !== NULL) {
-						$groups[] = $group;
-					}
-				}
-			}
-			$object->_setProperty($propertyName, $groups);
-		}
+        foreach ($groupsMapping as $fieldName => $propertyName) {
+            $groups = array();
+            $groupUids = GeneralUtility::intExplode(',', $row[$fieldName], true);
+            if (count($groupUids) > 0) {
+                $repository = substr($fieldName, 0, 3) === 'be_'
+                    ? static::getBackendUserGroupRepository()
+                    : static::getFrontendUserGroupRepository();
+                foreach ($groupUids as $groupUid) {
+                    $group = $repository->findByUid($groupUid);
+                    if ($group !== null) {
+                        $groups[] = $group;
+                    }
+                }
+            }
+            $object->_setProperty($propertyName, $groups);
+        }
 
-		$object->_setProperty('ldapServer', (int)$row['ldap_server']);
-		$object->_setProperty('ldapProtocol', (int)$row['ldap_protocol']);
-		$object->_setProperty('ldapPort', (int)$row['ldap_port']);
-		$object->_setProperty('ldapTls', (bool)$row['ldap_tls']);
-		$object->_setProperty('groupMembership', (int)$row['group_membership']);
-	}
+        $object->_setProperty('ldapServer', (int)$row['ldap_server']);
+        $object->_setProperty('ldapProtocol', (int)$row['ldap_protocol']);
+        $object->_setProperty('ldapPort', (int)$row['ldap_port']);
+        $object->_setProperty('ldapTls', (bool)$row['ldap_tls']);
+        $object->_setProperty('groupMembership', (int)$row['group_membership']);
+    }
 
-	/**
-	 * Returns the database connection.
-	 *
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	static protected function getDatabaseConnection() {
-		return $GLOBALS['TYPO3_DB'];
-	}
+    /**
+     * Returns the database connection.
+     *
+     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     */
+    static protected function getDatabaseConnection()
+    {
+        return $GLOBALS['TYPO3_DB'];
+    }
 
-	/**
-	 * Returns the object manager.
-	 *
-	 * @return \TYPO3\CMS\Extbase\Object\ObjectManager
-	 */
-	static protected function getObjectManager() {
-		/** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-		static $objectManager = NULL;
-		if ($objectManager === NULL) {
-			$objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-		}
-		return $objectManager;
-	}
+    /**
+     * Returns the object manager.
+     *
+     * @return \TYPO3\CMS\Extbase\Object\ObjectManager
+     */
+    static protected function getObjectManager()
+    {
+        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
+        static $objectManager = null;
+        if ($objectManager === null) {
+            $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+        }
+        return $objectManager;
+    }
 
-	/**
-	 * Returns a BackendUserGroupRepository.
-	 *
-	 * @return \TYPO3\CMS\Extbase\Domain\Repository\BackendUserGroupRepository
-	 */
-	static protected function getBackendUserGroupRepository() {
-		static $backendUserGroupRepository = NULL;
-		if ($backendUserGroupRepository == NULL) {
-			$backendUserGroupRepository = static::getObjectManager()->get('TYPO3\\CMS\\Extbase\\Domain\\Repository\\BackendUserGroupRepository');
-		}
-		return $backendUserGroupRepository;
-	}
+    /**
+     * Returns a BackendUserGroupRepository.
+     *
+     * @return \TYPO3\CMS\Extbase\Domain\Repository\BackendUserGroupRepository
+     */
+    static protected function getBackendUserGroupRepository()
+    {
+        static $backendUserGroupRepository = null;
+        if ($backendUserGroupRepository == null) {
+            $backendUserGroupRepository = static::getObjectManager()->get('TYPO3\\CMS\\Extbase\\Domain\\Repository\\BackendUserGroupRepository');
+        }
+        return $backendUserGroupRepository;
+    }
 
-	/**
-	 * Returns a FrontendUserGroupRepository.
-	 *
-	 * @return \TYPO3\CMS\Extbase\Domain\Repository\FrontendUserGroupRepository
-	 */
-	static protected function getFrontendUserGroupRepository() {
-		static $frontendUserGroupRepository = NULL;
-		if ($frontendUserGroupRepository == NULL) {
-			$frontendUserGroupRepository = static::getObjectManager()->get('TYPO3\\CMS\\Extbase\\Domain\\Repository\\FrontendUserGroupRepository');
-		}
-		return $frontendUserGroupRepository;
-	}
+    /**
+     * Returns a FrontendUserGroupRepository.
+     *
+     * @return \TYPO3\CMS\Extbase\Domain\Repository\FrontendUserGroupRepository
+     */
+    static protected function getFrontendUserGroupRepository()
+    {
+        static $frontendUserGroupRepository = null;
+        if ($frontendUserGroupRepository == null) {
+            $frontendUserGroupRepository = static::getObjectManager()->get('TYPO3\\CMS\\Extbase\\Domain\\Repository\\FrontendUserGroupRepository');
+        }
+        return $frontendUserGroupRepository;
+    }
 
 }

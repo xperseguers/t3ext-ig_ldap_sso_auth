@@ -25,159 +25,166 @@ use TYPO3\CMS\Core\Messaging\FlashMessage;
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class ConfigurationHelper {
+class ConfigurationHelper
+{
 
-	/**
-	 * @var integer
-	 */
-	protected $errorType = FlashMessage::OK;
+    /**
+     * @var integer
+     */
+    protected $errorType = FlashMessage::OK;
 
-	/**
-	 * @var string
-	 */
-	protected $header;
+    /**
+     * @var string
+     */
+    protected $header;
 
-	/**
-	 * @var string
-	 */
-	protected $preText;
+    /**
+     * @var string
+     */
+    protected $preText;
 
-	/*
-	 * @var array
-	 */
-	protected $problems = array();
+    /*
+     * @var array
+     */
+    protected $problems = array();
 
-	/**
-	 * Checks the backend configuration and shows a message if necessary.
-	 *
-	 * @param array $params Field information to be rendered
-	 * @param \TYPO3\CMS\Extensionmanager\ViewHelpers\Form\TypoScriptConstantsViewHelper $pObj: The calling parent object.
-	 * @return string Messages as HTML if something needs to be reported
-	 */
-	public function checkConfiguration(array $params, $pObj) {
-		$problems = array();
+    /**
+     * Checks the backend configuration and shows a message if necessary.
+     *
+     * @param array $params Field information to be rendered
+     * @param \TYPO3\CMS\Extensionmanager\ViewHelpers\Form\TypoScriptConstantsViewHelper $pObj : The calling parent object.
+     * @return string Messages as HTML if something needs to be reported
+     */
+    public function checkConfiguration(array $params, $pObj)
+    {
+        $problems = array();
 
-		// Configuration of authentication service.
-		$loginSecurityLevelBE = $GLOBALS['TYPO3_CONF_VARS']['BE']['loginSecurityLevel'];
-		$loginSecurityLevelFE = $GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'];
+        // Configuration of authentication service.
+        $loginSecurityLevelBE = $GLOBALS['TYPO3_CONF_VARS']['BE']['loginSecurityLevel'];
+        $loginSecurityLevelFE = $GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'];
 
-		$errorlevel = 'error';
-		if ($loginSecurityLevelBE === 'rsa' || $loginSecurityLevelBE === 'normal' ||
-			$loginSecurityLevelFE === 'rsa' || $loginSecurityLevelFE === 'normal') {
+        $errorlevel = 'error';
+        if ($loginSecurityLevelBE === 'rsa' || $loginSecurityLevelBE === 'normal' ||
+            $loginSecurityLevelFE === 'rsa' || $loginSecurityLevelFE === 'normal'
+        ) {
 
-			$errorlevel = 'warning';
-		}
+            $errorlevel = 'warning';
+        }
 
-		if ($loginSecurityLevelFE === 'challenged' || $loginSecurityLevelFE === 'superchallenged' || $loginSecurityLevelFE === '') {
-			$this->setErrorLevel($errorlevel);
+        if ($loginSecurityLevelFE === 'challenged' || $loginSecurityLevelFE === 'superchallenged' || $loginSecurityLevelFE === '') {
+            $this->setErrorLevel($errorlevel);
 
-			$problems[] = $this->translate('settings.errors.invalidFrontendSecurityLevel');
-			$problems[] = $this->translate('settings.errors.currentSecurityLevel', array($loginSecurityLevelFE, $loginSecurityLevelBE));
-		} elseif ($loginSecurityLevelBE === 'challenged' || $loginSecurityLevelBE === 'superchallenged' || $loginSecurityLevelBE === '') {
-			$this->setErrorLevel($errorlevel);
+            $problems[] = $this->translate('settings.errors.invalidFrontendSecurityLevel');
+            $problems[] = $this->translate('settings.errors.currentSecurityLevel', array($loginSecurityLevelFE, $loginSecurityLevelBE));
+        } elseif ($loginSecurityLevelBE === 'challenged' || $loginSecurityLevelBE === 'superchallenged' || $loginSecurityLevelBE === '') {
+            $this->setErrorLevel($errorlevel);
 
-			$problems[] = $this->translate('settings.errors.invalidBackendSecurityLevel');
-			$problems[] = $this->translate('settings.errors.currentSecurityLevel', array($loginSecurityLevelFE, $loginSecurityLevelBE));
-		} else {
-			$this->setErrorLevel('ok');
-			$problems = array();
-		}
+            $problems[] = $this->translate('settings.errors.invalidBackendSecurityLevel');
+            $problems[] = $this->translate('settings.errors.currentSecurityLevel', array($loginSecurityLevelFE, $loginSecurityLevelBE));
+        } else {
+            $this->setErrorLevel('ok');
+            $problems = array();
+        }
 
-		$this->problems = $problems;
+        $this->problems = $problems;
 
-		return $this->renderFlashMessage();
-	}
+        return $this->renderFlashMessage();
+    }
 
-	/**
-	 * Sets the error level if no higher level is set already.
-	 *
-	 * @param string $level one out of "error", "ok", "warning", "info"
-	 * @return void
-	 */
-	protected function setErrorLevel($level) {
-		switch ($level) {
-			case 'error':
-				$this->errorType = FlashMessage::ERROR;
-				$this->header = $this->translate('settings.errors.error');
-				$this->preText = '<br />';
-				break;
-			case 'warning':
-				if ($this->errorType < FlashMessage::ERROR) {
-					$this->errorType = FlashMessage::WARNING;
-					$this->header = $this->translate('settings.errors.warning');
-					$this->preText = '<br />';
-				}
-				break;
-			case 'ok':
-			default:
-				if ($this->errorType < FlashMessage::WARNING) {
-					$this->errorType = FlashMessage::OK;
-					$this->header = $this->translate('settings.errors.ok');
-					$this->preText = $this->translate('settings.errors.success');
-				}
-				break;
-		}
-	}
+    /**
+     * Sets the error level if no higher level is set already.
+     *
+     * @param string $level one out of "error", "ok", "warning", "info"
+     * @return void
+     */
+    protected function setErrorLevel($level)
+    {
+        switch ($level) {
+            case 'error':
+                $this->errorType = FlashMessage::ERROR;
+                $this->header = $this->translate('settings.errors.error');
+                $this->preText = '<br />';
+                break;
+            case 'warning':
+                if ($this->errorType < FlashMessage::ERROR) {
+                    $this->errorType = FlashMessage::WARNING;
+                    $this->header = $this->translate('settings.errors.warning');
+                    $this->preText = '<br />';
+                }
+                break;
+            case 'ok':
+            default:
+                if ($this->errorType < FlashMessage::WARNING) {
+                    $this->errorType = FlashMessage::OK;
+                    $this->header = $this->translate('settings.errors.ok');
+                    $this->preText = $this->translate('settings.errors.success');
+                }
+                break;
+        }
+    }
 
-	/**
-	 * Renders the flash messages if problems have been found.
-	 *
-	 * @return string The flash message as HTML.
-	 */
-	protected function renderFlashMessage() {
-		$message = '';
+    /**
+     * Renders the flash messages if problems have been found.
+     *
+     * @return string The flash message as HTML.
+     */
+    protected function renderFlashMessage()
+    {
+        $message = '';
 
-		// If there are problems, render them into an unordered list
-		if (count($this->problems) > 0) {
-			$message = <<<EOT
+        // If there are problems, render them into an unordered list
+        if (count($this->problems) > 0) {
+            $message = <<<EOT
 <ul>
-	<li>###PROBLEMS###</li>
+    <li>###PROBLEMS###</li>
 </ul>
 EOT;
-			$message = str_replace('###PROBLEMS###', implode('<br />&nbsp;</li><li>', $this->problems), $message);
-		}
+            $message = str_replace('###PROBLEMS###', implode('<br />&nbsp;</li><li>', $this->problems), $message);
+        }
 
-		if (empty($message)) {
-			$this->setErrorLevel('ok');
-		}
+        if (empty($message)) {
+            $this->setErrorLevel('ok');
+        }
 
-		$message = $this->preText . $message;
-		/** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
-		$flashMessage = GeneralUtility::makeInstance(
-			'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
-			$message,
-			$this->header,
-			$this->errorType
-		);
+        $message = $this->preText . $message;
+        /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
+        $flashMessage = GeneralUtility::makeInstance(
+            'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+            $message,
+            $this->header,
+            $this->errorType
+        );
 
-		return $flashMessage->render();
-	}
+        return $flashMessage->render();
+    }
 
-	/**
-	 * Translates a label.
-	 *
-	 * @param string $id
-	 * @param array $arguments
-	 * @return string
-	 */
-	protected function translate($id, array $arguments = NULL) {
-		$value = $this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:' . $id);
-		$value = empty($value) ? $id : $value;
+    /**
+     * Translates a label.
+     *
+     * @param string $id
+     * @param array $arguments
+     * @return string
+     */
+    protected function translate($id, array $arguments = null)
+    {
+        $value = $this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:' . $id);
+        $value = empty($value) ? $id : $value;
 
-		if (is_array($arguments) && $value !== NULL) {
-			return vsprintf($value, $arguments);
-		} else {
-			return $value;
-		}
-	}
+        if (is_array($arguments) && $value !== null) {
+            return vsprintf($value, $arguments);
+        } else {
+            return $value;
+        }
+    }
 
-	/**
-	 * Returns the LanguageService.
-	 *
-	 * @return \TYPO3\CMS\Lang\LanguageService
-	 */
-	protected function getLanguageService() {
-		return $GLOBALS['LANG'];
-	}
+    /**
+     * Returns the LanguageService.
+     *
+     * @return \TYPO3\CMS\Lang\LanguageService
+     */
+    protected function getLanguageService()
+    {
+        return $GLOBALS['LANG'];
+    }
 
 }

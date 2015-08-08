@@ -19,8 +19,7 @@ td.col-icon {
 
 tr.local-ldap-user-or-group,
 .square-local,
-.typo3-dblist tr.local-ldap-user-or-group td
-{
+.typo3-dblist tr.local-ldap-user-or-group td {
     background-color: #093 !important;
     color: #fff;
 }

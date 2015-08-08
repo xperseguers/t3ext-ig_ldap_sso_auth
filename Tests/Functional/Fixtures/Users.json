@@ -1,168 +1,168 @@
 [
   {
-	"cn": {
-	  "count": 1,
-	  "0": "Issac Newton"
-	},
-	"0": "cn",
-	"uid": {
-	  "count": 1,
-	  "0": "newton"
-	},
-	"1": "uid",
-	"mail": {
-	  "count": 1,
-	  "0": "newton@ldap.forumsys.com"
-	},
-	"2": "mail",
-	"count": 3,
-	"dn": "uid=newton,dc=example,dc=com"
+    "cn": {
+      "count": 1,
+      "0": "Issac Newton"
+    },
+    "0": "cn",
+    "uid": {
+      "count": 1,
+      "0": "newton"
+    },
+    "1": "uid",
+    "mail": {
+      "count": 1,
+      "0": "newton@ldap.forumsys.com"
+    },
+    "2": "mail",
+    "count": 3,
+    "dn": "uid=newton,dc=example,dc=com"
   },
   {
-	"cn": {
-	  "count": 1,
-	  "0": "Albert Einstein"
-	},
-	"0": "cn",
-	"uid": {
-	  "count": 1,
-	  "0": "einstein"
-	},
-	"1": "uid",
-	"mail": {
-	  "count": 1,
-	  "0": "einstein@ldap.forumsys.com"
-	},
-	"2": "mail",
-	"count": 3,
-	"dn": "uid=einstein,dc=example,dc=com"
+    "cn": {
+      "count": 1,
+      "0": "Albert Einstein"
+    },
+    "0": "cn",
+    "uid": {
+      "count": 1,
+      "0": "einstein"
+    },
+    "1": "uid",
+    "mail": {
+      "count": 1,
+      "0": "einstein@ldap.forumsys.com"
+    },
+    "2": "mail",
+    "count": 3,
+    "dn": "uid=einstein,dc=example,dc=com"
   },
   {
-	"cn": {
-	  "count": 1,
-	  "0": "Nikola Tesla"
-	},
-	"0": "cn",
-	"uid": {
-	  "count": 1,
-	  "0": "tesla"
-	},
-	"1": "uid",
-	"mail": {
-	  "count": 1,
-	  "0": "tesla@ldap.forumsys.com"
-	},
-	"2": "mail",
-	"count": 3,
-	"dn": "uid=tesla,dc=example,dc=com"
+    "cn": {
+      "count": 1,
+      "0": "Nikola Tesla"
+    },
+    "0": "cn",
+    "uid": {
+      "count": 1,
+      "0": "tesla"
+    },
+    "1": "uid",
+    "mail": {
+      "count": 1,
+      "0": "tesla@ldap.forumsys.com"
+    },
+    "2": "mail",
+    "count": 3,
+    "dn": "uid=tesla,dc=example,dc=com"
   },
   {
-	"cn": {
-	  "count": 1,
-	  "0": "Galileo Galilei"
-	},
-	"0": "cn",
-	"uid": {
-	  "count": 1,
-	  "0": "galieleo"
-	},
-	"1": "uid",
-	"mail": {
-	  "count": 1,
-	  "0": "galieleo@ldap.forumsys.com"
-	},
-	"2": "mail",
-	"count": 3,
-	"dn": "uid=galieleo,dc=example,dc=com"
+    "cn": {
+      "count": 1,
+      "0": "Galileo Galilei"
+    },
+    "0": "cn",
+    "uid": {
+      "count": 1,
+      "0": "galieleo"
+    },
+    "1": "uid",
+    "mail": {
+      "count": 1,
+      "0": "galieleo@ldap.forumsys.com"
+    },
+    "2": "mail",
+    "count": 3,
+    "dn": "uid=galieleo,dc=example,dc=com"
   },
   {
-	"uid": {
-	  "count": 1,
-	  "0": "euler"
-	},
-	"0": "uid",
-	"cn": {
-	  "count": 1,
-	  "0": "Leonhard Euler"
-	},
-	"1": "cn",
-	"mail": {
-	  "count": 1,
-	  "0": "euler@ldap.forumsys.com"
-	},
-	"2": "mail",
-	"count": 3,
-	"dn": "uid=euler,dc=example,dc=com"
+    "uid": {
+      "count": 1,
+      "0": "euler"
+    },
+    "0": "uid",
+    "cn": {
+      "count": 1,
+      "0": "Leonhard Euler"
+    },
+    "1": "cn",
+    "mail": {
+      "count": 1,
+      "0": "euler@ldap.forumsys.com"
+    },
+    "2": "mail",
+    "count": 3,
+    "dn": "uid=euler,dc=example,dc=com"
   },
   {
-	"cn": {
-	  "count": 1,
-	  "0": "Carl Friedrich Gauss"
-	},
-	"0": "cn",
-	"uid": {
-	  "count": 1,
-	  "0": "gauss"
-	},
-	"1": "uid",
-	"mail": {
-	  "count": 1,
-	  "0": "gauss@ldap.forumsys.com"
-	},
-	"2": "mail",
-	"count": 3,
-	"dn": "uid=gauss,dc=example,dc=com"
+    "cn": {
+      "count": 1,
+      "0": "Carl Friedrich Gauss"
+    },
+    "0": "cn",
+    "uid": {
+      "count": 1,
+      "0": "gauss"
+    },
+    "1": "uid",
+    "mail": {
+      "count": 1,
+      "0": "gauss@ldap.forumsys.com"
+    },
+    "2": "mail",
+    "count": 3,
+    "dn": "uid=gauss,dc=example,dc=com"
   },
   {
-	"cn": {
-	  "count": 1,
-	  "0": "Bernhard Riemann"
-	},
-	"0": "cn",
-	"uid": {
-	  "count": 1,
-	  "0": "riemann"
-	},
-	"1": "uid",
-	"mail": {
-	  "count": 1,
-	  "0": "riemann@ldap.forumsys.com"
-	},
-	"2": "mail",
-	"count": 3,
-	"dn": "uid=riemann,dc=example,dc=com"
+    "cn": {
+      "count": 1,
+      "0": "Bernhard Riemann"
+    },
+    "0": "cn",
+    "uid": {
+      "count": 1,
+      "0": "riemann"
+    },
+    "1": "uid",
+    "mail": {
+      "count": 1,
+      "0": "riemann@ldap.forumsys.com"
+    },
+    "2": "mail",
+    "count": 3,
+    "dn": "uid=riemann,dc=example,dc=com"
   },
   {
-	"uid": {
-	  "count": 1,
-	  "0": "euclid"
-	},
-	"0": "uid",
-	"cn": {
-	  "count": 1,
-	  "0": "Euclid"
-	},
-	"1": "cn",
-	"mail": {
-	  "count": 1,
-	  "0": "euclid@ldap.forumsys.com"
-	},
-	"2": "mail",
-	"count": 3,
-	"dn": "uid=euclid,dc=example,dc=com"
+    "uid": {
+      "count": 1,
+      "0": "euclid"
+    },
+    "0": "uid",
+    "cn": {
+      "count": 1,
+      "0": "Euclid"
+    },
+    "1": "cn",
+    "mail": {
+      "count": 1,
+      "0": "euclid@ldap.forumsys.com"
+    },
+    "2": "mail",
+    "count": 3,
+    "dn": "uid=euclid,dc=example,dc=com"
   },
   {
-	"uid": {
-	  "count": 1,
-	  "0": "test"
-	},
-	"0": "uid",
-	"cn": {
-	  "count": 1,
-	  "0": "Test"
-	},
-	"1": "cn",
-	"count": 2,
-	"dn": "uid=test,dc=example,dc=com"
+    "uid": {
+      "count": 1,
+      "0": "test"
+    },
+    "0": "uid",
+    "cn": {
+      "count": 1,
+      "0": "Test"
+    },
+    "1": "cn",
+    "count": 2,
+    "dn": "uid=test,dc=example,dc=com"
   }
 ]

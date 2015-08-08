@@ -21,104 +21,109 @@ namespace Causal\IgLdapSsoAuth\Tca\Form;
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class SuggestWizard {
+class SuggestWizard
+{
 
-	/**
-	 * Renders a suggestion for the mapping.
-	 *
-	 * @param array $PA
-	 * @param \TYPO3\CMS\Backend\Form\FormEngine $pObj
-	 * @return string
-	 */
-	public function render(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj) {
-		$serverType = (int)$PA['row']['ldap_server'];
+    /**
+     * Renders a suggestion for the mapping.
+     *
+     * @param array $PA
+     * @param \TYPO3\CMS\Backend\Form\FormEngine $pObj
+     * @return string
+     */
+    public function render(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj)
+    {
+        $serverType = (int)$PA['row']['ldap_server'];
 
-		if (substr($PA['field'], -7) === '_basedn') {
-			$suggestion = $this->suggestBaseDn($PA);
-		} else {
-			$suggestion = $this->suggestMappingOrFilter($serverType, $PA);
-		}
+        if (substr($PA['field'], -7) === '_basedn') {
+            $suggestion = $this->suggestBaseDn($PA);
+        } else {
+            $suggestion = $this->suggestMappingOrFilter($serverType, $PA);
+        }
 
-		if (!empty($suggestion)) {
-			$out[] = '<div style="margin:-2.5em 0 0 1em;">';
-			$out[] = '<strong>' . $this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:suggestion.server.' . $serverType, TRUE) . '</strong>';
+        if (!empty($suggestion)) {
+            $out[] = '<div style="margin:-2.5em 0 0 1em;">';
+            $out[] = '<strong>' . $this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:suggestion.server.' . $serverType, true) . '</strong>';
 
-			$suggestId = 'tx_igldapssoauth_suggest_' . $PA['field'];
-			$out[] = '<pre style="margin:1em 0;" id="' . $suggestId . '">';
+            $suggestId = 'tx_igldapssoauth_suggest_' . $PA['field'];
+            $out[] = '<pre style="margin:1em 0;" id="' . $suggestId . '">';
 
-			$suggestion = htmlentities($suggestion);
+            $suggestion = htmlentities($suggestion);
 
-			// Support for basic styling (BBCode)
-			$suggestion = preg_replace('#\\[i\\](.*)\\[/i\\]#', '<em>\\1</em>', $suggestion);
+            // Support for basic styling (BBCode)
+            $suggestion = preg_replace('#\\[i\\](.*)\\[/i\\]#', '<em>\\1</em>', $suggestion);
 
-			$out[] = $suggestion . '</pre>';
+            $out[] = $suggestion . '</pre>';
 
-			$onclick = "var node=document.getElementById('$suggestId');document.{$PA['formName']}['{$PA['itemName']}'].value=(node.innerText || node.textContent);";
-			$onclick .= implode('', $PA['fieldChangeFunc']);	// Necessary to tell TCEforms that the value is updated
-			$button = '<input type="button" value="' . $this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:suggestion.copy', TRUE) . '" onclick="' . htmlspecialchars($onclick) . '" class="formField" />';
-			$out[] = $button;
+            $onclick = "var node=document.getElementById('$suggestId');document.{$PA['formName']}['{$PA['itemName']}'].value=(node.innerText || node.textContent);";
+            $onclick .= implode('', $PA['fieldChangeFunc']);    // Necessary to tell TCEforms that the value is updated
+            $button = '<input type="button" value="' . $this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:suggestion.copy', true) . '" onclick="' . htmlspecialchars($onclick) . '" class="formField" />';
+            $out[] = $button;
 
-			$out[] = '</div>';
+            $out[] = '</div>';
 
-			$suggestion = implode(LF, $out);
-		}
+            $suggestion = implode(LF, $out);
+        }
 
-		return $suggestion;
-	}
+        return $suggestion;
+    }
 
-	/**
-	 * Suggests a base DN.
-	 *
-	 * @param array $PA
-	 * @return string
-	 */
-	protected function suggestBaseDn(array $PA) {
-		$bindDnParts = explode(',', $PA['row']['ldap_binddn']);
-		$suggestion = count($bindDnParts) > 2
-			? implode(',', array_slice($bindDnParts, -2))
-			: '';
-		return $suggestion;
-	}
+    /**
+     * Suggests a base DN.
+     *
+     * @param array $PA
+     * @return string
+     */
+    protected function suggestBaseDn(array $PA)
+    {
+        $bindDnParts = explode(',', $PA['row']['ldap_binddn']);
+        $suggestion = count($bindDnParts) > 2
+            ? implode(',', array_slice($bindDnParts, -2))
+            : '';
+        return $suggestion;
+    }
 
-	/**
-	 * Suggests a mapping or a filter.
-	 *
-	 * @param int $serverType
-	 * @param array $PA
-	 * @return string
-	 */
-	protected function suggestMappingOrFilter($serverType, array $PA) {
-		if (substr($PA['field'], -8) === '_mapping') {
-			$prefix = 'mapping_';
-			$table = substr($PA['field'], 0, -8);
-		} else {
-			$prefix = 'filter_';
-			$table = substr($PA['field'], 0, -7);
-		}
+    /**
+     * Suggests a mapping or a filter.
+     *
+     * @param int $serverType
+     * @param array $PA
+     * @return string
+     */
+    protected function suggestMappingOrFilter($serverType, array $PA)
+    {
+        if (substr($PA['field'], -8) === '_mapping') {
+            $prefix = 'mapping_';
+            $table = substr($PA['field'], 0, -8);
+        } else {
+            $prefix = 'filter_';
+            $table = substr($PA['field'], 0, -7);
+        }
 
-		$templatePath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('ig_ldap_sso_auth') . 'Resources/Private/Templates/TCA/';
-		// Try a specific configuration for this server
-		$templateFileName = $templatePath . $prefix . $table . '_' . $serverType . '.txt';
-		if (!is_file($templateFileName)) {
-			// Try a generic configuration
-			$templateFileName = $templatePath . $prefix . $table . '.txt';
-			if (!is_file($templateFileName)) {
-				// No suggestion available
-				return '';
-			}
-		}
+        $templatePath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('ig_ldap_sso_auth') . 'Resources/Private/Templates/TCA/';
+        // Try a specific configuration for this server
+        $templateFileName = $templatePath . $prefix . $table . '_' . $serverType . '.txt';
+        if (!is_file($templateFileName)) {
+            // Try a generic configuration
+            $templateFileName = $templatePath . $prefix . $table . '.txt';
+            if (!is_file($templateFileName)) {
+                // No suggestion available
+                return '';
+            }
+        }
 
-		$content = file_get_contents($templateFileName);
-		return trim($content);
-	}
+        $content = file_get_contents($templateFileName);
+        return trim($content);
+    }
 
-	/**
-	 * Returns the LanguageService.
-	 *
-	 * @return \TYPO3\CMS\Lang\LanguageService
-	 */
-	protected function getLanguageService() {
-		return $GLOBALS['LANG'];
-	}
+    /**
+     * Returns the LanguageService.
+     *
+     * @return \TYPO3\CMS\Lang\LanguageService
+     */
+    protected function getLanguageService()
+    {
+        return $GLOBALS['LANG'];
+    }
 
 }

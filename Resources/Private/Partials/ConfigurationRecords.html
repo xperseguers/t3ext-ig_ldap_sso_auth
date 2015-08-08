@@ -1,14 +1,15 @@
 {namespace ldap=Causal\IgLdapSsoAuth\ViewHelpers}
 
 <f:if condition="{configurationRecords->f:count()}==1">
-	<f:then>
-		{configurationRecords.0.name}
-		<f:format.raw>{editLink}</f:format.raw>
-	</f:then>
-	<f:else>
-		<f:form action="{action}" method="post">
-			<ldap:form.select name="configuration" options="{configurationRecords}" value="{currentConfiguration}" optionValueField="uid" optionLabelField="name" onchange="this.form.submit();" />
-			<f:format.raw>{editLink}</f:format.raw>
-		</f:form>
-	</f:else>
+    <f:then>
+        {configurationRecords.0.name}
+        <f:format.raw>{editLink}</f:format.raw>
+    </f:then>
+    <f:else>
+        <f:form action="{action}" method="post">
+            <ldap:form.select name="configuration" options="{configurationRecords}" value="{currentConfiguration}"
+                              optionValueField="uid" optionLabelField="name" onchange="this.form.submit();"/>
+            <f:format.raw>{editLink}</f:format.raw>
+        </f:form>
+    </f:else>
 </f:if>

@@ -21,21 +21,23 @@ namespace Causal\IgLdapSsoAuth\ViewHelpers;
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class SpriteManagerIconViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Be\AbstractBackendViewHelper {
+class SpriteManagerIconViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Be\AbstractBackendViewHelper
+{
 
-	/**
-	 * Prints sprite icon html for $iconName key.
-	 *
-	 * @param string $iconName
-	 * @param array $options
-	 * @param int $uid
-	 * @return string
-	 */
-	public function render($iconName, $options = array(), $uid = 0) {
-		if (!isset($options['title']) && $uid > 0) {
-			$options['title'] = 'id=' . $uid;
-		}
-		return \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon($iconName, $options);
-	}
+    /**
+     * Prints sprite icon html for $iconName key.
+     *
+     * @param string $iconName
+     * @param array $options
+     * @param int $uid
+     * @return string
+     */
+    public function render($iconName, $options = array(), $uid = 0)
+    {
+        if (!isset($options['title']) && $uid > 0) {
+            $options['title'] = 'id=' . $uid;
+        }
+        return \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon($iconName, $options);
+    }
 
 }

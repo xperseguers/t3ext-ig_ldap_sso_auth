@@ -17,27 +17,29 @@ namespace Causal\IgLdapSsoAuth\ViewHelpers\Form;
 /**
  * This view helper generates a <select> dropdown list for the use with a form and supports the onchange attribute.
  */
-class SelectViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Form\SelectViewHelper {
+class SelectViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Form\SelectViewHelper
+{
 
-	/**
-	 * @var string
-	 */
-	protected $tagName = 'select';
+    /**
+     * @var string
+     */
+    protected $tagName = 'select';
 
-	/**
-	 * @var mixed
-	 */
-	protected $selectedValue = NULL;
+    /**
+     * @var mixed
+     */
+    protected $selectedValue = null;
 
-	/**
-	 * Initialize arguments.
-	 *
-	 * @return void
-	 * @api
-	 */
-	public function initializeArguments() {
-		parent::initializeArguments();
-		$this->registerTagAttribute('onchange', 'string', 'Event when selection is changed');
-	}
+    /**
+     * Initialize arguments.
+     *
+     * @return void
+     * @api
+     */
+    public function initializeArguments()
+    {
+        parent::initializeArguments();
+        $this->registerTagAttribute('onchange', 'string', 'Event when selection is changed');
+    }
 
 }

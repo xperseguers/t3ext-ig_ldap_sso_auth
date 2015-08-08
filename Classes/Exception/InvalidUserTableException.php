@@ -19,6 +19,7 @@ namespace Causal\IgLdapSsoAuth\Exception;
  *
  * @author Xavier Perseguers <xavier@causal.ch>
  */
-class InvalidUserTableException extends IgLdapSsoAuthException {
+class InvalidUserTableException extends IgLdapSsoAuthException
+{
 
 }

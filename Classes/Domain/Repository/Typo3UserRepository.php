@@ -37,7 +37,7 @@ class Typo3UserRepository
      * @return array
      * @throws InvalidUserTableException
      */
-    static public function create($table)
+    public static function create($table)
     {
         if (!GeneralUtility::inList('be_users,fe_users', $table)) {
             throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891582);
@@ -76,7 +76,7 @@ class Typo3UserRepository
      * @return array Array of user records
      * @throws InvalidUserTableException
      */
-    static public function fetch($table, $uid = 0, $pid = null, $username = null, $dn = null)
+    public static function fetch($table, $uid = 0, $pid = null, $username = null, $dn = null)
     {
         if (!GeneralUtility::inList('be_users,fe_users', $table)) {
             throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891636);
@@ -132,7 +132,7 @@ class Typo3UserRepository
      * @return array The new record
      * @throws InvalidUserTableException
      */
-    static public function add($table, array $data = array())
+    public static function add($table, array $data = array())
     {
         if (!GeneralUtility::inList('be_users,fe_users', $table)) {
             throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891712);
@@ -173,7 +173,7 @@ class Typo3UserRepository
      * @return bool true on success, otherwise false
      * @throws InvalidUserTableException
      */
-    static public function update($table, array $data = array())
+    public static function update($table, array $data = array())
     {
         if (!GeneralUtility::inList('be_users,fe_users', $table)) {
             throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891732);
@@ -215,7 +215,7 @@ class Typo3UserRepository
      * @param $table
      * @param $uid
      */
-    static public function disableForConfiguration($table, $uid)
+    public static function disableForConfiguration($table, $uid)
     {
         if (isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled'])) {
             $fields = array(
@@ -250,7 +250,7 @@ class Typo3UserRepository
      * @param $table
      * @param $uid
      */
-    static public function deleteForConfiguration($table, $uid)
+    public static function deleteForConfiguration($table, $uid)
     {
         if (isset($GLOBALS['TCA'][$table]['ctrl']['delete'])) {
             $fields = array(
@@ -285,7 +285,7 @@ class Typo3UserRepository
      * @return array
      * @deprecated since 3.0, will be removed in 3.2, use setUserGroups() instead
      */
-    static public function set_usergroup(array $typo3_groups = array(), array $typo3_user = array(), \Causal\IgLdapSsoAuth\Service\AuthenticationService $pObj = null)
+    public static function set_usergroup(array $typo3_groups = array(), array $typo3_user = array(), \Causal\IgLdapSsoAuth\Service\AuthenticationService $pObj = null)
     {
         GeneralUtility::logDeprecatedFunction();
         return static::setUserGroups($typo3_user, $typo3_groups);
@@ -298,7 +298,7 @@ class Typo3UserRepository
      * @param array $typo3Groups
      * @return array
      */
-    static public function setUserGroups(array $typo3User, array $typo3Groups)
+    public static function setUserGroups(array $typo3User, array $typo3Groups)
     {
         $groupUid = array();
 
@@ -349,7 +349,7 @@ class Typo3UserRepository
      * @param string $username
      * @return string
      */
-    static public function setUsername($username)
+    public static function setUsername($username)
     {
         if (Configuration::getValue('forceLowerCaseUsername')) {
             // Possible enhancement: use \TYPO3\CMS\Core\Charset\CharsetConverter::conv_case instead
@@ -363,7 +363,7 @@ class Typo3UserRepository
      *
      * @return string
      */
-    static public function setRandomPassword()
+    public static function setRandomPassword()
     {
         /** @var \TYPO3\CMS\Saltedpasswords\Salt\SaltInterface $instance */
         $instance = null;
@@ -380,7 +380,7 @@ class Typo3UserRepository
      *
      * @return \TYPO3\CMS\Core\Database\DatabaseConnection
      */
-    static protected function getDatabaseConnection()
+    protected static function getDatabaseConnection()
     {
         return $GLOBALS['TYPO3_DB'];
     }

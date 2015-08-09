@@ -33,13 +33,13 @@ class Configuration
     /**
      * @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration
      */
-    static protected $configuration;
+    protected static $configuration;
 
-    static protected $mode;
-    static protected $be = array();
-    static protected $fe = array();
-    static protected $ldap = array();
-    static protected $domains = array();
+    protected static $mode;
+    protected static $be = array();
+    protected static $fe = array();
+    protected static $ldap = array();
+    protected static $domains = array();
 
     /**
      * Initializes the configuration class.
@@ -49,7 +49,7 @@ class Configuration
      * @return void
      * @deprecated since 3.0, will be removed in 3.2, use initialize() instead
      */
-    static public function init($typo3_mode = NULL, $uid)
+    public static function init($typo3_mode = null, $uid)
     {
         GeneralUtility::logDeprecatedFunction();
 
@@ -65,7 +65,7 @@ class Configuration
      * @param string $mode TYPO3 mode, either 'be' or 'fe'
      * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
      */
-    static public function initialize($mode, \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration)
+    public static function initialize($mode, \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration)
     {
         $globalConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']);
         if (!is_array($globalConfiguration)) {
@@ -146,7 +146,7 @@ class Configuration
      *
      * @return bool
      */
-    static public function isInitialized()
+    public static function isInitialized()
     {
         return static::$mode !== null;
     }
@@ -156,7 +156,7 @@ class Configuration
      *
      * @return bool
      */
-    static public function isEnabledForCurrentHost()
+    public static function isEnabledForCurrentHost()
     {
         static $host = null;
         if ($host === null && count(static::$domains) > 0) {
@@ -170,7 +170,7 @@ class Configuration
      *
      * @return array
      */
-    static public function getDomains()
+    public static function getDomains()
     {
         return static::$domains;
     }
@@ -182,7 +182,7 @@ class Configuration
      * @param string $filter
      * @return array
      */
-    static protected function makeUserMapping($mapping = '', $filter = '')
+    protected static function makeUserMapping($mapping = '', $filter = '')
     {
         // Default fields : username, tx_igldapssoauth_dn
 
@@ -200,7 +200,7 @@ class Configuration
      * @param string $mapping
      * @return array
      */
-    static protected function makeGroupMapping($mapping = '')
+    protected static function makeGroupMapping($mapping = '')
     {
         // Default fields : title, tx_igldapssoauth_dn
 
@@ -220,7 +220,7 @@ class Configuration
      * @return array
      * @deprecated since 3.0, will be removed in 3.2, use parseMapping() instead
      */
-    static public function make_mapping($mapping = '')
+    public static function make_mapping($mapping = '')
     {
         GeneralUtility::logDeprecatedFunction();
         return static::parseMapping($mapping);
@@ -232,7 +232,7 @@ class Configuration
      * @param string $mapping
      * @return array
      */
-    static public function parseMapping($mapping = '')
+    public static function parseMapping($mapping = '')
     {
         $setup = \Causal\IgLdapSsoAuth\Utility\TypoScriptUtility::loadTypoScript($mapping);
 
@@ -256,11 +256,11 @@ class Configuration
      * @return int|null
      * @deprecated since 3.0, will be removed in 3.2, use getPid() instead
      */
-    static public function get_pid($mapping = array())
+    public static function get_pid($mapping = array())
     {
         GeneralUtility::logDeprecatedFunction();
         if (!$mapping) {
-            return NULL;
+            return null;
         }
 
         if (isset($mapping['pid'])) {
@@ -276,15 +276,15 @@ class Configuration
      * @param array $mapping
      * @return int|null
      */
-    static public function getPid($mapping = array())
+    public static function getPid($mapping = array())
     {
         if (!$mapping) {
-            return NULL;
+            return null;
         }
         if (isset($mapping['pid'])) {
             return is_numeric($mapping['pid']) ? intval($mapping['pid']) : 0;
         }
-        return NULL;
+        return null;
     }
 
     /**
@@ -294,7 +294,7 @@ class Configuration
      * @return string
      * @deprecated since 3.0, will be removed in 3.2, use getUsernameAttribute() instead
      */
-    static public function get_username_attribute($filter = NULL)
+    public static function get_username_attribute($filter = null)
     {
         GeneralUtility::logDeprecatedFunction();
         return static::getUsernameAttribute();
@@ -306,7 +306,7 @@ class Configuration
      * @param string $filter
      * @return string
      */
-    static public function getUsernameAttribute($filter = NULL)
+    public static function getUsernameAttribute($filter = null)
     {
         if ($filter && preg_match('/(\\w*)=\\{USERNAME\\}/', $filter, $matches)) {
             return $matches[1];
@@ -320,7 +320,7 @@ class Configuration
      *
      * @return array
      */
-    static public function getLdapConfiguration()
+    public static function getLdapConfiguration()
     {
         return static::$ldap;
     }
@@ -331,7 +331,7 @@ class Configuration
      * @return array
      * @deprecated since 3.0, will be removed in 3.2, use getFrontendConfiguration() instead
      */
-    static public function getFeConfiguration()
+    public static function getFeConfiguration()
     {
         GeneralUtility::logDeprecatedFunction();
         return static::getFrontendConfiguration();
@@ -342,7 +342,7 @@ class Configuration
      *
      * @return array
      */
-    static public function getFrontendConfiguration()
+    public static function getFrontendConfiguration()
     {
         return static::$fe;
     }
@@ -353,7 +353,7 @@ class Configuration
      * @return array
      * @deprecated since 3.0, will be removed in 3.2, use getBackendConfiguration() instead
      */
-    static public function getBeConfiguration()
+    public static function getBeConfiguration()
     {
         GeneralUtility::logDeprecatedFunction();
         return static::getBackendConfiguration();
@@ -364,7 +364,7 @@ class Configuration
      *
      * @return array
      */
-    static public function getBackendConfiguration()
+    public static function getBackendConfiguration()
     {
         return static::$be;
     }
@@ -375,7 +375,7 @@ class Configuration
      * @return string
      * @deprecated since 3.0, will be removed in 3.2, use getMode() instead
      */
-    static public function getTypo3Mode()
+    public static function getTypo3Mode()
     {
         GeneralUtility::logDeprecatedFunction();
         return static::getMode();
@@ -388,7 +388,7 @@ class Configuration
      * @return void
      * @deprecated since 3.0, will be removed in 3.2, use setMode() instead
      */
-    static public function setTypo3Mode($typo3_mode)
+    public static function setTypo3Mode($typo3_mode)
     {
         GeneralUtility::logDeprecatedFunction();
         static::setMode($typo3_mode);
@@ -399,7 +399,7 @@ class Configuration
      *
      * @return string Either 'be' or 'fe'
      */
-    static public function getMode()
+    public static function getMode()
     {
         return static::$mode;
     }
@@ -411,7 +411,7 @@ class Configuration
      * @return void
      * @throws \UnexpectedValueException
      */
-    static public function setMode($mode)
+    public static function setMode($mode)
     {
         $mode = strtolower($mode);
         if (!GeneralUtility::inList('be,fe', $mode)) {
@@ -425,7 +425,7 @@ class Configuration
      *
      * @return int
      */
-    static public function getUid()
+    public static function getUid()
     {
         return static::$configuration->getUid();
     }
@@ -436,7 +436,7 @@ class Configuration
      * @return mixed
      * @deprecated since 3.0, will be removed in 3.2
      */
-    static public function getName()
+    public static function getName()
     {
         GeneralUtility::logDeprecatedFunction();
         return self::$configuration->getName();
@@ -450,7 +450,7 @@ class Configuration
      * @return mixed|false
      * @deprecated since 3.0, will be removed in 3.2, use getValue() instead
      */
-    static public function is_enable($feature = NULL)
+    public static function is_enable($feature = null)
     {
         GeneralUtility::logDeprecatedFunction();
         return static::getValue($feature);
@@ -463,7 +463,7 @@ class Configuration
      * @param string $feature
      * @return mixed|false
      */
-    static public function getValue($feature)
+    public static function getValue($feature)
     {
         $config = (static::$mode === 'be')
             ? static::getBackendConfiguration()
@@ -479,7 +479,7 @@ class Configuration
      * @return array
      * @deprecated since 3.0, will be removed in 3.2, use getLdapAttributes() instead
      */
-    static public function get_ldap_attributes($mapping = array())
+    public static function get_ldap_attributes($mapping = array())
     {
         GeneralUtility::logDeprecatedFunction();
         return static::getLdapAttributes($mapping);
@@ -491,7 +491,7 @@ class Configuration
      * @param array|string $mapping
      * @return array
      */
-    static public function getLdapAttributes($mapping = array())
+    public static function getLdapAttributes($mapping = array())
     {
         $ldapAttributes = array();
         if (is_array($mapping)) {
@@ -518,7 +518,7 @@ class Configuration
      * @param array|string $mapping
      * @return bool
      */
-    static public function hasExtendedMapping($mapping = array())
+    public static function hasExtendedMapping($mapping = array())
     {
         // Shortcut: if hooks are registered, take for granted extended syntax will be used
         $extended = is_array($mapping)
@@ -547,7 +547,7 @@ class Configuration
      * @return string
      * @deprecated since 3.0, will be removed in 3.2, use getServerName() instead
      */
-    static public function get_server_name($uid = NULL)
+    public static function get_server_name($uid = null)
     {
         GeneralUtility::logDeprecatedFunction();
         return static::getServerType($uid);
@@ -559,7 +559,7 @@ class Configuration
      * @param int $type
      * @return string
      */
-    static public function getServerType($type = NULL)
+    public static function getServerType($type = null)
     {
         switch ($type) {
             case 0:
@@ -569,7 +569,7 @@ class Configuration
                 $server = 'Active Directory / Novell eDirectory';
                 break;
             default:
-                $server = NULL;
+                $server = null;
                 break;
         }
 
@@ -586,7 +586,7 @@ class Configuration
      * @return string
      * @deprecated since 3.0, will be removed in 3.2, use replaceFilterMarkers() instead
      */
-    static public function replace_filter_markers($filter)
+    public static function replace_filter_markers($filter)
     {
         GeneralUtility::logDeprecatedFunction();
         return static::replaceFilterMarkers($filter);
@@ -601,7 +601,7 @@ class Configuration
      * @param string $filter
      * @return string
      */
-    static public function replaceFilterMarkers($filter)
+    public static function replaceFilterMarkers($filter)
     {
         $filter = str_replace(array('{USERNAME}', '{USERDN}', '{USERUID}'), '*', $filter);
         return $filter;
@@ -613,7 +613,7 @@ class Configuration
      * @param int $uid
      * @return array
      */
-    static protected function select($uid = 0)
+    protected static function select($uid = 0)
     {
         $config = static::getDatabaseConnection()->exec_SELECTgetRows(
             '*',
@@ -629,7 +629,7 @@ class Configuration
      *
      * @return \TYPO3\CMS\Core\Database\DatabaseConnection
      */
-    static protected function getDatabaseConnection()
+    protected static function getDatabaseConnection()
     {
         return $GLOBALS['TYPO3_DB'];
     }

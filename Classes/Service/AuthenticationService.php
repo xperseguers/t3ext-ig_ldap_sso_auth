@@ -411,7 +411,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
      *
      * @return \TYPO3\CMS\Core\Log\Logger
      */
-    static protected function getLogger()
+    protected static function getLogger()
     {
         /** @var \TYPO3\CMS\Core\Log\Logger $logger */
         static $logger = null;

@@ -32,7 +32,7 @@ class TypoScriptUtility
      * @param string $filePath
      * @return array
      */
-    static public function loadTypoScriptFromFile($filePath)
+    public static function loadTypoScriptFromFile($filePath)
     {
         $fileName = GeneralUtility::getFileAbsFileName($filePath);
         $typoScript = file_get_contents($fileName);
@@ -45,7 +45,7 @@ class TypoScriptUtility
      * @param string $typoScript
      * @return array
      */
-    static public function loadTypoScript($typoScript)
+    public static function loadTypoScript($typoScript)
     {
         $typoScriptParser = static::getTypoScriptParser();
         $typoScriptParser->parse($typoScript);
@@ -58,7 +58,7 @@ class TypoScriptUtility
      *
      * @return \TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser
      */
-    static protected function getTypoScriptParser()
+    protected static function getTypoScriptParser()
     {
         /** @var \TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser $typoScriptParser */
         static $typoScriptParser = null;

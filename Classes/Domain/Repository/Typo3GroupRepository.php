@@ -37,7 +37,7 @@ class Typo3GroupRepository
      * @return array
      * @throws InvalidUserGroupTableException
      */
-    static public function create($table)
+    public static function create($table)
     {
         if (!GeneralUtility::inList('be_groups,fe_groups', $table)) {
             throw new InvalidUserGroupTableException('Invalid table "' . $table . '"', 1404892331);
@@ -67,7 +67,7 @@ class Typo3GroupRepository
      * @return array|null
      * @throws InvalidUserGroupTableException
      */
-    static public function fetch($table, $uid = 0, $pid = null, $dn = null)
+    public static function fetch($table, $uid = 0, $pid = null, $dn = null)
     {
         if (!GeneralUtility::inList('be_groups,fe_groups', $table)) {
             throw new InvalidUserGroupTableException('Invalid table "' . $table . '"', 1404891809);
@@ -99,7 +99,7 @@ class Typo3GroupRepository
      * @return array The new record
      * @throws InvalidUserGroupTableException
      */
-    static public function add($table, array $data = array())
+    public static function add($table, array $data = array())
     {
         if (!GeneralUtility::inList('be_groups,fe_groups', $table)) {
             throw new InvalidUserGroupTableException('Invalid table "' . $table . '"', 1404891833);
@@ -140,7 +140,7 @@ class Typo3GroupRepository
      * @return bool true on success, otherwise false
      * @throws InvalidUserGroupTableException
      */
-    static public function update($table, array $data = array())
+    public static function update($table, array $data = array())
     {
         if (!GeneralUtility::inList('be_groups,fe_groups', $table)) {
             throw new InvalidUserGroupTableException('Invalid table "' . $table . '"', 1404891867);
@@ -178,7 +178,7 @@ class Typo3GroupRepository
      * @return null|string
      * @deprecated since 3.0, will be removed in 3.2
      */
-    static public function get_title($ldap_user = array(), $mapping = array())
+    public static function get_title($ldap_user = array(), $mapping = array())
     {
         if (!$mapping) {
             return null;
@@ -200,7 +200,7 @@ class Typo3GroupRepository
      *
      * @return \TYPO3\CMS\Core\Database\DatabaseConnection
      */
-    static protected function getDatabaseConnection()
+    protected static function getDatabaseConnection()
     {
         return $GLOBALS['TYPO3_DB'];
     }

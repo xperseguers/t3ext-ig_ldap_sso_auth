@@ -43,11 +43,11 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface
      *
      * @return \Causal\IgLdapSsoAuth\Library\Ldap
      */
-    static public function getInstance()
+    public static function getInstance()
     {
         /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        static $objectManager = NULL;
-        if ($objectManager === NULL) {
+        static $objectManager = null;
+        if ($objectManager === null) {
             $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
         }
         return $objectManager->get(__CLASS__);
@@ -118,14 +118,14 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface
      * @param string $filter
      * @return bool|string
      */
-    public function validateUser($username = NULL, $password = NULL, $baseDn = NULL, $filter = NULL)
+    public function validateUser($username = null, $password = null, $baseDn = null, $filter = null)
     {
 
         // If user found on ldap server.
         if ($this->ldapUtility->search($baseDn, str_replace('{USERNAME}', $username, $filter), array('dn'))) {
 
             // Validate with password.
-            if ($password !== NULL) {
+            if ($password !== null) {
 
                 // Bind DN of user with password.
                 if (empty($password)) {
@@ -147,7 +147,7 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface
                 }
 
                 // If enable, SSO authentication without password
-            } elseif ($password === NULL && Configuration::getValue('SSOAuthentication')) {
+            } elseif ($password === null && Configuration::getValue('SSOAuthentication')) {
 
                 return $this->ldapUtility->getDn();
 
@@ -265,11 +265,11 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface
      *
      * @return \TYPO3\CMS\Core\Log\Logger
      */
-    static protected function getLogger()
+    protected static function getLogger()
     {
         /** @var \TYPO3\CMS\Core\Log\Logger $logger */
-        static $logger = NULL;
-        if ($logger === NULL) {
+        static $logger = null;
+        if ($logger === null) {
             $logger = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
         }
         return $logger;

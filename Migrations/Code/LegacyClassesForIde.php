@@ -29,7 +29,7 @@ class tx_igldapssoauth_ldap
      * @return bool
      * @deprecated since 3.0 will be removed in 3.2, use \Causal\IgLdapSsoAuth\Library\Ldap::getInstance()->connect() instead
      */
-    static public function connect(array $config = array())
+    public static function connect(array $config = array())
     {
         return \Causal\IgLdapSsoAuth\Library\Ldap::getInstance()->connect($config);
     }
@@ -40,7 +40,7 @@ class tx_igldapssoauth_ldap
      * @return void
      * @deprecated since 3.0 will be removed in 3.2, use \Causal\IgLdapSsoAuth\Library\Ldap::getInstance()->disconnect() instead
      */
-    static public function disconnect()
+    public static function disconnect()
     {
         \Causal\IgLdapSsoAuth\Library\Ldap::getInstance()->disconnect();
     }
@@ -55,7 +55,7 @@ class tx_igldapssoauth_ldap
      * @return bool|string
      * @deprecated since 3.0 will be removed in 3.2, use \Causal\IgLdapSsoAuth\Library\Ldap::getInstance()->validateUser() instead
      */
-    static public function valid_user($username = null, $password = null, $basedn = null, $filter = null)
+    public static function valid_user($username = null, $password = null, $basedn = null, $filter = null)
     {
         return \Causal\IgLdapSsoAuth\Library\Ldap::getInstance()->validateUser($username, $password, $basedn, $filter);
     }
@@ -71,7 +71,7 @@ class tx_igldapssoauth_ldap
      * @return array
      * @deprecated since 3.0 will be removed in 3.2, use \Causal\IgLdapSsoAuth\Library\Ldap::getInstance()->search() instead
      */
-    static public function search($basedn = null, $filter = null, $attributes = array(), $first_entry = false, $limit = 0)
+    public static function search($basedn = null, $filter = null, $attributes = array(), $first_entry = false, $limit = 0)
     {
         return \Causal\IgLdapSsoAuth\Library\Ldap::getInstance()->search($basedn, $filter, $attributes, $first_entry, $limit);
     }
@@ -83,7 +83,7 @@ class tx_igldapssoauth_ldap
      * @return bool
      * @deprecated since 3.0 will be removed in 3.2, use \Causal\IgLdapSsoAuth\Library\Ldap::getInstance()->isPartialSearchResult() instead
      */
-    static public function isPartialSearchResult()
+    public static function isPartialSearchResult()
     {
         return \Causal\IgLdapSsoAuth\Library\Ldap::getInstance()->isPartialSearchResult();
     }
@@ -94,7 +94,7 @@ class tx_igldapssoauth_ldap
      * @return array
      * @deprecated since 3.0 will be removed in 3.2, use \Causal\IgLdapSsoAuth\Library\Ldap::getInstance()->searchNext() instead
      */
-    static public function searchNext()
+    public static function searchNext()
     {
         return \Causal\IgLdapSsoAuth\Library\Ldap::getInstance()->searchNext();
     }
@@ -105,7 +105,7 @@ class tx_igldapssoauth_ldap
      * @return array
      * @deprecated since 3.0 will be removed in 3.2, use \Causal\IgLdapSsoAuth\Library\Ldap::getInstance()->getStatus() instead
      */
-    static public function get_status()
+    public static function get_status()
     {
         return \Causal\IgLdapSsoAuth\Library\Ldap::getInstance()->getStatus();
     }
@@ -116,7 +116,7 @@ class tx_igldapssoauth_ldap
      * @return string
      * @deprecated since 3.0 will be removed in 3.2, use \Causal\IgLdapSsoAuth\Library\Ldap::getInstance()->getLastBindDiagnostic() instead
      */
-    static public function getLastBindDiagnostic()
+    public static function getLastBindDiagnostic()
     {
         return \Causal\IgLdapSsoAuth\Library\Ldap::getInstance()->getLastBindDiagnostic();
     }
@@ -142,7 +142,7 @@ class tx_igldapssoauth_ldap
      * @return string Escaped $dn
      * @deprecated since 3.0 will be removed in 3.2, use \Causal\IgLdapSsoAuth\Library\Ldap::getInstance()->escapeDnForFilter() instead
      */
-    static public function escapeDnForFilter($dn)
+    public static function escapeDnForFilter($dn)
     {
         return \Causal\IgLdapSsoAuth\Library\Ldap::getInstance()->escapeDnForFilter($dn);
     }
@@ -205,7 +205,7 @@ class tx_igldapssoauth_utility_Ldap
      * @throws \Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException when LDAP extension for PHP is not available
      * @deprecated since 3.0 will be removed in 3.2, use \Causal\IgLdapSsoAuth\Utility\LdapUtility::connect() instead
      */
-    static public function connect($host = null, $port = null, $protocol = null, $charset = null, $serverType = 0, $tls = false)
+    public static function connect($host = null, $port = null, $protocol = null, $charset = null, $serverType = 0, $tls = false)
     {
         return static::getInstance()->connect($host, $port, $protocol, $charset, $serverType, $tls);
     }
@@ -216,7 +216,7 @@ class tx_igldapssoauth_utility_Ldap
      * @return bool
      * @deprecated since 3.0 will be removed in 3.2, use \Causal\IgLdapSsoAuth\Utility\LdapUtility::isConnected() instead
      */
-    static public function is_connect()
+    public static function is_connect()
     {
         return static::getInstance()->isConnected();
     }
@@ -227,7 +227,7 @@ class tx_igldapssoauth_utility_Ldap
      * @return void
      * @deprecated since 3.0 will be removed in 3.2, use \Causal\IgLdapSsoAuth\Utility\LdapUtility::disconnect() instead
      */
-    static public function disconnect()
+    public static function disconnect()
     {
         static::getInstance()->disconnect();
     }
@@ -240,7 +240,7 @@ class tx_igldapssoauth_utility_Ldap
      * @return bool true if bind succeeded
      * @deprecated since 3.0 will be removed in 3.2, use \Causal\IgLdapSsoAuth\Utility\LdapUtility::bind() instead
      */
-    static public function bind($dn = null, $password = null)
+    public static function bind($dn = null, $password = null)
     {
         return static::getInstance()->bind($dn, $password);
     }
@@ -259,7 +259,7 @@ class tx_igldapssoauth_utility_Ldap
      * @see http://ca3.php.net/manual/fr/function.ldap-search.php
      * @deprecated since 3.0 will be removed in 3.2, use \Causal\IgLdapSsoAuth\Utility\LdapUtility::search() instead
      */
-    static public function search($basedn = null, $filter = null, $attributes = array(), $attributes_only = 0, $size_limit = 0, $time_limit = 0, $deref = LDAP_DEREF_NEVER)
+    public static function search($basedn = null, $filter = null, $attributes = array(), $attributes_only = 0, $size_limit = 0, $time_limit = 0, $deref = LDAP_DEREF_NEVER)
     {
         return static::getInstance()->search($basedn, $filter, $attributes, $attributes_only == 1, $size_limit, $time_limit, $deref);
     }
@@ -272,7 +272,7 @@ class tx_igldapssoauth_utility_Ldap
      * @return array
      * @deprecated since 3.0 will be removed in 3.2, use \Causal\IgLdapSsoAuth\Utility\LdapUtility::getEntries() instead
      */
-    static public function get_entries($previousEntry = null)
+    public static function get_entries($previousEntry = null)
     {
         return static::getInstance()->getEntries($previousEntry);
     }
@@ -284,7 +284,7 @@ class tx_igldapssoauth_utility_Ldap
      * @return array
      * @deprecated since 3.0 will be removed in 3.2, use \Causal\IgLdapSsoAuth\Utility\LdapUtility::getNextEntries() instead
      */
-    static public function get_next_entries()
+    public static function get_next_entries()
     {
         return static::getInstance()->getNextEntries();
     }
@@ -296,7 +296,7 @@ class tx_igldapssoauth_utility_Ldap
      * @return bool
      * @deprecated since 3.0 will be removed in 3.2, use \Causal\IgLdapSsoAuth\Utility\LdapUtility::hasMoreEntries() instead
      */
-    static public function has_more_entries()
+    public static function has_more_entries()
     {
         return static::getInstance()->hasMoreEntries();
     }
@@ -307,7 +307,7 @@ class tx_igldapssoauth_utility_Ldap
      * @return array
      * @deprecated since 3.0 will be removed in 3.2, use \Causal\IgLdapSsoAuth\Utility\LdapUtility::getFirstEntry() instead
      */
-    static public function get_first_entry()
+    public static function get_first_entry()
     {
         return static::getInstance()->getFirstEntry();
     }
@@ -318,7 +318,7 @@ class tx_igldapssoauth_utility_Ldap
      * @return string
      * @deprecated since 3.0 will be removed in 3.2, use \Causal\IgLdapSsoAuth\Utility\LdapUtility::getDn() instead
      */
-    static public function get_dn()
+    public static function get_dn()
     {
         return static::getInstance()->getDn();
     }
@@ -329,7 +329,7 @@ class tx_igldapssoauth_utility_Ldap
      * @return array
      * @deprecated since 3.0 will be removed in 3.2, use \Causal\IgLdapSsoAuth\Utility\LdapUtility::getAttributes() instead
      */
-    static public function get_attributes()
+    public static function get_attributes()
     {
         return static::getInstance()->getAttributes();
     }
@@ -340,7 +340,7 @@ class tx_igldapssoauth_utility_Ldap
      * @return array
      * @deprecated since 3.0 will be removed in 3.2, use \Causal\IgLdapSsoAuth\Utility\LdapUtility::getStatus() instead
      */
-    static public function get_status()
+    public static function get_status()
     {
         return static::getInstance()->getStatus();
     }

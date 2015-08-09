@@ -43,7 +43,7 @@ class DebugUtility
      * @return void
      * @api
      */
-    static public function debug($message, $dataVar = false)
+    public static function debug($message, $dataVar = false)
     {
         static::log($message, static::SEVERITY_DEBUG, $dataVar);
     }
@@ -56,7 +56,7 @@ class DebugUtility
      * @return void
      * @api
      */
-    static public function info($message, $dataVar = false)
+    public static function info($message, $dataVar = false)
     {
         static::log($message, static::SEVERITY_INFO, $dataVar);
     }
@@ -69,7 +69,7 @@ class DebugUtility
      * @return void
      * @api
      */
-    static public function notice($message, $dataVar = false)
+    public static function notice($message, $dataVar = false)
     {
         static::log($message, static::SEVERITY_NOTICE, $dataVar);
     }
@@ -82,7 +82,7 @@ class DebugUtility
      * @return void
      * @api
      */
-    static public function warning($message, $dataVar = false)
+    public static function warning($message, $dataVar = false)
     {
         static::log($message, static::SEVERITY_WARNING, $dataVar);
     }
@@ -95,7 +95,7 @@ class DebugUtility
      * @return void
      * @api
      */
-    static public function error($message, $dataVar = false)
+    public static function error($message, $dataVar = false)
     {
         static::log($message, static::SEVERITY_ERROR, $dataVar);
     }
@@ -109,7 +109,7 @@ class DebugUtility
      * @return void
      * @api
      */
-    static public function log($message, $severity, $dataVar = false)
+    public static function log($message, $severity, $dataVar = false)
     {
         GeneralUtility::devLog($message, 'ig_ldap_sso_auth', $severity, $dataVar);
     }

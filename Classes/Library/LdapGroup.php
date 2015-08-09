@@ -38,7 +38,7 @@ class LdapGroup
      * @return array
      * @deprecated since 3.0, will be removed in 3.2, use selectFromMembership() instead
      */
-    static public function select_from_membership($membership = array(), $baseDn = NULL, $filter = null, $attributes = array(), $extendedCheck = true)
+    public static function select_from_membership($membership = array(), $baseDn = null, $filter = null, $attributes = array(), $extendedCheck = true)
     {
         GeneralUtility::logDeprecatedFunction();
         return static::selectFromMembership($membership, $baseDn, $filter, $attributes, $extendedCheck);
@@ -55,7 +55,7 @@ class LdapGroup
      * @param bool $extendedCheck true if groups should be actively checked against LDAP server, false to check against baseDN solely
      * @return array
      */
-    static public function selectFromMembership(array $membership = array(), $baseDn, $filter, array $attributes = array(), $extendedCheck = true)
+    public static function selectFromMembership(array $membership = array(), $baseDn, $filter, array $attributes = array(), $extendedCheck = true)
     {
         $ldapGroups['count'] = 0;
 
@@ -109,7 +109,7 @@ class LdapGroup
      * @param array $attributes
      * @return array
      */
-    static public function selectFromUser($baseDn, $filter = '', $userDn = '', $userUid = '', array $attributes = array())
+    public static function selectFromUser($baseDn, $filter = '', $userDn = '', $userUid = '', array $attributes = array())
     {
         $filter = str_replace('{USERDN}', Ldap::getInstance()->escapeDnForFilter($userDn), $filter);
         $filter = str_replace('{USERUID}', Ldap::getInstance()->escapeDnForFilter($userUid), $filter);
@@ -126,7 +126,7 @@ class LdapGroup
      * @return array|bool
      * @deprecated since 3.0, will be removed in 3.2, use getMembership() instead
      */
-    static public function get_membership($ldap_user = array(), $mapping = array())
+    public static function get_membership($ldap_user = array(), $mapping = array())
     {
         GeneralUtility::logDeprecatedFunction();
         return static::getMembership($ldap_user, $mapping);
@@ -139,7 +139,7 @@ class LdapGroup
      * @param array $mapping
      * @return array|bool
      */
-    static public function getMembership(array $ldapUser = array(), array $mapping = array())
+    public static function getMembership(array $ldapUser = array(), array $mapping = array())
     {
         if (isset($mapping['usergroup']) && preg_match("`<([^$]*)>`", $mapping['usergroup'], $attribute)) {
             return $ldapUser[strtolower($attribute[1])];

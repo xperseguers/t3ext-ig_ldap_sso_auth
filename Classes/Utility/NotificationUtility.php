@@ -36,7 +36,7 @@ class NotificationUtility
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      */
-    static public function dispatch($signalClassName, $signalName, array $signalArguments = array())
+    public static function dispatch($signalClassName, $signalName, array $signalArguments = array())
     {
         return static::getSignalSlotDispatcher()->dispatch($signalClassName, $signalName, $signalArguments);
     }
@@ -46,7 +46,7 @@ class NotificationUtility
      *
      * @return \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
      */
-    static protected function getSignalSlotDispatcher()
+    protected static function getSignalSlotDispatcher()
     {
         /** @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher $signalSlotDispatcher */
         static $signalSlotDispatcher = null;

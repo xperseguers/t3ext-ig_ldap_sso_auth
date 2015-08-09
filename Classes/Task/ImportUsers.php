@@ -373,7 +373,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
      *
      * @return \TYPO3\CMS\Core\Log\Logger
      */
-    static protected function getLogger()
+    protected static function getLogger()
     {
         /** @var \TYPO3\CMS\Core\Log\Logger $logger */
         static $logger = null;

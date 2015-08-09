@@ -28,20 +28,20 @@ use Causal\IgLdapSsoAuth\Domain\Repository\Typo3UserRepository;
 class Authentication
 {
 
-    static protected $config;
-    static protected $lastAuthenticationDiagnostic;
+    protected static $config;
+    protected static $lastAuthenticationDiagnostic;
 
     /**
      * Temporary storage for LDAP groups (should be removed after some refactoring).
      *
      * @var array|null
      */
-    static protected $ldapGroups = null;
+    protected static $ldapGroups = null;
 
     /**
      * @var \Causal\IgLdapSsoAuth\Service\AuthenticationService
      */
-    static protected $authenticationService;
+    protected static $authenticationService;
 
     /**
      * Sets the authentication service.
@@ -49,7 +49,7 @@ class Authentication
      * @param \Causal\IgLdapSsoAuth\Service\AuthenticationService $authenticationService
      * @return void
      */
-    static public function setAuthenticationService(\Causal\IgLdapSsoAuth\Service\AuthenticationService $authenticationService)
+    public static function setAuthenticationService(\Causal\IgLdapSsoAuth\Service\AuthenticationService $authenticationService)
     {
         static::$authenticationService = $authenticationService;
     }
@@ -60,7 +60,7 @@ class Authentication
      *
      * @return array The corresponding configuration (BE/FE)
      */
-    static public function initializeConfiguration()
+    public static function initializeConfiguration()
     {
         if (Configuration::getMode() === 'be') {
             static::$config = Configuration::getBackendConfiguration();
@@ -80,7 +80,7 @@ class Authentication
      * @throws \Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException when LDAP extension for PHP is not available
      * @deprecated since 3.0, will be removed in 3.2, use ldapAuthenticate() instead
      */
-    static public function ldap_auth($username = null, $password = null)
+    public static function ldap_auth($username = null, $password = null)
     {
         GeneralUtility::logDeprecatedFunction();
         return static::ldapAuthenticate($username, $password);
@@ -95,7 +95,7 @@ class Authentication
      * @return bool|array true or array of user info on success, otherwise false
      * @throws \Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException when LDAP extension for PHP is not available
      */
-    static public function ldapAuthenticate($username, $password = null)
+    public static function ldapAuthenticate($username, $password = null)
     {
         static::$lastAuthenticationDiagnostic = '';
 
@@ -144,7 +144,7 @@ class Authentication
      *
      * @return string
      */
-    static public function getLastAuthenticationDiagnostic()
+    public static function getLastAuthenticationDiagnostic()
     {
         return static::$lastAuthenticationDiagnostic;
     }
@@ -156,7 +156,7 @@ class Authentication
      * @param $username
      * @return array|false
      */
-    static public function synchroniseUser($userdn, $username = null)
+    public static function synchroniseUser($userdn, $username = null)
     {
         // User is valid. Get it from DN.
         $ldapUser = static::getLdapUser($userdn);
@@ -252,7 +252,7 @@ class Authentication
      * @param string $dn
      * @return array
      */
-    static protected function getLdapUser($dn = null)
+    protected static function getLdapUser($dn = null)
     {
         // Restricting the list of returned attributes sometimes makes the ldap_search() method issue a PHP warning:
         //     Warning: ldap_search(): Array initialization wrong
@@ -291,7 +291,7 @@ class Authentication
      * @throws \Causal\IgLdapSsoAuth\Exception\InvalidUserGroupTableException
      * @deprecated since 3.0, will be removed in 3.2, use getUserGroups() instead
      */
-    static public function get_user_groups($ldapUser, $configuration = null, $groupTable = '')
+    public static function get_user_groups($ldapUser, $configuration = null, $groupTable = '')
     {
         GeneralUtility::logDeprecatedFunction();
         return static::getUserGroups($ldapUser, $configuration, $groupTable);
@@ -306,7 +306,7 @@ class Authentication
      * @return array|null Array of groups or null if required LDAP groups are missing
      * @throws \Causal\IgLdapSsoAuth\Exception\InvalidUserGroupTableException
      */
-    static public function getUserGroups(array $ldapUser, array $configuration = null, $groupTable = '')
+    public static function getUserGroups(array $ldapUser, array $configuration = null, $groupTable = '')
     {
         if ($configuration === null) {
             $configuration = static::$config;
@@ -442,7 +442,7 @@ class Authentication
      * @param array $ldapUser
      * @return array
      */
-    static protected function getLdapGroups(array $ldapUser = array())
+    protected static function getLdapGroups(array $ldapUser = array())
     {
         if (empty(static::$config)) {
             static::initializeConfiguration();
@@ -494,7 +494,7 @@ class Authentication
      * @param int|null $pid
      * @return array
      */
-    static protected function getTypo3User($username, $userDn, $pid = null)
+    protected static function getTypo3User($username, $userDn, $pid = null)
     {
         $user = null;
 
@@ -542,7 +542,7 @@ class Authentication
      * @return array
      * @deprecated since 3.0, will be removed in 3.2, use getTypo3Groups() instead
      */
-    static public function get_typo3_groups(array $ldap_groups = array(), array $mapping = array(), $table = null, $pid = 0)
+    public static function get_typo3_groups(array $ldap_groups = array(), array $mapping = array(), $table = null, $pid = 0)
     {
         GeneralUtility::logDeprecatedFunction();
         return static::getTypo3Groups($ldap_groups, $table, $pid);
@@ -557,7 +557,7 @@ class Authentication
      * @param int|null $pid
      * @return array
      */
-    static public function getTypo3Groups(array $ldapGroups = array(), $table = null, $pid = null)
+    public static function getTypo3Groups(array $ldapGroups = array(), $table = null, $pid = null)
     {
         if (count($ldapGroups) === 0) {
             // Early return
@@ -595,7 +595,7 @@ class Authentication
      * @return array
      * @deprecated since 3.0, will be removed in 3.2, use getTypo3Users() instead
      */
-    static public function get_typo3_users(array $ldap_users = array(), array $mapping = array(), $table = null, $pid = 0)
+    public static function get_typo3_users(array $ldap_users = array(), array $mapping = array(), $table = null, $pid = 0)
     {
         GeneralUtility::logDeprecatedFunction();
         return static::getTypo3Users($ldap_users, $mapping, $table, $pid);
@@ -611,7 +611,7 @@ class Authentication
      * @param int|null $pid
      * @return array
      */
-    static public function getTypo3Users(array $ldapUsers = array(), array $mapping = array(), $table = null, $pid = null)
+    public static function getTypo3Users(array $ldapUsers = array(), array $mapping = array(), $table = null, $pid = null)
     {
         if (count($ldapUsers) === 0) {
             // Early return
@@ -648,7 +648,7 @@ class Authentication
      * @return array
      * @see \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping()
      */
-    static public function merge(array $ldap = array(), array $typo3 = array(), array $mapping = array(), $reportErrors = false)
+    public static function merge(array $ldap = array(), array $typo3 = array(), array $mapping = array(), $reportErrors = false)
     {
         $out = $typo3;
         $typoScriptKeys = array();
@@ -723,7 +723,7 @@ class Authentication
      * @return array Modified $typo3 array
      * @throws \UnexpectedValueException
      */
-    static protected function mergeSimple(array $ldap, array $typo3, $field, $value)
+    protected static function mergeSimple(array $ldap, array $typo3, $field, $value)
     {
         // Standard marker or custom function
         if (preg_match("`{([^$]*)}`", $value, $matches)) {
@@ -802,7 +802,7 @@ class Authentication
      * @return string The string with the replaced / removed markers
      * @author Alexander Stehlik <alexander.stehlik.deleteme@gmail.com>
      */
-    static public function replaceLdapMarkers($markerString, $ldapData)
+    public static function replaceLdapMarkers($markerString, $ldapData)
     {
         preg_match_all('/<(.+?)>/', $markerString, $matches);
 
@@ -830,7 +830,7 @@ class Authentication
      * @param int $limit
      * @return array
      */
-    static public function getRelativeDistinguishedNames($dn, $limit = null)
+    public static function getRelativeDistinguishedNames($dn, $limit = null)
     {
         // We want to extract RDN's by splitting on comma but we
         // make sure that any escaped comma (\,) will NOT be taken
@@ -849,7 +849,7 @@ class Authentication
      *
      * @return \TYPO3\CMS\Core\Log\Logger
      */
-    static protected function getLogger()
+    protected static function getLogger()
     {
         /** @var \TYPO3\CMS\Core\Log\Logger $logger */
         static $logger = null;

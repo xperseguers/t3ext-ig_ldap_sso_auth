@@ -217,7 +217,7 @@ class ConfigurationRepository
      *
      * @return \TYPO3\CMS\Core\Database\DatabaseConnection
      */
-    static protected function getDatabaseConnection()
+    protected static function getDatabaseConnection()
     {
         return $GLOBALS['TYPO3_DB'];
     }
@@ -227,7 +227,7 @@ class ConfigurationRepository
      *
      * @return \TYPO3\CMS\Extbase\Object\ObjectManager
      */
-    static protected function getObjectManager()
+    protected static function getObjectManager()
     {
         /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
         static $objectManager = null;
@@ -242,7 +242,7 @@ class ConfigurationRepository
      *
      * @return \TYPO3\CMS\Extbase\Domain\Repository\BackendUserGroupRepository
      */
-    static protected function getBackendUserGroupRepository()
+    protected static function getBackendUserGroupRepository()
     {
         static $backendUserGroupRepository = null;
         if ($backendUserGroupRepository == null) {
@@ -256,7 +256,7 @@ class ConfigurationRepository
      *
      * @return \TYPO3\CMS\Extbase\Domain\Repository\FrontendUserGroupRepository
      */
-    static protected function getFrontendUserGroupRepository()
+    protected static function getFrontendUserGroupRepository()
     {
         static $frontendUserGroupRepository = null;
         if ($frontendUserGroupRepository == null) {

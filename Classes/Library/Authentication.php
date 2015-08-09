@@ -824,6 +824,27 @@ class Authentication
     }
 
     /**
+     * Returns an array of RDN's from a given DN.
+     *
+     * @param string $dn
+     * @param int $limit
+     * @return array
+     */
+    static public function getRelativeDistinguishedNames($dn, $limit = null)
+    {
+        // We want to extract RDN's by splitting on comma but we
+        // make sure that any escaped comma (\,) will NOT be taken
+        // into account thanks to a look-behind assertion in pattern
+        $pattern = '#(?<!\\\\),#';
+
+        $parts = $limit === null
+            ? preg_split($pattern, $dn)
+            : preg_split($pattern, $dn, $limit);
+
+        return $parts;
+    }
+
+    /**
      * Returns a logger.
      *
      * @return \TYPO3\CMS\Core\Log\Logger

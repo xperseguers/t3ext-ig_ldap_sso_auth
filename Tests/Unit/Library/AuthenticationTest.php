@@ -395,4 +395,25 @@ EOT;
         $this->assertEquals($expected, $group);
     }
 
+    /**
+     * @test
+     * @dataProvider dnProvider
+     */
+    public function canExtractRelativeDistinguishedNames($dn, $limit, $expected)
+    {
+        $parts = Authentication::getRelativeDistinguishedNames($dn, $limit);
+        $this->assertSame($expected, $parts);
+    }
+
+    public function dnProvider()
+    {
+        return array(
+            array('uid=newton,ou=department,dc=example,dc=com', null, array('uid=newton', 'ou=department', 'dc=example', 'dc=com')),
+            array('uid=newton,ou=department,dc=example,dc=com', 2, array('uid=newton', 'ou=department,dc=example,dc=com')),
+            array('uid=newton,ou=department,dc=example,dc=com', 3, array('uid=newton', 'ou=department', 'dc=example,dc=com')),
+            array('CN=Doering\\, Olaf,OU=Admins,OU=IT,DC=my-company,DN=local', null, array('CN=Doering\\, Olaf', 'OU=Admins', 'OU=IT', 'DC=my-company' ,'DN=local')),
+            array('CN=Doering\\, Olaf,OU=Admins,OU=IT,DC=my-company,DN=local', 2, array('CN=Doering\\, Olaf', 'OU=Admins,OU=IT,DC=my-company,DN=local')),
+        );
+    }
+
 }

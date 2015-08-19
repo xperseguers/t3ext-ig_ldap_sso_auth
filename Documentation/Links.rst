@@ -27,7 +27,7 @@ Links
 	https://translation.typo3.org/projects/TYPO3.ext.ig_ldap_sso_auth/
 
 :Contact:
-	`@xperseguers <https://twitter.com/xperseguers>`_
+	`@xperseguers <https://twitter.com/xperseguers>`__
 
 
 .. _links-how-to-contribute:

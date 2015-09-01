@@ -116,7 +116,7 @@ class Configuration
         static::$fe['evaluateGroupsFromMembership'] = $configuration->getGroupMembership() === static::GROUP_MEMBERSHIP_FROM_MEMBER;
         static::$fe['IfUserExist'] = (bool)$globalConfiguration['TYPO3FEUserExist'];
         static::$fe['IfGroupExist'] = (bool)$globalConfiguration['TYPO3FEGroupExist'];
-        static::$fe['BEfailsafe'] = false;
+        static::$fe['BEfailsafe'] = true;
         static::$fe['updateAdminAttribForGroups'] = array();
         static::$fe['DeleteUserIfNoTYPO3Groups'] = (bool)$globalConfiguration['TYPO3FEDeleteUserIfNoTYPO3Groups'];
         static::$fe['DeleteUserIfNoLDAPGroups'] = (bool)$globalConfiguration['TYPO3FEDeleteUserIfNoLDAPGroups'];

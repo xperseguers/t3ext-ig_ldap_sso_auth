@@ -28,6 +28,11 @@
   "replace": {
     "ig_ldap_sso_auth": "*"
   },
+  "autoload": {
+    "psr-4": {
+      "Causal\\IgLdapSsoAuth\\": "Classes/"
+    }
+  },
   "extra": {
     "helhum/class-alias-loader": {
       "class-alias-maps": [

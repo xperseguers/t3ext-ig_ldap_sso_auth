@@ -58,13 +58,13 @@ LDAP / SSO Authentication
 	**Other version of this document**
 
 	:PDF:
-		https://docs.typo3.org/typo3cms/extensions/ig_ldap_sso_auth/3.0.1/_pdf/
+		https://docs.typo3.org/typo3cms/extensions/ig_ldap_sso_auth/3.0.2/_pdf/
 
 
 	**Table of Contents**
 
 .. toctree::
-	:maxdepth: 5
+	:maxdepth: 3
 	:titlesonly:
 
 	Introduction/Index

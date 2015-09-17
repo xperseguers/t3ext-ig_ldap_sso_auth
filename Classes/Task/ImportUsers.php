@@ -155,6 +155,10 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 
                     // Proceed with import (handle partial result sets until every LDAP record has been returned)
                     do {
+                        $partialSearchPointer = $importUtility->hasMoreLdapUsers()
+                            ? Ldap::getInstance()->getPartialSearchPointer()
+                            : null;
+
                         $typo3Users = $importUtility->fetchTypo3Users($ldapUsers);
 
                         // Loop on all users and import them
@@ -178,8 +182,8 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
                         // Free memory before going on
                         $typo3Users = null;
                         $ldapUsers = null;
-                        $ldapUsers = $importUtility->hasMoreLdapUsers()
-                            ? $importUtility->fetchLdapUsers(true)
+                        $ldapUsers = $partialSearchPointer !== null
+                            ? $importUtility->fetchLdapUsers(true, $partialSearchPointer)
                             : array();
                     } while (count($ldapUsers) > 0);
                 }

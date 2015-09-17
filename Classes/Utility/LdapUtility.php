@@ -90,9 +90,9 @@ class LdapUtility
     protected $serverType;
 
     /**
-     * @var resource|bool
+     * @var resource
      */
-    protected $previousEntry = false;
+    protected $previousEntry = null;
 
     /**
      * Connects to an LDAP server.
@@ -415,6 +415,24 @@ class LdapUtility
         }
         $entry = $this->convertCharacterSetForArray($tempEntry, $this->ldapCharacterSet, $this->typo3CharacterSet);
         return $entry;
+    }
+
+    /**
+     * @return resource
+     * @internal
+     */
+    public function getPartialSearchPointer()
+    {
+        return $this->previousEntry;
+    }
+
+    /**
+     * @param resource $pointer
+     * @internal
+     */
+    public function setPartialSearchPointer($pointer)
+    {
+        $this->previousEntry = $pointer;
     }
 
     /**

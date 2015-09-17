@@ -202,12 +202,25 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface
     }
 
     /**
+     * @return resource
+     * @internal
+     */
+    public function getPartialSearchPointer()
+    {
+        return $this->ldapUtility->getPartialSearchPointer();
+    }
+
+    /**
      * Returns the next block of entries satisfying a previous call to @see search().
      *
+     * @param resource $partialSearchPointer internal use only!
      * @return array
      */
-    public function searchNext()
+    public function searchNext($partialSearchPointer = null)
     {
+        if ($partialSearchPointer !== null) {
+            $this->ldapUtility->setPartialSearchPointer($partialSearchPointer);
+        }
         $result = $this->ldapUtility->getNextEntries();
         return $result;
     }

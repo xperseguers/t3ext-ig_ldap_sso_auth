@@ -128,9 +128,10 @@ class UserImportUtility
      * Fetches all possible LDAP/AD users for a given configuration and context.
      *
      * @param bool $partial true to fetch remaining entries when a partial result set was returned
+     * @param resource $partialSearchPointer internal use only!
      * @return array
      */
-    public function fetchLdapUsers($partial = false)
+    public function fetchLdapUsers($partial = false, $partialSearchPointer = null)
     {
 
         // Get the users from LDAP/AD server
@@ -147,7 +148,7 @@ class UserImportUtility
                 }
                 $ldapUsers = Ldap::getInstance()->search($this->configuration['users']['basedn'], $filter, $attributes);
             } else {
-                $ldapUsers = Ldap::getInstance()->searchNext();
+                $ldapUsers = Ldap::getInstance()->searchNext($partialSearchPointer);
             }
             unset($ldapUsers['count']);
         }

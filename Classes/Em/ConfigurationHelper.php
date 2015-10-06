@@ -1,6 +1,4 @@
 <?php
-namespace Causal\IgLdapSsoAuth\Em;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,6 +11,8 @@ namespace Causal\IgLdapSsoAuth\Em;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace Causal\IgLdapSsoAuth\Em;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;

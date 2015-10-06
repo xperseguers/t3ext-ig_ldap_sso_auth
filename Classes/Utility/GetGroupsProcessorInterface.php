@@ -1,6 +1,4 @@
 <?php
-namespace Causal\IgLdapSsoAuth\Utility;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,6 +11,8 @@ namespace Causal\IgLdapSsoAuth\Utility;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace Causal\IgLdapSsoAuth\Utility;
 
 /**
  * An interface to post-process determining groups for a user.

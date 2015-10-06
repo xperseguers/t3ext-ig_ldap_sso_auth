@@ -1,6 +1,4 @@
 <?php
-namespace Causal\IgLdapSsoAuth\Tests\Functional\Library;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,6 +11,8 @@ namespace Causal\IgLdapSsoAuth\Tests\Functional\Library;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace Causal\IgLdapSsoAuth\Tests\Functional\Library;
 
 /**
  * Test cases for class \Causal\IgLdapSsoAuth\Library\Ldap.

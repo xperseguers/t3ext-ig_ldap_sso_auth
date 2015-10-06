@@ -1,6 +1,4 @@
 <?php
-namespace Causal\IgLdapSsoAuth\Exception;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,6 +11,8 @@ namespace Causal\IgLdapSsoAuth\Exception;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace Causal\IgLdapSsoAuth\Exception;
 
 /**
  * An exception when some PHP dependency is unresolved

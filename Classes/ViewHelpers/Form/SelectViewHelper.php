@@ -1,6 +1,4 @@
 <?php
-namespace Causal\IgLdapSsoAuth\ViewHelpers\Form;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,6 +11,8 @@ namespace Causal\IgLdapSsoAuth\ViewHelpers\Form;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace Causal\IgLdapSsoAuth\ViewHelpers\Form;
 
 /**
  * This view helper generates a <select> dropdown list for the use with a form and supports the onchange attribute.

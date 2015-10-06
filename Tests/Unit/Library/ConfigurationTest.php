@@ -1,6 +1,4 @@
 <?php
-namespace Causal\IgLdapSsoAuth\Tests\Unit\Library;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,6 +11,8 @@ namespace Causal\IgLdapSsoAuth\Tests\Unit\Library;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace Causal\IgLdapSsoAuth\Tests\Unit\Library;
 
 use Causal\IgLdapSsoAuth\Library\Configuration;
 

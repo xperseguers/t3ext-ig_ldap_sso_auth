@@ -1,6 +1,4 @@
 <?php
-namespace Causal\IgLdapSsoAuth\ViewHelpers;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,6 +11,8 @@ namespace Causal\IgLdapSsoAuth\ViewHelpers;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace Causal\IgLdapSsoAuth\ViewHelpers;
 
 /**
  * Displays sprite icon identified by iconName key

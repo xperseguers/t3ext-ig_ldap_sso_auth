@@ -1,6 +1,4 @@
 <?php
-namespace Causal\IgLdapSsoAuth\Tca\Form;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,6 +11,8 @@ namespace Causal\IgLdapSsoAuth\Tca\Form;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace Causal\IgLdapSsoAuth\Tca\Form;
 
 /**
  * Suggest wizard.

@@ -1,6 +1,4 @@
 <?php
-namespace Causal\IgLdapSsoAuth\Property\TypeConverter;
-
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -13,6 +11,8 @@ namespace Causal\IgLdapSsoAuth\Property\TypeConverter;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+namespace Causal\IgLdapSsoAuth\Property\TypeConverter;
 
 /**
  * Converter which transforms simple types to \Causal\IgLdapSsoAuth\Domain\Model\Configuration.

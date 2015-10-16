@@ -28,10 +28,10 @@ class SuggestWizard
      * Renders a suggestion for the mapping.
      *
      * @param array $PA
-     * @param \TYPO3\CMS\Backend\Form\FormEngine $pObj
+     * @param object $pObj
      * @return string
      */
-    public function render(array &$PA, \TYPO3\CMS\Backend\Form\FormEngine $pObj)
+    public function render(array &$PA, $pObj)
     {
         $serverType = (int)$PA['row']['ldap_server'];
 

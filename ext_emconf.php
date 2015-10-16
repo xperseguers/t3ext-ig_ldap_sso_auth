@@ -43,4 +43,7 @@ In case of use in an intranet environment, this extension is a perfect match sin
     ),
     '_md5_values_when_last_written' => '',
     'suggests' => array(),
+    'autoload' => array(
+        'psr-4' => array('Causal\\IgLdapSsoAuth\\' => 'Classes')
+    ),
 );

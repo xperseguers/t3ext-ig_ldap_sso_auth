@@ -67,6 +67,18 @@ in* ``$_SERVER['REMOTE_USER']`` *(without any domain part) to silently create th
 
 -------
 
+.. question
+
+**I would like to do SSO in backend just like I do in frontend. Is this possible with this extension?**
+
+.. answer
+
+*No. Technically it would be possible to implement it, naturally. Though we did not implement SSO in backend because it
+would then be impossible for a user to log out. TYPO3 may behave differently if you show the frontend while having a
+backend session active (e.g., frontend editing) and as such we preferred not implementing it.*
+
+-------
+
 
 .. _faq-groups:
 

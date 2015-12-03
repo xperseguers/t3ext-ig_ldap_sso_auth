@@ -22,6 +22,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
  *
  * NOTE: this is a not a true Extbase repository.
  *
+ * @author     Xavier Perseguers <xavier@causal.ch>
  * @author     Francois Suter <typo3@cobweb.ch>
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
@@ -224,30 +225,15 @@ class ConfigurationRepository
     }
 
     /**
-     * Returns the object manager.
-     *
-     * @return \TYPO3\CMS\Extbase\Object\ObjectManager
-     */
-    protected static function getObjectManager()
-    {
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        static $objectManager = null;
-        if ($objectManager === null) {
-            $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        }
-        return $objectManager;
-    }
-
-    /**
      * Returns a BackendUserGroupRepository.
      *
-     * @return \TYPO3\CMS\Extbase\Domain\Repository\BackendUserGroupRepository
+     * @return \Causal\IgLdapSsoAuth\Domain\Repository\BackendUserGroupRepository
      */
     protected static function getBackendUserGroupRepository()
     {
         static $backendUserGroupRepository = null;
         if ($backendUserGroupRepository == null) {
-            $backendUserGroupRepository = static::getObjectManager()->get('TYPO3\\CMS\\Extbase\\Domain\\Repository\\BackendUserGroupRepository');
+            $backendUserGroupRepository = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Repository\\BackendUserGroupRepository');
         }
         return $backendUserGroupRepository;
     }
@@ -255,13 +241,13 @@ class ConfigurationRepository
     /**
      * Returns a FrontendUserGroupRepository.
      *
-     * @return \TYPO3\CMS\Extbase\Domain\Repository\FrontendUserGroupRepository
+     * @return \Causal\IgLdapSsoAuth\Domain\Repository\FrontendUserGroupRepository
      */
     protected static function getFrontendUserGroupRepository()
     {
         static $frontendUserGroupRepository = null;
         if ($frontendUserGroupRepository == null) {
-            $frontendUserGroupRepository = static::getObjectManager()->get('TYPO3\\CMS\\Extbase\\Domain\\Repository\\FrontendUserGroupRepository');
+            $frontendUserGroupRepository = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Repository\\FrontendUserGroupRepository');
         }
         return $frontendUserGroupRepository;
     }

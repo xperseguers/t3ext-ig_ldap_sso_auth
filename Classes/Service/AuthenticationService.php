@@ -63,11 +63,6 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
     protected $config;
 
     /**
-     * @var bool
-     */
-    protected $cleanUpExtbaseCache = false;
-
-    /**
      * Default constructor
      */
     public function __construct()
@@ -99,8 +94,6 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
             return $user;
         }
 
-        $this->initializeExtbaseFramework();
-
         /** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
         $configurationRepository = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Repository\\ConfigurationRepository');
         $configurationRecords = $configurationRepository->findAll();
@@ -108,7 +101,6 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
         if (count($configurationRecords) === 0) {
             // Early return since LDAP is not configured
             static::getLogger()->warning('Skipping LDAP authentication as extension is not yet configured');
-            $this->cleanUpExtbaseDataMapper();
             return false;
         }
 
@@ -155,7 +147,6 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
                         $message = "ig_ldap_sso_auth error: current login security level '" . $loginSecurityLevel . "' is not supported.";
                         $message .= " Try to use 'normal' or 'rsa' (highly recommended): ";
                         $message .= "\$GLOBALS['TYPO3_CONF_VARS']['" . TYPO3_MODE . "']['loginSecurityLevel'] = 'rsa';";
-                        $this->cleanUpExtbaseDataMapper();
                         throw new UnsupportedLoginSecurityLevelException($message, 1324313489);
                     }
                 }
@@ -204,7 +195,6 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
             static::getLogger()->debug(sprintf('User found: "%s"', $this->login['uname']));
         }
 
-        $this->cleanUpExtbaseDataMapper();
         return $user;
     }
 
@@ -261,123 +251,6 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
         }
 
         return $status;
-    }
-
-    /**
-     * Properly initializes Extbase since the authentication service is called
-     * very early during the general TYPO3 bootstrap process, namely during
-     * $TSFE->initFEUser().
-     *
-     * @return void
-     */
-    protected function initializeExtbaseFramework()
-    {
-        if (!(TYPO3_MODE === 'FE' && is_object($GLOBALS['TSFE']))) {
-            return;
-        }
-
-        // Fix for "Fatal error: Call to a member function versionOL() on string"
-        if (!is_object($GLOBALS['TSFE']->sys_page)) {
-            $GLOBALS['TSFE']->sys_page = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
-        }
-
-        // Fix for uncached mapping for frontend and backend user groups: warm up Extbase's data mapper
-        $databaseConnection = $this->getDatabaseConnection();
-        $table = 'cf_extbase_datamapfactory_datamap';
-        $identifiers = $this->getExtbaseCacheIdentifiers();
-        $quotedIdentifiers = array();
-        foreach ($identifiers as $identifier) {
-            $quotedIdentifiers[] = $databaseConnection->fullQuoteStr($identifier, $table);
-        }
-        $cacheEntries = $databaseConnection->exec_SELECTcountRows(
-            '*',
-            $table,
-            'identifier IN (' . implode(',', $quotedIdentifiers) . ')' .
-            ' AND expires>' . $GLOBALS['EXEC_TIME']
-        );
-        if ((int)$cacheEntries !== 2) {
-            $this->warmUpExtbaseDataMapper();
-        }
-    }
-
-    /**
-     * Warms up the Extbase's data mapper (this is known not to be as complete as when
-     * the whole Extbase boostrap is run but this is sufficient here and we do not want
-     * to mix-up completely the normal TYPO3 bootstrap sequence).
-     *
-     * @return void
-     */
-    protected function warmUpExtbaseDataMapper()
-    {
-        $backupTemplateService = $GLOBALS['TSFE']->tmpl;
-
-        $setup = \Causal\IgLdapSsoAuth\Utility\TypoScriptUtility::loadTypoScriptFromFile('EXT:extbase/ext_typoscript_setup.txt');
-        $GLOBALS['TSFE']->tmpl = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\TemplateService');
-        $GLOBALS['TSFE']->tmpl->setup = $setup;
-
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-
-        /** @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager */
-        $configurationManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManagerInterface');
-        $configuration = $configurationManager->getConfiguration(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
-
-        // Do not forget to clean up our partial cache when exiting
-        $this->cleanUpExtbaseCache = true;
-
-        // Restore previous template service
-        $GLOBALS['TSFE']->tmpl = $backupTemplateService;
-    }
-
-    /**
-     * Cleans up Extbase's data mapper by removing partial cache entries.
-     *
-     * @return void
-     */
-    protected function cleanUpExtbaseDataMapper()
-    {
-        if (!$this->cleanUpExtbaseCache) {
-            return;
-        }
-
-        $databaseConnection = $this->getDatabaseConnection();
-        $table = 'cf_extbase_datamapfactory_datamap';
-        $identifiers = $this->getExtbaseCacheIdentifiers();
-        $quotedIdentifiers = array();
-        foreach ($identifiers as $identifier) {
-            $quotedIdentifiers[] = $databaseConnection->fullQuoteStr($identifier, $table);
-        }
-        $databaseConnection->exec_DELETEquery($table, 'identifier IN (' . implode(',', $quotedIdentifiers) . ')');
-
-        // To prevent incomplete cache entries in the configuration manager we reset the configurationCache property.
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
-        /** @var \TYPO3\CMS\Extbase\Configuration\FrontendConfigurationManager $configurationManager */
-        $configurationManager = $objectManager->get('TYPO3\\CMS\\Extbase\\Configuration\\FrontendConfigurationManager');
-        $configurationManagerReflection = new \ReflectionClass(get_class($configurationManager));
-        $configurationManagerCacheProperty = $configurationManagerReflection->getProperty('configurationCache');
-        $configurationManagerCacheProperty->setAccessible(true);
-        $configurationManagerCacheProperty->setValue($configurationManager, array());
-    }
-
-    /**
-     * Returns Extbase cache identifiers involved in the
-     * authentication process.
-     *
-     * @return array
-     */
-    protected function getExtbaseCacheIdentifiers()
-    {
-        $classNames = array(
-            'TYPO3\\CMS\\Extbase\\Domain\\Model\\FrontendUserGroup',
-            'TYPO3\\CMS\\Extbase\\Domain\\Model\\BackendUserGroup',
-        );
-        $identifiers = array();
-        foreach ($classNames as $className) {
-            /** @see \TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapFactory::buildDataMap() */
-            $identifiers[] = str_replace('\\', '%', $className);
-        }
-        return $identifiers;
     }
 
     /**

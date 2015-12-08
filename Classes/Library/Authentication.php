@@ -189,10 +189,10 @@ class Authentication
             return false;
         }
 
-        if (Configuration::getValue('IfUserExist') && !$typo3_user['uid']) {
+        if (Configuration::getValue('IfUserExist') && empty($typo3_user['uid'])) {
             return false;
             // User does not exist in TYPO3.
-        } elseif (!$typo3_user['uid'] && (!empty($typo3_groups) || !Configuration::getValue('DeleteUserIfNoTYPO3Groups'))) {
+        } elseif (empty($typo3_user['uid']) && (!empty($typo3_groups) || !Configuration::getValue('DeleteUserIfNoTYPO3Groups'))) {
             // Insert new user: use TCA configuration to override default values
             $table = static::$authenticationService->authInfo['db_user']['table'];
             if (is_array($GLOBALS['TCA'][$table]['columns'])) {
@@ -369,13 +369,13 @@ class Authentication
 
             $i = 0;
             foreach ($typo3GroupsTemp as $typo3Group) {
-                if (Configuration::getValue('GroupsNotSynchronize') && !$typo3Group['uid']) {
+                if (Configuration::getValue('GroupsNotSynchronize') && empty($typo3Group['uid'])) {
                     // Groups should not get synchronized and the current group is invalid
                     continue;
                 }
                 if (Configuration::getValue('GroupsNotSynchronize')) {
                     $typo3_groups[] = $typo3Group;
-                } elseif (!$typo3Group['uid']) {
+                } elseif (empty($typo3Group['uid'])) {
                     $newGroup = Typo3GroupRepository::add(
                         $groupTable,
                         $typo3Group

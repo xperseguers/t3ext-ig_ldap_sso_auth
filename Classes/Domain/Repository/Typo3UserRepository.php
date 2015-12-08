@@ -61,6 +61,9 @@ class Typo3UserRepository
             }
         }
 
+        // uid is a primary key, it should not be specified at all
+        unset($newUser['uid']);
+
         return $newUser;
     }
 

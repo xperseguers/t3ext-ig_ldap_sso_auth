@@ -54,6 +54,9 @@ class Typo3GroupRepository
             }
         }
 
+        // uid is a primary key, it should not be specified at all
+        unset($newGroup['uid']);
+
         return $newGroup;
     }
 

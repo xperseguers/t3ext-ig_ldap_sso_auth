@@ -137,6 +137,7 @@ class Configuration
         static::$ldap['host'] = $configuration->getLdapHost();
         static::$ldap['port'] = $configuration->getLdapPort();
         static::$ldap['tls'] = $configuration->isLdapTls();
+        static::$ldap['ssl'] = $configuration->isLdapSsl();
         static::$ldap['binddn'] = $configuration->getLdapBindDn();
         static::$ldap['password'] = $configuration->getLdapPassword();
     }

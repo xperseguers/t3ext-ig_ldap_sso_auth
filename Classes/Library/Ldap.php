@@ -69,10 +69,11 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface
             'charset' => $config['charset'],
             'server' => $config['server'],
             'tls' => $config['tls'],
+            'ssl' => $config['ssl'],
         );
 
         // Connect to ldap server.
-        if (!$this->ldapUtility->connect($config['host'], $config['port'], $config['protocol'], $config['charset'], $config['server'], $config['tls'])) {
+        if (!$this->ldapUtility->connect($config['host'], $config['port'], $config['protocol'], $config['charset'], $config['server'], $config['tls'], $config['ssl'])) {
             static::getLogger()->error('Cannot connect', $debugConfiguration);
             return false;
         }

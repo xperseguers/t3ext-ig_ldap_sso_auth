@@ -19,7 +19,7 @@ return array(
     ),
     'interface' => array(
         'showRecordFieldList' => 'hidden, name, domains,
-                        ldap_server, ldap_protocol, ldap_charset, ldap_host, ldap_port, ldap_tls, ldap_binddn,
+                        ldap_server, ldap_protocol, ldap_charset, ldap_host, ldap_port, ldap_tls, ldap_ssl, ldap_binddn,
                         ldap_password, group_membership,
                         be_users_basedn, be_users_filter, be_users_mapping,
                         be_groups_basedn, be_groups_filter, be_groups_mapping, be_groups_required, be_groups_assigned,
@@ -51,7 +51,7 @@ return array(
             'showitem' => 'ldap_protocol, ldap_charset'
         ),
         'connection' => array(
-            'showitem' => 'ldap_host, ldap_port, ldap_tls',
+            'showitem' => 'ldap_host, ldap_port, ldap_tls, ldap_ssl',
             'canNotCollapse' => 1,
         ),
     ),
@@ -150,6 +150,14 @@ return array(
         'ldap_tls' => array(
             'exclude' => 1,
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_tls',
+            'config' => array(
+                'type' => 'check',
+                'default' => '0',
+            )
+        ),
+        'ldap_ssl' => array(
+            'exclude' => 1,
+            'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_ssl',
             'config' => array(
                 'type' => 'check',
                 'default' => '0',

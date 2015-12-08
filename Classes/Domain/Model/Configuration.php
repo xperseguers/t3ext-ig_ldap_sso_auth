@@ -70,6 +70,11 @@ class Configuration
     protected $ldapTls;
 
     /**
+     * @var bool
+     */
+    protected $ldapSsl;
+
+    /**
      * @var string
      */
     protected $ldapBindDn;
@@ -267,11 +272,19 @@ class Configuration
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isLdapTls()
     {
         return $this->ldapTls;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLdapSsl()
+    {
+        return $this->ldapSsl;
     }
 
     /**

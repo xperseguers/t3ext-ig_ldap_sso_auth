@@ -103,10 +103,11 @@ class LdapUtility
      * @param string $characterSet
      * @param integer $serverType 0 = OpenLDAP, 1 = Active Directory / Novell eDirectory
      * @param bool $tls
+     * @param bool $ssl
      * @return bool true if connection succeeded.
      * @throws UnresolvedPhpDependencyException when LDAP extension for PHP is not available
      */
-    public function connect($host = null, $port = null, $protocol = null, $characterSet = null, $serverType = 0, $tls = false)
+    public function connect($host = null, $port = null, $protocol = null, $characterSet = null, $serverType = 0, $tls = false, $ssl = false)
     {
         // Valid if php load ldap module.
         if (!extension_loaded('ldap')) {
@@ -118,7 +119,14 @@ class LdapUtility
         $this->status['connect']['port'] = $port;
         $this->serverType = (int)$serverType;
 
-        if (!($this->connection = @ldap_connect($host, $port))) {
+        if ($ssl) {
+            $this->status['option']['ssl'] = 'Enable';
+            $this->connection = @ldap_connect('ldaps://' . $host . ':' . $port);
+        } else {
+            $this->connection = @ldap_connect($host, $port);
+        }
+
+        if (!$this->connection) {
             // Could not connect to ldap server
             $this->connection = false;
             $this->status['connect']['status'] = ldap_error($this->connection);
@@ -137,7 +145,7 @@ class LdapUtility
             @ldap_set_option($this->connection, LDAP_OPT_REFERRALS, 0);
         }
 
-        if ($tls) {
+        if ($tls && !$ssl) {
             if (!@ldap_start_tls($this->connection)) {
                 $this->status['option']['tls'] = 'Disable';
                 $this->status['option']['status'] = ldap_error($this->connection);

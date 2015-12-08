@@ -75,6 +75,15 @@ port 389 and then set up an encrypted connection.
 .. note:: More information on TLS may be found at http://www.openldap.org/doc/admin24/tls.html.
 
 
+.. _admin-manual-ldap-ssl:
+
+SSL
+^^^
+
+Wether you want to use :abbr:`SSL (Secure Socket Layer)`, that is start with an encrypted connection on default port
+636.
+
+
 .. _admin-manual-ldap-binddn:
 
 Bind DN

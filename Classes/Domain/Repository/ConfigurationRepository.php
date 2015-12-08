@@ -209,6 +209,7 @@ class ConfigurationRepository
         $object->_setProperty('ldapProtocol', (int)$row['ldap_protocol']);
         $object->_setProperty('ldapPort', (int)$row['ldap_port']);
         $object->_setProperty('ldapTls', (bool)$row['ldap_tls']);
+        $object->_setProperty('ldapSsl', (bool)$row['ldap_ssl']);
         $object->_setProperty('groupMembership', (int)$row['group_membership']);
     }
 

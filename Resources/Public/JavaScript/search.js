@@ -76,4 +76,4 @@ IgLdapSsoAuthSearch = {
             IgLdapSsoAuthSearch.search();
         }
     });
-}(jQuery));
+}(jQuery || TYPO3.jQuery));

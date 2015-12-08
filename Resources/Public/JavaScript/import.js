@@ -47,4 +47,4 @@ IgLdapSsoAuthImport = {
             IgLdapSsoAuthImport.ldapImport($("button[value='" + dn + "']").closest('tr'));
         });
     });
-}(jQuery));
+}(jQuery || TYPO3.jQuery));

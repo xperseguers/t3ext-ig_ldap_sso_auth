@@ -55,7 +55,13 @@ class SuggestWizard
 
             $out[] = $suggestion . '</pre>';
 
-            $onclick = "var node=document.getElementById('$suggestId');document.{$PA['formName']}['{$PA['itemName']}'].value=(node.innerText || node.textContent);";
+            if (preg_match('/id="(formengine-input-[a-f0-9]+)"/', $PA['item'], $matches)) {
+                $fieldJs = "document.getElementById('{$matches[1]}')";
+            } else {
+                $fieldJs = "document.{$PA['formName']}['{$PA['itemName']}']";
+            }
+
+            $onclick = "var node=document.getElementById('$suggestId');$fieldJs.value=(node.innerText || node.textContent);";
             $onclick .= implode('', $PA['fieldChangeFunc']);    // Necessary to tell TCEforms that the value is updated
             $button = '<input type="button" value="' . $this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:suggestion.copy', true) . '" onclick="' . htmlspecialchars($onclick) . '" class="formField" />';
             $out[] = $button;

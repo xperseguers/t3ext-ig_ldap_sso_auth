@@ -30,6 +30,9 @@ class Configuration
     const GROUP_MEMBERSHIP_FROM_GROUP = 1;
     const GROUP_MEMBERSHIP_FROM_MEMBER = 2;
 
+    const SERVER_OPENLDAP = 0;
+    const SERVER_ACTIVE_DIRECTORY = 1;
+
     /**
      * @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration
      */
@@ -563,10 +566,10 @@ class Configuration
     public static function getServerType($type = null)
     {
         switch ($type) {
-            case 0:
+            case static::SERVER_OPENLDAP:
                 $server = 'OpenLDAP';
                 break;
-            case 1:
+            case static::SERVER_ACTIVE_DIRECTORY:
                 $server = 'Active Directory / Novell eDirectory';
                 break;
             default:

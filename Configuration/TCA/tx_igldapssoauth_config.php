@@ -95,8 +95,14 @@ return array(
             'config' => array(
                 'type' => 'select',
                 'items' => array(
-                    array('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_server.I.0', '0'),
-                    array('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_server.I.1', '1'),
+                    array(
+                        'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_server.I.0',
+                        \Causal\IgLdapSsoAuth\Library\Configuration::SERVER_OPENLDAP
+                    ),
+                    array(
+                        'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_server.I.1',
+                        \Causal\IgLdapSsoAuth\Library\Configuration::SERVER_ACTIVE_DIRECTORY
+                    ),
                 ),
                 'size' => 1,
                 'maxitems' => 1,

@@ -93,7 +93,7 @@ class Typo3UserRepository
             $users = $databaseConnection->exec_SELECTgetRows(
                 '*',
                 $table,
-                'uid=' . intval($uid)
+                'uid=' . (int)$uid
             );
         } elseif (!empty($dn)) {
             // Search with DN (or fall back to username) and pid
@@ -103,7 +103,7 @@ class Typo3UserRepository
                 // a local user unrelated to LDAP and a corresponding LDAP user
                 $where .= ' OR username=' . $databaseConnection->fullQuoteStr($username, $table);
             }
-            $where .= ')' . ($pid ? ' AND pid=' . intval($pid) : '');
+            $where .= ')' . ($pid ? ' AND pid=' . (int)$pid : '');
 
             $users = $databaseConnection->exec_SELECTgetRows(
                 '*',
@@ -118,7 +118,7 @@ class Typo3UserRepository
                 '*',
                 $table,
                 'username=' . $databaseConnection->fullQuoteStr($username, $table)
-                . ($pid ? ' AND pid=' . intval($pid) : '')
+                . ($pid ? ' AND pid=' . (int)$pid : '')
             );
         }
 
@@ -153,7 +153,7 @@ class Typo3UserRepository
         $newRow = $databaseConnection->exec_SELECTgetSingleRow(
             '*',
             $table,
-            'uid=' . intval($uid)
+            'uid=' . (int)$uid
         );
 
         NotificationUtility::dispatch(
@@ -189,7 +189,7 @@ class Typo3UserRepository
 
         $databaseConnection->exec_UPDATEquery(
             $table,
-            'uid=' . intval($data['uid']),
+            'uid=' . (int)$data['uid'],
             $cleanData,
             false
         );
@@ -229,7 +229,7 @@ class Typo3UserRepository
             }
             static::getDatabaseConnection()->exec_UPDATEquery(
                 $table,
-                'tx_igldapssoauth_id = ' . intval($uid),
+                'tx_igldapssoauth_id = ' . (int)$uid,
                 $fields
             );
 
@@ -264,7 +264,7 @@ class Typo3UserRepository
             }
             static::getDatabaseConnection()->exec_UPDATEquery(
                 $table,
-                'tx_igldapssoauth_id = ' . intval($uid),
+                'tx_igldapssoauth_id = ' . (int)$uid,
                 $fields
             );
 

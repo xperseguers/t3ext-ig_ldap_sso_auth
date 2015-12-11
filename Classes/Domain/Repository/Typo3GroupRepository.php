@@ -79,10 +79,10 @@ class Typo3GroupRepository
         $databaseConnection = static::getDatabaseConnection();
 
         if ($uid) {
-            $where = 'uid=' . intval($uid);
+            $where = 'uid=' . (int)$uid;
         } else {
             $where = 'tx_igldapssoauth_dn=' . $databaseConnection->fullQuoteStr($dn, $table)
-                . ($pid ? ' AND pid=' . intval($pid) : '');
+                . ($pid ? ' AND pid=' . (int)$pid : '');
         }
 
         // Return TYPO3 group
@@ -120,7 +120,7 @@ class Typo3GroupRepository
         $newRow = $databaseConnection->exec_SELECTgetSingleRow(
             '*',
             $table,
-            'uid=' . intval($uid)
+            'uid=' . (int)$uid
         );
 
         NotificationUtility::dispatch(
@@ -153,7 +153,7 @@ class Typo3GroupRepository
 
         $databaseConnection->exec_UPDATEquery(
             $table,
-            'uid=' . intval($data['uid']),
+            'uid=' . (int)$data['uid'],
             $data,
             false
         );

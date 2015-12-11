@@ -85,7 +85,7 @@ class Configuration
         static::$domains = array();
         $domainUids = GeneralUtility::intExplode(',', $configuration->getDomains(), true);
         foreach ($domainUids as $domainUid) {
-            $row = static::getDatabaseConnection()->exec_SELECTgetSingleRow('domainName', 'sys_domain', 'uid=' . intval($domainUid));
+            $row = static::getDatabaseConnection()->exec_SELECTgetSingleRow('domainName', 'sys_domain', 'uid=' . (int)$domainUid);
             static::$domains[] = $row['domainName'];
         }
 
@@ -265,7 +265,7 @@ class Configuration
         }
 
         if (isset($mapping['pid'])) {
-            return is_numeric($mapping['pid']) ? intval($mapping['pid']) : 0;
+            return is_numeric($mapping['pid']) ? (int)$mapping['pid'] : 0;
         }
 
         return 0;
@@ -283,7 +283,7 @@ class Configuration
             return null;
         }
         if (isset($mapping['pid'])) {
-            return is_numeric($mapping['pid']) ? intval($mapping['pid']) : 0;
+            return is_numeric($mapping['pid']) ? (int)$mapping['pid'] : 0;
         }
         return null;
     }
@@ -619,7 +619,7 @@ class Configuration
         $config = static::getDatabaseConnection()->exec_SELECTgetRows(
             '*',
             'tx_igldapssoauth_config',
-            'deleted=0 AND hidden=0 AND uid=' . intval($uid)
+            'deleted=0 AND hidden=0 AND uid=' . (int)$uid
         );
 
         return count($config) == 1 ? $config[0] : array();

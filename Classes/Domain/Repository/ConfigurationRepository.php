@@ -92,7 +92,7 @@ class ConfigurationRepository
      */
     public function findByUid($uid)
     {
-        $where = 'uid=' . intval($uid) . $this->getWhereClauseForEnabledFields();
+        $where = 'uid=' . (int)$uid . $this->getWhereClauseForEnabledFields();
 
         $row = static::getDatabaseConnection()->exec_SELECTgetSingleRow('*', $this->table, $where);
         if ($row) {

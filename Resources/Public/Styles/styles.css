@@ -88,7 +88,7 @@ textarea {
 }
 
 button {
-    color: #000;
+    color: #000 !important;
     width: 10em;
 }
 

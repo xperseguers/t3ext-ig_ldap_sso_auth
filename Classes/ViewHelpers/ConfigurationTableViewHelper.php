@@ -15,6 +15,7 @@
 namespace Causal\IgLdapSsoAuth\ViewHelpers;
 
 use TYPO3\CMS\Backend\Utility\IconUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Render a configuration table
@@ -113,8 +114,16 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
                 $messageId = 'module_status.messages.disabled';
                 $class = 'value-disabled';
             }
-            $value = IconUtility::getSpriteIcon($icon) . ' ' . htmlspecialchars($this->translate($messageId));
+            if (version_compare(TYPO3_version, '7.6', '>=')) {
+                /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
+                $iconFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Imaging\\IconFactory');
+                $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
+            } else {
+                $value = IconUtility::getSpriteIcon($icon);
+            }
+            $value .=  ' ' . htmlspecialchars($this->translate($messageId));
         } elseif ($depth > 1 && $key === 'status') {
+            $label = $value;
             if ($value === 'Success') {
                 $icon = 'status-dialog-ok';
                 $class = 'value-success';
@@ -123,7 +132,14 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
                 $class = 'value-error';
                 $hasError = true;
             }
-            $value = IconUtility::getSpriteIcon($icon) . ' ' . htmlspecialchars($value);
+            if (version_compare(TYPO3_version, '7.6', '>=')) {
+                /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
+                $iconFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Imaging\\IconFactory');
+                $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
+            } else {
+                $value = IconUtility::getSpriteIcon($icon);
+            }
+            $value .=  ' ' . htmlspecialchars($label);
         } elseif ($value instanceof \TYPO3\CMS\Extbase\DomainObject\AbstractEntity) {
             $icon = $value instanceof \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup
                 ? 'status-user-group-backend'

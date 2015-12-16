@@ -42,7 +42,7 @@ user's log-on session without requiring the user to re-enter her password.
 If the KDC approves the client's request for a TGT, the reply (referred to as the AS reply) will include two sections: a
 TGT encrypted with a key that only the KDC (TGS) can decrypt and a session key encrypted with the user's password hash
 to handle future communications with the KDC. Because the client system cannot read the TGT contents, it must blindly
-present the ticket to the GTS for service tickets. The TGT includes time to live parameters, authorization data, a
+present the ticket to the TGS for service tickets. The TGT includes time to live parameters, authorization data, a
 session key to use when communicating with the client and the client's name.
 
 

@@ -133,9 +133,10 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
                     // Useful for debugging purpose
                     $this->login['uname'] = $remoteUser;
                 }
+            }
 
-                // Authenticate user from LDAP
-            } elseif ($this->login['status'] === 'login' && $this->login['uident']) {
+            // Authenticate user from LDAP
+            if (!$userRecordOrIsValid && $this->login['status'] === 'login' && $this->login['uident']) {
 
                 // Configuration of authentication service.
                 $loginSecurityLevel = $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['loginSecurityLevel'];

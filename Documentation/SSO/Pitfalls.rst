@@ -70,6 +70,18 @@ Apache's error log when everything is working properly:
 		KrbLocalUserMapping on
 
 
+Another problem with the basic authentication prompt always shown might show up as follows in Apache's error log:
+
+.. code-block:: none
+
+	[error] [client X.X.X.X] gss_accept_sec_context() failed: Unspecified GSS failure.
+	                         Minor code may provide more information (, Wrong principal in request)
+
+Although the reason is most probably that the reverse DNS of the web server is not exactly identical to what was
+specified in the keytab file, in one case, it turned out the problem was the very same as above, namely that the account
+did not support Kerberos AES 256 bit encryption.
+
+
 **Sources:**
 
 - http://www.microhowto.info/howto/configure_apache_to_use_kerberos_authentication.html

@@ -14,6 +14,8 @@
 
 namespace Causal\IgLdapSsoAuth\ViewHelpers;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Displays sprite icon identified by iconName key
  *
@@ -37,7 +39,22 @@ class SpriteManagerIconViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Be\Abstra
         if (!isset($options['title']) && $uid > 0) {
             $options['title'] = 'id=' . $uid;
         }
-        return \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon($iconName, $options);
+        if (version_compare(TYPO3_version, '7.6', '>=')) {
+            /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
+            $iconFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Imaging\\IconFactory');
+            $html = $iconFactory->getIcon($iconName, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
+            if (!empty($options)) {
+                $attributes = '';
+                foreach ($options as $key => $value) {
+                    $attributes .= htmlspecialchars($key) . '="' . htmlspecialchars($value) . '" ';
+                }
+                $html = str_replace('<img src=', '<img ' . $attributes . 'src=', $html);
+            }
+        } else {
+            $html = \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon($iconName, $options);
+        }
+
+        return $html;
     }
 
 }

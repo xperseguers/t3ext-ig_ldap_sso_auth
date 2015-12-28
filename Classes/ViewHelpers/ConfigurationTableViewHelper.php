@@ -14,7 +14,6 @@
 
 namespace Causal\IgLdapSsoAuth\ViewHelpers;
 
-use TYPO3\CMS\Backend\Utility\IconUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -102,6 +101,11 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
             return sprintf('<td>%s</td>', $this->renderTable($value, false, $depth + 1, $hasError));
         }
 
+        if (version_compare(TYPO3_version, '7.6', '>=')) {
+            /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
+            $iconFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Imaging\\IconFactory');
+        }
+
         $class = 'value-default';
 
         if (is_bool($value)) {
@@ -115,11 +119,9 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
                 $class = 'value-disabled';
             }
             if (version_compare(TYPO3_version, '7.6', '>=')) {
-                /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
-                $iconFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Imaging\\IconFactory');
                 $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
             } else {
-                $value = IconUtility::getSpriteIcon($icon);
+                $value = \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon($icon);
             }
             $value .=  ' ' . htmlspecialchars($this->translate($messageId));
         } elseif ($depth > 1 && $key === 'status') {
@@ -133,18 +135,24 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
                 $hasError = true;
             }
             if (version_compare(TYPO3_version, '7.6', '>=')) {
-                /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
-                $iconFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Imaging\\IconFactory');
                 $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
             } else {
-                $value = IconUtility::getSpriteIcon($icon);
+                $value = \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon($icon);
             }
             $value .=  ' ' . htmlspecialchars($label);
         } elseif ($value instanceof \TYPO3\CMS\Extbase\DomainObject\AbstractEntity) {
             $icon = $value instanceof \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup
                 ? 'status-user-group-backend'
                 : 'status-user-group-frontend';
-            $value = IconUtility::getSpriteIcon($icon, array('title' => 'id=' . $value->getUid())) . ' ' . htmlspecialchars($value->getTitle());
+            $options = array(
+                'title' => 'id=' . $value->getUid(),
+            );
+            if (version_compare(TYPO3_version, '7.6', '>=')) {
+                $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render() . ' ' . htmlspecialchars($value->getTitle());
+                $value = str_replace('<img src=', '<img title="' . htmlspecialchars($options['title']) . '" src=', $value);
+            } else {
+                $value = \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon($icon, $options) . ' ' . htmlspecialchars($value->getTitle());
+            }
         } else {
             $value = htmlspecialchars($value);
         }

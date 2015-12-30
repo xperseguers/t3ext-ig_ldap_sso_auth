@@ -93,10 +93,12 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface
             static::getLogger()->error($message, $debugConfiguration);
 
             $this->disconnect();
+
             return false;
         }
 
         static::getLogger()->debug('Successfully connected', $debugConfiguration);
+
         return true;
     }
 
@@ -121,7 +123,6 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface
      */
     public function validateUser($username = null, $password = null, $baseDn = null, $filter = null)
     {
-
         // If user found on ldap server.
         if ($this->ldapUtility->search($baseDn, str_replace('{USERNAME}', $username, $filter), array('dn'))) {
 
@@ -131,6 +132,7 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface
                 // Bind DN of user with password.
                 if (empty($password)) {
                     $this->lastBindDiagnostic = 'Empty password provided!';
+
                     return false;
                 } elseif ($this->ldapUtility->bind($this->ldapUtility->getDn(), $password)) {
                     $dn = $this->ldapUtility->getDn();
@@ -144,6 +146,7 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface
                 } else {
                     $status = $this->ldapUtility->getStatus();
                     $this->lastBindDiagnostic = $status['bind']['diagnostic'];
+
                     return false;    // Password does not match
                 }
 
@@ -222,6 +225,7 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface
             $this->ldapUtility->setPartialSearchPointer($partialSearchPointer);
         }
         $result = $this->ldapUtility->getNextEntries();
+
         return $result;
     }
 
@@ -286,6 +290,7 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface
         if ($logger === null) {
             $logger = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
         }
+
         return $logger;
     }
 

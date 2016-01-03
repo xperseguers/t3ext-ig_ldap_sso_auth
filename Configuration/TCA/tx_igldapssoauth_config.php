@@ -15,7 +15,7 @@ return array(
             'disabled' => 'hidden',
         ),
         'requestUpdate' => 'ldap_server',
-        'iconfile' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('ig_ldap_sso_auth') . 'Resources/Public/Icons/icon_tx_igldapssoauth_config.png',
+        'iconfile' => 'EXT:ig_ldap_sso_auth/Resources/Public/Icons/icon_tx_igldapssoauth_config.png',
     ),
     'interface' => array(
         'showRecordFieldList' => 'hidden, name, domains,
@@ -196,12 +196,12 @@ return array(
                     array(
                         'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.group_membership.I.1',
                         \Causal\IgLdapSsoAuth\Library\Configuration::GROUP_MEMBERSHIP_FROM_GROUP,
-                        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('ig_ldap_sso_auth') . 'Resources/Public/Icons/selicon_group_membership_1.png'
+                        'EXT:ig_ldap_sso_auth/Resources/Public/Icons/selicon_group_membership_1.png'
                     ),
                     array(
                         'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.group_membership.I.2',
                         \Causal\IgLdapSsoAuth\Library\Configuration::GROUP_MEMBERSHIP_FROM_MEMBER,
-                        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('ig_ldap_sso_auth') . 'Resources/Public/Icons/selicon_group_membership_2.png'
+                        'EXT:ig_ldap_sso_auth/Resources/Public/Icons/selicon_group_membership_2.png'
                     ),
                 ),
                 'minitems' => 1,

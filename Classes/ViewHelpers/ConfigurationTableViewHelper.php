@@ -103,7 +103,10 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
 
         if (version_compare(TYPO3_version, '7.6', '>=')) {
             /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
-            $iconFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Imaging\\IconFactory');
+            static $iconFactory = null;
+            if ($iconFactory === null) {
+                $iconFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Imaging\\IconFactory');
+            }
         }
 
         $class = 'value-default';
@@ -141,14 +144,29 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
             }
             $value .=  ' ' . htmlspecialchars($label);
         } elseif ($value instanceof \TYPO3\CMS\Extbase\DomainObject\AbstractEntity) {
-            $icon = $value instanceof \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup
-                ? 'status-user-group-backend'
-                : 'status-user-group-frontend';
+            if ($value instanceof \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup) {
+                $icon = 'status-user-group-backend';
+                $table = 'be_groups';
+            } else {
+                $icon = 'status-user-group-frontend';
+                $table = 'fe_groups';
+            }
             $options = array(
                 'title' => 'id=' . $value->getUid(),
             );
             if (version_compare(TYPO3_version, '7.6', '>=')) {
-                $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render() . ' ' . htmlspecialchars($value->getTitle());
+                /** @var \Causal\IgLdapSsoAuth\Hooks\IconFactory $iconFactoryHook */
+                static $iconFactoryHook = null;
+                if ($iconFactoryHook === null) {
+                    $iconFactoryHook = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Hooks\\IconFactory');
+                }
+                $overlay = $iconFactoryHook->postOverlayPriorityLookup(
+                    $table,
+                    array('uid' => $value->getUid()),
+                    array(),
+                    null
+                );
+                $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL, $overlay)->render() . ' ' . htmlspecialchars($value->getTitle());
                 $value = str_replace('<img src=', '<img title="' . htmlspecialchars($options['title']) . '" src=', $value);
             } else {
                 $value = \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon($icon, $options) . ' ' . htmlspecialchars($value->getTitle());

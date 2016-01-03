@@ -1,13 +1,27 @@
 <?php
 defined('TYPO3_MODE') || die();
 
-$icons = array(
-    'overlay-ldap-record' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY) . 'Resources/Public/Icons/overlay-ldap-record.png',
-);
-\TYPO3\CMS\Backend\Sprite\SpriteManager::addSingleIcons($icons, $_EXTKEY);
+// Register additional sprite icons
+if (version_compare(TYPO3_version, '7.6', '>=')) {
+    /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
+    $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Imaging\\IconRegistry');
+    $iconRegistry->registerIcon('extensions-' . $_EXTKEY . '-overlay-ldap-record',
+        'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider',
+        array(
+            'source' => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/overlay-ldap-record.png',
+        )
+    );
+    unset($iconRegistry);
+} else {
+    $extensionRelativePath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY);
+    $icons = array(
+        'overlay-ldap-record' => $extensionRelativePath . 'Resources/Public/Icons/overlay-ldap-record-62.png',
+    );
+    \TYPO3\CMS\Backend\Sprite\SpriteManager::addSingleIcons($icons, $_EXTKEY);
 
-$GLOBALS['TBE_STYLES']['spriteIconApi']['spriteIconRecordOverlayPriorities'][] = 'is_ldap_record';
-$GLOBALS['TBE_STYLES']['spriteIconApi']['spriteIconRecordOverlayNames']['is_ldap_record'] = 'extensions-' . $_EXTKEY . '-overlay-ldap-record';
+    $GLOBALS['TBE_STYLES']['spriteIconApi']['spriteIconRecordOverlayPriorities'][] = 'is_ldap_record';
+    $GLOBALS['TBE_STYLES']['spriteIconApi']['spriteIconRecordOverlayNames']['is_ldap_record'] = 'extensions-' . $_EXTKEY . '-overlay-ldap-record';
+}
 
 if (TYPO3_MODE === 'BE') {
     if (version_compare(TYPO3_version, '7.0', '>=')) {

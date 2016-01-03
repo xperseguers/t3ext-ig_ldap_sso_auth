@@ -55,6 +55,7 @@ class DatabaseRecordListIconUtility implements \TYPO3\CMS\Backend\RecordList\Rec
      * @param array &$status The array of associated statuses
      * @return void
      * @see \TYPO3\CMS\Backend\Utility\IconUtility::mapRecordOverlayToSpriteIconName()
+     * @target TYPO3 6.2 LTS, see \Causal\IgLdapSsoAuth\Hooks\IconFactory for TYPO3 >= 7 LTS
      */
     public function overrideIconOverlay($table, array $row, array &$status)
     {

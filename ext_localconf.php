@@ -10,7 +10,12 @@ if ((bool)$EXT_CONFIG['enableFESSO']) {
 }
 
 // Visually change the record icon for FE/BE users and groups
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_iconworks.php']['overrideIconOverlay'][] = 'EXT:' . $_EXTKEY . '/Classes/Hooks/DatabaseRecordListIconUtility.php:Causal\\IgLdapSsoAuth\\Hooks\\DatabaseRecordListIconUtility';
+if (version_compare(TYPO3_version, '7.6', '>=')) {
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['TYPO3\\CMS\\Core\\Imaging\\IconFactory']['overrideIconOverlay'][] = 'Causal\\IgLdapSsoAuth\\Hooks\\IconFactory';
+} else {
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_iconworks.php']['overrideIconOverlay'][] = 'EXT:' . $_EXTKEY . '/Classes/Hooks/DatabaseRecordListIconUtility.php:Causal\\IgLdapSsoAuth\\Hooks\\DatabaseRecordListIconUtility';
+}
+
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['getTable'][] = 'EXT:' . $_EXTKEY . '/Classes/Hooks/DatabaseRecordListIconUtility.php:Causal\\IgLdapSsoAuth\\Hooks\\DatabaseRecordListIconUtility';
 
 // Service configuration

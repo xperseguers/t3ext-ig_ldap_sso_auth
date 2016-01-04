@@ -207,6 +207,7 @@ return array(
                 'minitems' => 1,
                 'maxitems' => 1,
                 'default' => 1,
+                'showIconTable' => true,
             ),
         ),
         'be_users_basedn' => array(

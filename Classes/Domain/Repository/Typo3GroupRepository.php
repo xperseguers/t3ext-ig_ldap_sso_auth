@@ -67,10 +67,11 @@ class Typo3GroupRepository
      * @param int $uid
      * @param int|null $pid
      * @param string $dn
+     * @param string $groupName
      * @return array|null
      * @throws InvalidUserGroupTableException
      */
-    public static function fetch($table, $uid = 0, $pid = null, $dn = null)
+    public static function fetch($table, $uid = 0, $pid = null, $dn = null, $groupName = null)
     {
         if (!GeneralUtility::inList('be_groups,fe_groups', $table)) {
             throw new InvalidUserGroupTableException('Invalid table "' . $table . '"', 1404891809);
@@ -81,8 +82,11 @@ class Typo3GroupRepository
         if ($uid) {
             $where = 'uid=' . (int)$uid;
         } else {
-            $where = 'tx_igldapssoauth_dn=' . $databaseConnection->fullQuoteStr($dn, $table)
-                . ($pid ? ' AND pid=' . (int)$pid : '');
+            $where = '(' . 'tx_igldapssoauth_dn=' . $databaseConnection->fullQuoteStr($dn, $table);
+            if (!empty($groupName)) {
+                $where .= ' OR title=' . $databaseConnection->fullQuoteStr($groupName, $table);
+            }
+            $where .= ')' . ($pid ? ' AND pid=' . (int)$pid : '');
         }
 
         // Return TYPO3 group

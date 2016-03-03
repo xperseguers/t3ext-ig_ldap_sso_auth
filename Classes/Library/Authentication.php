@@ -351,7 +351,8 @@ class Authentication
             $typo3GroupsTemp = static::getTypo3Groups(
                 $ldapGroups,
                 $groupTable,
-                $typo3GroupPid
+                $typo3GroupPid,
+                $configuration['groups']['mapping']
             );
 
             if (count($requiredLDAPGroups) > 0) {
@@ -563,9 +564,10 @@ class Authentication
      * @param array $ldapGroups
      * @param string $table
      * @param int|null $pid
+     * @param array $mapping
      * @return array
      */
-    public static function getTypo3Groups(array $ldapGroups = array(), $table = null, $pid = null)
+    public static function getTypo3Groups(array $ldapGroups = array(), $table = null, $pid = null, array $mapping = array())
     {
         if (count($ldapGroups) === 0) {
             // Early return
@@ -575,7 +577,12 @@ class Authentication
         $typo3Groups = array();
 
         foreach ($ldapGroups as $ldapGroup) {
-            $existingTypo3Groups = Typo3GroupRepository::fetch($table, 0, $pid, $ldapGroup['dn']);
+            $groupName = null;
+            if (isset($mapping['title']) &&  preg_match("`<([^$]*)>`", $mapping['title'])) {
+                $groupName = static::replaceLdapMarkers($mapping['title'], $ldapGroup);
+            }
+            $existingTypo3Groups = Typo3GroupRepository::fetch($table, 0, $pid, $ldapGroup['dn'], $groupName);
+
 
             if (count($existingTypo3Groups) > 0) {
                 $typo3Group = $existingTypo3Groups[0];
@@ -629,7 +636,11 @@ class Authentication
         $typo3Users = array();
 
         foreach ($ldapUsers as $ldapUser) {
-            $existingTypo3Users = Typo3UserRepository::fetch($table, 0, $pid, null, $ldapUser['dn']);
+            $username = null;
+            if (isset($mapping['username']) && preg_match("`<([^$]*)>`", $mapping['username'])) {
+                $username = static::replaceLdapMarkers($mapping['username'], $ldapUser);
+            }
+            $existingTypo3Users = Typo3UserRepository::fetch($table, 0, $pid, $username, $ldapUser['dn']);
 
             if (count($existingTypo3Users) > 0) {
                 $typo3User = $existingTypo3Users[0];

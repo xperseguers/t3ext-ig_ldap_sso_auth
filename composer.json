@@ -53,7 +53,7 @@
       "cms-package-dir": "{$vendor-dir}/typo3/cms",
       "web-dir": ".Build/Web"
     },
-    "helhum/class-alias-loader": {
+    "typo3/class-alias-loader": {
       "class-alias-maps": [
         "Migrations/Code/ClassAliasMap.php"
       ]

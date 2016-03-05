@@ -153,7 +153,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
                 }
 
                 // normal case
-                $password = $this->login['uident_text'];
+                $password = isset($this->login['uident_text']) ? $this->login['uident_text'] : $this->login['uident'];
 
                 try {
                     if ($password !== null) {

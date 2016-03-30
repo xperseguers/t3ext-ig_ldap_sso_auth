@@ -15,7 +15,7 @@
     <h1>
         <f:translate key="module_search"/>
     </h1>
-    <f:flashMessages renderMode="div"/>
+    <ldap:flashMessages/>
 
     <f:form id="tx-igldapssoauth-searchform" action="searchAjax">
         <f:form.hidden name="configuration" value="{currentConfiguration.uid}"/>

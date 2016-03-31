@@ -86,6 +86,6 @@
 
     <script type="text/javascript">
         // Initialize the editor
-        IgLdapSsoAuthSearch.actions.updateForm = "{f:uri.action(action:'updateSearchAjax', arguments:{configuration:currentConfiguration.uid, type:'TYPE'})}";
+        IgLdapSsoAuthSearch.actions.updateForm = "{f:uri.action(action:'updateSearchAjax', arguments:{configuration:currentConfiguration.uid, type:'TYPE'}) -> f:format.raw()}";
     </script>
 </f:section>

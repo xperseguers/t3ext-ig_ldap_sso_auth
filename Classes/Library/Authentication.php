@@ -707,6 +707,14 @@ class Authentication
                 $out[$field] = $value;
             }
 
+            // Instantiation of TypoScriptFrontendController instantiates PageRenderer which
+            // sets backPath to TYPO3_mainDir which is very bad in the Backend. Therefore,
+            // we must set it back to null to not get frontend-prefixed asset URLs.
+            if (TYPO3_MODE === 'BE') {
+                $pageRenderer = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Page\\PageRenderer');
+                $pageRenderer->setBackPath(null);
+            }
+
             $GLOBALS['TSFE'] = $backupTSFE;
         }
 

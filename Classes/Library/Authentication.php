@@ -276,7 +276,7 @@ class Authentication
 
         $user = is_array($users[0]) ? $users[0] : null;
 
-        static::getLogger()->debug(sprintf('Retrieving LDAP user from DN "%s"', $dn), $user);
+        static::getLogger()->debug(sprintf('Retrieving LDAP user from DN "%s"', $dn), $user ?: array());
 
         return $user;
     }

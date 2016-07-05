@@ -24,10 +24,11 @@ namespace Causal\IgLdapSsoAuth\ViewHelpers;
 class FlashMessagesViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FlashMessagesViewHelper
 {
     /**
+     * @param string $renderMode @deprecated since TYPO3 CMS 7.3. If you need custom output, use <f:flashMessages as="messages"><f:for each="messages" as="message">...</f:for></f:flashMessages>
      * @param string $as The name of the current flashMessage variable for rendering inside
      * @return string rendered Flash Messages, if there are any.
      */
-    public function render($as = null)
+    public function render($renderMode = null, $as = null)
     {
         if (version_compare(TYPO3_branch, '7', '>=')) {
             return parent::render();

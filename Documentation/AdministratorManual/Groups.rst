@@ -46,6 +46,14 @@ TYPO3 website.
 
 	ou=groups,dc=example,dc=com
 
+.. caution::
+	Be sure you do **not** include any blank space between the :term:`DN`'s arguments, e.g., ::
+
+		ou=groups, dc=example, dc=com
+
+	because this will break the membership since LDAP servers are returning a :term:`DN` without any blank space and
+	this extension is doing a simple string comparison as a security measure.
+
 
 .. _admin-manual-fegroups-filter:
 .. _admin-manual-begroups-filter:

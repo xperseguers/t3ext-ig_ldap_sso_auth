@@ -194,9 +194,9 @@ class Authentication
             // User does not exist in TYPO3.
         } elseif (empty($typo3_user['uid']) && (!empty($typo3_groups) || !Configuration::getValue('DeleteUserIfNoTYPO3Groups'))) {
             // Insert new user: use TCA configuration to override default values
-            $table = static::$authenticationService->authInfo['db_user']['table'];
-            if (is_array($GLOBALS['TCA'][$table]['columns'])) {
-                foreach ($GLOBALS['TCA'][$table]['columns'] as $column => $columnConfig) {
+            $userTable = static::$authenticationService->authInfo['db_user']['table'];
+            if (is_array($GLOBALS['TCA'][$userTable]['columns'])) {
+                foreach ($GLOBALS['TCA'][$userTable]['columns'] as $column => $columnConfig) {
                     if (isset($columnConfig['config']['default'])) {
                         $defaultValue = $columnConfig['config']['default'];
                         $typo3_user[$column] = $defaultValue;
@@ -206,7 +206,7 @@ class Authentication
 
             $typo3_user['username'] = Typo3UserRepository::setUsername($typo3_user['username']);
 
-            $typo3_user = Typo3UserRepository::add($table, $typo3_user);
+            $typo3_user = Typo3UserRepository::add($userTable, $typo3_user);
         }
 
         if (!empty($typo3_user['uid'])) {
@@ -225,7 +225,8 @@ class Authentication
                 $typo3_user['endtime'] = $GLOBALS['EXEC_TIME'];
             }
             // Set groups to user.
-            $typo3_user = Typo3UserRepository::setUserGroups($typo3_user, $typo3_groups);
+            $groupTable = static::$authenticationService->authInfo['db_groups']['table'];
+            $typo3_user = Typo3UserRepository::setUserGroups($typo3_user, $typo3_groups, $groupTable);
             // Merge LDAP user with TYPO3 user from mapping.
             if ($typo3_user) {
                 $typo3_user = static::merge($ldapUser, $typo3_user, static::$config['users']['mapping']);

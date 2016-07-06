@@ -217,8 +217,7 @@ class UserImportUtility
                 // Required LDAP groups are missing: quit!
                 return $user;
             }
-            $user = Typo3UserRepository::setUserGroups($user, $typo3Groups);
-
+            $user = Typo3UserRepository::setUserGroups($user, $typo3Groups, $this->groupTable);
             $user = Typo3UserRepository::add($this->userTable, $user);
             $this->usersAdded++;
         } else {
@@ -240,7 +239,8 @@ class UserImportUtility
             $typo3Groups = Authentication::getUserGroups($ldapUser, $this->configuration, $this->groupTable);
             $user = Typo3UserRepository::setUserGroups(
                 $user,
-                ($typo3Groups === null) ? array() : $typo3Groups
+                ($typo3Groups === null) ? array() : $typo3Groups,
+                $this->groupTable
             );
             $success = Typo3UserRepository::update($this->userTable, $user);
             if ($success) {

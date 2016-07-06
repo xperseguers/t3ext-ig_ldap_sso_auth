@@ -291,7 +291,7 @@ class Typo3UserRepository
     public static function set_usergroup(array $typo3_groups = array(), array $typo3_user = array(), \Causal\IgLdapSsoAuth\Service\AuthenticationService $pObj = null)
     {
         GeneralUtility::logDeprecatedFunction();
-        return static::setUserGroups($typo3_user, $typo3_groups);
+        return static::setUserGroups($typo3_user, $typo3_groups, isset($typo3_user['admin']) ? 'be_groups' : 'fe_groups');
     }
 
     /**
@@ -299,9 +299,10 @@ class Typo3UserRepository
      *
      * @param array $typo3User
      * @param array $typo3Groups
+     * @param string $table The TYPO3 table holding the user groups
      * @return array
      */
-    public static function setUserGroups(array $typo3User, array $typo3Groups)
+    public static function setUserGroups(array $typo3User, array $typo3Groups, $table)
     {
         $groupUid = array();
 
@@ -321,8 +322,22 @@ class Typo3UserRepository
 
         if (Configuration::getValue('keepTYPO3Groups') && $typo3User['usergroup']) {
             $usergroup = GeneralUtility::intExplode(',', $typo3User['usergroup'], true);
+            $localUserGroups = array();
+            if (!empty($usergroup)) {
+                $database = static::getDatabaseConnection();
+                $rows = $database->exec_SELECTgetRows(
+                    'uid',
+                    $table,
+                    'uid IN (' . implode(',', $usergroup) . ') AND tx_igldapssoauth_dn=' . $database->fullQuoteStr('', $table),
+                    '',
+                    '',
+                    '',
+                    'uid'
+                );
+                $localUserGroups = array_keys($rows);
+            }
 
-            foreach ($usergroup as $uid) {
+            foreach ($localUserGroups as $uid) {
                 if (!in_array($uid, $groupUid)) {
                     $groupUid[] = $uid;
                 }

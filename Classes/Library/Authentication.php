@@ -704,7 +704,7 @@ class Authentication
                 $field = substr($typoScriptKey, 0, -1);
                 $value = isset($out[$field]) ? $out[$field] : '';
                 $value = $contentObj->stdWrap($value, $mapping[$typoScriptKey]);
-                $out[$field] = $value;
+                $out = static::mergeSimple(array($field => $value), $out, $field, $value);
             }
 
             // Instantiation of TypoScriptFrontendController instantiates PageRenderer which

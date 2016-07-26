@@ -36,4 +36,31 @@ class FlashMessagesViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FlashMessages
             return parent::render(\TYPO3\CMS\Fluid\ViewHelpers\FlashMessagesViewHelper::RENDER_MODE_DIV);
         }
     }
+
+    /**
+     * Renders the flash messages as unordered list
+     *
+     * @param array $flashMessages \TYPO3\CMS\Core\Messaging\FlashMessage[]
+     * @return string
+     * @typo3 7
+     */
+    protected function renderAsList(array $flashMessages)
+    {
+        $flashMessagesClass = $this->hasArgument('class') ? $this->arguments['class'] : 'typo3-messages';
+        $tagContent = '';
+        $this->tag->addAttribute('class', $flashMessagesClass);
+        /** @var $singleFlashMessage \TYPO3\CMS\Core\Messaging\FlashMessage */
+        foreach ($flashMessages as $singleFlashMessage) {
+            $severityClass = sprintf('alert %s', $singleFlashMessage->getClass());
+            // This is what changes in our override:
+            //$messageContent = htmlspecialchars($singleFlashMessage->getMessage());
+            $messageContent = $singleFlashMessage->getMessage();
+            if ($singleFlashMessage->getTitle() !== '') {
+                $messageContent = sprintf('<h4>%s</h4>', htmlspecialchars($singleFlashMessage->getTitle())) . $messageContent;
+            }
+            $tagContent .= sprintf('<li class="%s">%s</li>', htmlspecialchars($severityClass), $messageContent);
+        }
+        $this->tag->setContent($tagContent);
+        return $this->tag->render();
+    }
 }

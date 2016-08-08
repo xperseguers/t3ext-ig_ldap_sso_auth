@@ -271,7 +271,7 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface
      */
     public function escapeDnForFilter($dn)
     {
-        $escapeCharacters = array('(', ')', '\\');
+        $escapeCharacters = array('\\', '(', ')');
         foreach ($escapeCharacters as $escapeCharacter) {
             $dn = str_replace($escapeCharacter, '\\' . $escapeCharacter, $dn);
         }

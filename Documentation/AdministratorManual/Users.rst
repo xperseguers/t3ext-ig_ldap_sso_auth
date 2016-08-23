@@ -139,7 +139,7 @@ server.
 .. tip::
 	You may combine multiple markers as well, e.g., ::
 
-		name = <sn>, <givenName>
+		name = <sn>, <givenname>
 
 .. _admin-manual-feusers-mapping-custommarker:
 .. _admin-manual-beusers-mapping-custommarker:
@@ -184,13 +184,13 @@ Examples
 	tstamp = {DATE}
 	email = <mail>
 	name = <cn>
-	first_name = <givenName>
+	first_name = <givenname>
 	last_name = <sn>
 	title = <title>
 	address = <street>
-	zip = <postalCode>
+	zip = <postalcode>
 	city = <l>
-	telephone = <telephoneNumber>
+	telephone = <telephonenumber>
 
 
 

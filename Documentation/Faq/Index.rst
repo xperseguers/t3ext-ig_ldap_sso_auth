@@ -116,7 +116,7 @@ SSO backend module. Once imported, you may change their name to fit your needs a
 *Yes. You should provide a be_groups and/or fe_groups mapping instruction for the LDAP attribute holding the reference
 to the parent group. E.g.,* ::
 
-	parentGroup = <memberOf>
+	parentGroup = <memberof>
 
 -------
 

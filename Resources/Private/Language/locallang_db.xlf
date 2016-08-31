@@ -37,7 +37,7 @@
 				<source>Purge Frontend users: Delete Frontend user upon login if no LDAP groups are found.</source>
 			</trans-unit>
 			<trans-unit id="settings.TYPO3FEDeleteUserIfNoTYPO3Groups">
-				<source>Restrict new Frontend users: Do not synchronize Frontend user if the LDAP groups they are member of are not found locally.</source>
+				<source>Restrict new Frontend users: This option will prevent new Frontend users to be created and will delete existing ones whenever the LDAP groups they are member of are not found locally.</source>
 			</trans-unit>
 			<trans-unit id="settings.TYPO3FEGroupExist">
 				<source>Frontend user group must exist: If no groups are found locally, the user may not log on.</source>

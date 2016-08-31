@@ -130,9 +130,13 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
 
                 $userRecordOrIsValid = Authentication::ldapAuthenticate($remoteUser);
                 if (is_array($userRecordOrIsValid)) {
-                    // Useful for debugging purpose
                     $this->login['uname'] = $remoteUser;
                 }
+            }
+
+            if ($this->login['uname'] === null) {
+                // No way to authenticate
+                return false;
             }
 
             // Authenticate user from LDAP

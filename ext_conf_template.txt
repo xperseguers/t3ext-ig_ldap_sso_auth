@@ -25,6 +25,9 @@ TYPO3BEGroupsNotSynchronize = 0
 # cat=backend/enable; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.keepBEGroups
 keepBEGroups = 0
 
+# cat=backend/enable; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.enableBESSO
+enableBESSO = 0
+
 # cat=frontend/enable/1; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.enableFELDAPAuthentication
 enableFELDAPAuthentication = 0
 

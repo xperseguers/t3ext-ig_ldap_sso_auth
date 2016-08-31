@@ -93,7 +93,7 @@ class Configuration
         }
 
         static::$be['LDAPAuthentication'] = (bool)$globalConfiguration['enableBELDAPAuthentication'];
-        static::$be['SSOAuthentication'] = false;
+        static::$be['SSOAuthentication'] = (bool)$globalConfiguration['enableBESSO'];
         static::$be['forceLowerCaseUsername'] = $globalConfiguration['forceLowerCaseUsername'] ? (bool)$globalConfiguration['forceLowerCaseUsername'] : false;
         static::$be['evaluateGroupsFromMembership'] = $configuration->getGroupMembership() === static::GROUP_MEMBERSHIP_FROM_MEMBER;
         static::$be['IfUserExist'] = (bool)$globalConfiguration['TYPO3BEUserExist'];

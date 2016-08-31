@@ -73,9 +73,9 @@ in* ``$_SERVER['REMOTE_USER']`` *(without any domain part) to silently create th
 
 .. answer
 
-*No. Technically it would be possible to implement it, naturally. Though we did not implement SSO in backend because it
-would then be impossible for a user to log out. TYPO3 may behave differently if you show the frontend while having a
-backend session active (e.g., frontend editing) and as such we preferred not implementing it.*
+*Yes. This is possible since version 3.2.0. Please keep in mind though that enabling SSO for the backend means it is
+then impossible for a user to log out. And TYPO3 may behave differently if you show the frontend while having a
+backend session active (e.g., frontend editing).*
 
 -------
 

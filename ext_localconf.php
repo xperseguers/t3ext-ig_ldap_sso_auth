@@ -8,6 +8,9 @@ $EXT_CONFIG = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap
 if ((bool)$EXT_CONFIG['enableFESSO']) {
     $GLOBALS['TYPO3_CONF_VARS']['SVCONF']['auth']['setup']['FE_fetchUserIfNoSession'] = 1;
 }
+if ((bool)$EXT_CONFIG['enableBESSO']) {
+    $GLOBALS['TYPO3_CONF_VARS']['SVCONF']['auth']['setup']['BE_fetchUserIfNoSession'] = 1;
+}
 
 // Visually change the record icon for FE/BE users and groups
 if (version_compare(TYPO3_version, '7.6', '>=')) {

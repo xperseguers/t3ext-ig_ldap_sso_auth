@@ -84,13 +84,14 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
         $userRecordOrIsValid = false;
         $remoteUser = $this->getRemoteUser();
         $enableFrontendSso = TYPO3_MODE === 'FE' && (bool)$this->config['enableFESSO'] && $remoteUser;
+        $enableBackendSso = TYPO3_MODE === 'BE' && (bool)$this->config['enableBESSO'] && $remoteUser;
 
         // This simple check is the key to prevent your log being filled up with warnings
         // due to the AJAX calls to maintain the session active if your configuration forces
         // the authentication stack to always fetch the user:
         // $TYPO3_CONF_VARS['SVCONF']['auth']['setup']['BE_alwaysFetchUser'] = true;
         // This is the case, e.g., when using EXT:crawler.
-        if ($this->login['status'] !== 'login' && !$enableFrontendSso) {
+        if ($this->login['status'] !== 'login' && !($enableFrontendSso || $enableBackendSso)) {
             return $user;
         }
 
@@ -120,7 +121,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
             $userRecordOrIsValid = false;
 
             // Single Sign-On authentication
-            if ($enableFrontendSso) {
+            if ($enableFrontendSso || $enableBackendSso) {
                 // Strip the domain name
                 if ($pos = strpos($remoteUser, '@')) {
                     $remoteUser = substr($remoteUser, 0, $pos);
@@ -223,8 +224,9 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
 
         $remoteUser = $this->getRemoteUser();
         $enableFrontendSso = TYPO3_MODE === 'FE' && (bool)$this->config['enableFESSO'] && $remoteUser;
+        $enableBackendSso = TYPO3_MODE === 'BE' && (bool)$this->config['enableBESSO'] && $remoteUser;
 
-        if ((($this->login['uident'] && $this->login['uname']) || $enableFrontendSso) && !empty($user['tx_igldapssoauth_dn'])) {
+        if ((($this->login['uident'] && $this->login['uname']) || $enableFrontendSso || $enableBackendSso) && !empty($user['tx_igldapssoauth_dn'])) {
             if (isset($user['tx_igldapssoauth_from'])) {
                 $status = static::STATUS_AUTHENTICATION_SUCCESS_BREAK;
             } elseif (TYPO3_MODE === 'BE' && Configuration::getValue('BEfailsafe')) {

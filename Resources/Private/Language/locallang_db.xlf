@@ -30,6 +30,9 @@
 			<trans-unit id="settings.keepBEGroups">
 				<source>Keep Backend groups: Keep the Backend user groups assigned locally.</source>
 			</trans-unit>
+			<trans-unit id="settings.enableBESSO">
+				<source>Backend SSO: Enable Single Sign-On for Backend users.</source>
+			</trans-unit>
 			<trans-unit id="settings.enableFELDAPAuthentication">
 				<source>Frontend LDAP authentication: Enable LDAP authentication for the frontend.</source>
 			</trans-unit>

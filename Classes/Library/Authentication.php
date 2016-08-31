@@ -218,11 +218,13 @@ class Authentication
             if ((empty($typo3_groups) && Configuration::getValue('DeleteUserIfNoTYPO3Groups'))) {
                 $typo3_user['deleted'] = 1;
                 $typo3_user['endtime'] = $GLOBALS['EXEC_TIME'];
+                static::getLogger()->debug('User record has been deleted because she has no associated TYPO3 groups.', $typo3_user);
             }
             // Delete user if no LDAP groups found.
             if (Configuration::getValue('DeleteUserIfNoLDAPGroups') && !static::$ldapGroups) {
                 $typo3_user['deleted'] = 1;
                 $typo3_user['endtime'] = $GLOBALS['EXEC_TIME'];
+                static::getLogger()->debug('User record has been deleted because she has no LDAP groups.', $typo3_user);
             }
             // Set groups to user.
             $groupTable = static::$authenticationService->authInfo['db_groups']['table'];
@@ -240,6 +242,11 @@ class Authentication
                 Typo3UserRepository::update(static::$authenticationService->authInfo['db_user']['table'], $typo3_user);
 
                 $typo3_user['tx_igldapssoauth_from'] = 'LDAP';
+
+                if ((bool)$typo3_user['deleted']) {
+                    // User has been updated in TYPO3, but it should not be granted to get an actual session
+                    $typo3_user = false;
+                }
             }
         } else {
             $typo3_user = false;

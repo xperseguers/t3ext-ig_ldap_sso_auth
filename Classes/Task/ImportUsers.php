@@ -149,7 +149,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
                     } elseif ($this->missingUsersHandling === 'delete') {
                         static::getLogger()->debug(
                             sprintf('Deleting users (%s) for configuration record %s', $aContext, $configuration->getUid()
-                            ));
+                        ));
                         $importUtility->deleteUsers();
                     }
 

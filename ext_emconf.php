@@ -16,7 +16,7 @@ $EM_CONF[$_EXTKEY] = array(
 In case of use in an intranet environment, this extension is a perfect match since it natively brings Single Sign-On (SSO) capability to TYPO3 without any complex configuration.',
     'category' => 'services',
     'shy' => 0,
-    'version' => '3.1.1-dev',
+    'version' => '3.1.1',
     'dependencies' => '',
     'conflicts' => '',
     'priority' => '',

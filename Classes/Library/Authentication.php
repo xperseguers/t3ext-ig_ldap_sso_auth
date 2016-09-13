@@ -453,9 +453,9 @@ class Authentication
      */
     protected static function getLdapGroups(array $ldapUser = array())
     {
-        if (empty(static::$config)) {
-            static::initializeConfiguration();
-        }
+        // Make sure configuration is properly initialized, there could be a change of context
+        // (Backend/Frontend) between calls
+        static::initializeConfiguration();
 
         // Get groups attributes from group mapping configuration.
         $ldapGroupAttributes = Configuration::getLdapAttributes(static::$config['groups']['mapping']);

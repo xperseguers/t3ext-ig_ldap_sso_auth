@@ -47,24 +47,6 @@ class Configuration
     /**
      * Initializes the configuration class.
      *
-     * @param string $typo3_mode
-     * @param int $uid
-     * @return void
-     * @deprecated since 3.0, will be removed in 3.2, use initialize() instead
-     */
-    public static function init($typo3_mode = null, $uid)
-    {
-        GeneralUtility::logDeprecatedFunction();
-
-        /** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
-        $configurationRepository = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Repository\\ConfigurationRepository');
-        $configuration = $configurationRepository->findByUid($uid);
-        static::initialize($typo3_mode, $configuration);
-    }
-
-    /**
-     * Initializes the configuration class.
-     *
      * @param string $mode TYPO3 mode, either 'be' or 'fe'
      * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
      */
@@ -217,19 +199,6 @@ class Configuration
     }
 
     /**
-     * Makes a mapping.
-     *
-     * @param string $mapping
-     * @return array
-     * @deprecated since 3.0, will be removed in 3.2, use parseMapping() instead
-     */
-    public static function make_mapping($mapping = '')
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return static::parseMapping($mapping);
-    }
-
-    /**
      * Parses a mapping definition.
      *
      * @param string $mapping
@@ -253,27 +222,6 @@ class Configuration
     }
 
     /**
-     * Gets the Pid to use.
-     *
-     * @param array $mapping
-     * @return int|null
-     * @deprecated since 3.0, will be removed in 3.2, use getPid() instead
-     */
-    public static function get_pid($mapping = array())
-    {
-        GeneralUtility::logDeprecatedFunction();
-        if (!$mapping) {
-            return null;
-        }
-
-        if (isset($mapping['pid'])) {
-            return is_numeric($mapping['pid']) ? (int)$mapping['pid'] : 0;
-        }
-
-        return 0;
-    }
-
-    /**
      * Returns the pid (storage folder) to use.
      *
      * @param array $mapping
@@ -288,19 +236,6 @@ class Configuration
             return is_numeric($mapping['pid']) ? (int)$mapping['pid'] : 0;
         }
         return null;
-    }
-
-    /**
-     * Returns the LDAP attribute holding the username.
-     *
-     * @param string $filter
-     * @return string
-     * @deprecated since 3.0, will be removed in 3.2, use getUsernameAttribute() instead
-     */
-    public static function get_username_attribute($filter = null)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return static::getUsernameAttribute();
     }
 
     /**
@@ -332,18 +267,6 @@ class Configuration
      * Gets the Frontend configuration.
      *
      * @return array
-     * @deprecated since 3.0, will be removed in 3.2, use getFrontendConfiguration() instead
-     */
-    public static function getFeConfiguration()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return static::getFrontendConfiguration();
-    }
-
-    /**
-     * Gets the Frontend configuration.
-     *
-     * @return array
      */
     public static function getFrontendConfiguration()
     {
@@ -354,47 +277,10 @@ class Configuration
      * Gets the Backend configuration.
      *
      * @return array
-     * @deprecated since 3.0, will be removed in 3.2, use getBackendConfiguration() instead
-     */
-    public static function getBeConfiguration()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return static::getBackendConfiguration();
-    }
-
-    /**
-     * Gets the Backend configuration.
-     *
-     * @return array
      */
     public static function getBackendConfiguration()
     {
         return static::$be;
-    }
-
-    /**
-     * Gets the TYPO3 mode.
-     *
-     * @return string
-     * @deprecated since 3.0, will be removed in 3.2, use getMode() instead
-     */
-    public static function getTypo3Mode()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return static::getMode();
-    }
-
-    /**
-     * Sets the TYPO3 mode.
-     *
-     * @param string $typo3_mode
-     * @return void
-     * @deprecated since 3.0, will be removed in 3.2, use setMode() instead
-     */
-    public static function setTypo3Mode($typo3_mode)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        static::setMode($typo3_mode);
     }
 
     /**
@@ -434,32 +320,6 @@ class Configuration
     }
 
     /**
-     * Gets the name.
-     *
-     * @return mixed
-     * @deprecated since 3.0, will be removed in 3.2
-     */
-    public static function getName()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return self::$configuration->getName();
-    }
-
-    /**
-     * Returns the configuration value of a given feature or false if
-     * the corresponding feature is disabled.
-     *
-     * @param string $feature
-     * @return mixed|false
-     * @deprecated since 3.0, will be removed in 3.2, use getValue() instead
-     */
-    public static function is_enable($feature = null)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return static::getValue($feature);
-    }
-
-    /**
      * Returns the configuration value of a given feature or false if
      * the corresponding feature is disabled.
      *
@@ -473,19 +333,6 @@ class Configuration
             : static::getFrontendConfiguration();
 
         return (isset($config[$feature]) ? $config[$feature] : false);
-    }
-
-    /**
-     * Returns the list of LDAP attributes used by a mapping configuration.
-     *
-     * @param array|string $mapping
-     * @return array
-     * @deprecated since 3.0, will be removed in 3.2, use getLdapAttributes() instead
-     */
-    public static function get_ldap_attributes($mapping = array())
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return static::getLdapAttributes($mapping);
     }
 
     /**
@@ -546,19 +393,6 @@ class Configuration
     /**
      * Returns the type of server.
      *
-     * @param int $uid
-     * @return string
-     * @deprecated since 3.0, will be removed in 3.2, use getServerName() instead
-     */
-    public static function get_server_name($uid = null)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return static::getServerType($uid);
-    }
-
-    /**
-     * Returns the type of server.
-     *
      * @param int $type
      * @return string
      */
@@ -577,22 +411,6 @@ class Configuration
         }
 
         return $server;
-    }
-
-    /**
-     * Replaces following markers with a wildcard in a LDAP filter:
-     * - {USERNAME}
-     * - {USERDN}
-     * - {USERUID}
-     *
-     * @param string $filter
-     * @return string
-     * @deprecated since 3.0, will be removed in 3.2, use replaceFilterMarkers() instead
-     */
-    public static function replace_filter_markers($filter)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return static::replaceFilterMarkers($filter);
     }
 
     /**

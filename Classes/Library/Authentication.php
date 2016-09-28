@@ -78,22 +78,6 @@ class Authentication
      * @param string $password
      * @return bool|array true or array of user info on success, otherwise false
      * @throws \Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException when LDAP extension for PHP is not available
-     * @deprecated since 3.0, will be removed in 3.2, use ldapAuthenticate() instead
-     */
-    public static function ldap_auth($username = null, $password = null)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return static::ldapAuthenticate($username, $password);
-    }
-
-    /**
-     * Authenticates using LDAP and returns a user record or false
-     * if operation fails.
-     *
-     * @param string $username
-     * @param string $password
-     * @return bool|array true or array of user info on success, otherwise false
-     * @throws \Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException when LDAP extension for PHP is not available
      */
     public static function ldapAuthenticate($username, $password = null)
     {
@@ -287,22 +271,6 @@ class Authentication
         static::getLogger()->debug(sprintf('Retrieving LDAP user from DN "%s"', $dn), $user ?: array());
 
         return $user;
-    }
-
-    /**
-     * Gets the LDAP and TYPO3 user groups for a given user.
-     *
-     * @param array $ldapUser LDAP user data
-     * @param array|null $configuration Current LDAP configuration
-     * @param string $groupTable Name of the group table (should normally be either "be_groups" or "fe_groups")
-     * @return array|null Array of groups or null if required LDAP groups are missing
-     * @throws \Causal\IgLdapSsoAuth\Exception\InvalidUserGroupTableException
-     * @deprecated since 3.0, will be removed in 3.2, use getUserGroups() instead
-     */
-    public static function get_user_groups($ldapUser, $configuration = null, $groupTable = '')
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return static::getUserGroups($ldapUser, $configuration, $groupTable);
     }
 
     /**
@@ -541,23 +509,6 @@ class Authentication
     }
 
     /**
-     * Returns TYPO3 groups associated to $ldap_groups or create fresh records
-     * if they don't exist yet.
-     *
-     * @param array $ldap_groups
-     * @param array $mapping
-     * @param string $table
-     * @param int|null $pid
-     * @return array
-     * @deprecated since 3.0, will be removed in 3.2, use getTypo3Groups() instead
-     */
-    public static function get_typo3_groups(array $ldap_groups = array(), array $mapping = array(), $table = null, $pid = 0)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return static::getTypo3Groups($ldap_groups, $table, $pid);
-    }
-
-    /**
      * Returns TYPO3 groups associated to $ldapGroups or create
      * fresh records if they don't exist yet.
      *
@@ -597,23 +548,6 @@ class Authentication
         }
 
         return $typo3Groups;
-    }
-
-    /**
-     * Returns TYPO3 users associated to $ldap_users or create fresh records
-     * if they don't exist yet.
-     *
-     * @param array $ldap_users
-     * @param array $mapping
-     * @param string $table
-     * @param int $pid
-     * @return array
-     * @deprecated since 3.0, will be removed in 3.2, use getTypo3Users() instead
-     */
-    public static function get_typo3_users(array $ldap_users = array(), array $mapping = array(), $table = null, $pid = 0)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return static::getTypo3Users($ldap_users, $mapping, $table, $pid);
     }
 
     /**

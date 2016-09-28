@@ -36,24 +36,6 @@ class LdapGroup
      * @param array $attributes
      * @param bool $extendedCheck true if groups should be actively checked against LDAP server, false to check against baseDN solely
      * @return array
-     * @deprecated since 3.0, will be removed in 3.2, use selectFromMembership() instead
-     */
-    public static function select_from_membership($membership = array(), $baseDn = null, $filter = null, $attributes = array(), $extendedCheck = true)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return static::selectFromMembership($membership, $baseDn, $filter, $attributes, $extendedCheck);
-    }
-
-    /**
-     * Returns LDAP group records based on a list of DNs provided as $membership,
-     * taking group's baseDN and filter into consideration.
-     *
-     * @param array $membership
-     * @param string $baseDn
-     * @param string $filter
-     * @param array $attributes
-     * @param bool $extendedCheck true if groups should be actively checked against LDAP server, false to check against baseDN solely
-     * @return array
      */
     public static function selectFromMembership(array $membership = array(), $baseDn, $filter, array $attributes = array(), $extendedCheck = true)
     {
@@ -116,20 +98,6 @@ class LdapGroup
 
         $groups = Ldap::getInstance()->search($baseDn, $filter, $attributes);
         return $groups;
-    }
-
-    /**
-     * Returns the membership information for a given user.
-     *
-     * @param array $ldap_user
-     * @param array $mapping
-     * @return array|bool
-     * @deprecated since 3.0, will be removed in 3.2, use getMembership() instead
-     */
-    public static function get_membership($ldap_user = array(), $mapping = array())
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return static::getMembership($ldap_user, $mapping);
     }
 
     /**

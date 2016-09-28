@@ -233,15 +233,6 @@
 				<source>LDAP group has been imported but then manually deleted</source>
 			</trans-unit>
 
-			<trans-unit id="synchro.name">
-				<source>Synchronisation of LDAP users (DEPRECATED)</source>
-				<note from="developer">This label is deprecated (not used anymore) as of IG_LDAP_SSO_AUTH v.3.0.</note>
-			</trans-unit>
-			<trans-unit id="synchro.description">
-				<source>Imports and updates all users information who can connect to the site.</source>
-				<note from="developer">This label is deprecated (not used anymore) as of IG_LDAP_SSO_AUTH v.3.0.</note>
-			</trans-unit>
-
 			<trans-unit id="task.import_users.title">
 				<source>Import LDAP users</source>
 			</trans-unit>
@@ -280,10 +271,6 @@
 			</trans-unit>
 			<trans-unit id="task.import_users.field.configuration.all">
 				<source>All</source>
-			</trans-unit>
-			<trans-unit id="task.import_users.additional_information">
-				<source>Context: %s, Configuration: %s</source>
-				<note from="developer">This label is deprecated (not used anymore) as of IG_LDAP_SSO_AUTH v.3.0.</note>
 			</trans-unit>
 			<trans-unit id="task.import_users.additionalinformation">
 				<source>Mode: %s, Context: %s, Configuration: %s</source>

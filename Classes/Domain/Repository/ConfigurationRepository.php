@@ -42,31 +42,6 @@ class ConfigurationRepository
      * Returns all available LDAP configurations.
      *
      * @return \Causal\IgLdapSsoAuth\Domain\Model\Configuration[]
-     * @deprecated since 3.0, will be removed in 3.2, use findAll() instead
-     */
-    public function fetchAll()
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return $this->findAll();
-    }
-
-    /**
-     * Returns a single LDAP configuration.
-     *
-     * @param integer $uid Primary key to look up
-     * @return \Causal\IgLdapSsoAuth\Domain\Model\Configuration
-     * @deprecated since 3.0, will be removed in 3.2, use findByUid() instead
-     */
-    public function fetchByUid($uid)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return $this->findByUid($uid);
-    }
-
-    /**
-     * Returns all available LDAP configurations.
-     *
-     * @return \Causal\IgLdapSsoAuth\Domain\Model\Configuration[]
      */
     public function findAll()
     {

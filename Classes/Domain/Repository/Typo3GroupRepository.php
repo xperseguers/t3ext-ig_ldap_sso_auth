@@ -178,31 +178,6 @@ class Typo3GroupRepository
     }
 
     /**
-     * Returns the title for a given user.
-     *
-     * @param array $ldap_user
-     * @param array $mapping
-     * @return null|string
-     * @deprecated since 3.0, will be removed in 3.2
-     */
-    public static function get_title($ldap_user = array(), $mapping = array())
-    {
-        if (!$mapping) {
-            return null;
-        }
-
-        if (isset($mapping['title']) && preg_match('`<([^$]*)>`', $mapping['title'], $attribute)) {
-            if ($attribute[1] === 'dn') {
-                return $ldap_user[$attribute[1]];
-            }
-
-            return Authentication::replaceLdapMarkers($mapping['title'], $ldap_user);
-        }
-
-        return null;
-    }
-
-    /**
      * Returns the database connection.
      *
      * @return \TYPO3\CMS\Core\Database\DatabaseConnection

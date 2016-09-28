@@ -282,21 +282,6 @@ class Typo3UserRepository
     /**
      * Sets the user groups for a given TYPO3 user.
      *
-     * @param array $typo3_groups
-     * @param array $typo3_user
-     * @param \Causal\IgLdapSsoAuth\Service\AuthenticationService $pObj
-     * @return array
-     * @deprecated since 3.0, will be removed in 3.2, use setUserGroups() instead
-     */
-    public static function set_usergroup(array $typo3_groups = array(), array $typo3_user = array(), \Causal\IgLdapSsoAuth\Service\AuthenticationService $pObj = null)
-    {
-        GeneralUtility::logDeprecatedFunction();
-        return static::setUserGroups($typo3_user, $typo3_groups, isset($typo3_user['admin']) ? 'be_groups' : 'fe_groups');
-    }
-
-    /**
-     * Sets the user groups for a given TYPO3 user.
-     *
      * @param array $typo3User
      * @param array $typo3Groups
      * @param string $table The TYPO3 table holding the user groups

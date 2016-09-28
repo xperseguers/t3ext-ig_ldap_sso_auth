@@ -173,13 +173,16 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface
      * @param array $attributes
      * @param bool $firstEntry
      * @param int $limit
+     * @param bool $continueLastSearch
      * @return array
      */
-    public function search($baseDn = null, $filter = null, $attributes = array(), $firstEntry = false, $limit = 0)
+    public function search($baseDn = null, $filter = null, $attributes = array(), $firstEntry = false, $limit = 0, $continueLastSearch = false)
     {
         $result = array();
+        $timeLimit = 0;
+        $dereferenceAliases = LDAP_DEREF_NEVER;
 
-        if ($this->ldapUtility->search($baseDn, $filter, $attributes, false, $firstEntry ? 1 : $limit)) {
+        if ($this->ldapUtility->search($baseDn, $filter, $attributes, false, $firstEntry ? 1 : $limit, $timeLimit, $dereferenceAliases, $continueLastSearch)) {
             if ($firstEntry) {
                 $result = $this->ldapUtility->getFirstEntry();
                 $result['dn'] = $this->ldapUtility->getDn();
@@ -201,31 +204,6 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface
     public function isPartialSearchResult()
     {
         return $this->ldapUtility->hasMoreEntries();
-    }
-
-    /**
-     * @return resource
-     * @internal
-     */
-    public function getPartialSearchPointer()
-    {
-        return $this->ldapUtility->getPartialSearchPointer();
-    }
-
-    /**
-     * Returns the next block of entries satisfying a previous call to @see search().
-     *
-     * @param resource $partialSearchPointer internal use only!
-     * @return array
-     */
-    public function searchNext($partialSearchPointer = null)
-    {
-        if ($partialSearchPointer !== null) {
-            $this->ldapUtility->setPartialSearchPointer($partialSearchPointer);
-        }
-        $result = $this->ldapUtility->getNextEntries();
-
-        return $result;
     }
 
     /**

@@ -127,29 +127,24 @@ class UserImportUtility
     /**
      * Fetches all possible LDAP/AD users for a given configuration and context.
      *
-     * @param bool $partial true to fetch remaining entries when a partial result set was returned
-     * @param resource $partialSearchPointer internal use only!
+     * @param bool $continueLastSearch
      * @return array
      */
-    public function fetchLdapUsers($partial = false, $partialSearchPointer = null)
+    public function fetchLdapUsers($continueLastSearch = false)
     {
 
         // Get the users from LDAP/AD server
         $ldapUsers = array();
         if (!empty($this->configuration['users']['basedn'])) {
-            if (!$partial) {
-                $filter = Configuration::replaceFilterMarkers($this->configuration['users']['filter']);
-                if (Configuration::hasExtendedMapping($this->configuration['users']['mapping'])) {
-                    // Fetch all attributes so that hooks may do whatever they want on any LDAP attribute
-                    $attributes = array();
-                } else {
-                    // Optimize the LDAP call by retrieving only attributes in use for the mapping
-                    $attributes = Configuration::getLdapAttributes($this->configuration['users']['mapping']);
-                }
-                $ldapUsers = Ldap::getInstance()->search($this->configuration['users']['basedn'], $filter, $attributes);
+            $filter = Configuration::replaceFilterMarkers($this->configuration['users']['filter']);
+            if (Configuration::hasExtendedMapping($this->configuration['users']['mapping'])) {
+                // Fetch all attributes so that hooks may do whatever they want on any LDAP attribute
+                $attributes = array();
             } else {
-                $ldapUsers = Ldap::getInstance()->searchNext($partialSearchPointer);
+                // Optimize the LDAP call by retrieving only attributes in use for the mapping
+                $attributes = Configuration::getLdapAttributes($this->configuration['users']['mapping']);
             }
+            $ldapUsers = Ldap::getInstance()->search($this->configuration['users']['basedn'], $filter, $attributes, false, 0, $continueLastSearch);
             unset($ldapUsers['count']);
         }
 

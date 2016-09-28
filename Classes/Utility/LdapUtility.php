@@ -45,6 +45,11 @@ use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
 class LdapUtility
 {
 
+    const PAGE_SIZE = 100;
+
+    /**
+     * Only used if pagination fails to be initialized
+     */
     const MAX_ENTRIES = 500;
 
     /**
@@ -90,9 +95,14 @@ class LdapUtility
     protected $serverType;
 
     /**
-     * @var resource
+     * @var bool
      */
-    protected $previousEntry = null;
+    protected $hasPagination;
+
+    /**
+     * @var string
+     */
+    protected $paginationCookie = null;
 
     /**
      * Connects to an LDAP server.
@@ -274,12 +284,12 @@ class LdapUtility
      * @param int $sizeLimit
      * @param int $timeLimit
      * @param int $dereferenceAliases
+     * @param bool $continueLastSearch
      * @return bool
      * @see http://ca3.php.net/manual/fr/function.ldap-search.php
      */
-    public function search($baseDn = null, $filter = null, $attributes = array(), $attributesOnly = false, $sizeLimit = 0, $timeLimit = 0, $dereferenceAliases = LDAP_DEREF_NEVER)
+    public function search($baseDn = null, $filter = null, $attributes = array(), $attributesOnly = false, $sizeLimit = 0, $timeLimit = 0, $dereferenceAliases = LDAP_DEREF_NEVER, $continueLastSearch = false)
     {
-
         if (!$baseDn) {
             $this->status['search']['basedn'] = 'No valid base DN';
             return false;
@@ -290,27 +300,19 @@ class LdapUtility
         }
 
         if ($this->connection) {
-            $connections = $this->connection;
-            if (is_array($baseDn)) {
-
-                $connections = array();
-                foreach ($baseDn as $dn) {
-                    $connections[] = $this->connection;
-                }
+            if (!$continueLastSearch) {
+                // Reset the pagination cookie
+                $this->paginationCookie = null;
             }
 
-            if (!($this->searchResult = @ldap_search($connections, $baseDn, $filter, $attributes, $attributesOnly, $sizeLimit, $timeLimit, $dereferenceAliases))) {
+            $this->hasPagination = @ldap_control_paged_result($this->connection, static::PAGE_SIZE, false, $this->paginationCookie);
+            if (!($this->searchResult = @ldap_search($this->connection, $baseDn, $filter, $attributes, $attributesOnly, $sizeLimit, $timeLimit, $dereferenceAliases))) {
                 // Search failed.
                 $this->status['search']['status'] = ldap_error($this->connection);
                 return false;
             }
 
-            if (is_array($this->searchResult)) {
-                // Search successful.
-                $this->firstResultEntry = @ldap_first_entry($this->connection, $this->searchResult[0]);
-            } else {
-                $this->firstResultEntry = @ldap_first_entry($this->connection, $this->searchResult);
-            }
+            $this->firstResultEntry = @ldap_first_entry($this->connection, $this->searchResult);
             $this->status['search']['status'] = ldap_error($this->connection);
             return true;
         }
@@ -321,74 +323,62 @@ class LdapUtility
     }
 
     /**
-     * Returns up to MAX_ENTRIES (1000) LDAP entries corresponding to a filter prepared by a call to
+     * Returns up to MAX_ENTRIES (500) LDAP entries corresponding to a filter prepared by a call to
      * @see search().
      *
-     * @param resource $previousEntry Used to get the remaining entries after receiving a partial result set
      * @return array
      * @throws \RuntimeException
      */
-    public function getEntries($previousEntry = null)
+    public function getEntries()
     {
-        $entries = array('count' => 0);
-        $this->previousEntry = null;
+        $entries = ['count' => 0];
+        $entry = @ldap_first_entry($this->connection, $this->searchResult);
 
-        $searchResults = is_array($this->searchResult) ? $this->searchResult : array($this->searchResult);
-        foreach ($searchResults as $searchResult) {
-            $entry = ($previousEntry === null)
-                ? @ldap_first_entry($this->connection, $searchResult)
-                : @ldap_next_entry($this->connection, $previousEntry);
+        if (!$entry) {
+            return $entries;
+        }
 
-            if (!$entry) {
-                continue;
-            }
-            do {
-                $attributes = ldap_get_attributes($this->connection, $entry);
-                $attributes['dn'] = ldap_get_dn($this->connection, $entry);
+        do {
+            $attributes = ldap_get_attributes($this->connection, $entry);
+            $attributes['dn'] = ldap_get_dn($this->connection, $entry);
 
-                // Hook for processing the attributes
-                if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['attributesProcessing'])) {
-                    foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['attributesProcessing'] as $className) {
-                        /** @var $postProcessor \Causal\IgLdapSsoAuth\Utility\AttributesProcessorInterface */
-                        $postProcessor = GeneralUtility::getUserObj($className);
-                        if ($postProcessor instanceof \Causal\IgLdapSsoAuth\Utility\AttributesProcessorInterface) {
-                            $postProcessor->processAttributes($this->connection, $entry, $attributes);
-                        } else {
-                            throw new \RuntimeException('Processor ' . get_class($postProcessor) . ' must implement the \\Causal\\IgLdapSsoAuth\\Utility\\AttributesProcessorInterface interface', 1430307683);
-                        }
+            // Hook for processing the attributes
+            if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['attributesProcessing'])) {
+                foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['attributesProcessing'] as $className) {
+                    /** @var $postProcessor \Causal\IgLdapSsoAuth\Utility\AttributesProcessorInterface */
+                    $postProcessor = GeneralUtility::getUserObj($className);
+                    if ($postProcessor instanceof \Causal\IgLdapSsoAuth\Utility\AttributesProcessorInterface) {
+                        $postProcessor->processAttributes($this->connection, $entry, $attributes);
+                    } else {
+                        throw new \RuntimeException('Processor ' . get_class($postProcessor) . ' must implement the \\Causal\\IgLdapSsoAuth\\Utility\\AttributesProcessorInterface interface', 1430307683);
                     }
                 }
+            }
 
-                $tempEntry = array();
-                foreach ($attributes as $key => $value) {
-                    $tempEntry[strtolower($key)] = $value;
-                }
-                $entries[] = $tempEntry;
-                $entries['count']++;
-                if ($entries['count'] == static::MAX_ENTRIES) {
-                    $this->previousEntry = $entry;
-                    break;
-                }
-            } while ($entry = @ldap_next_entry($this->connection, $entry));
+            $tempEntry = [];
+            foreach ($attributes as $key => $value) {
+                $tempEntry[strtolower($key)] = $value;
+            }
+
+            $entries[] = $tempEntry;
+            $entries['count']++;
+
+            // Should never happen unless pagination is not supported, for some odd reason
+            if ($entries['count'] == static::MAX_ENTRIES) {
+                break;
+            }
+        } while ($entry = @ldap_next_entry($this->connection, $entry));
+
+        if ($this->hasPagination) {
+            ldap_control_paged_result_response($this->connection, $this->searchResult, $this->paginationCookie);
         }
 
         $this->status['get_entries']['status'] = ldap_error($this->connection);
 
         return $entries['count'] > 0
-            // Convert LDAP result character set  -> local character set
+            // Convert LDAP result character set -> local character set
             ? $this->convertCharacterSetForArray($entries, $this->ldapCharacterSet, $this->typo3CharacterSet)
-            : array();
-    }
-
-    /**
-     * Returns next LDAP entries corresponding to a filter prepared by a call to
-     * @see search().
-     *
-     * @return array
-     */
-    public function getNextEntries()
-    {
-        return $this->getEntries($this->previousEntry);
+            : [];
     }
 
     /**
@@ -399,7 +389,7 @@ class LdapUtility
      */
     public function hasMoreEntries()
     {
-        return $this->previousEntry !== null;
+        return !empty($this->paginationCookie);
     }
 
     /**
@@ -417,24 +407,6 @@ class LdapUtility
         }
         $entry = $this->convertCharacterSetForArray($tempEntry, $this->ldapCharacterSet, $this->typo3CharacterSet);
         return $entry;
-    }
-
-    /**
-     * @return resource
-     * @internal
-     */
-    public function getPartialSearchPointer()
-    {
-        return $this->previousEntry;
-    }
-
-    /**
-     * @param resource $pointer
-     * @internal
-     */
-    public function setPartialSearchPointer($pointer)
-    {
-        $this->previousEntry = $pointer;
     }
 
     /**

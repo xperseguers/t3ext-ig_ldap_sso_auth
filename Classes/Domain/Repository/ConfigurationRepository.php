@@ -207,7 +207,7 @@ class ConfigurationRepository
         }
 
         $object->_setProperty('ldapServer', (int)$row['ldap_server']);
-        $object->_setProperty('ldapProtocol', (int)$row['ldap_protocol']);
+        $object->_setProperty('ldapProtocol', 3);
         $object->_setProperty('ldapPort', (int)$row['ldap_port']);
         $object->_setProperty('ldapTls', (bool)$row['ldap_tls']);
         $object->_setProperty('ldapSsl', (bool)$row['ldap_ssl']);

@@ -65,7 +65,6 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface
         $debugConfiguration = array(
             'host' => $config['host'],
             'port' => $config['port'],
-            'protocol' => $config['protocol'],
             'charset' => $config['charset'],
             'server' => $config['server'],
             'tls' => $config['tls'],

@@ -108,8 +108,6 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
                 );
             }
 
-            $ldapConfiguration['protocol'] = $this->translate('module_status.messages.formatProtocol', array($ldapConfiguration['protocol']));
-
             // Never ever show the password as plain text
             $ldapConfiguration['password'] = $ldapConfiguration['password'] ? '••••••••••••' : null;
 

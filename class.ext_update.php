@@ -402,7 +402,6 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
                 'name' => '[eu_ldap] ' . $legacy['server'],
                 'ldap_server' => $legacy['servertype'] == 3 ? 0 : 1,
                 'ldap_charset' => $legacy['characterset'],
-                'ldap_protocol' => $legacy['version'],
                 'ldap_host' => $legacy['server'],
                 'ldap_port' => $legacy['port'],
                 'ldap_tls' => 0,

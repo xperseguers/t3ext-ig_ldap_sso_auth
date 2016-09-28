@@ -98,10 +98,10 @@ class LdapUtility
      * Connects to an LDAP server.
      *
      * @param string $host
-     * @param integer $port
-     * @param integer $protocol Either 2 or 3
+     * @param int $port
+     * @param int $protocol 3 for LDAP v3
      * @param string $characterSet
-     * @param integer $serverType 0 = OpenLDAP, 1 = Active Directory / Novell eDirectory
+     * @param int $serverType 0 = OpenLDAP, 1 = Active Directory / Novell eDirectory
      * @param bool $tls
      * @param bool $ssl
      * @return bool true if connection succeeded.
@@ -138,6 +138,8 @@ class LdapUtility
         // Set configuration
         $this->initializeCharacterSet($characterSet);
 
+        // We only support LDAP v3 from now on
+        $protocol = 3;
         @ldap_set_option($this->connection, LDAP_OPT_PROTOCOL_VERSION, $protocol);
 
         // Active Directory (User@Domain) configuration

@@ -51,6 +51,7 @@ class Configuration
 
     /**
      * @var int
+     * @deprecated
      */
     protected $ldapProtocol;
 
@@ -249,6 +250,7 @@ class Configuration
 
     /**
      * @return int
+     * @deprecated
      */
     public function getLdapProtocol()
     {

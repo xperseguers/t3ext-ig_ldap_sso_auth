@@ -113,15 +113,6 @@ Current value for backend is: "%s"]]></source>
 			<trans-unit id="tx_igldapssoauth_config.ldap_server.I.1">
 				<source>Active Directory / Novell eDirectory</source>
 			</trans-unit>
-			<trans-unit id="tx_igldapssoauth_config.ldap_protocol">
-				<source>Protocol:</source>
-			</trans-unit>
-			<trans-unit id="tx_igldapssoauth_config.ldap_protocol.I.0">
-				<source>Version 3</source>
-			</trans-unit>
-			<trans-unit id="tx_igldapssoauth_config.ldap_protocol.I.1">
-				<source>Version 2</source>
-			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.ldap_charset">
 				<source>Character set:</source>
 			</trans-unit>

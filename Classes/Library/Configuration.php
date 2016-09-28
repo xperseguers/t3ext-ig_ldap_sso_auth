@@ -136,7 +136,6 @@ class Configuration
 
         static::$ldap['server'] = $configuration->getLdapServer();
         static::$ldap['charset'] = $configuration->getLdapCharset() ? $configuration->getLdapCharset() : 'utf-8';
-        static::$ldap['protocol'] = $configuration->getLdapProtocol();
         static::$ldap['host'] = $configuration->getLdapHost();
         static::$ldap['port'] = $configuration->getLdapPort();
         static::$ldap['tls'] = $configuration->isLdapTls();

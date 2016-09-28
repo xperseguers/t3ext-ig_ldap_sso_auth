@@ -197,7 +197,7 @@ class tx_igldapssoauth_utility_Ldap
      *
      * @param string $host
      * @param integer $port
-     * @param integer $protocol Either 2 or 3
+     * @param integer $protocol 3 for LDAP v3
      * @param string $charset
      * @param integer $serverType 0 = OpenLDAP, 1 = Active Directory / Novell eDirectory
      * @param bool $tls
@@ -207,7 +207,7 @@ class tx_igldapssoauth_utility_Ldap
      */
     public static function connect($host = null, $port = null, $protocol = null, $charset = null, $serverType = 0, $tls = false)
     {
-        return static::getInstance()->connect($host, $port, $protocol, $charset, $serverType, $tls);
+        return static::getInstance()->connect($host, $port, 3, $charset, $serverType, $tls);
     }
 
     /**

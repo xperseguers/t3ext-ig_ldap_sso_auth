@@ -51,9 +51,6 @@
 			<trans-unit id="module_status.messages.empty">
 				<source>none</source>
 			</trans-unit>
-			<trans-unit id="module_status.messages.formatProtocol">
-				<source>Version %s</source>
-			</trans-unit>
 			<trans-unit id="module_status.title.connection">
 				<source>Connection status</source>
 			</trans-unit>
@@ -68,9 +65,6 @@
 			</trans-unit>
 			<trans-unit id="module_status.configuration.charset">
 				<source>Character set</source>
-			</trans-unit>
-			<trans-unit id="module_status.configuration.protocol">
-				<source>Protocol</source>
 			</trans-unit>
 			<trans-unit id="module_status.configuration.host">
 				<source>Host</source>

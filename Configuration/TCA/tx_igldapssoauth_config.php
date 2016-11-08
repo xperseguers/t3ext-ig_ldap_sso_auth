@@ -79,9 +79,9 @@ return array(
             'config' => array(
                 'type' => 'select',
                 'foreign_table' => 'sys_domain',
-                'size' => 6,
+                'size' => 10,
                 'minitems' => 0,
-                'maxitems' => 30,
+                'maxitems' => 999,
                 'wizards' => array(
                     'suggest' => array(
                         'type' => 'suggest'

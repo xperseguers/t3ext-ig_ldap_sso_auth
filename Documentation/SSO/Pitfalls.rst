@@ -16,6 +16,17 @@ This section describes common pitfalls while configuring SSO. Please feel free t
 problems and found a solution.
 
 
+.. _sso-pitfalls-option-switches:
+
+Case of option switches
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. warning::
+    Option switches **MUST** be written lower case. Opposed to other modules like `mod_rewrite.c`, where the case of the
+    keywords "on" and "off" does not matter, `mod_kerb_auth.c` requires you to write these switches lower case, or else
+    the default value will be used.
+
+
 .. _sso-pitfalls-basic-authentication:
 .. _admin-manual-kerberos-apache-pitfalls-basic-authentication:
 
@@ -80,6 +91,10 @@ Another problem with the basic authentication prompt always shown might show up 
 Although the reason is most probably that the reverse DNS of the web server is not exactly identical to what was
 specified in the keytab file, in one case, it turned out the problem was the very same as above, namely that the account
 did not support Kerberos AES 256 bit encryption.
+
+.. note::
+    It may be a good option to add the domain name of your intranet page to the file :file:`/etc/hosts`. This is of
+    course no actual requirements but may help the keytab file to work properly if your DNS are not reliable.
 
 
 **Sources:**

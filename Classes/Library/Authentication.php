@@ -194,8 +194,10 @@ class Authentication
         }
 
         if (!empty($typo3_user['uid'])) {
+            // Let's restore deleted accounts since the only way to prevent an actual LDAP member
+            // to authenticate is to set a "stop time" (endtime in DB) to the TYPO3 user record or
+            // mark it as "disable"
             $typo3_user['deleted'] = 0;
-            $typo3_user['endtime'] = 0;
 
             $typo3_user['password'] = Typo3UserRepository::setRandomPassword();
 
@@ -477,6 +479,9 @@ class Authentication
 
         $typo3_users = Typo3UserRepository::fetch(static::$authenticationService->authInfo['db_user']['table'], 0, $pid, $username, $userDn);
         if ($typo3_users) {
+            // Check option "Users that are not already present in TYPO3 may not log on"
+            // Note: there is no need to manually remove users with inactive starttime/endtime since
+            //       this is catched by TYPO3 anyway
             if (Configuration::getValue('IfUserExist')) {
                 // Ensure every returned record is active
                 $numberOfUsers = count($typo3_users);
@@ -484,6 +489,8 @@ class Authentication
                     if (!empty($typo3_users[$i]['deleted'])) {
                         // User is deleted => behave as if it did not exist at all!
                         // Note: if user is inactive (disable=1), this will be catched by TYPO3 automatically
+                        //       but we need to manually remove it here otherwise this extension would silently
+                        //       restore the deleted user (which is a design choice)
                         unset($typo3_users[$i]);
                     }
                 }

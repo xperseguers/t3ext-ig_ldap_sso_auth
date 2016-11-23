@@ -105,7 +105,7 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
             /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
             static $iconFactory = null;
             if ($iconFactory === null) {
-                $iconFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Imaging\\IconFactory');
+                $iconFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconFactory::class);
             }
         }
 
@@ -158,7 +158,7 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
                 /** @var \Causal\IgLdapSsoAuth\Hooks\IconFactory $iconFactoryHook */
                 static $iconFactoryHook = null;
                 if ($iconFactoryHook === null) {
-                    $iconFactoryHook = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Hooks\\IconFactory');
+                    $iconFactoryHook = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Hooks\IconFactory::class);
                 }
                 $overlay = $iconFactoryHook->postOverlayPriorityLookup(
                     $table,

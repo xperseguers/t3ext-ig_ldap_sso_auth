@@ -81,7 +81,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 
         // Assemble a list of configuration and contexts for import
         /** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
-        $configurationRepository = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Repository\\ConfigurationRepository');
+        $configurationRepository = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository::class);
         if (empty($this->configuration)) {
             $ldapConfigurations = $configurationRepository->findAll();
         } else {
@@ -109,7 +109,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
             foreach ($executionContexts as $aContext) {
                 /** @var \Causal\IgLdapSsoAuth\Utility\UserImportUtility $importUtility */
                 $importUtility = GeneralUtility::makeInstance(
-                    'Causal\\IgLdapSsoAuth\\Utility\\UserImportUtility',
+                    \Causal\IgLdapSsoAuth\Utility\UserImportUtility::class,
                     $configuration,
                     $aContext
                 );
@@ -339,7 +339,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
     public function getConfigurationName()
     {
         /** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
-        $configurationRepository = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Repository\\ConfigurationRepository');
+        $configurationRepository = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository::class);
         $ldapConfiguration = $configurationRepository->findByUid($this->configuration);
         if ($ldapConfiguration === null) {
             return '';
@@ -378,7 +378,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
         /** @var \TYPO3\CMS\Core\Log\Logger $logger */
         static $logger = null;
         if ($logger === null) {
-            $logger = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
+            $logger = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Log\LogManager::class)->getLogger(__CLASS__);
         }
         return $logger;
     }

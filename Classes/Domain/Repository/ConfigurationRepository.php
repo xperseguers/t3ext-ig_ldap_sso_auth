@@ -52,7 +52,7 @@ class ConfigurationRepository
         $configurations = array();
         foreach ($rows as $row) {
             /** @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration */
-            $configuration = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Model\\Configuration');
+            $configuration = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Domain\Model\Configuration::class);
             $this->thawProperties($configuration, $row);
             $configurations[] = $configuration;
         }
@@ -73,7 +73,7 @@ class ConfigurationRepository
         $row = static::getDatabaseConnection()->exec_SELECTgetSingleRow('*', $this->table, $where);
         if ($row) {
             /** @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration */
-            $configuration = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Model\\Configuration');
+            $configuration = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Domain\Model\Configuration::class);
             $this->thawProperties($configuration, $row);
         } else {
             $configuration = null;
@@ -208,7 +208,7 @@ class ConfigurationRepository
     {
         static $backendUserGroupRepository = null;
         if ($backendUserGroupRepository == null) {
-            $backendUserGroupRepository = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Repository\\BackendUserGroupRepository');
+            $backendUserGroupRepository = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Domain\Repository\BackendUserGroupRepository::class);
         }
         return $backendUserGroupRepository;
     }
@@ -222,7 +222,7 @@ class ConfigurationRepository
     {
         static $frontendUserGroupRepository = null;
         if ($frontendUserGroupRepository == null) {
-            $frontendUserGroupRepository = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Repository\\FrontendUserGroupRepository');
+            $frontendUserGroupRepository = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Domain\Repository\FrontendUserGroupRepository::class);
         }
         return $frontendUserGroupRepository;
     }

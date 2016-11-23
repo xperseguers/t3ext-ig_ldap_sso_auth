@@ -646,7 +646,7 @@ class Authentication
 
             // Advanced stdWrap methods require a valid $GLOBALS['TSFE'] => create the most lightweight one
             $GLOBALS['TSFE'] = GeneralUtility::makeInstance(
-                'TYPO3\\CMS\\Frontend\Controller\\TypoScriptFrontendController',
+                \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::class,
                 $GLOBALS['TYPO3_CONF_VARS'],
                 0,
                 ''
@@ -655,7 +655,7 @@ class Authentication
             $GLOBALS['TSFE']->renderCharset = 'utf-8';
 
             /** @var $contentObj \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer */
-            $contentObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Frontend\\ContentObject\\ContentObjectRenderer');
+            $contentObj = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
             $contentObj->start($flattenedLdap, '');
 
             // Process every TypoScript definition
@@ -671,7 +671,7 @@ class Authentication
             // sets backPath to TYPO3_mainDir which is very bad in the Backend. Therefore,
             // we must set it back to null to not get frontend-prefixed asset URLs.
             if (TYPO3_MODE === 'BE') {
-                $pageRenderer = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Page\\PageRenderer');
+                $pageRenderer = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
                 $pageRenderer->setBackPath(null);
             }
 
@@ -822,7 +822,7 @@ class Authentication
         /** @var \TYPO3\CMS\Core\Log\Logger $logger */
         static $logger = null;
         if ($logger === null) {
-            $logger = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
+            $logger = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Log\LogManager::class)->getLogger(__CLASS__);
         }
         return $logger;
     }

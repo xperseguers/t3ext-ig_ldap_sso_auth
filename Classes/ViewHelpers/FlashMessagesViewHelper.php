@@ -49,7 +49,7 @@ class FlashMessagesViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FlashMessages
         $flashMessagesClass = $this->hasArgument('class') ? $this->arguments['class'] : 'typo3-messages';
         $tagContent = '';
         $this->tag->addAttribute('class', $flashMessagesClass);
-        /** @var $singleFlashMessage \TYPO3\CMS\Core\Messaging\FlashMessage */
+        /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $singleFlashMessage */
         foreach ($flashMessages as $singleFlashMessage) {
             $severityClass = sprintf('alert %s', $singleFlashMessage->getClass());
             // This is what changes in our override:

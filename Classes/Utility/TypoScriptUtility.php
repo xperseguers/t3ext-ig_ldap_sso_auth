@@ -64,7 +64,7 @@ class TypoScriptUtility
         static $typoScriptParser = null;
 
         if ($typoScriptParser === null) {
-            $typoScriptParser = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\TypoScript\\Parser\\TypoScriptParser');
+            $typoScriptParser = GeneralUtility::makeInstance(\TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser::class);
         }
 
         // Reset the parser state

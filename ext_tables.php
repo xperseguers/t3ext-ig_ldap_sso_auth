@@ -4,9 +4,9 @@ defined('TYPO3_MODE') || die();
 // Register additional sprite icons
 if (version_compare(TYPO3_version, '7.6', '>=')) {
     /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
-    $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Imaging\\IconRegistry');
+    $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
     $iconRegistry->registerIcon('extensions-' . $_EXTKEY . '-overlay-ldap-record',
-        'TYPO3\\CMS\\Core\\Imaging\\IconProvider\\BitmapIconProvider',
+        \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
         array(
             'source' => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/overlay-ldap-record.png',
         )

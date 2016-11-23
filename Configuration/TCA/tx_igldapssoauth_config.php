@@ -207,7 +207,7 @@ return array(
                 'wizards' => array(
                     'suggest' => array(
                         'type' => 'userFunc',
-                        'userFunc' => 'Causal\\IgLdapSsoAuth\\Tca\\Form\\SuggestWizard->render',
+                        'userFunc' => \Causal\IgLdapSsoAuth\Tca\Form\SuggestWizard::class . '->render',
                     ),
                 ),
             )
@@ -223,7 +223,7 @@ return array(
                 'wizards' => array(
                     'suggest' => array(
                         'type' => 'userFunc',
-                        'userFunc' => 'Causal\\IgLdapSsoAuth\\Tca\\Form\\SuggestWizard->render',
+                        'userFunc' => \Causal\IgLdapSsoAuth\Tca\Form\SuggestWizard::class . '->render',
                     ),
                 ),
             )
@@ -239,7 +239,7 @@ return array(
                 'wizards' => array(
                     'suggest' => array(
                         'type' => 'userFunc',
-                        'userFunc' => 'Causal\\IgLdapSsoAuth\\Tca\\Form\\SuggestWizard->render',
+                        'userFunc' => \Causal\IgLdapSsoAuth\Tca\Form\SuggestWizard::class . '->render',
                     ),
                 ),
             )
@@ -254,7 +254,7 @@ return array(
                 'wizards' => array(
                     'suggest' => array(
                         'type' => 'userFunc',
-                        'userFunc' => 'Causal\\IgLdapSsoAuth\\Tca\\Form\\SuggestWizard->render',
+                        'userFunc' => \Causal\IgLdapSsoAuth\Tca\Form\SuggestWizard::class . '->render',
                     ),
                 ),
             )
@@ -270,7 +270,7 @@ return array(
                 'wizards' => array(
                     'suggest' => array(
                         'type' => 'userFunc',
-                        'userFunc' => 'Causal\\IgLdapSsoAuth\\Tca\\Form\\SuggestWizard->render',
+                        'userFunc' => \Causal\IgLdapSsoAuth\Tca\Form\SuggestWizard::class . '->render',
                     ),
                 ),
             )
@@ -286,7 +286,7 @@ return array(
                 'wizards' => array(
                     'suggest' => array(
                         'type' => 'userFunc',
-                        'userFunc' => 'Causal\\IgLdapSsoAuth\\Tca\\Form\\SuggestWizard->render',
+                        'userFunc' => \Causal\IgLdapSsoAuth\Tca\Form\SuggestWizard::class . '->render',
                     ),
                 ),
             )
@@ -352,7 +352,7 @@ return array(
                 'wizards' => array(
                     'suggest' => array(
                         'type' => 'userFunc',
-                        'userFunc' => 'Causal\\IgLdapSsoAuth\\Tca\\Form\\SuggestWizard->render',
+                        'userFunc' => \Causal\IgLdapSsoAuth\Tca\Form\SuggestWizard::class . '->render',
                     ),
                 ),
             )
@@ -368,7 +368,7 @@ return array(
                 'wizards' => array(
                     'suggest' => array(
                         'type' => 'userFunc',
-                        'userFunc' => 'Causal\\IgLdapSsoAuth\\Tca\\Form\\SuggestWizard->render',
+                        'userFunc' => \Causal\IgLdapSsoAuth\Tca\Form\SuggestWizard::class . '->render',
                     ),
                 ),
             )
@@ -384,7 +384,7 @@ return array(
                 'wizards' => array(
                     'suggest' => array(
                         'type' => 'userFunc',
-                        'userFunc' => 'Causal\\IgLdapSsoAuth\\Tca\\Form\\SuggestWizard->render',
+                        'userFunc' => \Causal\IgLdapSsoAuth\Tca\Form\SuggestWizard::class . '->render',
                     ),
                 ),
             )
@@ -399,7 +399,7 @@ return array(
                 'wizards' => array(
                     'suggest' => array(
                         'type' => 'userFunc',
-                        'userFunc' => 'Causal\\IgLdapSsoAuth\\Tca\\Form\\SuggestWizard->render',
+                        'userFunc' => \Causal\IgLdapSsoAuth\Tca\Form\SuggestWizard::class . '->render',
                     ),
                 ),
             )
@@ -415,7 +415,7 @@ return array(
                 'wizards' => array(
                     'suggest' => array(
                         'type' => 'userFunc',
-                        'userFunc' => 'Causal\\IgLdapSsoAuth\\Tca\\Form\\SuggestWizard->render',
+                        'userFunc' => \Causal\IgLdapSsoAuth\Tca\Form\SuggestWizard::class . '->render',
                     ),
                 ),
             )
@@ -431,7 +431,7 @@ return array(
                 'wizards' => array(
                     'suggest' => array(
                         'type' => 'userFunc',
-                        'userFunc' => 'Causal\\IgLdapSsoAuth\\Tca\\Form\\SuggestWizard->render',
+                        'userFunc' => \Causal\IgLdapSsoAuth\Tca\Form\SuggestWizard::class . '->render',
                     ),
                 ),
             )

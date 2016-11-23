@@ -69,15 +69,15 @@ class DataHandler
             foreach ($warningMessageKeys as $key) {
                 /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
                 $flashMessage = GeneralUtility::makeInstance(
-                    'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+                    \TYPO3\CMS\Core\Messaging\FlashMessage::class,
                     $this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:' . $key, true),
                     '',
                     \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
                     true
                 );
-                /** @var $flashMessageService \TYPO3\CMS\Core\Messaging\FlashMessageService */
-                $flashMessageService = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService');
-                /** @var $defaultFlashMessageQueue \TYPO3\CMS\Core\Messaging\FlashMessageQueue */
+                /** @var \TYPO3\CMS\Core\Messaging\FlashMessageService $flashMessageService */
+                $flashMessageService = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class);
+                /** @var \TYPO3\CMS\Core\Messaging\FlashMessageQueue $defaultFlashMessageQueue */
                 $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
                 $defaultFlashMessageQueue->enqueue($flashMessage);
             }

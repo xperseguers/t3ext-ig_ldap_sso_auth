@@ -149,7 +149,7 @@ EOT;
         $message = $this->preText . $message;
         /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
         $flashMessage = GeneralUtility::makeInstance(
-            'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+            \TYPO3\CMS\Core\Messaging\FlashMessage::class,
             $message,
             $this->header,
             $this->errorType

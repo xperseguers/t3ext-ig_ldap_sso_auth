@@ -32,7 +32,7 @@ class LdapTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
 
     protected function setUp()
     {
-        $ldapUtility = $this->getMock('Causal\\IgLdapSsoAuth\\Utility\\LdapUtility', array('bind', 'search', 'getEntries', 'getFirstEntry', 'getDn'));
+        $ldapUtility = $this->getMock(\Causal\IgLdapSsoAuth\Utility\LdapUtility::class, array('bind', 'search', 'getEntries', 'getFirstEntry', 'getDn'));
         $ldapUtility->expects($this->any())->method('bind')->will($this->returnCallback(array($this, 'bindExecuteCallback')));
         $ldapUtility->expects($this->any())->method('search')->will($this->returnCallback(array($this, 'searchExecuteCallback')));
         $ldapUtility->expects($this->any())->method('getEntries')->will($this->returnCallback(array($this, 'getEntriesExecuteCallback')));

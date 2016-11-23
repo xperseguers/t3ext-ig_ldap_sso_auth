@@ -41,7 +41,7 @@ class SpriteManagerIconViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Be\Abstra
         }
         if (version_compare(TYPO3_version, '7.6', '>=')) {
             /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
-            $iconFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Imaging\\IconFactory');
+            $iconFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconFactory::class);
             $html = $iconFactory->getIcon($iconName, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
             if (!empty($options)) {
                 $attributes = '';

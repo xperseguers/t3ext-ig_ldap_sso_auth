@@ -79,7 +79,7 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
         );
         // Get the existing LDAP configurations
         /** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
-        $configurationRepository = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Repository\\ConfigurationRepository');
+        $configurationRepository = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository::class);
         $ldapConfigurations = $configurationRepository->findAll();
         foreach ($ldapConfigurations as $configuration) {
             $uid = $configuration->getUid();

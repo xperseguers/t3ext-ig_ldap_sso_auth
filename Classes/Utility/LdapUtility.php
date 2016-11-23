@@ -345,7 +345,7 @@ class LdapUtility
             // Hook for processing the attributes
             if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['attributesProcessing'])) {
                 foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['attributesProcessing'] as $className) {
-                    /** @var $postProcessor \Causal\IgLdapSsoAuth\Utility\AttributesProcessorInterface */
+                    /** @var \Causal\IgLdapSsoAuth\Utility\AttributesProcessorInterface $postProcessor */
                     $postProcessor = GeneralUtility::getUserObj($className);
                     if ($postProcessor instanceof \Causal\IgLdapSsoAuth\Utility\AttributesProcessorInterface) {
                         $postProcessor->processAttributes($this->connection, $entry, $attributes);
@@ -447,11 +447,11 @@ class LdapUtility
      */
     protected function initializeCharacterSet($characterSet = null)
     {
-        /** @var $csObj \TYPO3\CMS\Core\Charset\CharsetConverter */
+        /** @var \TYPO3\CMS\Core\Charset\CharsetConverter $csObj */
         if ((isset($GLOBALS['TSFE'])) && (isset($GLOBALS['TSFE']->csConvObj))) {
             $csObj = $GLOBALS['TSFE']->csConvObj;
         } else {
-            $csObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
+            $csObj = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class);
         }
 
         // LDAP server charset
@@ -471,7 +471,7 @@ class LdapUtility
      */
     protected function convertCharacterSetForArray($arr, $fromCharacterSet, $toCharacterSet)
     {
-        /** @var $csObj \TYPO3\CMS\Core\Charset\CharsetConverter */
+        /** @var \TYPO3\CMS\Core\Charset\CharsetConverter $csObj */
         static $csObj = null;
 
         if (!is_array($arr)) {
@@ -482,7 +482,7 @@ class LdapUtility
             if ((isset($GLOBALS['TSFE'])) && (isset($GLOBALS['TSFE']->csConvObj))) {
                 $csObj = $GLOBALS['TSFE']->csConvObj;
             } else {
-                $csObj = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
+                $csObj = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class);
             }
         }
 

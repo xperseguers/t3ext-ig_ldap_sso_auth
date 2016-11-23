@@ -96,7 +96,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
         }
 
         /** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
-        $configurationRepository = GeneralUtility::makeInstance('Causal\\IgLdapSsoAuth\\Domain\\Repository\\ConfigurationRepository');
+        $configurationRepository = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository::class);
         $configurationRecords = $configurationRepository->findAll();
 
         if (count($configurationRecords) === 0) {
@@ -292,7 +292,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
         /** @var \TYPO3\CMS\Core\Log\Logger $logger */
         static $logger = null;
         if ($logger === null) {
-            $logger = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
+            $logger = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Log\LogManager::class)->getLogger(__CLASS__);
         }
         return $logger;
     }

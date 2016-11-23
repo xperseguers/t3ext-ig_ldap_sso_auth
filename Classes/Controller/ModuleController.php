@@ -323,7 +323,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     {
         /** @var \Causal\IgLdapSsoAuth\Utility\UserImportUtility $importUtility */
         $importUtility = GeneralUtility::makeInstance(
-            'Causal\\IgLdapSsoAuth\\Utility\\UserImportUtility',
+            \Causal\IgLdapSsoAuth\Utility\UserImportUtility::class,
             $configuration,
             $mode
         );
@@ -565,7 +565,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     {
         /** @var \Causal\IgLdapSsoAuth\Utility\UserImportUtility $importUtility */
         $importUtility = GeneralUtility::makeInstance(
-            'Causal\\IgLdapSsoAuth\\Utility\\UserImportUtility',
+            \Causal\IgLdapSsoAuth\Utility\UserImportUtility::class,
             $configuration,
             $mode
         );
@@ -707,7 +707,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             $editUri = $editRecordModuleUrl . 'returnUrl=' . urlencode($thisUri) . '&amp;edit[tx_igldapssoauth_config][' . $configuration->getUid() . ']=edit';
             if (version_compare(TYPO3_version, '7.6', '>=')) {
                 /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
-                $iconFactory = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Imaging\\IconFactory');
+                $iconFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconFactory::class);
                 $icon = $iconFactory->getIcon('actions-document-open', \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
             } else {
                 $icon = \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-open');

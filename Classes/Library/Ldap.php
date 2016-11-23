@@ -48,7 +48,7 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface
         /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
         static $objectManager = null;
         if ($objectManager === null) {
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Extbase\\Object\\ObjectManager');
+            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
         }
         return $objectManager->get(__CLASS__);
     }
@@ -265,7 +265,7 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface
         /** @var \TYPO3\CMS\Core\Log\Logger $logger */
         static $logger = null;
         if ($logger === null) {
-            $logger = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Log\\LogManager')->getLogger(__CLASS__);
+            $logger = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Log\LogManager::class)->getLogger(__CLASS__);
         }
 
         return $logger;

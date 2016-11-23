@@ -27,6 +27,11 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
 {
 
     /**
+     * @var bool
+     */
+    protected $escapeOutput = false;
+
+    /**
      * Renders a configuration table.
      *
      * @param array|string $data

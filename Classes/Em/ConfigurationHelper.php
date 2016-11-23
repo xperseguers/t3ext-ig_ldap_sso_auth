@@ -155,7 +155,13 @@ EOT;
             $this->errorType
         );
 
-        return $flashMessage->render();
+        if (version_compare(TYPO3_version, '7.99.99', '<=')) {
+            $out = $flashMessage->render();
+        } else {
+            $out = $flashMessage->getMessageAsMarkup();
+        }
+
+        return $out;
     }
 
     /**

@@ -18,7 +18,7 @@ As an administrator, what you should know is that the TYPO3 Logger forwards log 
 log record.
 
 By default, with a vanilla TYPO3 installation, messages are written to the default log file
-(:file:`typo3temp/logs/typo3.log`).
+(:file:`typo3temp/logs/typo3_*.log`).
 
 
 .. _admin-manual-logging-dedicatedogfile:
@@ -32,19 +32,19 @@ entries with level "WARNING" or above to the system log, you may add following c
 
 .. code-block:: php
 
-	$GLOBALS['TYPO3_CONF_VARS']['LOG']['Causal']['IgLdapSsoAuth']['writerConfiguration'] = array(
-	    \TYPO3\CMS\Core\Log\LogLevel::DEBUG => array(
-	        'TYPO3\\CMS\\Core\\Log\\Writer\\FileWriter' => array(
+	$GLOBALS['TYPO3_CONF_VARS']['LOG']['Causal']['IgLdapSsoAuth']['writerConfiguration'] = [
+	    \TYPO3\CMS\Core\Log\LogLevel::DEBUG => [
+	        'TYPO3\\CMS\\Core\\Log\\Writer\\FileWriter' => [
 	            'logFile' => 'typo3temp/logs/ldap.log'
-	        ),
-	    ),
+	        ],
+	    ],
 
 	    // Configuration for WARNING severity, including all
 	    // levels with higher severity (ERROR, CRITICAL, EMERGENCY)
-	    \TYPO3\CMS\Core\Log\LogLevel::WARNING => array(
-	        'TYPO3\\CMS\\Core\\Log\\Writer\\SyslogWriter' => array(),
-	    ),
-	);
+	    \TYPO3\CMS\Core\Log\LogLevel::WARNING => [
+	        'TYPO3\\CMS\\Core\\Log\\Writer\\SyslogWriter' => [],
+	    ],
+	];
 
 .. hint::
 	Be sure to read :ref:`t3api:logging-configuration` to fine-tune your configuration on any production website.

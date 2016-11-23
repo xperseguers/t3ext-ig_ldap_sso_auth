@@ -11,7 +11,7 @@
 			</trans-unit>
 
 			<trans-unit id="ldap_server.description">
-				<source>Type of LDAP server used by the authentication (OpenLDAP, Active Directory / Novell eDirectory).</source>
+				<source>Type of LDAP server used by the authentication (OpenLDAP, Active Directory).</source>
 			</trans-unit>
 			<trans-unit id="ldap_charset.description">
 				<source>Character set used by the LDAP server. Usually: utf-8.</source>

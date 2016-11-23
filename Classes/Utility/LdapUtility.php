@@ -89,7 +89,7 @@ class LdapUtility
     protected $status;
 
     /**
-     * 0 = OpenLDAP, 1 = Active Directory / Novell eDirectory
+     * 0 = OpenLDAP, 1 = Active Directory
      * @var int
      */
     protected $serverType;
@@ -111,7 +111,7 @@ class LdapUtility
      * @param int $port
      * @param int $protocol 3 for LDAP v3
      * @param string $characterSet
-     * @param int $serverType 0 = OpenLDAP, 1 = Active Directory / Novell eDirectory
+     * @param int $serverType 0 = OpenLDAP, 1 = Active Directory
      * @param bool $tls
      * @param bool $ssl
      * @return bool true if connection succeeded.

@@ -403,7 +403,7 @@ class Configuration
                 $server = 'OpenLDAP';
                 break;
             case static::SERVER_ACTIVE_DIRECTORY:
-                $server = 'Active Directory / Novell eDirectory';
+                $server = 'Active Directory';
                 break;
             default:
                 $server = null;

@@ -27,7 +27,7 @@ The second tab is the global configuration about a single LDAP server.
 Server
 ^^^^^^
 
-Choose your LDAP type (OpenLDAP or Active Directory / Novell eDirectory). This is used internally to follow (or not)
+Choose your LDAP type (OpenLDAP or Active Directory). This is used internally to follow (or not)
 referrals returned by the LDAP server and to help you with suggested mapping configuration.
 
 

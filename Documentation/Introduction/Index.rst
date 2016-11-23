@@ -23,7 +23,7 @@ as an intranet CMS.
 In case the network topology makes it useful, this extension is able to work with multiple LDAP server configurations,
 with a priority order based on the manual sorting of configuration records.
 
-This extension is known to work with OpenLDAP, Active Directory (various versions) and Novell eDirectory.
+This extension is known to work with OpenLDAP and Active Directory (various versions).
 
 Please consult the :ref:`faq` for additional information.
 

@@ -126,7 +126,7 @@ to the parent group. E.g.,* ::
 
 .. answer
 
-*Windows 2000 and above Active Directory and Novell eDirectory definitely support this attribute.*
+*Windows 2000 and above Active Directory definitely supports this attribute.*
 
 -------
 

@@ -111,7 +111,7 @@ Current value for backend is: "%s"]]></source>
 				<source>OpenLDAP</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.ldap_server.I.1">
-				<source>Active Directory / Novell eDirectory</source>
+				<source>Active Directory</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.ldap_charset">
 				<source>Character set:</source>
@@ -237,7 +237,7 @@ Current value for backend is: "%s"]]></source>
 				<source>Suggestion for OpenLDAP:</source>
 			</trans-unit>
 			<trans-unit id="suggestion.server.1">
-				<source>Suggestion for Active Directory / Novell eDirectory:</source>
+				<source>Suggestion for Active Directory:</source>
 			</trans-unit>
 			<trans-unit id="suggestion.copy">
 				<source>copy and use</source>

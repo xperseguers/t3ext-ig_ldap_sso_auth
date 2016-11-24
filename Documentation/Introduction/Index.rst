@@ -74,29 +74,39 @@ developed by *Infoglobe*, a Canadian company specialized in open-source software
 
 We would like to thank:
 
+- Support for TYPO3 8 LTS and some general bug fixes have been sponsored by *elementare teilchen*, Germany.
 - Support for TYPO3 6.2 LTS and some further enhancements have been sponsored by the *Centre électronique de gestion
   (CEG)*, technically the IT department of the Swiss city Neuchâtel.
 - Full user import was sponsored by the *Ecole d'Etudes Sociales et Pédagogiques*, in Lausanne, Switzerland.
 
 .. tabularcolumns:: |p{7.53cm}|p{7.53cm}|
 
-+------------------------------------------------+------------------------------------------------+
-| .. image:: ../Images/logo-causal.png           | .. image:: ../Images/logo-ceg.png              |
-|     :alt: Causal Sàrl                          |     :alt: CEG                                  |
-|     :width: 200px                              |     :width: 200px                              |
-|                                                |                                                |
-| Causal Sàrl                                    | Centre électronique de gestion (CEG)           |
-|                                                |                                                |
-| https://www.causal.ch                          | http://www.neuchatelville.ch/ceg               |
-+------------------------------------------------+------------------------------------------------+
-| .. image:: ../Images/logo-eesp.png             | .. image:: ../Images/logo-infoglobe.png        |
-|     :alt: EESP                                 |     :alt: Infoglobe                            |
-|     :width: 200px                              |     :width: 200px                              |
-|                                                |                                                |
-| Ecole d'Etudes Sociales et Pédagogiques (EESP) | Infoglobe                                      |
-|                                                |                                                |
-| http://www.eesp.ch                             | http://www.infoglobe.ca                        |
-+------------------------------------------------+------------------------------------------------+
++---------------------------------------------------+---------------------------------------------------+
+| .. image:: ../Images/logo-causal.png              | .. image:: ../Images/logo-ceg.png                 |
+|     :alt: Causal Sàrl                             |     :alt: CEG                                     |
+|     :width: 200px                                 |     :width: 200px                                 |
+|                                                   |                                                   |
+| Causal Sàrl                                       | Centre électronique de gestion (CEG)              |
+|                                                   |                                                   |
+| https://www.causal.ch                             | http://www.neuchatelville.ch/ceg                  |
++---------------------------------------------------+---------------------------------------------------+
+| .. image:: ../Images/logo-elementare-teilchen.png | .. image:: ../Images/logo-eesp.png                |
+|     :alt: elementare teilchen GmbH                |     :alt: EESP                                    |
+|     :width: 200px                                 |     :width: 200px                                 |
+|                                                   |                                                   |
+| elementare teilchen GmbH                          | Ecole d'Etudes Sociales et Pédagogiques (EESP)    |
+|                                                   |                                                   |
+| http://www.elementare-teilchen.de                 | http://www.eesp.ch                                |
++---------------------------------------------------+---------------------------------------------------+
+| .. image:: ../Images/logo-infoglobe.png           |                                                   |
+|     :alt: Infoglobe                               |                                                   |
+|     :width: 200px                                 |                                                   |
+|                                                   |                                                   |
+| Infoglobe                                         |                                                   |
+|                                                   |                                                   |
+| http://www.infoglobe.ca                           |                                                   |
++---------------------------------------------------+---------------------------------------------------+
+
 
 .. _support:
 

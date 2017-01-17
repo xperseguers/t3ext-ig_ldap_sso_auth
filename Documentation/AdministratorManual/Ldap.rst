@@ -72,7 +72,7 @@ port 389 and then set up an encrypted connection.
 SSL
 ^^^
 
-Wether you want to use :abbr:`SSL (Secure Socket Layer)`, that is start with an encrypted connection on default port
+Whether you want to use :abbr:`SSL (Secure Socket Layer)`, that is start with an encrypted connection on default port
 636.
 
 

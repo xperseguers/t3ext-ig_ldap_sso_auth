@@ -96,7 +96,7 @@ We would like to thank:
 |                                                   |                                                   |
 | elementare teilchen GmbH                          | Ecole d'Etudes Sociales et Pédagogiques (EESP)    |
 |                                                   |                                                   |
-| http://www.elementare-teilchen.de                 | http://www.eesp.ch                                |
+| http://www.elementare-teilchen.de                 | https://www.eesp.ch                               |
 +---------------------------------------------------+---------------------------------------------------+
 | .. image:: ../Images/logo-infoglobe.png           |                                                   |
 |     :alt: Infoglobe                               |                                                   |

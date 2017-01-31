@@ -31,7 +31,7 @@ if (version_compare(TYPO3_branch, '8', '>=')) {
          * @return string
          * @typo3 8
          */
-        protected function renderDefault(array $flashMessages)
+        protected function renderDefault(array $flashMessages) : string
         {
             $flashMessagesClass = $this->hasArgument('class') ? $this->arguments['class'] : 'typo3-messages';
             $tagContent = '';

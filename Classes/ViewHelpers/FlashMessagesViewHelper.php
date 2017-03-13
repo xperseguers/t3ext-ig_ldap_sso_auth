@@ -34,16 +34,13 @@ if (version_compare(TYPO3_branch, '8', '>=')) {
         protected function renderDefault(array $flashMessages) : string
         {
             $flashMessagesClass = $this->hasArgument('class') ? $this->arguments['class'] : 'typo3-messages';
-            $tagContent = '';
-            $this->tag->addAttribute('class', $flashMessagesClass);
+            $content = sprintf('<div class="%s">', $flashMessagesClass);
             /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $singleFlashMessage */
             foreach ($flashMessages as $singleFlashMessage) {
-                // This is what changes in our override:
-                //$tagContent .= $singleFlashMessage->getMessageAsMarkup();
-                $tagContent .= $this->renderFlashMessage($singleFlashMessage);
+                $content .= $this->renderFlashMessage($singleFlashMessage);
             }
-            $this->tag->setContent($tagContent);
-            return $this->tag->render();
+            $content .= '</div>';
+            return $content;
         }
 
         /**
@@ -84,21 +81,18 @@ if (version_compare(TYPO3_branch, '8', '>=')) {
         protected function renderAsList(array $flashMessages)
         {
             $flashMessagesClass = $this->hasArgument('class') ? $this->arguments['class'] : 'typo3-messages';
-            $tagContent = '';
-            $this->tag->addAttribute('class', $flashMessagesClass);
+            $content = sprintf('<ul class="%s">', $flashMessagesClass);
             /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $singleFlashMessage */
             foreach ($flashMessages as $singleFlashMessage) {
                 $severityClass = sprintf('alert %s', $singleFlashMessage->getClass());
-                // This is what changes in our override:
-                //$messageContent = htmlspecialchars($singleFlashMessage->getMessage());
                 $messageContent = $singleFlashMessage->getMessage();
                 if ($singleFlashMessage->getTitle() !== '') {
                     $messageContent = sprintf('<h4>%s</h4>', htmlspecialchars($singleFlashMessage->getTitle())) . $messageContent;
                 }
-                $tagContent .= sprintf('<li class="%s">%s</li>', htmlspecialchars($severityClass), $messageContent);
+                $content .= sprintf('<li class="%s">%s</li>', htmlspecialchars($severityClass), $messageContent);
             }
-            $this->tag->setContent($tagContent);
-            return $this->tag->render();
+            $content .= '</ul>';
+            return $content;
         }
     }
 } else {

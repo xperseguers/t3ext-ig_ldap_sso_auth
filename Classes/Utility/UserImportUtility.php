@@ -201,17 +201,18 @@ class UserImportUtility
             unset($user['__extraData']);
         }
 
+        $typo3Groups = Authentication::getUserGroups($ldapUser, $this->configuration, $this->groupTable);
+        if ($typo3Groups === null) {
+            // Required LDAP groups are missing: quit!
+            return $user;
+        }
+
         if (empty($user['uid'])) {
             // Set other necessary information for a new user
             // First make sure to be acting in the right context
             Configuration::setMode($this->context);
             $user['username'] = Typo3UserRepository::setUsername($user['username']);
             $user['password'] = Typo3UserRepository::setRandomPassword();
-            $typo3Groups = Authentication::getUserGroups($ldapUser, $this->configuration, $this->groupTable);
-            if ($typo3Groups === null) {
-                // Required LDAP groups are missing: quit!
-                return $user;
-            }
             $user = Typo3UserRepository::setUserGroups($user, $typo3Groups, $this->groupTable);
             $user = Typo3UserRepository::add($this->userTable, $user);
             $this->usersAdded++;
@@ -231,12 +232,7 @@ class UserImportUtility
                     $user[$GLOBALS['TCA'][$this->userTable]['ctrl']['enablecolumns']['disabled']] = 0;
                     $user[$GLOBALS['TCA'][$this->userTable]['ctrl']['delete']] = 0;
             }
-            $typo3Groups = Authentication::getUserGroups($ldapUser, $this->configuration, $this->groupTable);
-            $user = Typo3UserRepository::setUserGroups(
-                $user,
-                ($typo3Groups === null) ? array() : $typo3Groups,
-                $this->groupTable
-            );
+            $user = Typo3UserRepository::setUserGroups($user, $typo3Groups, $this->groupTable);
             $success = Typo3UserRepository::update($this->userTable, $user);
             if ($success) {
                 $this->usersUpdated++;

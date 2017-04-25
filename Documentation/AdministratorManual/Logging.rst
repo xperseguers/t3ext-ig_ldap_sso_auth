@@ -34,7 +34,7 @@ entries with level "WARNING" or above to the system log, you may add following c
 
 	$GLOBALS['TYPO3_CONF_VARS']['LOG']['Causal']['IgLdapSsoAuth']['writerConfiguration'] = [
 	    \TYPO3\CMS\Core\Log\LogLevel::DEBUG => [
-	        'TYPO3\\CMS\\Core\\Log\\Writer\\FileWriter' => [
+	        \TYPO3\CMS\Core\Log\Writer\FileWriter::class => [
 	            'logFile' => 'typo3temp/logs/ldap.log'
 	        ],
 	    ],
@@ -42,7 +42,7 @@ entries with level "WARNING" or above to the system log, you may add following c
 	    // Configuration for WARNING severity, including all
 	    // levels with higher severity (ERROR, CRITICAL, EMERGENCY)
 	    \TYPO3\CMS\Core\Log\LogLevel::WARNING => [
-	        'TYPO3\\CMS\\Core\\Log\\Writer\\SyslogWriter' => [],
+	        \TYPO3\CMS\Core\Log\Writer\SyslogWriter::class => [],
 	    ],
 	];
 

@@ -128,13 +128,17 @@ class UserImportUtility
      * Fetches all possible LDAP/AD users for a given configuration and context.
      *
      * @param bool $continueLastSearch
+     * @param \Causal\IgLdapSsoAuth\Library\Ldap $ldaInstance
      * @return array
      */
-    public function fetchLdapUsers($continueLastSearch = false)
+    public function fetchLdapUsers($continueLastSearch = false, \Causal\IgLdapSsoAuth\Library\Ldap $ldapInstance = null)
     {
-
         // Get the users from LDAP/AD server
         $ldapUsers = array();
+        if ($ldapInstance === null) {
+            return $ldapUsers;
+        }
+
         if (!empty($this->configuration['users']['basedn'])) {
             $filter = Configuration::replaceFilterMarkers($this->configuration['users']['filter']);
             if (Configuration::hasExtendedMapping($this->configuration['users']['mapping'])) {
@@ -144,7 +148,7 @@ class UserImportUtility
                 // Optimize the LDAP call by retrieving only attributes in use for the mapping
                 $attributes = Configuration::getLdapAttributes($this->configuration['users']['mapping']);
             }
-            $ldapUsers = Ldap::getInstance()->search($this->configuration['users']['basedn'], $filter, $attributes, false, 0, $continueLastSearch);
+            $ldapUsers = $ldapInstance->search($this->configuration['users']['basedn'], $filter, $attributes, false, 0, $continueLastSearch);
             unset($ldapUsers['count']);
         }
 
@@ -155,11 +159,18 @@ class UserImportUtility
      * Returns true is a previous call to @see fetchLdapUsers() returned
      * a partial result set.
      *
+     * @param \Causal\IgLdapSsoAuth\Library\Ldap $ldapInstance
      * @return bool
      */
-    public function hasMoreLdapUsers()
+    public function hasMoreLdapUsers(\Causal\IgLdapSsoAuth\Library\Ldap $ldapInstance = null)
     {
-        return Ldap::getInstance()->isPartialSearchResult();
+        $hasMoreLdapUsers = false;
+
+        if ($ldapInstance !== null) {
+            $hasMoreLdapUsers = $ldapInstance->isPartialSearchResult();
+        }
+
+        return $hasMoreLdapUsers;
     }
 
     /**

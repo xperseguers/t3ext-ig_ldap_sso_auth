@@ -88,13 +88,15 @@ class Authentication
             $username = strtolower($username);
         }
 
+        $ldapInstance = Ldap::getInstance();
+
         // Valid user only if username and connect to LDAP server.
-        if ($username && Ldap::getInstance()->connect(Configuration::getLdapConfiguration())) {
+        if ($username && $ldapInstance->connect(Configuration::getLdapConfiguration())) {
             // Set extension configuration from TYPO3 mode (BE/FE).
             static::initializeConfiguration();
 
             // Valid user from LDAP server
-            if ($userdn = Ldap::getInstance()->validateUser($username, $password, static::$config['users']['basedn'], static::$config['users']['filter'])) {
+            if ($userdn = $ldapInstance->validateUser($username, $password, static::$config['users']['basedn'], static::$config['users']['filter'])) {
                 static::getLogger()->info(sprintf('Successfully authenticated' . ($password === null ? ' SSO' : '') . ' user "%s" with LDAP', $username));
 
                 if ($userdn === true) {
@@ -102,14 +104,14 @@ class Authentication
                 }
                 return static::synchroniseUser($userdn, $username);
             } else {
-                static::$lastAuthenticationDiagnostic = Ldap::getInstance()->getLastBindDiagnostic();
+                static::$lastAuthenticationDiagnostic = $ldapInstance->getLastBindDiagnostic();
                 if (!empty(static::$lastAuthenticationDiagnostic)) {
                     static::getLogger()->notice(static::$lastAuthenticationDiagnostic);
                 }
             }
 
             // LDAP authentication failed.
-            Ldap::getInstance()->disconnect();
+            $ldapInstance->disconnect();
 
             // This is a notice because it is fine to fallback to standard TYPO3 authentication
             static::getLogger()->notice(sprintf('Could not authenticate user "%s" with LDAP', $username));
@@ -119,7 +121,7 @@ class Authentication
 
         // LDAP authentication failed.
         static::getLogger()->warning('Cannot connect to LDAP or username is empty', array('username' => $username));
-        Ldap::getInstance()->disconnect();
+        $ldapInstance->disconnect();
         return false;
     }
 
@@ -262,7 +264,10 @@ class Authentication
             }
         }
 
-        $users = Ldap::getInstance()->search(
+        $ldapInstance = Ldap::getInstance();
+        $ldapInstance->connect(Configuration::getLdapConfiguration());
+
+        $users = $ldapInstance->search(
             $dn,
             str_replace('{USERNAME}', '*', static::$config['users']['filter']),
             $attributes
@@ -270,6 +275,7 @@ class Authentication
 
         $user = is_array($users[0]) ? $users[0] : null;
 
+        $ldapInstance->disconnect();
         static::getLogger()->debug(sprintf('Retrieving LDAP user from DN "%s"', $dn), $user ?: array());
 
         return $user;
@@ -431,6 +437,9 @@ class Authentication
         $ldapGroupAttributes = Configuration::getLdapAttributes(static::$config['groups']['mapping']);
         $ldapGroups = array('count' => 0);
 
+        $ldapInstance = Ldap::getInstance();
+        $ldapInstance->connect(Configuration::getLdapConfiguration());
+
         if (Configuration::getValue('evaluateGroupsFromMembership')) {
             // Get LDAP groups from membership attribute
             if ($membership = LdapGroup::getMembership($ldapUser, static::$config['users']['mapping'])) {
@@ -444,7 +453,8 @@ class Authentication
                     // the baseDN for groups, because LDAP groups not existing locally will simply be
                     // skipped and not automatically created. This allows groups to be available on a
                     // different LDAP server (see https://forge.typo3.org/issues/64141):
-                    !(bool)static::$config['GroupsNotSynchronize']
+                    !(bool)static::$config['GroupsNotSynchronize'],
+                    $ldapInstance
                 );
             }
         } else {
@@ -454,9 +464,12 @@ class Authentication
                 static::$config['groups']['filter'],
                 $ldapUser['dn'],
                 !empty($ldapUser['uid'][0]) ? $ldapUser['uid'][0] : '',
-                $ldapGroupAttributes
+                $ldapGroupAttributes,
+                $ldapInstance
             );
         }
+
+        $ldapInstance->disconnect();
 
         static::getLogger()->debug(sprintf('Retrieving LDAP groups for user "%s"', $ldapUser['dn']), $ldapGroups);
 

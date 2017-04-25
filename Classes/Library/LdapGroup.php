@@ -35,13 +35,14 @@ class LdapGroup
      * @param string $filter
      * @param array $attributes
      * @param bool $extendedCheck true if groups should be actively checked against LDAP server, false to check against baseDN solely
+     * @param \Causal\IgLdapSsoAuth\Library\Ldap $ldapInstance
      * @return array
      */
-    public static function selectFromMembership(array $membership = array(), $baseDn, $filter, array $attributes = array(), $extendedCheck = true)
+    public static function selectFromMembership(array $membership = array(), $baseDn, $filter, array $attributes = array(), $extendedCheck = true, \Causal\IgLdapSsoAuth\Library\Ldap $ldapInstance = null)
     {
         $ldapGroups['count'] = 0;
 
-        if (count($membership) === 0 || empty($filter)) {
+        if (count($membership) === 0 || empty($filter) || $ldapInstance === null) {
             return $ldapGroups;
         }
 
@@ -53,7 +54,7 @@ class LdapGroup
                 continue;
             }
             if ($extendedCheck) {
-                $ldapGroup = Ldap::getInstance()->search($groupDn, $filter, $attributes);
+                $ldapGroup = $ldapInstance->search($groupDn, $filter, $attributes);
             } else {
                 $parts = explode(',', $groupDn);
                 list($firstAttribute, $value) = explode('=', $parts[0]);
@@ -89,14 +90,19 @@ class LdapGroup
      * @param string $userDn
      * @param string $userUid
      * @param array $attributes
+     * @param \Causal\IgLdapSsoAuth\Library\Ldap $ldapInstance
      * @return array
      */
-    public static function selectFromUser($baseDn, $filter = '', $userDn = '', $userUid = '', array $attributes = array())
+    public static function selectFromUser($baseDn, $filter = '', $userDn = '', $userUid = '', array $attributes = array(), \Causal\IgLdapSsoAuth\Library\Ldap $ldapInstance = null)
     {
-        $filter = str_replace('{USERDN}', Ldap::getInstance()->escapeDnForFilter($userDn), $filter);
-        $filter = str_replace('{USERUID}', Ldap::getInstance()->escapeDnForFilter($userUid), $filter);
+        if ($ldapInstance === null) {
+            return [];
+        }
 
-        $groups = Ldap::getInstance()->search($baseDn, $filter, $attributes);
+        $filter = str_replace('{USERDN}', $ldapInstance->escapeDnForFilter($userDn), $filter);
+        $filter = str_replace('{USERUID}', $ldapInstance->escapeDnForFilter($userUid), $filter);
+
+        $groups = $ldapInstance->search($baseDn, $filter, $attributes);
         return $groups;
     }
 

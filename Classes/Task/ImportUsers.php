@@ -123,7 +123,8 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
                 }
 
                 // Start by connecting to the designated LDAP/AD server
-                $success = Ldap::getInstance()->connect(Configuration::getLdapConfiguration());
+                $ldapInstance = Ldap::getInstance();
+                $success = $ldapInstance->connect(Configuration::getLdapConfiguration());
                 // Proceed with import if successful
                 if (!$success) {
                     $failures++;
@@ -131,7 +132,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
                     continue;
                 }
 
-                $ldapUsers = $importUtility->fetchLdapUsers();
+                $ldapUsers = $importUtility->fetchLdapUsers(false, $ldapInstance);
 
                 // Consider that fetching no users from LDAP is an error
                 if (count($ldapUsers) === 0) {
@@ -178,15 +179,15 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
                         // Free memory before going on
                         $typo3Users = null;
                         $ldapUsers = null;
-                        $ldapUsers = $importUtility->hasMoreLdapUsers()
-                            ? $importUtility->fetchLdapUsers(true)
+                        $ldapUsers = $importUtility->hasMoreLdapUsers($ldapInstance)
+                            ? $importUtility->fetchLdapUsers(true, $ldapInstance)
                             : [];
                     } while (count($ldapUsers) > 0);
                 }
 
                 // Clean up
                 unset($importUtility);
-                Ldap::getInstance()->disconnect();
+                $ldapInstance->disconnect();
             }
         }
 

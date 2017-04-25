@@ -517,7 +517,11 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             } else {
                 $filter = '(&' . Configuration::replaceFilterMarkers($config['groups']['filter']) . '&(distinguishedName=' . $parentDn . '))';
                 $attributes = Configuration::getLdapAttributes($config['groups']['mapping']);
-                $ldapGroups = Ldap::getInstance()->search($config['groups']['basedn'], $filter, $attributes);
+
+                $ldapInstance = Ldap::getInstance();
+                $ldapInstance->connect(Configuration::getLdapConfiguration());
+                $ldapGroups = $ldapInstance->search($config['groups']['basedn'], $filter, $attributes);
+                $ldapInstance->disconnect();
                 unset($ldapGroups['count']);
 
                 if (count($ldapGroups) > 0) {
@@ -569,7 +573,10 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             $configuration,
             $mode
         );
-        $ldapUsers = $importUtility->fetchLdapUsers();
+
+        $ldapInstance = Ldap::getInstance();
+        $ldapInstance->connect(Configuration::getLdapConfiguration());
+        $ldapUsers = $importUtility->fetchLdapUsers(false, $ldapInstance);
 
         $users = array();
         $numberOfUsers = 0;
@@ -609,8 +616,12 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
                 break;
             }
 
-            $ldapUsers = $importUtility->hasMoreLdapUsers() ? $importUtility->fetchLdapUsers(true) : array();
+            $ldapUsers = $importUtility->hasMoreLdapUsers($ldapInstance)
+                ? $importUtility->fetchLdapUsers(true, $ldapInstance)
+                : [];
         } while (count($ldapUsers) > 0);
+
+        $ldapInstance->disconnect();
 
         return $users;
     }
@@ -633,7 +644,10 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         if (!empty($config['groups']['basedn'])) {
             $filter = Configuration::replaceFilterMarkers($config['groups']['filter']);
             $attributes = Configuration::getLdapAttributes($config['groups']['mapping']);
-            $ldapGroups = Ldap::getInstance()->search($config['groups']['basedn'], $filter, $attributes);
+            $ldapInstance = Ldap::getInstance();
+            $ldapInstance->connect(Configuration::getLdapConfiguration());
+            $ldapGroups = $ldapInstance->search($config['groups']['basedn'], $filter, $attributes);
+            $ldapInstance->disconnect();
             unset($ldapGroups['count']);
         }
 

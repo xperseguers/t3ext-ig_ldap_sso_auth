@@ -24,7 +24,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package       TYPO3
  * @subpackage    ig_ldap_sso_auth
  */
-class Ldap implements \TYPO3\CMS\Core\SingletonInterface
+class Ldap
 {
 
     /**
@@ -41,7 +41,7 @@ class Ldap implements \TYPO3\CMS\Core\SingletonInterface
     /**
      * Returns an instance of this class.
      *
-     * @return \Causal\IgLdapSsoAuth\Library\Ldap
+     * @return Ldap
      */
     public static function getInstance()
     {

@@ -1,4 +1,6 @@
 <?php
+namespace Causal\IgLdapSsoAuth\ViewHelpers;
+
 class FlashMessagesViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FlashMessagesViewHelper
 {
     /**

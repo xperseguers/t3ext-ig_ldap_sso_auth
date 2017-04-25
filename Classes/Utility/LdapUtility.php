@@ -137,9 +137,10 @@ class LdapUtility
         }
 
         if (!$this->connection) {
-            // Could not connect to ldap server
+            // This block should never be reached according to PHP documentation
+            // but it was reported to be executed anyway, see https://forge.typo3.org/issues/81005
             $this->connection = false;
-            $this->status['connect']['status'] = ldap_error($this->connection);
+            $this->status['connect']['status'] = 'Could not connect to ldap server';
             return false;
         }
 

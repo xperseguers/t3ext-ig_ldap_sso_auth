@@ -14,6 +14,9 @@ Links
 :TER:
 	https://typo3.org/extensions/repository/view/ig_ldap_sso_auth
 
+:Packagist:
+	https://packagist.org/packages/causal/ig_ldap_sso_auth
+
 :Bug Tracker:
 	https://forge.typo3.org/projects/extension-ig_ldap_sso_auth/issues
 

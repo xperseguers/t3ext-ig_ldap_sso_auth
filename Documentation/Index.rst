@@ -57,7 +57,7 @@ LDAP / SSO Authentication
 	**Other version of this document**
 
 	:PDF:
-		https://docs.typo3.org/typo3cms/extensions/ig_ldap_sso_auth/3.2.0/_pdf/
+		https://docs.typo3.org/typo3cms/extensions/ig_ldap_sso_auth/3.2.1/_pdf/
 
 
 	**Table of Contents**

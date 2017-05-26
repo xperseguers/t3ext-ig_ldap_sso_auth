@@ -40,43 +40,43 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
     public function getAdditionalFields(array &$taskInfo, $task, \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule)
     {
         /** @var \Causal\IgLdapSsoAuth\Task\ImportUsers $task */
-        $additionalFields = array();
+        $additionalFields = [];
 
         // Process the mode field
-        $parameters = array(
+        $parameters = [
             'field' => 'mode',
             'label' => 'task.import_users.field.mode',
-            'options' => array(
+            'options' => [
                 'import' => 'LLL:task.import_users.field.mode.import',
                 'sync' => 'LLL:task.import_users.field.mode.sync',
-            ),
+            ],
             'value' => $task ? $task->getMode() : null,
             'css' => 'wide',
-        );
+        ];
         $this->registerSelect($taskInfo, $schedulerModule->CMD, $parameters, $additionalFields);
 
         // Process the context field
-        $parameters = array(
+        $parameters = [
             'field' => 'context',
             'label' => 'task.import_users.field.context',
-            'options' => array(
+            'options' => [
                 'both' => 'LLL:task.import_users.field.context.both',
                 'FE' => 'LLL:task.import_users.field.context.fe',
                 'BE' => 'LLL:task.import_users.field.context.be',
-            ),
+            ],
             'value' => $task ? $task->getContext() : null,
-        );
+        ];
         $this->registerSelect($taskInfo, $schedulerModule->CMD, $parameters, $additionalFields);
 
         // Process the configuration field
-        $parameters = array(
+        $parameters = [
             'field' => 'configuration',
             'label' => 'task.import_users.field.configuration',
-            'options' => array(
+            'options' => [
                 0 => 'LLL:task.import_users.field.configuration.all',
-            ),
+            ],
             'value' => $task ? $task->getConfiguration() : null,
-        );
+        ];
         // Get the existing LDAP configurations
         /** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
         $configurationRepository = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository::class);
@@ -88,30 +88,30 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
         $this->registerSelect($taskInfo, $schedulerModule->CMD, $parameters, $additionalFields);
 
         // Process the missing user handling field
-        $parameters = array(
+        $parameters = [
             'field' => 'missinguserhandling',
             'label' => 'task.import_users.field.missinguserhandling',
-            'options' => array(
+            'options' => [
                 'nothing' => 'LLL:task.import_users.field.missinguserhandling.nothing',
                 'disable' => 'LLL:task.import_users.field.missinguserhandling.disable',
                 'delete' => 'LLL:task.import_users.field.missinguserhandling.delete',
-            ),
+            ],
             'value' => $task ? $task->getMissingUsersHandling() : null,
-        );
+        ];
         $this->registerSelect($taskInfo, $schedulerModule->CMD, $parameters, $additionalFields);
 
         // Process the restored user handling field
-        $parameters = array(
+        $parameters = [
             'field' => 'restoreduserhandling',
             'label' => 'task.import_users.field.restoreduserhandling',
-            'options' => array(
+            'options' => [
                 'nothing' => 'LLL:task.import_users.field.restoreduserhandling.nothing',
                 'enable' => 'LLL:task.import_users.field.restoreduserhandling.enable',
                 'undelete' => 'LLL:task.import_users.field.restoreduserhandling.undelete',
                 'both' => 'LLL:task.import_users.field.restoreduserhandling.both',
-            ),
+            ],
             'value' => $task ? $task->getRestoredUsersHandling() : null,
-        );
+        ];
         $this->registerSelect($taskInfo, $schedulerModule->CMD, $parameters, $additionalFields);
 
         return $additionalFields;
@@ -170,11 +170,11 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
         $fieldCode .= '</select>';
 
         // Register the field
-        $additionalFields[$fieldID] = array(
+        $additionalFields[$fieldID] = [
             'code' => $fieldCode,
             'label' => $localizationPrefix . $parameters['label'],
             'cshLabel' => $fieldID
-        );
+        ];
     }
 
     /**

@@ -86,15 +86,15 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
             $ldapConfigurations = $configurationRepository->findAll();
         } else {
             $configuration = $configurationRepository->findByUid($this->configuration);
-            $ldapConfigurations = array();
+            $ldapConfigurations = [];
             if ($configuration !== null) {
                 $ldapConfigurations[] = $configuration;
             }
         }
         if ($this->context === 'both') {
-            $executionContexts = array('fe', 'be');
+            $executionContexts = ['fe', 'be'];
         } else {
-            $executionContexts = array($this->context);
+            $executionContexts = [$this->context];
         }
 
         $mode = $this->getMode();

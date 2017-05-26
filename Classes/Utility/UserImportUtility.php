@@ -134,7 +134,7 @@ class UserImportUtility
     public function fetchLdapUsers($continueLastSearch = false, \Causal\IgLdapSsoAuth\Library\Ldap $ldapInstance = null)
     {
         // Get the users from LDAP/AD server
-        $ldapUsers = array();
+        $ldapUsers = [];
         if ($ldapInstance === null) {
             return $ldapUsers;
         }
@@ -143,7 +143,7 @@ class UserImportUtility
             $filter = Configuration::replaceFilterMarkers($this->configuration['users']['filter']);
             if (Configuration::hasExtendedMapping($this->configuration['users']['mapping'])) {
                 // Fetch all attributes so that hooks may do whatever they want on any LDAP attribute
-                $attributes = array();
+                $attributes = [];
             } else {
                 // Optimize the LDAP call by retrieving only attributes in use for the mapping
                 $attributes = Configuration::getLdapAttributes($this->configuration['users']['mapping']);

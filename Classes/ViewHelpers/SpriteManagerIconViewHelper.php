@@ -39,7 +39,7 @@ class SpriteManagerIconViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Be\Abstra
      * @param int $uid
      * @return string
      */
-    public function render($iconName, $options = array(), $uid = 0)
+    public function render($iconName, $options = [], $uid = 0)
     {
         if (!isset($options['title']) && $uid > 0) {
             $options['title'] = 'id=' . $uid;

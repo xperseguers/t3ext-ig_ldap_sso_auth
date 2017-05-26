@@ -37,91 +37,91 @@ class AuthenticationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
 
     protected function setUp()
     {
-        $this->ldapUserFixture = array(
+        $this->ldapUserFixture = [
             'dn' => 'uid=newton,dc=example,dc=com',
             0 => 'sn',
-            'sn' => array(
+            'sn' => [
                 0 => 'Newton',
                 'count' => 1,
-            ),
+            ],
             1 => 'cn',
-            'cn' => array(
+            'cn' => [
                 0 => 'Isaac Newton',
                 'count' => 1,
-            ),
+            ],
             2 => 'objectClass',
-            'objectclass' => array(
+            'objectclass' => [
                 0 => 'inetOrgPerson',
                 1 => 'organizationalPerson',
                 2 => 'person',
                 3 => 'top',
-            ),
+            ],
             3 => 'uid',
-            'uid' => array(
+            'uid' => [
                 0 => 'newton',
                 'count' => 1,
-            ),
+            ],
             4 => 'mail',
-            'mail' => array(
+            'mail' => [
                 0 => 'newton@ldap.forumsys.com',
                 'count' => 1,
-            ),
+            ],
             5 => 'l',
-            'l' => array(
+            'l' => [
                 0 => 'Woolsthorpe-by-Colsterworth',
                 'count' => 1,
-            ),
+            ],
             6 => 'postalCode',
-            'postalcode' => array(
+            'postalcode' => [
                 0 => 'NG33',
                 'count' => 1,
-            ),
+            ],
             7 => 'street',
-            'street' => array(
+            'street' => [
                 0 => 'Woolsthorpe Manor',
                 'count' => 1,
-            ),
+            ],
             8 => 'c',
-            'c' => array(
+            'c' => [
                 0 => 'EN',
                 'count' => 1,
-            ),
+            ],
             9 => 'co',
-            'co' => array(
+            'co' => [
                 0 => 'England',
                 'count' => 1,
-            ),
-        );
+            ],
+        ];
 
-        $this->ldapGroupFixture = array(
+        $this->ldapGroupFixture = [
             'dn' => 'ou=scientists,dc=example,dc=com',
             0 => 'uniqueMember',
-            'uniquemember' => array(
+            'uniquemember' => [
                 0 => 'uid=einstein,dc=example,dc=com',
                 1 => 'uid=galieleo,dc=example,dc=com',
                 2 => 'uid=tesla,dc=example,dc=com',
                 3 => 'uid=newton,dc=example,dc=com',
                 'count' => 4,
-            ),
+            ],
             1 => 'ou',
-            'ou' => array(
+            'ou' => [
                 0 => 'scientists',
                 'count' => 1,
-            ),
+            ],
             2 => 'cn',
-            'cn' => array(
+            'cn' => [
                 0 => 'Scientists',
                 'count' => 1,
-            ),
+            ],
             3 => 'objectClass',
-            'objectclass' => array(
+            'objectclass' => [
                 0 => 'groupOfUniqueNames',
                 1 => 'top',
                 'count' => 2,
-            ),
-        );
+            ],
+        ];
 
-        $this->typo3UserFixture = array(
+        $this->typo3UserFixture = [
             'pid' => 0,
             'tstamp' => 0,
             'username' => '',
@@ -140,16 +140,16 @@ class AuthenticationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
             'www' => '',
             'company' => '',
             'tx_igldapssoauth_dn' => '',
-        );
+        ];
 
-        $this->typo3GroupFixture = array(
+        $this->typo3GroupFixture = [
             'pid' => 0,
             'tstamp' => 0,
             'title' => '',
             'description' => '',
             'subgroup' => null,
             'tx_igldapssoauth_dn' => '',
-        );
+        ];
     }
 
     /**
@@ -174,7 +174,7 @@ class AuthenticationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
             company = MY COMPANY
 EOT;
 
-        $expected = array(
+        $expected = [
             'pid' => '1',
             'tstamp' => 0,
             'username' => 'MY USERNAME',
@@ -193,7 +193,7 @@ EOT;
             'www' => 'MY WWW',
             'company' => 'MY COMPANY',
             'tx_igldapssoauth_dn' => '',
-        );
+        ];
 
         $mapping = Configuration::parseMapping($mapping);
         $user = Authentication::merge($this->ldapUserFixture, $this->typo3UserFixture, $mapping);
@@ -298,10 +298,10 @@ EOT;
 
         $this->assertArrayHasKey('__extraData', $user);
 
-        $expectedData = array(
+        $expectedData = [
             'custom_field' => 'Woolsthorpe-by-Colsterworth',
             'custom_field2' => 'Woolsthorpe-by-Colsterworth (NG33)',
-        );
+        ];
 
         $this->assertEquals($expectedData, $user['__extraData']);
     }
@@ -407,13 +407,13 @@ EOT;
 
     public function dnProvider()
     {
-        return array(
-            array('uid=newton,ou=department,dc=example,dc=com', null, array('uid=newton', 'ou=department', 'dc=example', 'dc=com')),
-            array('uid=newton,ou=department,dc=example,dc=com', 2, array('uid=newton', 'ou=department,dc=example,dc=com')),
-            array('uid=newton,ou=department,dc=example,dc=com', 3, array('uid=newton', 'ou=department', 'dc=example,dc=com')),
-            array('CN=Doering\\, Olaf,OU=Admins,OU=IT,DC=my-company,DN=local', null, array('CN=Doering\\, Olaf', 'OU=Admins', 'OU=IT', 'DC=my-company' ,'DN=local')),
-            array('CN=Doering\\, Olaf,OU=Admins,OU=IT,DC=my-company,DN=local', 2, array('CN=Doering\\, Olaf', 'OU=Admins,OU=IT,DC=my-company,DN=local')),
-        );
+        return [
+            ['uid=newton,ou=department,dc=example,dc=com', null, ['uid=newton', 'ou=department', 'dc=example', 'dc=com']],
+            ['uid=newton,ou=department,dc=example,dc=com', 2, ['uid=newton', 'ou=department,dc=example,dc=com']],
+            ['uid=newton,ou=department,dc=example,dc=com', 3, ['uid=newton', 'ou=department', 'dc=example,dc=com']],
+            ['CN=Doering\\, Olaf,OU=Admins,OU=IT,DC=my-company,DN=local', null, ['CN=Doering\\, Olaf', 'OU=Admins', 'OU=IT', 'DC=my-company' ,'DN=local']],
+            ['CN=Doering\\, Olaf,OU=Admins,OU=IT,DC=my-company,DN=local', 2, ['CN=Doering\\, Olaf', 'OU=Admins,OU=IT,DC=my-company,DN=local']],
+        ];
     }
 
 }

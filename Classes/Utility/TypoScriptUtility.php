@@ -68,7 +68,7 @@ class TypoScriptUtility
         }
 
         // Reset the parser state
-        $typoScriptParser->setup = array();
+        $typoScriptParser->setup = [];
 
         return $typoScriptParser;
     }

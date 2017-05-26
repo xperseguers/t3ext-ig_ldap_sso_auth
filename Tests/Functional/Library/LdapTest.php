@@ -32,12 +32,12 @@ class LdapTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
 
     protected function setUp()
     {
-        $ldapUtility = $this->getMock(\Causal\IgLdapSsoAuth\Utility\LdapUtility::class, array('bind', 'search', 'getEntries', 'getFirstEntry', 'getDn'));
-        $ldapUtility->expects($this->any())->method('bind')->will($this->returnCallback(array($this, 'bindExecuteCallback')));
-        $ldapUtility->expects($this->any())->method('search')->will($this->returnCallback(array($this, 'searchExecuteCallback')));
-        $ldapUtility->expects($this->any())->method('getEntries')->will($this->returnCallback(array($this, 'getEntriesExecuteCallback')));
-        $ldapUtility->expects($this->any())->method('getFirstEntry')->will($this->returnCallback(array($this, 'getFirstEntryExecuteCallback')));
-        $ldapUtility->expects($this->any())->method('getDn')->will($this->returnCallback(array($this, 'getDnExecuteCallback')));
+        $ldapUtility = $this->getMock(\Causal\IgLdapSsoAuth\Utility\LdapUtility::class, ['bind', 'search', 'getEntries', 'getFirstEntry', 'getDn']);
+        $ldapUtility->expects($this->any())->method('bind')->will($this->returnCallback([$this, 'bindExecuteCallback']));
+        $ldapUtility->expects($this->any())->method('search')->will($this->returnCallback([$this, 'searchExecuteCallback']));
+        $ldapUtility->expects($this->any())->method('getEntries')->will($this->returnCallback([$this, 'getEntriesExecuteCallback']));
+        $ldapUtility->expects($this->any())->method('getFirstEntry')->will($this->returnCallback([$this, 'getFirstEntryExecuteCallback']));
+        $ldapUtility->expects($this->any())->method('getDn')->will($this->returnCallback([$this, 'getDnExecuteCallback']));
 
         $this->fixture = new \Causal\IgLdapSsoAuth\Library\Ldap();
         $this->inject($this->fixture, 'ldapUtility', $ldapUtility);
@@ -55,37 +55,37 @@ class LdapTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
 
     public function usernamePasswordProvider()
     {
-        return array(
+        return [
             // Valid username/password using uid
-            array('(uid={USERNAME})', 'newton', 'password', 'uid=newton,dc=example,dc=com'),
-            array('(uid={USERNAME})', 'einstein', 'password', 'uid=einstein,dc=example,dc=com'),
-            array('(uid={USERNAME})', 'tesla', 'password', 'uid=tesla,dc=example,dc=com'),
-            array('(uid={USERNAME})', 'galieleo', 'password', 'uid=galieleo,dc=example,dc=com'),
+            ['(uid={USERNAME})', 'newton', 'password', 'uid=newton,dc=example,dc=com'],
+            ['(uid={USERNAME})', 'einstein', 'password', 'uid=einstein,dc=example,dc=com'],
+            ['(uid={USERNAME})', 'tesla', 'password', 'uid=tesla,dc=example,dc=com'],
+            ['(uid={USERNAME})', 'galieleo', 'password', 'uid=galieleo,dc=example,dc=com'],
             // Valid username/password using mail
-            array('(mail={USERNAME})', 'newton@ldap.forumsys.com', 'password', 'uid=newton,dc=example,dc=com'),
-            array('(mail={USERNAME})', 'einstein@ldap.forumsys.com', 'password', 'uid=einstein,dc=example,dc=com'),
-            array('(mail={USERNAME})', 'tesla@ldap.forumsys.com', 'password', 'uid=tesla,dc=example,dc=com'),
-            array('(mail={USERNAME})', 'galieleo@ldap.forumsys.com', 'password', 'uid=galieleo,dc=example,dc=com'),
+            ['(mail={USERNAME})', 'newton@ldap.forumsys.com', 'password', 'uid=newton,dc=example,dc=com'],
+            ['(mail={USERNAME})', 'einstein@ldap.forumsys.com', 'password', 'uid=einstein,dc=example,dc=com'],
+            ['(mail={USERNAME})', 'tesla@ldap.forumsys.com', 'password', 'uid=tesla,dc=example,dc=com'],
+            ['(mail={USERNAME})', 'galieleo@ldap.forumsys.com', 'password', 'uid=galieleo,dc=example,dc=com'],
             // Invalid username/password using uid
-            array('(uid={USERNAME})', '', '', false),
-            array('(uid={USERNAME})', '', 'password', false),
-            array('(uid={USERNAME})', null, '', false),
-            array('(uid={USERNAME})', 'newton', '', false),
-            array('(uid={USERNAME})', 'einstein', 'invalid password', false),
+            ['(uid={USERNAME})', '', '', false],
+            ['(uid={USERNAME})', '', 'password', false],
+            ['(uid={USERNAME})', null, '', false],
+            ['(uid={USERNAME})', 'newton', '', false],
+            ['(uid={USERNAME})', 'einstein', 'invalid password', false],
             // Invalid username/password using mail
-            array('(mail={USERNAME})', '', '', false),
-            array('(mail={USERNAME})', '', 'password', false),
-            array('(mail={USERNAME})', null, '', false),
-            array('(mail={USERNAME})', 'newton@ldap.forumsys.com', '', false),
-            array('(mail={USERNAME})', 'einstein@ldap.forumsys.com', 'invalid password', false),
+            ['(mail={USERNAME})', '', '', false],
+            ['(mail={USERNAME})', '', 'password', false],
+            ['(mail={USERNAME})', null, '', false],
+            ['(mail={USERNAME})', 'newton@ldap.forumsys.com', '', false],
+            ['(mail={USERNAME})', 'einstein@ldap.forumsys.com', 'invalid password', false],
             // null password using uid (no SSO here)
-            array('(uid={USERNAME})', '', null, false),
-            array('(uid={USERNAME})', null, null, false),
-            array('(uid={USERNAME})', 'newton', null, false),
-            array('(uid={USERNAME})', 'einstein', null, false),
-            array('(uid={USERNAME})', 'tesla', null, false),
-            array('(uid={USERNAME})', 'galieleo', null, false),
-        );
+            ['(uid={USERNAME})', '', null, false],
+            ['(uid={USERNAME})', null, null, false],
+            ['(uid={USERNAME})', 'newton', null, false],
+            ['(uid={USERNAME})', 'einstein', null, false],
+            ['(uid={USERNAME})', 'tesla', null, false],
+            ['(uid={USERNAME})', 'galieleo', null, false],
+        ];
     }
 
     /**
@@ -94,9 +94,9 @@ class LdapTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
      */
     public function validateUserSupportsSSO($filter, $username, $expected)
     {
-        $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth'] = serialize(array(
+        $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth'] = serialize([
             'enableFESSO' => 1,
-        ));
+        ]);
         \Causal\IgLdapSsoAuth\Library\Configuration::initialize('fe', new \Causal\IgLdapSsoAuth\Domain\Model\Configuration());
 
         $result = $this->fixture->validateUser($username, null, 'cn=read-only-admin,dc=example,dc=com', $filter);
@@ -105,26 +105,26 @@ class LdapTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
 
     public function usernameSsoProvider()
     {
-        return array(
+        return [
             // Valid username using uid
-            array('(uid={USERNAME})', 'newton', 'uid=newton,dc=example,dc=com'),
-            array('(uid={USERNAME})', 'einstein', 'uid=einstein,dc=example,dc=com'),
-            array('(uid={USERNAME})', 'tesla', 'uid=tesla,dc=example,dc=com'),
-            array('(uid={USERNAME})', 'galieleo', 'uid=galieleo,dc=example,dc=com'),
+            ['(uid={USERNAME})', 'newton', 'uid=newton,dc=example,dc=com'],
+            ['(uid={USERNAME})', 'einstein', 'uid=einstein,dc=example,dc=com'],
+            ['(uid={USERNAME})', 'tesla', 'uid=tesla,dc=example,dc=com'],
+            ['(uid={USERNAME})', 'galieleo', 'uid=galieleo,dc=example,dc=com'],
             // Valid username using mail
-            array('(mail={USERNAME})', 'newton@ldap.forumsys.com', 'uid=newton,dc=example,dc=com'),
-            array('(mail={USERNAME})', 'einstein@ldap.forumsys.com', 'uid=einstein,dc=example,dc=com'),
-            array('(mail={USERNAME})', 'tesla@ldap.forumsys.com', 'uid=tesla,dc=example,dc=com'),
-            array('(mail={USERNAME})', 'galieleo@ldap.forumsys.com', 'uid=galieleo,dc=example,dc=com'),
+            ['(mail={USERNAME})', 'newton@ldap.forumsys.com', 'uid=newton,dc=example,dc=com'],
+            ['(mail={USERNAME})', 'einstein@ldap.forumsys.com', 'uid=einstein,dc=example,dc=com'],
+            ['(mail={USERNAME})', 'tesla@ldap.forumsys.com', 'uid=tesla,dc=example,dc=com'],
+            ['(mail={USERNAME})', 'galieleo@ldap.forumsys.com', 'uid=galieleo,dc=example,dc=com'],
             // Invalid username using uid
-            array('(uid={USERNAME})', '', false),
-            array('(uid={USERNAME})', null, false),
-            array('(uid={USERNAME})', 'invalid-username', false),
+            ['(uid={USERNAME})', '', false],
+            ['(uid={USERNAME})', null, false],
+            ['(uid={USERNAME})', 'invalid-username', false],
             // Invalid username using mail
-            array('(mail={USERNAME})', '', false),
-            array('(mail={USERNAME})', null, false),
-            array('(mail={USERNAME})', 'invalid-username', false),
-        );
+            ['(mail={USERNAME})', '', false],
+            ['(mail={USERNAME})', null, false],
+            ['(mail={USERNAME})', 'invalid-username', false],
+        ];
     }
 
     /**
@@ -134,7 +134,7 @@ class LdapTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     {
         $baseDn = 'cn=INVALID,dc=example,dc=com';
         $users = $this->fixture->search($baseDn);
-        $this->assertEquals(array(), $users);
+        $this->assertEquals([], $users);
     }
 
     /**
@@ -157,7 +157,7 @@ class LdapTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     {
         $baseDn = 'cn=read-only-admin,dc=example,dc=com';
         $filter = '(uid=*)';
-        $users = $this->fixture->search($baseDn, $filter, array(), true);
+        $users = $this->fixture->search($baseDn, $filter, [], true);
         $this->assertEquals('uid=newton,dc=example,dc=com', $users['dn']);
     }
 
@@ -168,7 +168,7 @@ class LdapTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     {
         $baseDn = 'cn=INVALID,dc=example,dc=com';
         $groups = $this->fixture->search($baseDn);
-        $this->assertEquals(array(), $groups);
+        $this->assertEquals([], $groups);
     }
 
     /**
@@ -191,7 +191,7 @@ class LdapTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     {
         $baseDn = 'cn=read-only-admin,dc=example,dc=com';
         $filter = '(ou=*)';
-        $groups = $this->fixture->search($baseDn, $filter, array(), true);
+        $groups = $this->fixture->search($baseDn, $filter, [], true);
         $this->assertEquals('ou=mathematicians,dc=example,dc=com', $groups['dn']);
     }
 
@@ -210,7 +210,7 @@ class LdapTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
             $rows = $this->loadData($file);
             unset($rows['count']);
 
-            $this->data = array('count' => 0);
+            $this->data = ['count' => 0];
             foreach ($rows as $row) {
                 $testRow = $row;
                 if (!isset($testRow[$key]) && !empty($testRow['dn'])) {

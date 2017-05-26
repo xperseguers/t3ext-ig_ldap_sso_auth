@@ -22,7 +22,7 @@ if (version_compare(TYPO3_version, '7.6', '>=')) {
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['getTable'][] = 'EXT:' . $_EXTKEY . '/Classes/Hooks/DatabaseRecordListIconUtility.php:Causal\\IgLdapSsoAuth\\Hooks\\DatabaseRecordListIconUtility';
 
 // Service configuration
-$subTypesArr = array();
+$subTypesArr = [];
 $subTypes = '';
 if ($EXT_CONFIG['enableFELDAPAuthentication']) {
     $subTypesArr[] = 'getUserFE';
@@ -44,18 +44,18 @@ if (is_array($subTypesArr)) {
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][] = 'EXT:' . $_EXTKEY . '/Classes/Hooks/DataHandler.php:Causal\\IgLdapSsoAuth\\Hooks\\DataHandler';
 
 // Register the import users Scheduler task
-$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Causal\\IgLdapSsoAuth\\Task\\ImportUsers'] = array(
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Causal\\IgLdapSsoAuth\\Task\\ImportUsers'] = [
     'extension' => $_EXTKEY,
     'title' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:task.import_users.title',
     'description' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:task.import_users.description',
     'additionalFields' => 'Causal\\IgLdapSsoAuth\\Task\\ImportUsersAdditionalFields'
-);
+];
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
     $_EXTKEY,
     'auth' /* sv type */,
     'Causal\\IgLdapSsoAuth\\Service\\AuthenticationService' /* sv key */,
-    array(
+    [
         'title' => 'Authentication service',
         'description' => 'Authentication service for LDAP and SSO environment.',
 
@@ -69,7 +69,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks']['Causal\\IgLdapS
         'exec' => '',
 
         'className' => 'Causal\\IgLdapSsoAuth\\Service\\AuthenticationService',
-    )
+    ]
 );
 
 // Register type converters

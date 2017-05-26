@@ -43,7 +43,7 @@ class Typo3GroupRepository
             throw new InvalidUserGroupTableException('Invalid table "' . $table . '"', 1404892331);
         }
 
-        $newGroup = array();
+        $newGroup = [];
         $fieldsConfiguration = static::getDatabaseConnection()->admin_get_fields($table);
 
         foreach ($fieldsConfiguration as $field => $configuration) {
@@ -106,7 +106,7 @@ class Typo3GroupRepository
      * @return array The new record
      * @throws InvalidUserGroupTableException
      */
-    public static function add($table, array $data = array())
+    public static function add($table, array $data = [])
     {
         if (!GeneralUtility::inList('be_groups,fe_groups', $table)) {
             throw new InvalidUserGroupTableException('Invalid table "' . $table . '"', 1404891833);
@@ -130,10 +130,10 @@ class Typo3GroupRepository
         NotificationUtility::dispatch(
             __CLASS__,
             'groupAdded',
-            array(
+            [
                 'table' => $table,
                 'group' => $newRow,
-            )
+            ]
         );
 
         return $newRow;
@@ -147,7 +147,7 @@ class Typo3GroupRepository
      * @return bool true on success, otherwise false
      * @throws InvalidUserGroupTableException
      */
-    public static function update($table, array $data = array())
+    public static function update($table, array $data = [])
     {
         if (!GeneralUtility::inList('be_groups,fe_groups', $table)) {
             throw new InvalidUserGroupTableException('Invalid table "' . $table . '"', 1404891867);
@@ -167,10 +167,10 @@ class Typo3GroupRepository
             NotificationUtility::dispatch(
                 __CLASS__,
                 'groupUpdated',
-                array(
+                [
                     'table' => $table,
                     'group' => $data,
-                )
+                ]
             );
         }
 

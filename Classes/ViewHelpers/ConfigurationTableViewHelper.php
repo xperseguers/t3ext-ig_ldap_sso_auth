@@ -70,7 +70,7 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
             $trClass = '';
         }
 
-        $content = array();
+        $content = [];
         foreach ($data as $key => $value) {
             $hasValueError = false;
             $valueCell = $this->renderValueCell($value, $key, $depth, $hasValueError);
@@ -156,9 +156,9 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
                 $icon = 'status-user-group-frontend';
                 $table = 'fe_groups';
             }
-            $options = array(
+            $options = [
                 'title' => 'id=' . $value->getUid(),
-            );
+            ];
             if (version_compare(TYPO3_version, '7.6', '>=')) {
                 /** @var \Causal\IgLdapSsoAuth\Hooks\IconFactory $iconFactoryHook */
                 static $iconFactoryHook = null;
@@ -167,8 +167,8 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
                 }
                 $overlay = $iconFactoryHook->postOverlayPriorityLookup(
                     $table,
-                    array('uid' => $value->getUid()),
-                    array(),
+                    ['uid' => $value->getUid()],
+                    [],
                     null
                 );
                 $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL, $overlay)->render() . ' ' . htmlspecialchars($value->getTitle());

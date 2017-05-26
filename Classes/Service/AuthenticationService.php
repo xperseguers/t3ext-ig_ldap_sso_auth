@@ -68,7 +68,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
     public function __construct()
     {
         $config = $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey];
-        $this->config = $config ? unserialize($config) : array();
+        $this->config = $config ? unserialize($config) : [];
         Authentication::setAuthenticationService($this);
     }
 
@@ -176,12 +176,12 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
                 break;
             } else {
                 $diagnostic = Authentication::getLastAuthenticationDiagnostic();
-                $info = array(
+                $info = [
                     'username' => $this->login['uname'],
                     'remote' => sprintf('%s (%s)', $this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST']),
                     'diagnostic' => $diagnostic,
                     'configUid' => $configurationRecord->getUid(),
-                );
+                ];
                 static::getLogger()->error('Authentication failed', $info);
                 NotificationUtility::dispatch(__CLASS__, 'authenticationFailed', $info);
             }
@@ -233,10 +233,10 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
                 return static::STATUS_AUTHENTICATION_FAILURE_CONTINUE;
             } else {
                 // Failed login attempt (wrong password) - write that to the log!
-                static::getLogger()->warning('Password not accepted: ' . array(
+                static::getLogger()->warning('Password not accepted: ' . [
                         'username' => $this->login['uname'],
                         'remote' => sprintf('%s (%s)', $this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST']),
-                    ));
+                    ]);
                 $status = static::STATUS_AUTHENTICATION_FAILURE_BREAK;
             }
 
@@ -244,10 +244,10 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
             if ($status && $user['lockToDomain'] && $user['lockToDomain'] != $this->authInfo['HTTP_HOST']) {
 
                 // Lock domain didn't match, so error:
-                static::getLogger()->error(sprintf('Locked domain "%s" did not match "%s"', $user['lockToDomain'], $this->authInfo['HTTP_HOST']), array(
+                static::getLogger()->error(sprintf('Locked domain "%s" did not match "%s"', $user['lockToDomain'], $this->authInfo['HTTP_HOST']), [
                     'username' => $user[$this->db_user['username_column']],
                     'remote' => sprintf('%s (%s)', $this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST']),
-                ));
+                ]);
 
                 $status = static::STATUS_AUTHENTICATION_FAILURE_BREAK;
             }

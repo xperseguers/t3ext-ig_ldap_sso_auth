@@ -34,14 +34,14 @@ class ConfigurationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
 
     public function usernameFilterProvider()
     {
-        return array(
-            array('', ''),
-            array(null, ''),
-            array('uid={USERNAME}', 'uid'),
-            array('(uid={USERNAME})', 'uid'),
-            array('(&(uid={USERNAME})(objectClass=posixAccount)', 'uid'),
-            array('(&(objectClass=organizationalPerson)(mail=*@domain*)(sAMAccountName={USERNAME}))', 'sAMAccountName'),
-        );
+        return [
+            ['', ''],
+            [null, ''],
+            ['uid={USERNAME}', 'uid'],
+            ['(uid={USERNAME})', 'uid'],
+            ['(&(uid={USERNAME})(objectClass=posixAccount)', 'uid'],
+            ['(&(objectClass=organizationalPerson)(mail=*@domain*)(sAMAccountName={USERNAME}))', 'sAMAccountName'],
+        ];
     }
 
     /**
@@ -61,13 +61,13 @@ class ConfigurationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
             last_name   =<sn>
 
 EOT;
-        $expected = array(
+        $expected = [
             'pid' => '1',
             'tstamp' => '{DATE}',
             'email' => '<mail>',
             'first_name' => '<givenName>',
             'last_name' => '<sn>',
-        );
+        ];
 
         $actual = Configuration::parseMapping($mapping);
         $this->assertEquals($expected, $actual);
@@ -88,11 +88,11 @@ EOT;
 
             partial_definition =
 EOT;
-        $expected = array(
+        $expected = [
             'pid' => '1',
             'tstamp' => '{DATE}',
             'email' => '<mail>',
-        );
+        ];
 
         $actual = Configuration::parseMapping($mapping);
         $this->assertEquals($expected, $actual);
@@ -107,10 +107,10 @@ EOT;
             name = <sn>, <givenName>
             telephone = Tel. <telephoneNumber>
 EOT;
-        $expected = array(
+        $expected = [
             'name' => '<sn>, <givenName>',
             'telephone' => 'Tel. <telephoneNumber>',
-        );
+        ];
 
         $actual = Configuration::parseMapping($mapping);
         $this->assertEquals($expected, $actual);
@@ -125,10 +125,10 @@ EOT;
             myfield = <sn> =   <givenName>
             other = <sn> <=> <givenName>
 EOT;
-        $expected = array(
+        $expected = [
             'myfield' => '<sn> =   <givenName>',
             'other' => '<sn> <=> <givenName>',
-        );
+        ];
 
         $actual = Configuration::parseMapping($mapping);
         $this->assertEquals($expected, $actual);
@@ -144,12 +144,12 @@ EOT;
             name.wrap = prefix- | -suffix
 EOT;
 
-        $expected = array(
+        $expected = [
             'name' => '<sn>, <givenName>',
-            'name.' => array(
+            'name.' => [
                 'wrap' => 'prefix- | -suffix',
-            ),
-        );
+            ],
+        ];
 
         $actual = Configuration::parseMapping($mapping);
         $this->assertEquals($expected, $actual);
@@ -168,13 +168,13 @@ EOT;
             }
 EOT;
 
-        $expected = array(
+        $expected = [
             'name' => '<sn>, <givenName>',
-            'name.' => array(
+            'name.' => [
                 'wrap' => 'prefix- |',
                 'wrap2' => '| -suffix',
-            ),
-        );
+            ],
+        ];
 
         $actual = Configuration::parseMapping($mapping);
         $this->assertEquals($expected, $actual);
@@ -203,7 +203,7 @@ EOT;
      */
     public function mappingWithHooksIsExtended()
     {
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'] = array('foo');
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'] = ['foo'];
         $mapping = <<<EOT
             name = {special}
 EOT;
@@ -219,7 +219,7 @@ EOT;
      */
     public function mappingWithExtraDatasIsExtended()
     {
-        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'] = array('foo');
+        $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'] = ['foo'];
         $mapping = <<<EOT
             custom-field = foobar
 EOT;

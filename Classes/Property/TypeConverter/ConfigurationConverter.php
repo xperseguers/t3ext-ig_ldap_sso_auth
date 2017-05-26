@@ -23,7 +23,7 @@ class ConfigurationConverter extends \TYPO3\CMS\Extbase\Property\TypeConverter\A
     /**
      * @var array<string>
      */
-    protected $sourceTypes = array('integer', 'string');
+    protected $sourceTypes = ['integer', 'string'];
 
     /**
      * @var string
@@ -43,7 +43,7 @@ class ConfigurationConverter extends \TYPO3\CMS\Extbase\Property\TypeConverter\A
      * @param \TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationInterface $configuration
      * @return \Causal\IgLdapSsoAuth\Domain\Model\Configuration
      */
-    public function convertFrom($source, $targetType, array $convertedChildProperties = array(), \TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationInterface $configuration = null)
+    public function convertFrom($source, $targetType, array $convertedChildProperties = [], \TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationInterface $configuration = null)
     {
         return $this->configurationRepository->findByUid((int)$source);
     }

@@ -60,16 +60,16 @@ class Ldap
      * @return bool
      * @throws \Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException when LDAP extension for PHP is not available
      */
-    public function connect(array $config = array())
+    public function connect(array $config = [])
     {
-        $debugConfiguration = array(
+        $debugConfiguration = [
             'host' => $config['host'],
             'port' => $config['port'],
             'charset' => $config['charset'],
             'server' => $config['server'],
             'tls' => $config['tls'],
             'ssl' => $config['ssl'],
-        );
+        ];
 
         // Connect to ldap server.
         if (!$this->ldapUtility->connect($config['host'], $config['port'], $config['protocol'], $config['charset'], $config['server'], $config['tls'], $config['ssl'])) {
@@ -123,7 +123,7 @@ class Ldap
     public function validateUser($username = null, $password = null, $baseDn = null, $filter = null)
     {
         // If user found on ldap server.
-        if ($this->ldapUtility->search($baseDn, str_replace('{USERNAME}', $username, $filter), array('dn'))) {
+        if ($this->ldapUtility->search($baseDn, str_replace('{USERNAME}', $username, $filter), ['dn'])) {
 
             // Validate with password.
             if ($password !== null) {
@@ -176,9 +176,9 @@ class Ldap
      * @param bool $continueLastSearch
      * @return array
      */
-    public function search($baseDn = null, $filter = null, $attributes = array(), $firstEntry = false, $limit = 0, $continueLastSearch = false)
+    public function search($baseDn = null, $filter = null, $attributes = [], $firstEntry = false, $limit = 0, $continueLastSearch = false)
     {
-        $result = array();
+        $result = [];
         $timeLimit = 0;
         $dereferenceAliases = LDAP_DEREF_NEVER;
 
@@ -248,7 +248,7 @@ class Ldap
      */
     public function escapeDnForFilter($dn)
     {
-        $escapeCharacters = array('\\', '(', ')');
+        $escapeCharacters = ['\\', '(', ')'];
         foreach ($escapeCharacters as $escapeCharacter) {
             $dn = str_replace($escapeCharacter, '\\' . $escapeCharacter, $dn);
         }

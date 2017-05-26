@@ -120,7 +120,7 @@ class Authentication
         }
 
         // LDAP authentication failed.
-        static::getLogger()->warning('Cannot connect to LDAP or username is empty', array('username' => $username));
+        static::getLogger()->warning('Cannot connect to LDAP or username is empty', ['username' => $username]);
         $ldapInstance->disconnect();
         return false;
     }
@@ -254,7 +254,7 @@ class Authentication
         //     Warning: ldap_search(): Array initialization wrong
         // so we just ask for every attribute ("true" below)!
         if (true || Configuration::hasExtendedMapping(static::$config['users']['mapping'])) {
-            $attributes = array();
+            $attributes = [];
         } else {
             // Currently never called ever again due to the warning found sometimes (see above)
             $attributes = Configuration::getLdapAttributes(static::$config['users']['mapping']);
@@ -276,7 +276,7 @@ class Authentication
         $user = is_array($users[0]) ? $users[0] : null;
 
         $ldapInstance->disconnect();
-        static::getLogger()->debug(sprintf('Retrieving LDAP user from DN "%s"', $dn), $user ?: array());
+        static::getLogger()->debug(sprintf('Retrieving LDAP user from DN "%s"', $dn), $user ?: []);
 
         return $user;
     }
@@ -309,7 +309,7 @@ class Authentication
 
         // User is valid only if exist in TYPO3.
         // Get LDAP groups from LDAP user.
-        $typo3_groups = array();
+        $typo3_groups = [];
         $ldapGroups = static::getLdapGroups($ldapUser);
         unset($ldapGroups['count']);
 
@@ -333,7 +333,7 @@ class Authentication
 
             if (count($requiredLDAPGroups) > 0) {
                 $hasRequired = false;
-                $groupUids = array();
+                $groupUids = [];
                 foreach ($typo3GroupsTemp as $typo3Group) {
                     $groupUids[] = $typo3Group['uid'];
                 }
@@ -349,7 +349,7 @@ class Authentication
             }
 
             if (Configuration::getValue('IfGroupExist') && count($typo3GroupsTemp) === 0) {
-                return array();
+                return [];
             }
 
             $i = 0;
@@ -427,7 +427,7 @@ class Authentication
      * @param array $ldapUser
      * @return array
      */
-    protected static function getLdapGroups(array $ldapUser = array())
+    protected static function getLdapGroups(array $ldapUser = [])
     {
         // Make sure configuration is properly initialized, there could be a change of context
         // (Backend/Frontend) between calls
@@ -435,7 +435,7 @@ class Authentication
 
         // Get groups attributes from group mapping configuration.
         $ldapGroupAttributes = Configuration::getLdapAttributes(static::$config['groups']['mapping']);
-        $ldapGroups = array('count' => 0);
+        $ldapGroups = ['count' => 0];
 
         $ldapInstance = Ldap::getInstance();
         $ldapInstance->connect(Configuration::getLdapConfiguration());
@@ -538,14 +538,14 @@ class Authentication
      * @param array $mapping
      * @return array
      */
-    public static function getTypo3Groups(array $ldapGroups = array(), $table = null, $pid = null, array $mapping = array())
+    public static function getTypo3Groups(array $ldapGroups = [], $table = null, $pid = null, array $mapping = [])
     {
         if (count($ldapGroups) === 0) {
             // Early return
-            return array();
+            return [];
         }
 
-        $typo3Groups = array();
+        $typo3Groups = [];
 
         foreach ($ldapGroups as $ldapGroup) {
             $groupName = null;
@@ -580,14 +580,14 @@ class Authentication
      * @param int|null $pid
      * @return array
      */
-    public static function getTypo3Users(array $ldapUsers = array(), array $mapping = array(), $table = null, $pid = null)
+    public static function getTypo3Users(array $ldapUsers = [], array $mapping = [], $table = null, $pid = null)
     {
         if (count($ldapUsers) === 0) {
             // Early return
-            return array();
+            return [];
         }
 
-        $typo3Users = array();
+        $typo3Users = [];
 
         foreach ($ldapUsers as $ldapUser) {
             $username = null;
@@ -621,10 +621,10 @@ class Authentication
      * @return array
      * @see \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping()
      */
-    public static function merge(array $ldap = array(), array $typo3 = array(), array $mapping = array(), $reportErrors = false)
+    public static function merge(array $ldap = [], array $typo3 = [], array $mapping = [], $reportErrors = false)
     {
         $out = $typo3;
-        $typoScriptKeys = array();
+        $typoScriptKeys = [];
 
         // Process every field (except "usergroup" and "parentGroup") which is not a TypoScript definition
         foreach ($mapping as $field => $value) {
@@ -644,7 +644,7 @@ class Authentication
         }
 
         if (count($typoScriptKeys) > 0) {
-            $flattenedLdap = array();
+            $flattenedLdap = [];
             foreach ($ldap as $key => $value) {
                 if (!is_numeric($key)) {
                     if (is_array($value)) {
@@ -677,7 +677,7 @@ class Authentication
                 $field = substr($typoScriptKey, 0, -1);
                 $value = isset($out[$field]) ? $out[$field] : '';
                 $value = $contentObj->stdWrap($value, $mapping[$typoScriptKey]);
-                $out = static::mergeSimple(array($field => $value), $out, $field, $value);
+                $out = static::mergeSimple([$field => $value], $out, $field, $value);
             }
 
             // Instantiation of TypoScriptFrontendController instantiates PageRenderer which
@@ -718,7 +718,7 @@ class Authentication
                 default:
                     $mappedValue = '';
                     $parameters = explode(';', $matches[1]);
-                    $hookParameters = array();
+                    $hookParameters = [];
 
                     foreach ($parameters as $parameter) {
                         list($parameterKey, $parameterValue) = explode('|', $parameter, 2);
@@ -728,14 +728,14 @@ class Authentication
                         throw new \UnexpectedValueException(sprintf('Custom marker hook parameter "hookName" is undefined: %s', $matches[0]), 1430138379);
                     }
                     $hookName = $hookParameters['hookName'];
-                    $ldapAttributes = Configuration::getLdapAttributes(array($value));
+                    $ldapAttributes = Configuration::getLdapAttributes([$value]);
                     // hook for processing user information once inserted or updated in the database
                     if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField']) &&
                         !empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'][$hookName])
                     ) {
 
                         $_procObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'][$hookName]);
-                        if (!is_callable(array($_procObj, 'extraMerge'))) {
+                        if (!is_callable([$_procObj, 'extraMerge'])) {
                             throw new \UnexpectedValueException(sprintf('Custom marker hook "%s" does not have a method "extraMerge"', $hookName), 1430140817);
                         }
                         $mappedValue = $_procObj->extraMerge($field, $typo3, $ldap, $ldapAttributes, $hookParameters);
@@ -764,7 +764,7 @@ class Authentication
             // This may be data that is meant to be mapped onto other database tables
         } else {
             if (!isset($typo3['__extraData'])) {
-                $typo3['__extraData'] = array();
+                $typo3['__extraData'] = [];
             }
             $typo3['__extraData'][$field] = $mappedValue;
         }

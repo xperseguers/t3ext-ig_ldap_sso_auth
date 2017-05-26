@@ -53,7 +53,7 @@ class Typo3UserRepository
             }
         }
 
-        $newUser = array();
+        $newUser = [];
         $fieldsConfiguration = static::getDatabaseConnection()->admin_get_fields($table);
 
         foreach ($fieldsConfiguration as $field => $configuration) {
@@ -91,7 +91,7 @@ class Typo3UserRepository
             throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891636);
         }
 
-        $users = array();
+        $users = [];
         $databaseConnection = static::getDatabaseConnection();
 
         if ($uid) {
@@ -141,7 +141,7 @@ class Typo3UserRepository
      * @return array The new record
      * @throws InvalidUserTableException
      */
-    public static function add($table, array $data = array())
+    public static function add($table, array $data = [])
     {
         if (!GeneralUtility::inList('be_users,fe_users', $table)) {
             throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891712);
@@ -165,10 +165,10 @@ class Typo3UserRepository
         NotificationUtility::dispatch(
             __CLASS__,
             'userAdded',
-            array(
+            [
                 'table' => $table,
                 'user' => $newRow,
-            )
+            ]
         );
 
         return $newRow;
@@ -182,7 +182,7 @@ class Typo3UserRepository
      * @return bool true on success, otherwise false
      * @throws InvalidUserTableException
      */
-    public static function update($table, array $data = array())
+    public static function update($table, array $data = [])
     {
         if (!GeneralUtility::inList('be_users,fe_users', $table)) {
             throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891732);
@@ -205,10 +205,10 @@ class Typo3UserRepository
             NotificationUtility::dispatch(
                 __CLASS__,
                 'userUpdated',
-                array(
+                [
                     'table' => $table,
                     'user' => $data,
-                )
+                ]
             );
         }
 
@@ -227,9 +227,9 @@ class Typo3UserRepository
     public static function disableForConfiguration($table, $uid)
     {
         if (isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled'])) {
-            $fields = array(
+            $fields = [
                 $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled'] => 1
-            );
+            ];
             if (isset($GLOBALS['TCA'][$table]['ctrl']['tstamp'])) {
                 $fields[$GLOBALS['TCA'][$table]['ctrl']['tstamp']] = $GLOBALS['EXEC_TIME'];
             }
@@ -242,10 +242,10 @@ class Typo3UserRepository
             NotificationUtility::dispatch(
                 __CLASS__,
                 'userDisabled',
-                array(
+                [
                     'table' => $table,
                     'configuration' => $uid,
-                )
+                ]
             );
         }
     }
@@ -262,9 +262,9 @@ class Typo3UserRepository
     public static function deleteForConfiguration($table, $uid)
     {
         if (isset($GLOBALS['TCA'][$table]['ctrl']['delete'])) {
-            $fields = array(
+            $fields = [
                 $GLOBALS['TCA'][$table]['ctrl']['delete'] => 1
-            );
+            ];
             if (isset($GLOBALS['TCA'][$table]['ctrl']['tstamp'])) {
                 $fields[$GLOBALS['TCA'][$table]['ctrl']['tstamp']] = $GLOBALS['EXEC_TIME'];
             }
@@ -277,10 +277,10 @@ class Typo3UserRepository
             NotificationUtility::dispatch(
                 __CLASS__,
                 'userDeleted',
-                array(
+                [
                     'table' => $table,
                     'configuration' => $uid,
-                )
+                ]
             );
         }
     }
@@ -295,7 +295,7 @@ class Typo3UserRepository
      */
     public static function setUserGroups(array $typo3User, array $typo3Groups, $table)
     {
-        $groupUid = array();
+        $groupUid = [];
 
         foreach ($typo3Groups as $typo3Group) {
             if ($typo3Group['uid']) {
@@ -313,7 +313,7 @@ class Typo3UserRepository
 
         if (Configuration::getValue('keepTYPO3Groups') && $typo3User['usergroup']) {
             $usergroup = GeneralUtility::intExplode(',', $typo3User['usergroup'], true);
-            $localUserGroups = array();
+            $localUserGroups = [];
             if (!empty($usergroup)) {
                 $database = static::getDatabaseConnection();
                 $rows = $database->exec_SELECTgetRows(

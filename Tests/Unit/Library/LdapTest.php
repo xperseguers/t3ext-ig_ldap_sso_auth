@@ -32,12 +32,12 @@ class LdapTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
 
     public function escapeProvider()
     {
-        return array(
-            array('', ''),
-            array(null, ''),
-            array('CN=Lastname\\, Firstname,DC=company,DC=tld', 'CN=Lastname\\\\, Firstname,DC=company,DC=tld'),
-            array('CN=John Doo (Jr),DC=company,DC=tld', 'CN=John Doo \\(Jr\\),DC=company,DC=tld'),
-        );
+        return [
+            ['', ''],
+            [null, ''],
+            ['CN=Lastname\\, Firstname,DC=company,DC=tld', 'CN=Lastname\\\\, Firstname,DC=company,DC=tld'],
+            ['CN=John Doo (Jr),DC=company,DC=tld', 'CN=John Doo \\(Jr\\),DC=company,DC=tld'],
+        ];
     }
 
 }

@@ -49,7 +49,7 @@ class ConfigurationRepository
 
         $rows = static::getDatabaseConnection()->exec_SELECTgetRows('*', $this->table, $where, '', 'sorting');
 
-        $configurations = array();
+        $configurations = [];
         foreach ($rows as $row) {
             /** @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration */
             $configuration = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Domain\Model\Configuration::class);
@@ -130,7 +130,7 @@ class ConfigurationRepository
         $object->_setProperty('uid', (int)$row['uid']);
 
         // Mapping for properties to be set without any transformation
-        $mapping = array(
+        $mapping = [
             'name' => 'name',
             'domains' => 'domains',
             'ldap_charset' => 'ldapCharset',
@@ -149,23 +149,23 @@ class ConfigurationRepository
             'fe_groups_basedn' => 'frontendGroupsBaseDn',
             'fe_groups_filter' => 'frontendGroupsFilter',
             'fe_groups_mapping' => 'frontendGroupsMapping',
-        );
+        ];
 
         foreach ($mapping as $fieldName => $propertyName) {
             $object->_setProperty($propertyName, $row[$fieldName]);
         }
 
         // Mapping for backend / frontend user groups
-        $groupsMapping = array(
+        $groupsMapping = [
             'be_groups_required' => 'backendGroupsRequired',
             'be_groups_assigned' => 'backendGroupsAssigned',
             'be_groups_admin' => 'backendGroupsAdministrator',
             'fe_groups_required' => 'frontendGroupsRequired',
             'fe_groups_assigned' => 'frontendGroupsAssigned',
-        );
+        ];
 
         foreach ($groupsMapping as $fieldName => $propertyName) {
-            $groups = array();
+            $groups = [];
             $groupUids = GeneralUtility::intExplode(',', $row[$fieldName], true);
             if (count($groupUids) > 0) {
                 $repository = substr($fieldName, 0, 3) === 'be_'

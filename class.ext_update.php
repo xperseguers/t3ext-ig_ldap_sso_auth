@@ -34,7 +34,7 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
     protected $configuration;
 
     /** @var array */
-    protected $operations = array();
+    protected $operations = [];
 
     /** @var string */
     protected $table = 'tx_igldapssoauth_config';
@@ -85,7 +85,7 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
         $updateNeeded = false;
         $mapping = $this->getMapping();
 
-        $where = array();
+        $where = [];
         foreach ($mapping as $configKey => $field) {
             if (!empty($this->configuration[$configKey])) {
                 // Global setting present => should be migrated if not already done
@@ -179,10 +179,10 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
      */
     public function main()
     {
-        $out = array();
+        $out = [];
 
         foreach ($this->operations as $operation) {
-            $out[] = call_user_func(array($this, $operation));
+            $out[] = call_user_func([$this, $operation]);
         }
 
         return implode(LF, $out);
@@ -197,10 +197,10 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
     {
         $mapping = $this->getMapping();
 
-        $fieldValues = array(
+        $fieldValues = [
             'tstamp' => $GLOBALS['EXEC_TIME'],
-        );
-        $where = array();
+        ];
+        $where = [];
         foreach ($mapping as $configKey => $field) {
             if (!empty($this->configuration[$configKey])) {
                 // Global setting present => should be migrated
@@ -237,9 +237,9 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
         $this->databaseConnection->exec_UPDATEquery(
             $this->table,
             '1=1',
-            array(
+            [
                 'group_membership' => (bool)$this->configuration['evaluateGroupsFromMembership'] ? 2 : 1,
-            )
+            ]
         );
 
         return $this->formatOk('Successfully transferred how the group membership should be extracted from LDAP from global configuration to the configuration records.');
@@ -266,9 +266,9 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
 
         $i = 0;
         foreach ($oldTaskRecords as $oldTaskRecord) {
-            $data = array(
+            $data = [
                 'serialized_task_object' => preg_replace('/^' . $oldPattern . '/', $newPattern, $oldTaskRecord['serialized_task_object']),
-            );
+            ];
             $this->databaseConnection->exec_UPDATEquery(
                 $table,
                 'uid=' . (int)$oldTaskRecord['uid'],
@@ -287,7 +287,7 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
      */
     protected function migrateEuLdap()
     {
-        $out = array();
+        $out = [];
 
         // STEP 1: check global options
         $this->migrateEuLdapGlobalOptions($out);
@@ -394,7 +394,7 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
             $hasBackendAuthentication = $legacy['authenticate_be'] == 1 || $legacy['authenticate_be'] == 2;
             $hasFrontendAuthentication = $legacy['authenticate_be'] == 0 || $legacy['authenticate_be'] == 2;
 
-            $data = array(
+            $data = [
                 'pid' => 0,
                 'tstamp' => $GLOBALS['EXEC_TIME'],
                 'crdate' => $GLOBALS['EXEC_TIME'],
@@ -419,21 +419,21 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
                 'be_groups_basedn' => $hasBackendAuthentication ? $legacy['base_dn'] : '',
                 'be_groups_filter' => '',    // computed below
                 'be_groups_mapping' => $hasBackendAuthentication
-                    ? implode(LF, array(
+                    ? implode(LF, [
                         'title = <cn>',
                         'tstamp = {DATE}',
-                    )) : '',
+                    ]) : '',
                 'fe_users_basedn' => $hasFrontendAuthentication ? $legacy['base_dn'] : '',
                 'fe_users_filter' => $hasFrontendAuthentication ? str_replace('<search>', '{USERNAME}', $legacy['filter']) : '',
                 'fe_users_mapping' => '', // computed below
                 'fe_groups_basedn' => $hasFrontendAuthentication ? $legacy['base_dn'] : '',
                 'fe_groups_filter' => '', // computed below
                 'fe_groups_mapping' => $hasFrontendAuthentication
-                    ? implode(LF, array(
+                    ? implode(LF, [
                         'pid = ' . (int)$legacy['feuser_pid'],
                         'title = <cn>',
                         'tstamp = {DATE}',
-                    )) : '',
+                    ]) : '',
                 'be_groups_required' => $hasBackendAuthentication ? $legacy['matchgrps'] : '',
                 'be_groups_assigned' => $legacy['be_group'],
                 'fe_groups_required' => $hasFrontendAuthentication ? $legacy['matchgrps'] : '',
@@ -446,10 +446,10 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
                     )
                     : 0,    // No standard mapping, will have to be manually configured
                 'sorting' => $legacy['sorting'],
-            );
+            ];
 
             if ($hasBackendAuthentication) {
-                $mapping = array();
+                $mapping = [];
                 $mapping[] = 'tstamp = ' . (!empty($legacy['timestamp']) ? '<' . $legacy['timestamp'] . '>' : '{DATE}');
 
                 switch ($legacy['servertype']) {
@@ -475,7 +475,7 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
                 $data['be_users_mapping'] = implode(LF, $mapping);
             }
             if ($hasFrontendAuthentication) {
-                $mapping = array();
+                $mapping = [];
                 $mapping[] = 'pid = ' . (int)$legacy['feuser_pid'];
                 $mapping[] = 'tstamp = ' . (!empty($legacy['timestamp']) ? '<' . $legacy['timestamp'] . '>' : '{DATE}');
 
@@ -571,9 +571,9 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
                 $this->databaseConnection->exec_UPDATEquery(
                     'tx_euldap_server',
                     'uid=' . $legacy['uid'],
-                    array(
+                    [
                         'tx_igldapssoauth_migrated' => 1,
-                    )
+                    ]
                 );
             }
         }
@@ -590,7 +590,7 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
      */
     protected function migrateEuLdapUsers(array &$out)
     {
-        foreach (array('fe_users', 'be_users') as $table) {
+        foreach (['fe_users', 'be_users'] as $table) {
             $query = <<<SQL
 UPDATE $table
 SET tx_igldapssoauth_dn=tx_euldap_dn
@@ -610,13 +610,13 @@ SQL;
      */
     protected function getMapping()
     {
-        return array(
+        return [
             'requiredLDAPBEGroups' => 'be_groups_required',
             'assignBEGroups' => 'be_groups_assigned',
             'updateAdminAttribForGroups' => 'be_groups_admin',
             'requiredLDAPFEGroups' => 'fe_groups_required',
             'assignFEGroups' => 'fe_groups_assigned',
-        );
+        ];
     }
 
     /**

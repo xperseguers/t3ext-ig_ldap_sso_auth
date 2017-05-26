@@ -46,7 +46,7 @@ class ConfigurationHelper
     /*
      * @var array
      */
-    protected $problems = array();
+    protected $problems = [];
 
     /**
      * Checks the backend configuration and shows a message if necessary.
@@ -57,7 +57,7 @@ class ConfigurationHelper
      */
     public function checkConfiguration(array $params, $pObj)
     {
-        $problems = array();
+        $problems = [];
 
         // Configuration of authentication service.
         $loginSecurityLevelBE = $GLOBALS['TYPO3_CONF_VARS']['BE']['loginSecurityLevel'];
@@ -75,15 +75,15 @@ class ConfigurationHelper
             $this->setErrorLevel($errorlevel);
 
             $problems[] = $this->translate('settings.errors.invalidFrontendSecurityLevel');
-            $problems[] = $this->translate('settings.errors.currentSecurityLevel', array($loginSecurityLevelFE, $loginSecurityLevelBE));
+            $problems[] = $this->translate('settings.errors.currentSecurityLevel', [$loginSecurityLevelFE, $loginSecurityLevelBE]);
         } elseif ($loginSecurityLevelBE === 'challenged' || $loginSecurityLevelBE === 'superchallenged' || $loginSecurityLevelBE === '') {
             $this->setErrorLevel($errorlevel);
 
             $problems[] = $this->translate('settings.errors.invalidBackendSecurityLevel');
-            $problems[] = $this->translate('settings.errors.currentSecurityLevel', array($loginSecurityLevelFE, $loginSecurityLevelBE));
+            $problems[] = $this->translate('settings.errors.currentSecurityLevel', [$loginSecurityLevelFE, $loginSecurityLevelBE]);
         } else {
             $this->setErrorLevel('ok');
-            $problems = array();
+            $problems = [];
         }
 
         $this->problems = $problems;

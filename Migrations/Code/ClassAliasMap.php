@@ -1,5 +1,5 @@
 <?php
-return array(
+return [
     'tx_igldapssoauth_auth' => 'Causal\\IgLdapSsoAuth\\Library\\Authentication',
     'tx_igldapssoauth_config' => 'Causal\\IgLdapSsoAuth\\Library\\Configuration',
     'tx_igldapssoauth_emconfhelper' => 'Causal\\IgLdapSsoAuth\\Em\\ConfigurationHelper',
@@ -20,4 +20,4 @@ return array(
     'Tx_IgLdapSsoAuth_Utility_ExtraDataProcessorInterface' => 'Causal\\IgLdapSsoAuth\\Utility\\ExtraDataProcessorInterface',
     'Tx_IgLdapSsoAuth_Utility_Notification' => 'Causal\\IgLdapSsoAuth\\Utility\\NotificationUtility',
     'Tx_IgLdapSsoAuth_Utility_UserImport' => 'Causal\\IgLdapSsoAuth\\Utility\\UserImportUtility',
-);
+];

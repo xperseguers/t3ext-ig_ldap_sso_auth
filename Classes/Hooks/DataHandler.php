@@ -49,7 +49,7 @@ class DataHandler
 
         $row = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord($table, $id);
         if ($row['group_membership'] == Configuration::GROUP_MEMBERSHIP_FROM_MEMBER) {
-            $warningMessageKeys = array();
+            $warningMessageKeys = [];
 
             if (!empty($row['be_users_basedn']) && !empty($row['be_groups_basedn'])) {
                 // Check backend mapping

@@ -10,7 +10,7 @@
  * writing. "version" and "dependencies" must not be touched!
  ***************************************************************/
 
-$EM_CONF[$_EXTKEY] = array(
+$EM_CONF[$_EXTKEY] = [
     'title' => 'LDAP / SSO Authentication',
     'description' => 'This extension provides LDAP support for TYPO3 by delegating the authentication of frontend and/or backend users to the centrally-managed directory of your organization. It fully supports OpenLDAP and Active Directory and is capable of connecting securely to the authentication server using either TLS or SSL (ldaps://).
 In case of use in an intranet environment, this extension is a perfect match since it natively brings Single Sign-On (SSO) capability to TYPO3 without any complex configuration.',
@@ -33,17 +33,17 @@ In case of use in an intranet environment, this extension is a perfect match sin
     'author_company' => '',
     'CGLcompliance' => '',
     'CGLcompliance_note' => '',
-    'constraints' => array(
-        'depends' => array(
+    'constraints' => [
+        'depends' => [
             'php' => '5.5.0-7.1.99',
             'typo3' => '6.2.0-8.7.99',
-        ),
-        'conflicts' => array(),
-        'suggests' => array(),
-    ),
+        ],
+        'conflicts' => [],
+        'suggests' => [],
+    ],
     '_md5_values_when_last_written' => '',
-    'suggests' => array(),
-    'autoload' => array(
-        'psr-4' => array('Causal\\IgLdapSsoAuth\\' => 'Classes')
-    ),
-);
+    'suggests' => [],
+    'autoload' => [
+        'psr-4' => ['Causal\\IgLdapSsoAuth\\' => 'Classes']
+    ],
+];

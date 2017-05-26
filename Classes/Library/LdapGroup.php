@@ -38,7 +38,7 @@ class LdapGroup
      * @param \Causal\IgLdapSsoAuth\Library\Ldap $ldapInstance
      * @return array
      */
-    public static function selectFromMembership(array $membership = array(), $baseDn, $filter, array $attributes = array(), $extendedCheck = true, \Causal\IgLdapSsoAuth\Library\Ldap $ldapInstance = null)
+    public static function selectFromMembership(array $membership = [], $baseDn, $filter, array $attributes = [], $extendedCheck = true, \Causal\IgLdapSsoAuth\Library\Ldap $ldapInstance = null)
     {
         $ldapGroups['count'] = 0;
 
@@ -59,18 +59,18 @@ class LdapGroup
                 $parts = explode(',', $groupDn);
                 list($firstAttribute, $value) = explode('=', $parts[0]);
                 $firstAttribute = strtolower($firstAttribute);
-                $ldapGroup = array(
-                    0 => array(
+                $ldapGroup = [
+                    0 => [
                         0 => $firstAttribute,
-                        $firstAttribute => array(
+                        $firstAttribute => [
                             0 => $value,
                             'count' => 1,
-                        ),
+                        ],
                         'dn' => $groupDn,
                         'count' => 1,
-                    ),
+                    ],
                     'count' => 1,
-                );
+                ];
             }
             if (!isset($ldapGroup['count']) || $ldapGroup['count'] == 0) {
                 continue;
@@ -93,7 +93,7 @@ class LdapGroup
      * @param \Causal\IgLdapSsoAuth\Library\Ldap $ldapInstance
      * @return array
      */
-    public static function selectFromUser($baseDn, $filter = '', $userDn = '', $userUid = '', array $attributes = array(), \Causal\IgLdapSsoAuth\Library\Ldap $ldapInstance = null)
+    public static function selectFromUser($baseDn, $filter = '', $userDn = '', $userUid = '', array $attributes = [], \Causal\IgLdapSsoAuth\Library\Ldap $ldapInstance = null)
     {
         if ($ldapInstance === null) {
             return [];
@@ -113,7 +113,7 @@ class LdapGroup
      * @param array $mapping
      * @return array|bool
      */
-    public static function getMembership(array $ldapUser = array(), array $mapping = array())
+    public static function getMembership(array $ldapUser = [], array $mapping = [])
     {
         if (isset($mapping['usergroup']) && preg_match("`<([^$]*)>`", $mapping['usergroup'], $attribute)) {
             return $ldapUser[strtolower($attribute[1])];

@@ -55,7 +55,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         if (!isset($vars['redirect']) && !isset($vars['action']) && is_array($GLOBALS['BE_USER']->uc['ig_ldap_sso_auth']['selection'])) {
             $previousSelection = $GLOBALS['BE_USER']->uc['ig_ldap_sso_auth']['selection'];
             if (!empty($previousSelection['action']) && !empty($previousSelection['configuration'])) {
-                $this->redirect($previousSelection['action'], 'Module', null, array('configuration' => $previousSelection['configuration'], 'redirect' => 1));
+                $this->redirect($previousSelection['action'], 'Module', null, ['configuration' => $previousSelection['configuration'], 'redirect' => 1]);
             } else {
                 $this->redirect('index');
             }
@@ -92,7 +92,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         $this->populateView($configuration);
 
         $ldapConfiguration = Configuration::getLdapConfiguration();
-        $connectionStatus = array();
+        $connectionStatus = [];
 
         if ($ldapConfiguration['host'] !== '') {
             $ldapConfiguration['server'] = Configuration::getServerType($ldapConfiguration['server']);
@@ -119,21 +119,21 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         $frontendConfiguration = Configuration::getFrontendConfiguration();
         if ($frontendConfiguration['LDAPAuthentication'] === false) {
             // Remove every other info since authentication is disabled for this mode
-            $frontendConfiguration = array('LDAPAuthentication' => false);
+            $frontendConfiguration = ['LDAPAuthentication' => false];
         }
         $backendConfiguration = Configuration::getBackendConfiguration();
         if ($backendConfiguration['LDAPAuthentication'] === false) {
             // Remove every other info since authentication is disabled for this mode
-            $backendConfiguration = array('LDAPAuthentication' => false);
+            $backendConfiguration = ['LDAPAuthentication' => false];
         }
 
-        $this->view->assign('configuration', array(
+        $this->view->assign('configuration', [
             'domains' => Configuration::getDomains(),
             'ldap' => $ldapConfiguration,
             'connection' => $connectionStatus,
             'frontend' => $frontendConfiguration,
             'backend' => $backendConfiguration,
-        ));
+        ]);
     }
 
     /**
@@ -154,10 +154,10 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         $this->populateView($configuration);
 
         $frontendConfiguration = Configuration::getFrontendConfiguration();
-        $this->view->assignMultiple(array(
+        $this->view->assignMultiple([
             'baseDn' => $frontendConfiguration['users']['basedn'],
             'filter' => $frontendConfiguration['users']['filter'],
-        ));
+        ]);
     }
 
     /**
@@ -176,10 +176,10 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             ? Configuration::getBackendConfiguration()
             : Configuration::getFrontendConfiguration();
 
-        $this->returnAjax(array(
+        $this->returnAjax([
             'success' => true,
             'configuration' => $config[$key],
-        ));
+        ]);
     }
 
     /**
@@ -215,7 +215,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         if ($success) {
             $filter = Configuration::replaceFilterMarkers($filter);
             if ($firstEntry) {
-                $attributes = array();
+                $attributes = [];
             } else {
                 $attributes = Configuration::getLdapAttributes($config[$key]['mapping']);
                 if (strpos($config[$key]['filter'], '{USERUID}') !== false) {
@@ -255,10 +255,10 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             }
         }
 
-        $this->returnAjax(array(
+        $this->returnAjax([
             'success' => $success,
             'html' => $this->view->render()
-        ));
+        ]);
     }
 
     /**
@@ -327,7 +327,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             $configuration,
             $mode
         );
-        $data = array();
+        $data = [];
 
         Configuration::initialize($mode, $configuration);
         $config = ($mode === 'be')
@@ -343,8 +343,8 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 
         if ($success) {
             list($filter, $baseDn) = Authentication::getRelativeDistinguishedNames($dn, 2);
-            $ldapUser = $this->ldap->search($baseDn, '(' . $filter . ')', array(), true);
-            $typo3Users = $importUtility->fetchTypo3Users(array($ldapUser));
+            $ldapUser = $this->ldap->search($baseDn, '(' . $filter . ')', [], true);
+            $typo3Users = $importUtility->fetchTypo3Users([$ldapUser]);
 
             // Merge LDAP and TYPO3 information
             $user = Authentication::merge($ldapUser, $typo3Users[0], $config['users']['mapping']);
@@ -355,7 +355,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             $data['id'] = (int)$user['uid'];
         }
 
-        $this->returnAjax(array_merge($data, array('success' => $success)));
+        $this->returnAjax(array_merge($data, ['success' => $success]));
     }
 
     /**
@@ -418,7 +418,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      */
     public function importUserGroupsAjaxAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null, $mode, $dn)
     {
-        $data = array();
+        $data = [];
 
         Configuration::initialize($mode, $configuration);
         $config = ($mode === 'be')
@@ -434,12 +434,12 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 
         if ($success) {
             list($filter, $baseDn) = explode(',', $dn, 2);
-            $ldapGroup = $this->ldap->search($baseDn, '(' . $filter . ')', array(), true);
+            $ldapGroup = $this->ldap->search($baseDn, '(' . $filter . ')', [], true);
 
             $pid = Configuration::getPid($config['groups']['mapping']);
             $table = $mode === 'be' ? 'be_groups' : 'fe_groups';
             $typo3Groups = Authentication::getTypo3Groups(
-                array($ldapGroup),
+                [$ldapGroup],
                 $table,
                 $pid
             );
@@ -477,7 +477,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             $data['id'] = (int)$group['uid'];
         }
 
-        $this->returnAjax(array_merge($data, array('success' => $success)));
+        $this->returnAjax(array_merge($data, ['success' => $success]));
     }
 
     /**
@@ -493,7 +493,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      */
     protected function setParentGroup(array $ldapParentGroups, $fieldParent, $childUid, $pid, $mode)
     {
-        $subGroupList = array();
+        $subGroupList = [];
         if ($mode === 'be') {
             $table = 'be_groups';
             $config = Configuration::getBackendConfiguration();
@@ -578,7 +578,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         $ldapInstance->connect(Configuration::getLdapConfiguration());
         $ldapUsers = $importUtility->fetchLdapUsers(false, $ldapInstance);
 
-        $users = array();
+        $users = [];
         $numberOfUsers = 0;
         $config = ($mode === 'be')
             ? Configuration::getBackendConfiguration()
@@ -592,7 +592,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
                 $user = Authentication::merge($ldapUser, $typo3Users[$index], $config['users']['mapping']);
 
                 // Attempt to free memory by unsetting fields which are unused in the view
-                $keepKeys = array('uid', 'pid', 'deleted', 'admin', 'name', 'realName', 'tx_igldapssoauth_dn');
+                $keepKeys = ['uid', 'pid', 'deleted', 'admin', 'name', 'realName', 'tx_igldapssoauth_dn'];
                 $keys = array_keys($user);
                 foreach ($keys as $key) {
                     if (!in_array($key, $keepKeys)) {
@@ -635,12 +635,12 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      */
     protected function getAvailableUserGroups(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration, $mode)
     {
-        $userGroups = array();
+        $userGroups = [];
         $config = ($mode === 'be')
             ? Configuration::getBackendConfiguration()
             : Configuration::getFrontendConfiguration();
 
-        $ldapGroups = array();
+        $ldapGroups = [];
         if (!empty($config['groups']['basedn'])) {
             $filter = Configuration::replaceFilterMarkers($config['groups']['filter']);
             $attributes = Configuration::getLdapAttributes($config['groups']['mapping']);
@@ -666,7 +666,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             $userGroup = Authentication::merge($ldapGroup, $typo3Groups[$index], $config['groups']['mapping']);
 
             // Attempt to free memory by unsetting fields which are unused in the view
-            $keepKeys = array('uid', 'pid', 'deleted', 'title', 'tx_igldapssoauth_dn');
+            $keepKeys = ['uid', 'pid', 'deleted', 'title', 'tx_igldapssoauth_dn'];
             $keys = array_keys($userGroup);
             foreach ($keys as $key) {
                 if (!in_array($key, $keepKeys)) {
@@ -689,7 +689,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     protected function populateView(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
     {
         $uriBuilder = $this->controllerContext->getUriBuilder();
-        $thisUri = $uriBuilder->reset()->uriFor(null, array('configuration' => $configuration));
+        $thisUri = $uriBuilder->reset()->uriFor(null, ['configuration' => $configuration]);
         $editLink = '';
 
         $configurationRecords = $this->configurationRepository->findAll();
@@ -704,10 +704,10 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 
             $message = $this->translate(
                 'configuration_missing.message',
-                array(
+                [
                     'https://docs.typo3.org/typo3cms/extensions/ig_ldap_sso_auth/AdministratorManual/Index.html',
                     $newRecordUri,
-                )
+                ]
             );
             $this->addFlashMessage(
                 $message,
@@ -733,38 +733,38 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             );
         }
 
-        $menu = array(
-            array(
+        $menu = [
+            [
                 'action' => 'status',
                 'titleKey' => 'module_status',
                 'iconName' => 'status-dialog-information',
-            ),
-            array(
+            ],
+            [
                 'action' => 'search',
                 'titleKey' => 'module_search',
                 'iconName' => 'apps-toolbar-menu-search',
-            ),
-            array(
+            ],
+            [
                 'action' => 'importFrontendUsers',
                 'titleKey' => 'module_import_users_fe',
                 'iconName' => 'status-user-frontend',
-            ),
-            array(
+            ],
+            [
                 'action' => 'importFrontendUserGroups',
                 'titleKey' => 'module_import_groups_fe',
                 'iconName' => 'status-user-group-frontend',
-            ),
-            array(
+            ],
+            [
                 'action' => 'importBackendUsers',
                 'titleKey' => 'module_import_users_be',
                 'iconName' => 'status-user-backend',
-            ),
-            array(
+            ],
+            [
                 'action' => 'importBackendUserGroups',
                 'titleKey' => 'module_import_groups_be',
                 'iconName' => 'status-user-group-backend',
-            ),
-        );
+            ],
+        ];
 
         if (version_compare(TYPO3_version, '7.0', '<')) {
             $tableClass = 'typo3-dblist';
@@ -774,18 +774,18 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             $trClass = '';
         }
 
-        $this->view->assignMultiple(array(
+        $this->view->assignMultiple([
             'action' => $this->getControllerContext()->getRequest()->getControllerActionName(),
             'configurationRecords' => $configurationRecords,
             'currentConfiguration' => $configuration,
             'mode' => Configuration::getMode(),
             'editLink' => $editLink,
             'menu' => $menu,
-            'classes' => array(
+            'classes' => [
                 'table' => $tableClass,
                 'tableRow' => $trClass,
-            )
-        ));
+            ]
+        ]);
     }
 
     /**
@@ -832,10 +832,10 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      */
     protected function saveState(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
     {
-        $GLOBALS['BE_USER']->uc['ig_ldap_sso_auth']['selection'] = array(
+        $GLOBALS['BE_USER']->uc['ig_ldap_sso_auth']['selection'] = [
             'action' => $this->getControllerContext()->getRequest()->getControllerActionName(),
             'configuration' => $configuration !== null ? $configuration->getUid() : 0,
-        );
+        ];
         $GLOBALS['BE_USER']->writeUC();
     }
 

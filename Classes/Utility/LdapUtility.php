@@ -251,7 +251,7 @@ class LdapUtility
     protected function extractDiagnosticMessage($message)
     {
         $diagnostic = '';
-        $codeMessages = array(
+        $codeMessages = [
             '525' => 'The specified account does not exist.',
             '52e' => 'Logon failure: unknown user name or bad password.',
             '530' => 'Logon failure: account logon time restriction violation.',
@@ -262,7 +262,7 @@ class LdapUtility
             '701' => 'The user\'s account has expired.',
             '773' => 'The user\'s password must be changed before logging on the first time.',
             '775' => 'The referenced account is currently locked out and may not be logged on to.',
-        );
+        ];
 
         $parts = explode(',', $message);
         if (preg_match('/data ([0-9a-f]+)/i', trim($parts[2]), $matches)) {
@@ -289,7 +289,7 @@ class LdapUtility
      * @return bool
      * @see http://ca3.php.net/manual/fr/function.ldap-search.php
      */
-    public function search($baseDn = null, $filter = null, $attributes = array(), $attributesOnly = false, $sizeLimit = 0, $timeLimit = 0, $dereferenceAliases = LDAP_DEREF_NEVER, $continueLastSearch = false)
+    public function search($baseDn = null, $filter = null, $attributes = [], $attributesOnly = false, $sizeLimit = 0, $timeLimit = 0, $dereferenceAliases = LDAP_DEREF_NEVER, $continueLastSearch = false)
     {
         if (!$baseDn) {
             $this->status['search']['basedn'] = 'No valid base DN';
@@ -402,7 +402,7 @@ class LdapUtility
     {
         $this->status['get_first_entry']['status'] = ldap_error($this->connection);
         $attributes = @ldap_get_attributes($this->connection, $this->firstResultEntry);
-        $tempEntry = array();
+        $tempEntry = [];
         foreach ($attributes as $key => $value) {
             $tempEntry[strtolower($key)] = $value;
         }

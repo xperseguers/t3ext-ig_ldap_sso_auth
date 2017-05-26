@@ -39,7 +39,7 @@ class ActionMenuItemViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abstract
      * @return string the rendered option tag
      * @see Tx_Fluid_ViewHelpers_Be_Menus_ActionMenuViewHelper
      */
-    public function render($label, $controller, $action, array $arguments = array())
+    public function render($label, $controller, $action, array $arguments = [])
     {
         $uriBuilder = $this->controllerContext->getUriBuilder();
         $uri = $uriBuilder->reset()->uriFor($action, $arguments, $controller);

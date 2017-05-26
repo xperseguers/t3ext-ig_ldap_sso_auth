@@ -49,28 +49,38 @@ CREATE TABLE tx_igldapssoauth_config (
 # Table structure for table 'be_groups'
 #
 CREATE TABLE be_groups (
-	tx_igldapssoauth_dn tinytext NOT NULL
+	tx_igldapssoauth_dn varchar(255) DEFAULT '' NOT NULL,
+
+	KEY title (title),
+	KEY tx_igldapssoauth_dn (tx_igldapssoauth_dn)
 );
 
 #
 # Table structure for table 'be_users'
 #
 CREATE TABLE be_users (
-	tx_igldapssoauth_dn tinytext NOT NULL,
-	tx_igldapssoauth_id int(11) unsigned DEFAULT '0' NOT NULL
+	tx_igldapssoauth_dn varchar(255) DEFAULT '' NOT NULL,
+	tx_igldapssoauth_id int(11) unsigned DEFAULT '0' NOT NULL,
+
+	KEY tx_igldapssoauth_dn (tx_igldapssoauth_dn)
 );
 
 #
 # Table structure for table 'fe_groups'
 #
 CREATE TABLE fe_groups (
-	tx_igldapssoauth_dn tinytext NOT NULL
+	tx_igldapssoauth_dn varchar(255) DEFAULT '' NOT NULL,
+
+	KEY title (title),
+	KEY tx_igldapssoauth_dn (tx_igldapssoauth_dn)
 );
 
 #
 # Table structure for table 'fe_users'
 #
 CREATE TABLE fe_users (
-	tx_igldapssoauth_dn tinytext NOT NULL,
-	tx_igldapssoauth_id int(11) unsigned DEFAULT '0' NOT NULL
+	tx_igldapssoauth_dn varchar(255) DEFAULT '' NOT NULL,
+	tx_igldapssoauth_id int(11) unsigned DEFAULT '0' NOT NULL,
+
+	KEY tx_igldapssoauth_dn (tx_igldapssoauth_dn)
 );

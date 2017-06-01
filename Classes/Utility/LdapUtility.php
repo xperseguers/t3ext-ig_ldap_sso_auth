@@ -306,7 +306,15 @@ class LdapUtility
                 $this->paginationCookie = null;
             }
 
-            $this->hasPagination = @ldap_control_paged_result($this->connection, static::PAGE_SIZE, false, $this->paginationCookie);
+            // It was reported that ldap_control_paged_result() may not be available;
+            // we thus check for existence before proceeding
+            $this->hasPagination = function_exists('ldap_control_paged_result') &&
+                @ldap_control_paged_result(
+                    $this->connection,
+                    static::PAGE_SIZE,
+                    false,  // Pagination is not critical for search to work anyway
+                    $this->paginationCookie
+                );
             if (!($this->searchResult = @ldap_search($this->connection, $baseDn, $filter, $attributes, $attributesOnly, $sizeLimit, $timeLimit, $dereferenceAliases))) {
                 // Search failed.
                 $this->status['search']['status'] = ldap_error($this->connection);

@@ -75,6 +75,16 @@ SSL
 Whether you want to use :abbr:`SSL (Secure Socket Layer)`, that is start with an encrypted connection on default port
 636.
 
+.. note::
+    Some web servers may fail at connecting to the LDAP server since they report that the server certificate is
+    untrusted (although issued by a valid CA such as Letsencrypt). In case this happens and you cannot change the web
+    server configuration (e.g., shared hosting), you may add this line to :file:`typo3conf/AdditionalConfiguration.php`:
+
+    .. code-block:: php
+
+        // Always trust the LDAP server certificate
+        putenv('LDAPTLS_REQCERT=never');
+
 
 .. _admin-manual-ldap-binddn:
 

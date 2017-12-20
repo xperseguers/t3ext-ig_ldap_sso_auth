@@ -460,11 +460,11 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
                 if (preg_match("`<([^$]*)>`", $fieldParent, $attribute)) {
                     $fieldParent = $attribute[1];
 
-                    if (is_array($group[$fieldParent])) {
-                        unset($group[$fieldParent]['count']);
+                    if (is_array($ldapGroup[$fieldParent])) {
+                        unset($ldapGroup[$fieldParent]['count']);
 
                         $this->setParentGroup(
-                            $group[$fieldParent],
+                            $ldapGroup[$fieldParent],
                             $fieldParent,
                             $group['uid'],
                             $pid,

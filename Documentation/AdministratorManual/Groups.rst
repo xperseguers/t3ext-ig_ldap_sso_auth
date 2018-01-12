@@ -92,7 +92,7 @@ configuration using the wizard in the backend module.
 
 	Example::
 
-		usergroup = <memberof>
+		usergroup = <memberOf>
 
 	**Important:** This is a user mapping instruction.
 

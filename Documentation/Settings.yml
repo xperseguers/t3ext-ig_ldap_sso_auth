@@ -4,10 +4,10 @@
 
 ---
 conf.py:
-  copyright: 2000-2017
+  copyright: 2000-2018
   project: LDAP / SSO Authentication
   version: 3.3
-  release: 3.3.0-dev
+  release: 3.3.0
   latex_documents:
   - - Index
     - ig_ldap_sso_auth.tex
@@ -26,11 +26,8 @@ conf.py:
     - t3sphinx.ext.targets
     - sphinx.ext.extlinks
   extlinks:
-    forge:
-    - https://forge.typo3.org/issues/%s
-    - 'Forge ticket #'
     ter:
-    - https://www.typo3.org/extensions/repository/view/%s
+    - https://extensions.typo3.org/extension/%s/
     - 'EXT:'
   intersphinx_mapping:
     t3api:

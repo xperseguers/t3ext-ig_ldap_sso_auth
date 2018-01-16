@@ -18,13 +18,10 @@ Links
 	https://packagist.org/packages/causal/ig_ldap_sso_auth
 
 :Bug Tracker:
-	https://github.com/xperseguers/t3ext-file_list/issues
-
-:Release Notes:
-	https://forge.typo3.org/projects/extension-ig_ldap_sso_auth/wiki
+	https://github.com/xperseguers/t3ext-ig_ldap_sso_auth/issues
 
 :Git Repository:
-	https://github.com/xperseguers/t3ext-file_list
+	https://github.com/xperseguers/t3ext-ig_ldap_sso_auth
 
 :Translation:
 	https://translation.typo3.org/projects/TYPO3.ext.ig_ldap_sso_auth/

@@ -12,5 +12,8 @@ $tempColumns = [
     ],
 ];
 
+// Remove password field for LDAP users
+$GLOBALS['TCA']['be_users']['columns']['password']['displayCond'] = 'FIELD:tx_igldapssoauth_dn:REQ:false';
+
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('be_users', $tempColumns);
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('be_users', 'tx_igldapssoauth_dn;;;;1-1-1');

@@ -14,8 +14,9 @@
 
 namespace Causal\IgLdapSsoAuth\Domain\Repository;
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
  * Utility class for fetching LDAP configurations.
@@ -24,8 +25,6 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
  *
  * @author     Xavier Perseguers <xavier@causal.ch>
  * @author     Francois Suter <typo3@cobweb.ch>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 class ConfigurationRepository
 {
@@ -45,9 +44,18 @@ class ConfigurationRepository
      */
     public function findAll()
     {
-        $where = '1=1' . $this->getWhereClauseForEnabledFields();
-
-        $rows = static::getDatabaseConnection()->exec_SELECTgetRows('*', $this->table, $where, '', 'sorting');
+        $queryBuilder = static::getQueryBuilder();
+        $where = $this->getWhereClauseForEnabledFields($queryBuilder);
+        $query = $queryBuilder
+            ->select('*')
+            ->from($this->table);
+        if (count($where)) {
+            $query->where(...$where);
+        }
+        $rows = $query
+            ->orderBy('sorting')
+            ->execute()
+            ->fetchAll();
 
         $configurations = [];
         foreach ($rows as $row) {
@@ -63,14 +71,26 @@ class ConfigurationRepository
     /**
      * Returns a single LDAP configuration.
      *
-     * @param integer $uid Primary key to look up
+     * @param int $uid Primary key to look up
      * @return \Causal\IgLdapSsoAuth\Domain\Model\Configuration
      */
     public function findByUid($uid)
     {
-        $where = 'uid=' . (int)$uid . $this->getWhereClauseForEnabledFields();
-
-        $row = static::getDatabaseConnection()->exec_SELECTgetSingleRow('*', $this->table, $where);
+        $queryBuilder = static::getQueryBuilder();
+        $where = $this->getWhereClauseForEnabledFields($queryBuilder);
+        $query = $queryBuilder
+            ->select('*')
+            ->from($this->table)
+            ->where(
+                $queryBuilder->expr()->eq('uid', (int)$uid)
+            );
+        if (count($where)) {
+            $query->andWhere(...$where);
+        }
+        $row = $query
+            ->orderBy('sorting')
+            ->execute()
+            ->fetch();
         if ($row) {
             /** @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration */
             $configuration = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Domain\Model\Configuration::class);
@@ -84,24 +104,29 @@ class ConfigurationRepository
 
     /**
      * Returns the WHERE clause for the enabled fields of this TCA table
-     * depending on the context.
-     *
-     * @return string The additional where clause, something like " AND deleted=0 AND hidden=0"
+     * depending on the context. In backend context the query builder gets
+     * a deleted restriction if disabled records should be fetched.
+     * @param \TYPO3\CMS\Core\Database\Query\QueryBuilder $queryBuilder
+     * @return array The additional where clause, as array
      */
-    protected function getWhereClauseForEnabledFields()
+    protected function getWhereClauseForEnabledFields(&$queryBuilder)
     {
+        $whereClause = [];
         if (TYPO3_MODE === 'FE') {
             // Frontend context
             // $GLOBALS['TCA'] is not yet available/initialized:
             // Cannot use $GLOBALS['TSFE']->sys_page->deleteClause() / ->enableFields()
-            $whereClause = ' AND deleted=0';
-            $whereClause .= ' AND hidden=0';
-
+            $whereClause = [
+                $queryBuilder->expr()->eq('deleted', 0),
+                $queryBuilder->expr()->eq('hidden', 0),
+                ];
         } else {
             // Backend context
-            $whereClause = BackendUtility::deleteClause($this->table);
-            if (!$this->fetchDisabledRecords) {
-                $whereClause .= BackendUtility::BEenableFields($this->table);
+            if ($this->fetchDisabledRecords) {
+                $queryBuilder
+                    ->getRestrictions()
+                    ->removeAll()
+                    ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
             }
         }
         return $whereClause;
@@ -110,7 +135,7 @@ class ConfigurationRepository
     /**
      * Sets the flag for fetching disabled records or not.
      *
-     * @param boolean $flag Set to true to enable fetching of disabled record
+     * @param bool $flag Set to true to enable fetching of disabled record
      * @return void
      */
     public function setFetchDisabledRecords($flag)
@@ -190,13 +215,14 @@ class ConfigurationRepository
     }
 
     /**
-     * Returns the database connection.
+     * Returns the query builder for the database connection.
      *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @return \TYPO3\CMS\Core\Database\Query\QueryBuilder
      */
-    protected static function getDatabaseConnection()
+    protected static function getQueryBuilder()
     {
-        return $GLOBALS['TYPO3_DB'];
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_igldapssoauth_config');
+        return $queryBuilder;
     }
 
     /**
@@ -226,5 +252,4 @@ class ConfigurationRepository
         }
         return $frontendUserGroupRepository;
     }
-
 }

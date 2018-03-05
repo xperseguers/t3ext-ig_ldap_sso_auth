@@ -20,8 +20,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Provides additional fields to the "Synchronize Users" Scheduler task.
  *
  * @author     Francois Suter <typo3@cobweb.ch>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface
 {
@@ -160,7 +158,7 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
                 $selected = ' selected="selected"';
             }
             if (strpos($label, 'LLL:') === 0) {
-                $optionLabel = $languageService->sL($localizationPrefix . substr($label, 4), true);
+                $optionLabel = $languageService->sL($localizationPrefix . substr($label, 4));
             } else {
                 $optionLabel = htmlspecialchars($label);
             }
@@ -182,7 +180,7 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
      *
      * @param array $submittedData An array containing the data submitted by the add/edit task form
      * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule Reference to the scheduler backend module
-     * @return boolean true if validation was ok (or selected class is not relevant), false otherwise
+     * @return bool true if validation was ok (or selected class is not relevant), false otherwise
      */
     public function validateAdditionalFields(array &$submittedData, \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule)
     {
@@ -216,5 +214,4 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
     {
         return $GLOBALS['LANG'];
     }
-
 }

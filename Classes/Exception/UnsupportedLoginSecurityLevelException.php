@@ -23,5 +23,4 @@ namespace Causal\IgLdapSsoAuth\Exception;
  */
 class UnsupportedLoginSecurityLevelException extends IgLdapSsoAuthException
 {
-
 }

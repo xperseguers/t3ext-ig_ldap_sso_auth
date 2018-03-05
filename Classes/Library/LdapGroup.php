@@ -14,14 +14,10 @@
 
 namespace Causal\IgLdapSsoAuth\Library;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 /**
  * Class tx_igldapssoauth_typo3_group for the 'ig_ldap_sso_auth' extension.
  *
  * @author     Michael Gagnon <mgagnon@infoglobe.ca>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 class LdapGroup
 {
@@ -115,11 +111,10 @@ class LdapGroup
      */
     public static function getMembership(array $ldapUser = [], array $mapping = [])
     {
-        if (isset($mapping['usergroup']) && preg_match("`<([^$]*)>`", $mapping['usergroup'], $attribute)) {
+        if (isset($mapping['usergroup']) && preg_match('`<([^$]*)>`', $mapping['usergroup'], $attribute)) {
             return $ldapUser[strtolower($attribute[1])];
         }
 
         return false;
     }
-
 }

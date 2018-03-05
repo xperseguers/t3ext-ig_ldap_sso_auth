@@ -14,15 +14,17 @@
 
 namespace Causal\IgLdapSsoAuth\ViewHelpers;
 
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
+
 /**
  * Render an item of the menu
  *
  * @author     Xavier Perseguers <xavier@causal.ch>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 class ActionMenuItemViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper
 {
+    use CompileWithRenderStatic;
 
     /**
      * @var string
@@ -30,29 +32,47 @@ class ActionMenuItemViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abstract
     protected $tagName = 'option';
 
     /**
+     * @return void
+     */
+    public function initializeArguments()
+    {
+        parent::initializeArguments();
+        $this->registerArgument('label', 'string', '', true, null);
+        $this->registerArgument('controller', 'string', '', true, null);
+        $this->registerArgument('action', 'string', '', true, null);
+        $this->registerArgument('arguments', 'array', '', false, []);
+        $this->registerArgument('tag', '\TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder', '', false, $this->tag);
+    }
+
+    /**
      * Renders an ActionMenu option tag
      *
-     * @param string $label label of the option tag
-     * @param string $controller controller to be associated with this ActionMenuItem
-     * @param string $action the action to be associated with this ActionMenuItem
-     * @param array $arguments additional controller arguments to be passed to the action when this ActionMenuItem is selected
-     * @return string the rendered option tag
-     * @see Tx_Fluid_ViewHelpers_Be_Menus_ActionMenuViewHelper
+     * @param array $arguments
+     * @param callable|\Closure $renderChildrenClosure
+     * @param RenderingContextInterface $renderingContext
+     * @return string
      */
-    public function render($label, $controller, $action, array $arguments = [])
-    {
-        $uriBuilder = $this->controllerContext->getUriBuilder();
+    public static function renderStatic(
+        array $arguments,
+        \Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext
+    ): string {
+        $label = $arguments['label'];
+        $controller = $arguments['controller'];
+        $action = $arguments['action'];
+        $tag = $arguments['tag'];
+        $arguments = $arguments['arguments'];
+        $uriBuilder = $renderingContext->getControllerContext()->getUriBuilder();
         $uri = $uriBuilder->reset()->uriFor($action, $arguments, $controller);
-        $this->tag->addAttribute('value', $uri);
-        $currentRequest = $this->controllerContext->getRequest();
+        $tag->addAttribute('value', $uri);
+        $currentRequest = $renderingContext->getControllerContext()->getRequest();
         $currentController = $currentRequest->getControllerName();
         $currentAction = $currentRequest->getControllerActionName();
 
         if ($action === $currentAction && $controller === $currentController) {
-            $this->tag->addAttribute('selected', 'selected');
+            $tag->addAttribute('selected', 'selected');
         }
-        $this->tag->setContent($label);
-        return $this->tag->render();
+        $tag->setContent($label);
+        return $tag->render();
     }
-
 }

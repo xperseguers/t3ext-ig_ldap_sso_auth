@@ -18,8 +18,6 @@ namespace Causal\IgLdapSsoAuth\Utility;
  * Centralizes the code for post-processing LDAP entry attributes.
  *
  * @author     Xavier Perseguers <xavier@causal.ch>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 interface AttributesProcessorInterface
 {
@@ -33,5 +31,4 @@ interface AttributesProcessorInterface
      * @return void
      */
     public function processAttributes($link, $entry, array &$attributes);
-
 }

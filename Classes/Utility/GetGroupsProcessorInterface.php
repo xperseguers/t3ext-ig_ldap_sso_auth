@@ -18,8 +18,6 @@ namespace Causal\IgLdapSsoAuth\Utility;
  * An interface to post-process determining groups for a user.
  *
  * @author     Peter Niederlag <peter.niederlag@datenbetrieb.de>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 interface GetGroupsProcessorInterface
 {
@@ -33,5 +31,4 @@ interface GetGroupsProcessorInterface
      * @return void
      */
     public function getUserGroups($groupTable, array $ldapUser, array &$userGroups);
-
 }

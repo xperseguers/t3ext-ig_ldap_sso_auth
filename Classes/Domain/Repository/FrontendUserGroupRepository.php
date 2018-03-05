@@ -21,8 +21,6 @@ namespace Causal\IgLdapSsoAuth\Domain\Repository;
  * (no mapping nor fancy other stuff).
  *
  * @author     Xavier Perseguers <xavier@causal.ch>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 class FrontendUserGroupRepository extends AbstractUserGroupRepository
 {
@@ -36,5 +34,4 @@ class FrontendUserGroupRepository extends AbstractUserGroupRepository
      * @var string
      */
     protected $tableName = 'fe_groups';
-
 }

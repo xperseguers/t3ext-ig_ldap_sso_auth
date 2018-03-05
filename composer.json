@@ -23,8 +23,8 @@
   ],
   "license": "GPL-2.0-or-later",
   "require": {
-    "php": ">= 5.5.0, <= 7.1.99",
-    "typo3/cms-core": ">= 7.6.0, <= 8.7.99"
+    "php": ">= 5.5.0, <= 7.2.99",
+    "typo3/cms-core": ">= 8.7.10, <= 9.1.0"
   },
   "autoload": {
     "psr-4": {
@@ -47,7 +47,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "3.3.x-dev"
+      "dev-master": "3.4.x-dev"
     },
     "typo3/cms": {
       "cms-package-dir": "{$vendor-dir}/typo3/cms",

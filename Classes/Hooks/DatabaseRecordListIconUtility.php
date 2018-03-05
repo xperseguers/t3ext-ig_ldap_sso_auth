@@ -23,8 +23,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * the record is linked to LDAP.
  *
  * @author     Xavier Perseguers <xavier@causal.ch>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 class DatabaseRecordListIconUtility implements \TYPO3\CMS\Backend\RecordList\RecordListGetTableHookInterface
 {
@@ -33,7 +31,7 @@ class DatabaseRecordListIconUtility implements \TYPO3\CMS\Backend\RecordList\Rec
      * Modifies the DB list query.
      *
      * @param string $table The current database table
-     * @param integer $pageId The record's page ID
+     * @param int $pageId The record's page ID
      * @param string $additionalWhereClause An additional WHERE clause
      * @param string $selectedFieldsList Comma separated list of selected fields
      * @param \TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList $parentObject
@@ -67,5 +65,4 @@ class DatabaseRecordListIconUtility implements \TYPO3\CMS\Backend\RecordList\Rec
             $status['is_ldap_record'] = !empty($row['tx_igldapssoauth_dn']);
         }
     }
-
 }

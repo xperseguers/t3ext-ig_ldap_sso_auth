@@ -14,7 +14,6 @@ return [
         'enablecolumns' => [
             'disabled' => 'hidden',
         ],
-        'requestUpdate' => 'ldap_server',
         'iconfile' => 'EXT:ig_ldap_sso_auth/Resources/Public/Icons/icon_tx_igldapssoauth_config.png',
     ],
     'interface' => [
@@ -33,7 +32,7 @@ return [
                     --div--;GENERAL,
                         hidden, name, domains,
                     --div--;LDAP,
-                        ldap_server;;1,
+                        ldap_server,
                     --palette--;LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:palette.connection;connection,
                         ldap_binddn, ldap_password, group_membership,
                     --div--;FE_USERS,
@@ -58,7 +57,7 @@ return [
     'columns' => [
         'hidden' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config' => [
                 'type' => 'check',
                 'default' => '0'
@@ -93,6 +92,7 @@ return [
         'ldap_server' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_server',
+            'onChange' => 'reload',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
@@ -194,10 +194,14 @@ return [
                         'EXT:ig_ldap_sso_auth/Resources/Public/Icons/selicon_group_membership_2.png'
                     ],
                 ],
+                'fieldWizard' => [
+                    'selectIcons' => [
+                        'disabled' => false,
+                    ],
+                ],
                 'minitems' => 1,
                 'maxitems' => 1,
                 'default' => 1,
-                'showIconTable' => true,
             ],
         ],
         'be_users_basedn' => [

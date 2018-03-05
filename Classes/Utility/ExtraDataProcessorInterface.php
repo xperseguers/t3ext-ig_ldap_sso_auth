@@ -18,8 +18,6 @@ namespace Causal\IgLdapSsoAuth\Utility;
  * Centralizes the code for importing users from LDAP/AD sources.
  *
  * @author     Francois Suter <typo3@cobweb.ch>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 interface ExtraDataProcessorInterface
 {
@@ -32,5 +30,4 @@ interface ExtraDataProcessorInterface
      * @return void
      */
     public function processExtraData($table, array $user);
-
 }

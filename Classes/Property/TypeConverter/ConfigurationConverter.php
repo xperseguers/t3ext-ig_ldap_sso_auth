@@ -32,9 +32,16 @@ class ConfigurationConverter extends \TYPO3\CMS\Extbase\Property\TypeConverter\A
 
     /**
      * @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository
-     * @inject
      */
     protected $configurationRepository;
+
+    /**
+     * @param \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository
+     */
+    public function injectConfigurationRepository(\Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository)
+    {
+        $this->configurationRepository = $configurationRepository;
+    }
 
     /**
      * @param string|int $source
@@ -47,5 +54,4 @@ class ConfigurationConverter extends \TYPO3\CMS\Extbase\Property\TypeConverter\A
     {
         return $this->configurationRepository->findByUid((int)$source);
     }
-
 }

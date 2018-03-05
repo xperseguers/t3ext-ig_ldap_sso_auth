@@ -21,8 +21,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author        Xavier Perseguers <xavier@causal.ch>
  * @author        Michael Gagnon <mgagnon@infoglobe.ca>
- * @package       TYPO3
- * @subpackage    ig_ldap_sso_auth
  */
 class Ldap
 {
@@ -34,9 +32,16 @@ class Ldap
 
     /**
      * @var \Causal\IgLdapSsoAuth\Utility\LdapUtility
-     * @inject
      */
     protected $ldapUtility;
+
+    /**
+     * @param \Causal\IgLdapSsoAuth\Utility\LdapUtility $ldapUtility
+     */
+    public function injectLdapUtility(\Causal\IgLdapSsoAuth\Utility\LdapUtility $ldapUtility)
+    {
+        $this->ldapUtility = $ldapUtility;
+    }
 
     /**
      * Returns an instance of this class.
@@ -151,15 +156,12 @@ class Ldap
 
                 // If enable, SSO authentication without password
             } elseif ($password === null && Configuration::getValue('SSOAuthentication')) {
-
                 return $this->ldapUtility->getDn();
-
             } else {
 
                 // User invalid. Authentication failed.
                 return false;
             }
-
         }
 
         return false;
@@ -270,5 +272,4 @@ class Ldap
 
         return $logger;
     }
-
 }

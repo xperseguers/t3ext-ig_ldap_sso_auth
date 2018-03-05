@@ -14,6 +14,7 @@
 
 namespace Causal\IgLdapSsoAuth\Domain\Repository;
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
@@ -24,8 +25,6 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  * are needed (no mapping nor fancy other stuff).
  *
  * @author     Xavier Perseguers <xavier@causal.ch>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 abstract class AbstractUserGroupRepository
 {
@@ -43,12 +42,12 @@ abstract class AbstractUserGroupRepository
     /**
      * @var string
      */
-    protected $selectFields = 'uid, pid, title, hidden';
+    protected $selectFields = 'uid,pid,title,hidden';
 
     /**
      * Default constructor enforcing properties has been defined in derived classes.
      */
-    public final function __construct()
+    final public function __construct()
     {
         if (empty($this->className)) {
             throw new \LogicException(get_class($this) . ' must have a property $className', 1449144226);
@@ -66,11 +65,18 @@ abstract class AbstractUserGroupRepository
      */
     public function findByUid($uid)
     {
-        $row = $this->getDatabaseConnection()->exec_SELECTgetSingleRow(
-            $this->selectFields,
-            $this->tableName,
-            'uid=' . (int)$uid
-        );
+        $queryBuilder = $this->getQueryBuilder();
+        $row = $queryBuilder
+            ->select(...explode(',', $this->selectFields))
+            ->from($this->tableName)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    (int)$uid
+                )
+            )
+            ->execute()
+            ->fetchAll();
 
         if ($row) {
             $userGroup = GeneralUtility::makeInstance($this->className);
@@ -98,13 +104,13 @@ abstract class AbstractUserGroupRepository
     }
 
     /**
-     * Returns the database connection.
+     * Returns the query builder for the database connection.
      *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @return \TYPO3\CMS\Core\Database\Query\QueryBuilder
      */
-    protected static function getDatabaseConnection()
+    protected static function getQueryBuilder()
     {
-        return $GLOBALS['TYPO3_DB'];
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_igldapssoauth_config');
+        return $queryBuilder;
     }
-
 }

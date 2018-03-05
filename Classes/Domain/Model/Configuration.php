@@ -18,8 +18,6 @@ namespace Causal\IgLdapSsoAuth\Domain\Model;
  * Domain model for configuration records.
  *
  * @author     Xavier Perseguers <xavier@causal.ch>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 class Configuration
 {
@@ -458,5 +456,4 @@ class Configuration
     {
         return get_class($this) . ':' . (string)$this->uid;
     }
-
 }

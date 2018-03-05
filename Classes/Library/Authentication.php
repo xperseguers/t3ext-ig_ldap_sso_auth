@@ -14,20 +14,17 @@
 
 namespace Causal\IgLdapSsoAuth\Library;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3GroupRepository;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3UserRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class Authentication for the 'ig_ldap_sso_auth' extension.
  *
  * @author      Michael Gagnon <mgagnon@infoglobe.ca>
- * @package     TYPO3
- * @subpackage  ig_ldap_sso_auth
  */
 class Authentication
 {
-
     protected static $config;
     protected static $lastAuthenticationDiagnostic;
 
@@ -410,7 +407,7 @@ class Authentication
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['getGroupsProcessing'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['getGroupsProcessing'] as $className) {
                 /** @var $postProcessor \Causal\IgLdapSsoAuth\Utility\GetGroupsProcessorInterface */
-                $postProcessor = GeneralUtility::getUserObj($className);
+                $postProcessor = GeneralUtility::makeInstance($className);
                 if ($postProcessor instanceof \Causal\IgLdapSsoAuth\Utility\GetGroupsProcessorInterface) {
                     $postProcessor->getUserGroups($groupTable, $ldapUser, $typo3_groups);
                 } else {
@@ -549,11 +546,10 @@ class Authentication
 
         foreach ($ldapGroups as $ldapGroup) {
             $groupName = null;
-            if (isset($mapping['title']) &&  preg_match("`<([^$]*)>`", $mapping['title'])) {
+            if (isset($mapping['title']) &&  preg_match('`<([^$]*)>`', $mapping['title'])) {
                 $groupName = static::replaceLdapMarkers($mapping['title'], $ldapGroup);
             }
             $existingTypo3Groups = Typo3GroupRepository::fetch($table, 0, $pid, $ldapGroup['dn'], $groupName);
-
 
             if (count($existingTypo3Groups) > 0) {
                 $typo3Group = $existingTypo3Groups[0];
@@ -591,7 +587,7 @@ class Authentication
 
         foreach ($ldapUsers as $ldapUser) {
             $username = null;
-            if (isset($mapping['username']) && preg_match("`<([^$]*)>`", $mapping['username'])) {
+            if (isset($mapping['username']) && preg_match('`<([^$]*)>`', $mapping['username'])) {
                 $username = static::replaceLdapMarkers($mapping['username'], $ldapUser);
             }
             $existingTypo3Users = Typo3UserRepository::fetch($table, 0, $pid, $username, $ldapUser['dn']);
@@ -665,7 +661,6 @@ class Authentication
                 ''
             );
             $GLOBALS['TSFE']->initTemplate();
-            $GLOBALS['TSFE']->renderCharset = 'utf-8';
 
             /** @var $contentObj \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer */
             $contentObj = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
@@ -678,16 +673,6 @@ class Authentication
                 $value = isset($out[$field]) ? $out[$field] : '';
                 $value = $contentObj->stdWrap($value, $mapping[$typoScriptKey]);
                 $out = static::mergeSimple([$field => $value], $out, $field, $value);
-            }
-
-            if (version_compare(TYPO3_version, '7.6.99', '<=')) {
-                // Instantiation of TypoScriptFrontendController instantiates PageRenderer which
-                // sets backPath to TYPO3_mainDir which is very bad in the Backend. Therefore,
-                // we must set it back to null to not get frontend-prefixed asset URLs.
-                if (TYPO3_MODE === 'BE') {
-                    $pageRenderer = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
-                    $pageRenderer->setBackPath(null);
-                }
             }
 
             $GLOBALS['TSFE'] = $backupTSFE;
@@ -709,7 +694,7 @@ class Authentication
     protected static function mergeSimple(array $ldap, array $typo3, $field, $value)
     {
         // Standard marker or custom function
-        if (preg_match("`{([^$]*)}`", $value, $matches)) {
+        if (preg_match('`{([^$]*)}`', $value, $matches)) {
             switch ($value) {
                 case '{DATE}':
                     $mappedValue = $GLOBALS['EXEC_TIME'];
@@ -735,8 +720,7 @@ class Authentication
                     if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField']) &&
                         !empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'][$hookName])
                     ) {
-
-                        $_procObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'][$hookName]);
+                        $_procObj = GeneralUtility::makeInstance($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'][$hookName]);
                         if (!is_callable([$_procObj, 'extraMerge'])) {
                             throw new \UnexpectedValueException(sprintf('Custom marker hook "%s" does not have a method "extraMerge"', $hookName), 1430140817);
                         }
@@ -746,7 +730,7 @@ class Authentication
             }
 
             // LDAP attribute
-        } elseif (preg_match("`<([^$]*)>`", $value, $attribute)) {
+        } elseif (preg_match('`<([^$]*)>`', $value, $attribute)) {
             if ($field === 'tx_igldapssoauth_dn' || ($field === 'title' && $value === '<dn>')) {
                 $mappedValue = $ldap[strtolower($attribute[1])];
             } else {
@@ -841,5 +825,4 @@ class Authentication
         }
         return $logger;
     }
-
 }

@@ -411,9 +411,8 @@ EOT;
             ['uid=newton,ou=department,dc=example,dc=com', null, ['uid=newton', 'ou=department', 'dc=example', 'dc=com']],
             ['uid=newton,ou=department,dc=example,dc=com', 2, ['uid=newton', 'ou=department,dc=example,dc=com']],
             ['uid=newton,ou=department,dc=example,dc=com', 3, ['uid=newton', 'ou=department', 'dc=example,dc=com']],
-            ['CN=Doering\\, Olaf,OU=Admins,OU=IT,DC=my-company,DN=local', null, ['CN=Doering\\, Olaf', 'OU=Admins', 'OU=IT', 'DC=my-company' ,'DN=local']],
+            ['CN=Doering\\, Olaf,OU=Admins,OU=IT,DC=my-company,DN=local', null, ['CN=Doering\\, Olaf', 'OU=Admins', 'OU=IT', 'DC=my-company' , 'DN=local']],
             ['CN=Doering\\, Olaf,OU=Admins,OU=IT,DC=my-company,DN=local', 2, ['CN=Doering\\, Olaf', 'OU=Admins,OU=IT,DC=my-company,DN=local']],
         ];
     }
-
 }

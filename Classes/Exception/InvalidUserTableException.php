@@ -21,5 +21,4 @@ namespace Causal\IgLdapSsoAuth\Exception;
  */
 class InvalidUserTableException extends IgLdapSsoAuthException
 {
-
 }

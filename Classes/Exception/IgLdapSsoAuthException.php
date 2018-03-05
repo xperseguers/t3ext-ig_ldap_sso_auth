@@ -21,5 +21,4 @@ namespace Causal\IgLdapSsoAuth\Exception;
  */
 class IgLdapSsoAuthException extends \TYPO3\CMS\Core\Exception
 {
-
 }

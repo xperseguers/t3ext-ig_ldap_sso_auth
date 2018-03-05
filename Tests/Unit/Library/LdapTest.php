@@ -24,7 +24,8 @@ class LdapTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
      * @test
      * @dataProvider escapeProvider
      */
-    public function parentheseIsEscapedOnce($input, $expected) {
+    public function parentheseIsEscapedOnce($input, $expected)
+    {
         $ldap = new \Causal\IgLdapSsoAuth\Library\Ldap();
         $actual = $ldap->escapeDnForFilter($input);
         $this->assertEquals($expected, $actual);
@@ -39,5 +40,4 @@ class LdapTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
             ['CN=John Doo (Jr),DC=company,DC=tld', 'CN=John Doo \\(Jr\\),DC=company,DC=tld'],
         ];
     }
-
 }

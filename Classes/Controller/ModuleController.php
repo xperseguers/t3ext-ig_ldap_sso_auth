@@ -14,35 +14,47 @@
 
 namespace Causal\IgLdapSsoAuth\Controller;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3GroupRepository;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3UserRepository;
 use Causal\IgLdapSsoAuth\Library\Authentication;
 use Causal\IgLdapSsoAuth\Library\Configuration;
 use Causal\IgLdapSsoAuth\Library\Ldap;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Module controller.
  *
  * @author     Xavier Perseguers <xavier@causal.ch>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 {
 
     /**
      * @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository
-     * @inject
      */
     protected $configurationRepository;
 
     /**
      * @var \Causal\IgLdapSsoAuth\Library\Ldap
-     * @inject
      */
     protected $ldap;
+
+    /**
+     * @param \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository
+     */
+    public function injectConfigurationRepository(\Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository)
+    {
+        $this->configurationRepository = $configurationRepository;
+    }
+
+    /**
+     * @param \Causal\IgLdapSsoAuth\Library\Ldap $ldap
+     */
+    public function injectLdap(\Causal\IgLdapSsoAuth\Library\Ldap $ldap)
+    {
+        $this->ldap = $ldap;
+    }
 
     /**
      * Redirects to the saved action.
@@ -457,14 +469,14 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 
             if (!empty($config['groups']['mapping']['parentGroup'])) {
                 $fieldParent = $config['groups']['mapping']['parentGroup'];
-                if (preg_match("`<([^$]*)>`", $fieldParent, $attribute)) {
+                if (preg_match('`<([^$]*)>`', $fieldParent, $attribute)) {
                     $fieldParent = $attribute[1];
 
-                    if (is_array($ldapGroup[$fieldParent])) {
-                        unset($ldapGroup[$fieldParent]['count']);
+                    if (is_array($group[$fieldParent])) {
+                        unset($group[$fieldParent]['count']);
 
                         $this->setParentGroup(
-                            $ldapGroup[$fieldParent],
+                            $group[$fieldParent],
                             $fieldParent,
                             $group['uid'],
                             $pid,
@@ -693,11 +705,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         $editLink = '';
 
         $configurationRecords = $this->configurationRepository->findAll();
-        if (version_compare(TYPO3_version, '7.5', '<')) {
-            $editRecordModuleUrl = 'alt_doc.php?';
-        } else {
-            $editRecordModuleUrl = BackendUtility::getModuleUrl('record_edit') . '&amp;';
-        }
+        $editRecordModuleUrl = BackendUtility::getModuleUrl('record_edit') . '&amp;';
 
         if (count($configurationRecords) === 0) {
             $newRecordUri = $editRecordModuleUrl . 'returnUrl=' . urlencode($thisUri) . '&amp;edit[tx_igldapssoauth_config][0]=new';
@@ -719,13 +727,11 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
                 $configuration = $configurationRecords[0];
             }
             $editUri = $editRecordModuleUrl . 'returnUrl=' . urlencode($thisUri) . '&amp;edit[tx_igldapssoauth_config][' . $configuration->getUid() . ']=edit';
-            if (version_compare(TYPO3_version, '7.6', '>=')) {
-                /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
-                $iconFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconFactory::class);
-                $icon = $iconFactory->getIcon('actions-document-open', \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
-            } else {
-                $icon = \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-open');
-            }
+
+            /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
+            $iconFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconFactory::class);
+            $icon = $iconFactory->getIcon('actions-document-open', \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
+
             $editLink = sprintf(
                 ' <a href="%s" title="uid=%s">' . $icon . '</a>',
                 $editUri,
@@ -766,13 +772,8 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             ],
         ];
 
-        if (version_compare(TYPO3_version, '7.0', '<')) {
-            $tableClass = 'typo3-dblist';
-            $trClass = 'db_list_normal';
-        } else {
-            $tableClass = 'table table-striped table-hover';
-            $trClass = '';
-        }
+        $tableClass = 'table table-striped table-hover';
+        $trClass = '';
 
         $this->view->assignMultiple([
             'action' => $this->getControllerContext()->getRequest()->getControllerActionName(),
@@ -878,5 +879,4 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         echo $payload;
         exit;
     }
-
 }

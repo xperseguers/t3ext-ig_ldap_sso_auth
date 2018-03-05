@@ -20,8 +20,6 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
  * Render a conf* View helper which renders the flash messages (if there are any).
  *
  * @author     Xavier Perseguers <xavier@causal.ch>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 if (version_compare(TYPO3_branch, '8', '>=')) {
     // This file requires PHP >= 7

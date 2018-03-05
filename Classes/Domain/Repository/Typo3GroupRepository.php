@@ -14,18 +14,16 @@
 
 namespace Causal\IgLdapSsoAuth\Domain\Repository;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Exception\InvalidUserGroupTableException;
-use Causal\IgLdapSsoAuth\Library\Authentication;
 use Causal\IgLdapSsoAuth\Utility\NotificationUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class Typo3GroupRepository for the 'ig_ldap_sso_auth' extension.
  *
  * @author     Xavier Perseguers <xavier@causal.ch>
  * @author     Michael Gagnon <mgagnon@infoglobe.ca>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 class Typo3GroupRepository
 {
@@ -44,13 +42,15 @@ class Typo3GroupRepository
         }
 
         $newGroup = [];
-        $fieldsConfiguration = static::getDatabaseConnection()->admin_get_fields($table);
+        $fieldsConfiguration = static::getDatabaseConnection()
+            ->getSchemaManager()
+            ->listTableColumns($table);
 
         foreach ($fieldsConfiguration as $field => $configuration) {
-            if ($configuration['Null'] === 'NO' && $configuration['Default'] === null) {
+            if ($configuration->getNotnull() && $configuration->getDefault() === null) {
                 $newGroup[$field] = '';
             } else {
-                $newGroup[$field] = $configuration['Default'];
+                $newGroup[$field] = $configuration->getDefault();
             }
         }
 
@@ -77,24 +77,40 @@ class Typo3GroupRepository
             throw new InvalidUserGroupTableException('Invalid table "' . $table . '"', 1404891809);
         }
 
-        $databaseConnection = static::getDatabaseConnection();
+        $queryBuilder = static::getQueryBuilder();
 
+        $where = [];
         if ($uid) {
-            $where = 'uid=' . (int)$uid;
+            $where[] = $queryBuilder->expr()->eq('uid', (int)$uid);
         } else {
-            $where = '(' . 'tx_igldapssoauth_dn=' . $databaseConnection->fullQuoteStr($dn, $table);
+            $dnCheck = $queryBuilder->expr()->eq(
+                'tx_igldapssoauth_dn',
+                $queryBuilder->createNamedParameter($dn)
+            );
             if (!empty($groupName)) {
-                $where .= ' OR title=' . $databaseConnection->fullQuoteStr($groupName, $table);
+                $where[] = $queryBuilder->expr()->orX(
+                    $dnCheck,
+                    $queryBuilder->expr()->eq(
+                        'title',
+                        $queryBuilder->createNamedParameter($groupName)
+                    )
+                );
+            } else {
+                $where[] = $dnCheck;
             }
-            $where .= ')' . ($pid ? ' AND pid=' . (int)$pid : '');
+            if ($pid) {
+                $where[] = $queryBuilder->expr()->eq('pid', (int)$pid);
+            }
         }
 
         // Return TYPO3 group
-        return $databaseConnection->exec_SELECTgetRows(
-            '*',
-            $table,
-            $where
-        );
+        $rows = $queryBuilder
+            ->select('*')
+            ->from($table)
+            ->where(...$where)
+            ->execute()
+            ->fetchAll();
+        return $rows;
     }
 
     /**
@@ -113,19 +129,24 @@ class Typo3GroupRepository
         }
 
         $databaseConnection = static::getDatabaseConnection();
+        $queryBuilder = static::getQueryBuilder();
 
-        $databaseConnection->exec_INSERTquery(
-            $table,
-            $data,
-            false
-        );
-        $uid = $databaseConnection->sql_insert_id();
+        $databaseConnection
+            ->insert($table, $data);
 
-        $newRow = $databaseConnection->exec_SELECTgetSingleRow(
-            '*',
-            $table,
-            'uid=' . (int)$uid
-        );
+        $uid = (int)$databaseConnection->lastInsertId($table);
+
+        $newRow = $queryBuilder
+            ->select('*')
+            ->from($table)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    (int)$uid
+                )
+            )
+            ->execute()
+            ->fetch();
 
         NotificationUtility::dispatch(
             __CLASS__,
@@ -155,13 +176,12 @@ class Typo3GroupRepository
 
         $databaseConnection = static::getDatabaseConnection();
 
-        $databaseConnection->exec_UPDATEquery(
+        $databaseConnection->update(
             $table,
-            'uid=' . (int)$data['uid'],
             $data,
-            false
+            ['uid' => (int)$data['uid']]
         );
-        $success = $databaseConnection->sql_errno() == 0;
+        $success = $databaseConnection->errorCode() == 0;
 
         if ($success) {
             NotificationUtility::dispatch(
@@ -178,13 +198,24 @@ class Typo3GroupRepository
     }
 
     /**
+     * Returns the query builder for the database connection.
+     *
+     * @return \TYPO3\CMS\Core\Database\Query\QueryBuilder
+     */
+    protected static function getQueryBuilder()
+    {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_igldapssoauth_config');
+        return $queryBuilder;
+    }
+
+    /**
      * Returns the database connection.
      *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @return \TYPO3\CMS\Core\Database\Connection
      */
     protected static function getDatabaseConnection()
     {
-        return $GLOBALS['TYPO3_DB'];
+        $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_igldapssoauth_config');
+        return $databaseConnection;
     }
-
 }

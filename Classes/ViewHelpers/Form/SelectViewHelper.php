@@ -41,5 +41,4 @@ class SelectViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Form\SelectViewHelpe
         parent::initializeArguments();
         $this->registerTagAttribute('onchange', 'string', 'Event when selection is changed');
     }
-
 }

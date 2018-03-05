@@ -14,6 +14,7 @@
 
 namespace Causal\IgLdapSsoAuth\Library;
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -21,12 +22,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author     Xavier Perseguers <xavier@causal.ch>
  * @author     Michael Gagnon <mgagnon@infoglobe.ca>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 class Configuration
 {
-
     const GROUP_MEMBERSHIP_FROM_GROUP = 1;
     const GROUP_MEMBERSHIP_FROM_MEMBER = 2;
 
@@ -52,7 +50,7 @@ class Configuration
      */
     public static function initialize($mode, \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration)
     {
-        $globalConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']);
+        $globalConfiguration = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['ig_ldap_sso_auth'];
         if (!is_array($globalConfiguration)) {
             $globalConfiguration = [];
         }
@@ -70,7 +68,15 @@ class Configuration
         static::$domains = [];
         $domainUids = GeneralUtility::intExplode(',', $configuration->getDomains(), true);
         foreach ($domainUids as $domainUid) {
-            $row = static::getDatabaseConnection()->exec_SELECTgetSingleRow('domainName', 'sys_domain', 'uid=' . (int)$domainUid);
+            $queryBuilder = static::getQueryBuilder();
+            $row = $queryBuilder
+                ->select('domainName')
+                ->from('sys_domain')
+                ->where(
+                    $queryBuilder->expr()->eq('uid', (int)$domainUid)
+                )
+                ->execute()
+                ->fetch();
             static::$domains[] = $row['domainName'];
         }
 
@@ -332,7 +338,7 @@ class Configuration
             ? static::getBackendConfiguration()
             : static::getFrontendConfiguration();
 
-        return (isset($config[$feature]) ? $config[$feature] : false);
+        return isset($config[$feature]) ? $config[$feature] : false;
     }
 
     /**
@@ -436,23 +442,40 @@ class Configuration
      */
     protected static function select($uid = 0)
     {
-        $config = static::getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            'tx_igldapssoauth_config',
-            'deleted=0 AND hidden=0 AND uid=' . (int)$uid
-        );
+        $queryBuilder = static::getQueryBuilder();
+        $config = $queryBuilder
+            ->select('*')
+            ->from('tx_igldapssoauth_config')
+            ->where(
+                $queryBuilder->expr()->eq('deleted', 0),
+                $queryBuilder->expr()->eq('hidden', 0),
+                $queryBuilder->expr()->eq('uid', (int)$uid)
+            )
+            ->execute()
+            ->fetchAll();
 
         return count($config) == 1 ? $config[0] : [];
     }
 
     /**
+     * Returns the query builder for the database connection.
+     *
+     * @return \TYPO3\CMS\Core\Database\Query\QueryBuilder
+     */
+    protected static function getQueryBuilder()
+    {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_igldapssoauth_config');
+        return $queryBuilder;
+    }
+
+    /**
      * Returns the database connection.
      *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @return \TYPO3\CMS\Core\Database\Connection
      */
     protected static function getDatabaseConnection()
     {
-        return $GLOBALS['TYPO3_DB'];
+        $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_igldapssoauth_config');
+        return $databaseConnection;
     }
-
 }

@@ -245,5 +245,4 @@ EOT;
 
         $this->assertTrue($result);
     }
-
 }

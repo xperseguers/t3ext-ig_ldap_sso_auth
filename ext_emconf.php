@@ -22,7 +22,7 @@ In case of use in an intranet environment, this extension is a perfect match sin
     'priority' => '',
     'loadOrder' => '',
     'module' => '',
-    'state' => 'excludeFromUpdates',
+    'state' => 'stable',
     'uploadfolder' => 0,
     'createDirs' => '',
     'modify_tables' => 'be_groups,be_users,fe_groups,fe_users',

@@ -52,7 +52,7 @@ CREATE TABLE be_groups (
 	tx_igldapssoauth_dn varchar(255) DEFAULT '' NOT NULL,
 
 	KEY title (title),
-	KEY tx_igldapssoauth_dn (tx_igldapssoauth_dn)
+	KEY tx_igldapssoauth_dn (tx_igldapssoauth_dn(64))
 );
 
 #
@@ -62,7 +62,7 @@ CREATE TABLE be_users (
 	tx_igldapssoauth_dn varchar(255) DEFAULT '' NOT NULL,
 	tx_igldapssoauth_id int(11) unsigned DEFAULT '0' NOT NULL,
 
-	KEY tx_igldapssoauth_dn (tx_igldapssoauth_dn)
+	KEY tx_igldapssoauth_dn (tx_igldapssoauth_dn(64))
 );
 
 #
@@ -72,7 +72,7 @@ CREATE TABLE fe_groups (
 	tx_igldapssoauth_dn varchar(255) DEFAULT '' NOT NULL,
 
 	KEY title (title),
-	KEY tx_igldapssoauth_dn (tx_igldapssoauth_dn)
+	KEY tx_igldapssoauth_dn (tx_igldapssoauth_dn(64))
 );
 
 #
@@ -82,5 +82,5 @@ CREATE TABLE fe_users (
 	tx_igldapssoauth_dn varchar(255) DEFAULT '' NOT NULL,
 	tx_igldapssoauth_id int(11) unsigned DEFAULT '0' NOT NULL,
 
-	KEY tx_igldapssoauth_dn (tx_igldapssoauth_dn)
+	KEY tx_igldapssoauth_dn (tx_igldapssoauth_dn(64))
 );

@@ -343,6 +343,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 
         if ($success) {
             list($filter, $baseDn) = Authentication::getRelativeDistinguishedNames($dn, 2);
+            $filter = str_replace('\\','',$filter);
             $ldapUser = $this->ldap->search($baseDn, '(' . $filter . ')', [], true);
             $typo3Users = $importUtility->fetchTypo3Users([$ldapUser]);
 

@@ -250,13 +250,14 @@ class Authentication
      */
     protected static function getLdapUser($dn = null)
     {
-        // Restricting the list of returned attributes sometimes makes the ldap_search() method issue a PHP warning:
+        // Restricting the list of returned attributes sometimes makes the
+        // ldap_search() method issue a PHP warning:
         //     Warning: ldap_search(): Array initialization wrong
-        // so we just ask for every attribute ("true" below)!
-        if (true || Configuration::hasExtendedMapping(static::$config['users']['mapping'])) {
+        // Therefore we leave the attributes array empty and expect the default
+        // set if the extended mapping hook is used
+        if (true === Configuration::hasExtendedMapping(static::$config['users']['mapping'])) {
             $attributes = [];
         } else {
-            // Currently never called ever again due to the warning found sometimes (see above)
             $attributes = Configuration::getLdapAttributes(static::$config['users']['mapping']);
             if (strpos(static::$config['groups']['filter'], '{USERUID}') !== false) {
                 $attributes[] = 'uid';

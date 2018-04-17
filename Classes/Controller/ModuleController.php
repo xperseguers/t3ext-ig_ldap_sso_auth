@@ -343,7 +343,8 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 
         if ($success) {
             list($filter, $baseDn) = Authentication::getRelativeDistinguishedNames($dn, 2);
-            $ldapUser = $this->ldap->search($baseDn, '(' . $filter . ')', [], true);
+            $attributes = Configuration::getLdapAttributes($config['users']['mapping']);
+            $ldapUser = $this->ldap->search($baseDn, '(' . $filter . ')', $attributes, true);
             $typo3Users = $importUtility->fetchTypo3Users([$ldapUser]);
 
             // Merge LDAP and TYPO3 information
@@ -434,7 +435,8 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 
         if ($success) {
             list($filter, $baseDn) = explode(',', $dn, 2);
-            $ldapGroup = $this->ldap->search($baseDn, '(' . $filter . ')', [], true);
+            $attributes = Configuration::getLdapAttributes($config['groups']['mapping']);
+            $ldapGroup = $this->ldap->search($baseDn, '(' . $filter . ')', $attributes, true);
 
             $pid = Configuration::getPid($config['groups']['mapping']);
             $table = $mode === 'be' ? 'be_groups' : 'fe_groups';

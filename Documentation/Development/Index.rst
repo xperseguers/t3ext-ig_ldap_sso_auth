@@ -13,6 +13,9 @@ Development
 
 This chapter describes some internals of the ig_ldap_sso_auth extension to let you extend it easily.
 
+
+.. _development-hooks:
+
 Hooks
 -----
 
@@ -24,10 +27,13 @@ Hooks
 	Hooks/ExtraMergeField
 	Hooks/GetGroupsProcessing
 
+.. _development-continuous-deployment:
+
 Continuous Deployment
 ---------------------
 
-To support continuous deployment, it is possible to set a configuration via PHP through the following code in Additional_Configuration.php or ext_localconf.php of your extension.
+To support continuous deployment, it is possible to set a configuration via PHP through the following code either in
+:file:`AdditionalConfiguration.php` or in :file:`ext_localconf.php` within your extension.
 
 .. code-block:: php
 

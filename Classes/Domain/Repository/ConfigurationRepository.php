@@ -63,7 +63,7 @@ class ConfigurationRepository
         $rows = static::getDatabaseConnection()->exec_SELECTgetRows('*', $this->table, $where, '', 'sorting');
 
 
-        if (!empty($this->config) && $this->config['useExtConfConfiguration']) {
+        if (!empty($this->config) && (bool)$this->config['useExtConfConfiguration']) {
             $rows[] = $this->config['configuration'];
         }
 

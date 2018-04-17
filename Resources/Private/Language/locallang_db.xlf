@@ -12,6 +12,9 @@
 			<trans-unit id="settings.forceLowerCaseUsername">
 				<source>Force lower-case user name: If checked, user names will be always be stored in lower-cases. Useful for case-sensitive databases.</source>
 			</trans-unit>
+			<trans-unit id="settings.useExtensionConfiguration">
+				<source>Use the configuration specified in $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']['configuration']</source>
+			</trans-unit>
 			<trans-unit id="settings.enableBELDAPAuthentication">
 				<source>Backend LDAP authentication: Enable LDAP authentication for the backend.</source>
 			</trans-unit>

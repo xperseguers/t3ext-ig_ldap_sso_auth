@@ -38,6 +38,19 @@ class ConfigurationRepository
      */
     protected $fetchDisabledRecords = false;
 
+    /*
+     * @var array Extension configuration for supporting reading LDAP configuration from there
+     */
+    protected $config = [];
+
+    /**
+     * ConfigurationRepository constructor.
+     */
+    public function __construct()
+    {
+        $this->config = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']);
+    }
+
     /**
      * Returns all available LDAP configurations.
      *
@@ -48,6 +61,11 @@ class ConfigurationRepository
         $where = '1=1' . $this->getWhereClauseForEnabledFields();
 
         $rows = static::getDatabaseConnection()->exec_SELECTgetRows('*', $this->table, $where, '', 'sorting');
+
+
+        if (!empty($this->config) && $this->config['useExtConfConfiguration']) {
+            $rows[] = $this->config['configuration'];
+        }
 
         $configurations = [];
         foreach ($rows as $row) {
@@ -68,9 +86,14 @@ class ConfigurationRepository
      */
     public function findByUid($uid)
     {
-        $where = 'uid=' . (int)$uid . $this->getWhereClauseForEnabledFields();
 
-        $row = static::getDatabaseConnection()->exec_SELECTgetSingleRow('*', $this->table, $where);
+        if (!empty($this->config) && $this->config['useExtConfConfiguration'] && intval($this->config['configuration']['uid']) === $uid) {
+            $row = $this->config['configuration'];
+        } else {
+            $where = 'uid=' . (int)$uid . $this->getWhereClauseForEnabledFields();
+            $row = static::getDatabaseConnection()->exec_SELECTgetSingleRow('*', $this->table, $where);
+        }
+
         if ($row) {
             /** @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration */
             $configuration = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Domain\Model\Configuration::class);

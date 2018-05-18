@@ -35,7 +35,7 @@ In case of use in an intranet environment, this extension is a perfect match sin
     'CGLcompliance_note' => '',
     'constraints' => [
         'depends' => [
-            'typo3' => '8.7.10-9.1.0',
+            'typo3' => '8.7.10-9.2',
         ],
         'conflicts' => [],
         'suggests' => [],

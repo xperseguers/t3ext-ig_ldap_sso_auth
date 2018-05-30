@@ -212,7 +212,7 @@ class Configuration
         $keys = array_keys($setup);
         foreach ($keys as $key) {
             if (substr($key, -1) !== '.') {
-                if (empty($setup[$key])) {
+                if ($setup[$key] === '') {
                     unset($setup[$key]);
                 }
             }

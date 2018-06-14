@@ -24,6 +24,7 @@
   "license": "GPL-2.0-or-later",
   "require": {
     "php": ">= 5.5.0, <= 7.2.99",
+    "ext-ldap": "*",
     "typo3/cms-core": ">= 7.6.0, <= 8.7.99"
   },
   "autoload": {

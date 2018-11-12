@@ -19,7 +19,7 @@ return [
     ],
     'interface' => [
         'showRecordFieldList' => 'hidden, name, domains,
-                        ldap_server, ldap_charset, ldap_host, ldap_port, ldap_tls, ldap_ssl, ldap_binddn,
+                        ldap_server, ldap_charset, ldap_host, ldap_port, ldap_tls, ldap_ssl, ldap_binddn, ldap_timeout
                         ldap_password, group_membership,
                         be_users_basedn, be_users_filter, be_users_mapping,
                         be_groups_basedn, be_groups_filter, be_groups_mapping, be_groups_required, be_groups_assigned,
@@ -51,7 +51,7 @@ return [
             'showitem' => 'ldap_charset'
         ],
         'connection' => [
-            'showitem' => 'ldap_host, ldap_port, ldap_tls, ldap_ssl',
+            'showitem' => 'ldap_host, ldap_port, ldap_timeout, ldap_tls, ldap_ssl',
             'canNotCollapse' => 1,
         ],
     ],
@@ -155,6 +155,16 @@ return [
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_ssl',
             'config' => [
                 'type' => 'check',
+                'default' => '0',
+            ]
+        ],
+        'ldap_timeout' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_timeout',
+            'config' => [
+                'type' => 'input',
+                'size' => '30',
+                'eval' => 'int,trim',
                 'default' => '0',
             ]
         ],

@@ -117,7 +117,7 @@ class LdapUtility
      * @return bool true if connection succeeded.
      * @throws UnresolvedPhpDependencyException when LDAP extension for PHP is not available
      */
-    public function connect($host = null, $port = null, $protocol = null, $characterSet = null, $serverType = 0, $tls = false, $ssl = false)
+    public function connect($host = null, $port = null, $protocol = null, $characterSet = null, $serverType = 0, $tls = false, $ssl = false, $ldapTimeout = 0)
     {
         // Valid if php load ldap module.
         if (!extension_loaded('ldap')) {
@@ -128,6 +128,11 @@ class LdapUtility
         $this->status['connect']['host'] = $host;
         $this->status['connect']['port'] = $port;
         $this->serverType = (int)$serverType;
+
+        // Set custom network ldapTimeout
+        if ($ldapTimeout != 0) {
+            @ldap_set_option($this->connection, LDAP_OPT_NETWORK_TIMEOUT, $ldapTimeout);
+        }
 
         if ($ssl) {
             $this->status['option']['ssl'] = 'Enable';

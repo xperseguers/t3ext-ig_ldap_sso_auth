@@ -160,6 +160,7 @@ class ConfigurationRepository
             'ldap_host' => 'ldapHost',
             'ldap_binddn' => 'ldapBindDn',
             'ldap_password' => 'ldapPassword',
+            'ldap_timeout' => 'ldapTimeout',
             'be_users_basedn' => 'backendUsersBaseDn',
             'be_users_filter' => 'backendUsersFilter',
             'be_users_mapping' => 'backendUsersMapping',

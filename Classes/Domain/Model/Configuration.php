@@ -176,6 +176,11 @@ class Configuration
     protected $frontendGroupsAssigned;
 
     /**
+     * @var int
+     */
+    protected $ldapTimeout;
+
+    /**
      * Getter for uid.
      *
      * @return int the uid or null if none set yet.
@@ -447,6 +452,22 @@ class Configuration
     public function getFrontendGroupsAssigned()
     {
         return $this->frontendGroupsAssigned;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLdapTimeout(): int
+    {
+        return $this->ldapTimeout;
+    }
+
+    /**
+     * @param int $ldapTimeout
+     */
+    public function setLdapTimeout(int $ldapTimeout): void
+    {
+        $this->ldapTimeout = $ldapTimeout;
     }
 
     /**

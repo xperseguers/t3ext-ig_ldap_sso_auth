@@ -124,6 +124,7 @@ class Configuration
         static::$ldap['ssl'] = $configuration->isLdapSsl();
         static::$ldap['binddn'] = $configuration->getLdapBindDn();
         static::$ldap['password'] = $configuration->getLdapPassword();
+        static::$ldap['ldapTimeout'] = $configuration->getLdapTimeout();
     }
 
     /**

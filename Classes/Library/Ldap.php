@@ -69,10 +69,11 @@ class Ldap
             'server' => $config['server'],
             'tls' => $config['tls'],
             'ssl' => $config['ssl'],
+            'ldapTimeout' => $config['ldapTimeout']
         ];
 
         // Connect to ldap server.
-        if (!$this->ldapUtility->connect($config['host'], $config['port'], $config['protocol'], $config['charset'], $config['server'], $config['tls'], $config['ssl'])) {
+        if (!$this->ldapUtility->connect($config['host'], $config['port'], $config['protocol'], $config['charset'], $config['server'], $config['tls'], $config['ssl'], $config['ldapTimeout'])) {
             static::getLogger()->error('Cannot connect', $debugConfiguration);
             return false;
         }
@@ -84,7 +85,9 @@ class Ldap
         if (!$this->ldapUtility->bind($config['binddn'], $config['password'])) {
             $status = $this->ldapUtility->getStatus();
             $this->lastBindDiagnostic = $status['bind']['diagnostic'];
-
+            if (empty($this->lastBindDiagnostic)) {
+                $this->lastBindDiagnostic = $status['bind']['status'];
+            }
             $message = 'Cannot bind to LDAP';
             if (!empty($this->lastBindDiagnostic)) {
                 $message .= ': ' . $this->lastBindDiagnostic;

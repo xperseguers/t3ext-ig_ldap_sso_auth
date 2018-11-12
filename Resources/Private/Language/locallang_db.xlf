@@ -131,6 +131,9 @@ Current value for backend is: "%s"]]></source>
 			<trans-unit id="tx_igldapssoauth_config.ldap_ssl">
 				<source>Use SSL:</source>
 			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.ldap_timeout">
+				<source>Custom Network Timeout:</source>
+			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.ldap_binddn">
 				<source>Bind DN:</source>
 			</trans-unit>

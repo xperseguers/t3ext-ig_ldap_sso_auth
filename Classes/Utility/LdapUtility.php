@@ -114,6 +114,7 @@ class LdapUtility
      * @param int $serverType 0 = OpenLDAP, 1 = Active Directory
      * @param bool $tls
      * @param bool $ssl
+     * @param int $ldapTimeout
      * @return bool true if connection succeeded.
      * @throws UnresolvedPhpDependencyException when LDAP extension for PHP is not available
      */

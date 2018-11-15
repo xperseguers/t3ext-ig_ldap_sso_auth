@@ -14,12 +14,12 @@
 
 namespace Causal\IgLdapSsoAuth\Utility;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Causal\IgLdapSsoAuth\Exception\ImportUsersException;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3UserRepository;
+use Causal\IgLdapSsoAuth\Exception\ImportUsersException;
 use Causal\IgLdapSsoAuth\Library\Authentication;
 use Causal\IgLdapSsoAuth\Library\Configuration;
 use Causal\IgLdapSsoAuth\Library\Ldap;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Centralizes the code for importing users from LDAP/AD sources.
@@ -258,7 +258,7 @@ class UserImportUtility
             if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'])) {
                 foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'] as $className) {
                     /** @var \Causal\IgLdapSsoAuth\Utility\ExtraDataProcessorInterface $postProcessor */
-                    $postProcessor = GeneralUtility::getUserObj($className);
+                    $postProcessor = GeneralUtility::makeInstance($className);
                     if ($postProcessor instanceof \Causal\IgLdapSsoAuth\Utility\ExtraDataProcessorInterface) {
                         $postProcessor->processExtraData($this->userTable, $user);
                     } else {

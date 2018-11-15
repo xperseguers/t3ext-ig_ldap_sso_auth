@@ -14,8 +14,8 @@
 
 namespace Causal\IgLdapSsoAuth\Em;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class providing configuration checks for ig_ldap_sso_auth.
@@ -29,7 +29,7 @@ class ConfigurationHelper
 {
 
     /**
-     * @var integer
+     * @var int
      */
     protected $errorType = FlashMessage::OK;
 
@@ -155,20 +155,9 @@ EOT;
             $this->errorType
         );
 
-        switch (true) {
-            case version_compare(TYPO3_version, '8.5.99', '>='):
-                $out = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageRendererResolver::class)
-                    ->resolve()
-                    ->render([$flashMessage]);
-                break;
-            case version_compare(TYPO3_version, '7.99.99', '<='):
-                // Only for TYPO3 v8 up to 8.5.99
-                $out = $flashMessage->render();
-                break;
-            default:
-                $out = $flashMessage->getMessageAsMarkup();
-                break;
-        }
+        $out = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageRendererResolver::class)
+            ->resolve()
+            ->render([$flashMessage]);
 
         return $out;
     }

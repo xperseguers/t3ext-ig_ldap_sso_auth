@@ -14,8 +14,8 @@
 
 namespace Causal\IgLdapSsoAuth\Utility;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class LdapUtility.
@@ -355,7 +355,7 @@ class LdapUtility
             if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['attributesProcessing'])) {
                 foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['attributesProcessing'] as $className) {
                     /** @var \Causal\IgLdapSsoAuth\Utility\AttributesProcessorInterface $postProcessor */
-                    $postProcessor = GeneralUtility::getUserObj($className);
+                    $postProcessor = GeneralUtility::makeInstance($className);
                     if ($postProcessor instanceof \Causal\IgLdapSsoAuth\Utility\AttributesProcessorInterface) {
                         $postProcessor->processAttributes($this->connection, $entry, $attributes);
                     } else {
@@ -425,7 +425,7 @@ class LdapUtility
      */
     public function getDn()
     {
-        return (@ldap_get_dn($this->connection, $this->firstResultEntry));
+        return @ldap_get_dn($this->connection, $this->firstResultEntry);
     }
 
     /**
@@ -435,7 +435,7 @@ class LdapUtility
      */
     public function getAttributes()
     {
-        return (@ldap_get_attributes($this->connection, $this->firstResultEntry));
+        return @ldap_get_attributes($this->connection, $this->firstResultEntry);
     }
 
     /**
@@ -457,11 +457,7 @@ class LdapUtility
     protected function initializeCharacterSet($characterSet = null)
     {
         /** @var \TYPO3\CMS\Core\Charset\CharsetConverter $csObj */
-        if ((isset($GLOBALS['TSFE'])) && (isset($GLOBALS['TSFE']->csConvObj))) {
-            $csObj = $GLOBALS['TSFE']->csConvObj;
-        } else {
-            $csObj = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class);
-        }
+        $csObj = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class);
 
         // LDAP server charset
         $this->ldapCharacterSet = $csObj->parse_charset($characterSet ? $characterSet : 'utf-8');
@@ -488,11 +484,7 @@ class LdapUtility
         }
 
         if ($csObj === null) {
-            if ((isset($GLOBALS['TSFE'])) && (isset($GLOBALS['TSFE']->csConvObj))) {
-                $csObj = $GLOBALS['TSFE']->csConvObj;
-            } else {
-                $csObj = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class);
-            }
+            $csObj = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class);
         }
 
         foreach ($arr as $k => $val) {

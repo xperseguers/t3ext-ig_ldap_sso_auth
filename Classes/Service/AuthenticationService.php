@@ -14,12 +14,13 @@
 
 namespace Causal\IgLdapSsoAuth\Service;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Causal\IgLdapSsoAuth\Exception\UnsupportedLoginSecurityLevelException;
+
 use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
+use Causal\IgLdapSsoAuth\Exception\UnsupportedLoginSecurityLevelException;
 use Causal\IgLdapSsoAuth\Library\Authentication;
 use Causal\IgLdapSsoAuth\Library\Configuration;
 use Causal\IgLdapSsoAuth\Utility\NotificationUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * LDAP / SSO authentication service.
@@ -29,7 +30,7 @@ use Causal\IgLdapSsoAuth\Utility\NotificationUtility;
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
+class AuthenticationService extends \TYPO3\CMS\Core\Authentication\AuthenticationService
 {
 
     /**
@@ -52,10 +53,10 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
      */
     const STATUS_AUTHENTICATION_FAILURE_CONTINUE = 100;
 
-    var $prefixId = 'tx_igldapssoauth_sv1'; // Keep class name
-    var $scriptRelPath = 'Classes/Service/AuthenticationService.php'; // Path to this script relative to the extension dir.
-    var $extKey = 'ig_ldap_sso_auth'; // The extension key.
-    var $igldapssoauth;
+    public $prefixId = 'tx_igldapssoauth_sv1'; // Keep class name
+    public $scriptRelPath = 'Classes/Service/AuthenticationService.php'; // Path to this script relative to the extension dir.
+    public $extKey = 'ig_ldap_sso_auth'; // The extension key.
+    public $igldapssoauth;
 
     /**
      * @var array
@@ -67,8 +68,8 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
      */
     public function __construct()
     {
-        $config = $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey];
-        $this->config = $config ? unserialize($config) : [];
+        $config = $GLOBALS['TYPO3_CONF_VARS']['EXTENSION'][$this->extKey];
+        $this->config = $config ? $config : [];
         Authentication::setAuthenticationService($this);
     }
 
@@ -265,7 +266,8 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
     {
         $remoteUser = !empty($_SERVER['REMOTE_USER'])
             ? $_SERVER['REMOTE_USER']
-            : (!empty($_SERVER['REDIRECT_REMOTE_USER'])
+            : (
+            !empty($_SERVER['REDIRECT_REMOTE_USER'])
                 ? $_SERVER['REDIRECT_REMOTE_USER']
                 : null
             );
@@ -278,11 +280,12 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
     /**
      * Returns the database connection.
      *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @return \TYPO3\CMS\Core\Database\Query\QueryBuilder
      */
-    protected function getDatabaseConnection()
+    protected static function getQueryBuilder()
     {
-        return $GLOBALS['TYPO3_DB'];
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_igldapssoauth_config');
+        return $queryBuilder;
     }
 
     /**

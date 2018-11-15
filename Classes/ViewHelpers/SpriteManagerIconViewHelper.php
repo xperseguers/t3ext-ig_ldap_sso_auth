@@ -15,6 +15,8 @@
 namespace Causal\IgLdapSsoAuth\ViewHelpers;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Displays sprite icon identified by iconName key
@@ -25,6 +27,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SpriteManagerIconViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Be\AbstractBackendViewHelper
 {
+    use CompileWithRenderStatic;
 
     /**
      * @var bool
@@ -32,31 +35,44 @@ class SpriteManagerIconViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Be\Abstra
     protected $escapeOutput = false;
 
     /**
+     * @return void
+     */
+    public function initializeArguments()
+    {
+        parent::initializeArguments();
+        $this->registerArgument('iconName', 'string', '', true, null);
+        $this->registerArgument('options', 'array', '', false, []);
+        $this->registerArgument('uid', 'int', '', false, 0);
+    }
+
+    /**
      * Prints sprite icon html for $iconName key.
      *
-     * @param string $iconName
-     * @param array $options
-     * @param int $uid
+     * @param array $arguments
+     * @param callable|\Closure $renderChildrenClosure
+     * @param RenderingContextInterface $renderingContext
      * @return string
      */
-    public function render($iconName, $options = [], $uid = 0)
-    {
+    public static function renderStatic(
+        array $arguments,
+        \Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext
+    ): string {
+        $iconName = $arguments['iconName'];
+        $options = $arguments['options'];
+        $uid = $arguments['uid'];
         if (!isset($options['title']) && $uid > 0) {
             $options['title'] = 'id=' . $uid;
         }
-        if (version_compare(TYPO3_version, '7.6', '>=')) {
-            /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
-            $iconFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconFactory::class);
-            $html = $iconFactory->getIcon($iconName, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
-            if (!empty($options)) {
-                $attributes = '';
-                foreach ($options as $key => $value) {
-                    $attributes .= htmlspecialchars($key) . '="' . htmlspecialchars($value) . '" ';
-                }
-                $html = str_replace('<img src=', '<img ' . $attributes . 'src=', $html);
+        /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
+        $iconFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconFactory::class);
+        $html = $iconFactory->getIcon($iconName, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
+        if (!empty($options)) {
+            $attributes = '';
+            foreach ($options as $key => $value) {
+                $attributes .= htmlspecialchars($key) . '="' . htmlspecialchars($value) . '" ';
             }
-        } else {
-            $html = \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon($iconName, $options);
+            $html = str_replace('<img src=', '<img ' . $attributes . 'src=', $html);
         }
 
         return $html;

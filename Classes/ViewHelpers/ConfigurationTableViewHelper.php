@@ -15,6 +15,8 @@
 namespace Causal\IgLdapSsoAuth\ViewHelpers;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Render a configuration table
@@ -25,23 +27,40 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
 {
-
+    use CompileWithRenderStatic;
     /**
      * @var bool
      */
     protected $escapeOutput = false;
 
     /**
+     * @return void
+     */
+    public function initializeArguments()
+    {
+        parent::initializeArguments();
+        $this->registerArgument('data', 'mixed', '', true, null);
+        $this->registerArgument('humanKeyNames', 'bool', '', false, false);
+    }
+
+    /**
      * Renders a configuration table.
      *
-     * @param array|string $data
-     * @param bool $humanKeyNames
+     * @param array $arguments
+     * @param callable|\Closure $renderChildrenClosure
+     * @param RenderingContextInterface $renderingContext
      * @return string
      */
-    public function render($data, $humanKeyNames = false)
-    {
+    public static function renderStatic(
+        array $arguments,
+        \Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext
+    ): string {
+        $data = $arguments['data'];
+        $humanKeyNames = $arguments['humanKeyNames'];
         $hasError = false;
-        $content = $this->renderTable($data, $humanKeyNames, 1, $hasError);
+        $content = (new self)->renderTable($data, $humanKeyNames, 1, $hasError, $renderingContext->getControllerContext());
+
         return $content;
     }
 
@@ -52,35 +71,31 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
      * @param bool $humanKeyNames
      * @param int $depth
      * @param bool &$hasError
+     * @param \TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext $controllerContext
      * @return string
      */
-    protected function renderTable($data, $humanKeyNames, $depth, &$hasError)
+    protected function renderTable($data, $humanKeyNames, $depth, &$hasError, $controllerContext)
     {
         if (!is_array($data)) {
             return htmlspecialchars($data);
         } elseif (count($data) === 0) {
-            return '<em>' . htmlspecialchars($this->translate('module_status.messages.empty')) . '</em>';
+            return '<em>' . htmlspecialchars($this->translate('module_status.messages.empty', null, $controllerContext)) . '</em>';
         }
 
-        if (version_compare(TYPO3_version, '7.0', '<')) {
-            $tableClass = 'typo3-dblist';
-            $trClass = 'db_list_normal';
-        } else {
-            $tableClass = 'table table-striped table-hover';
-            $trClass = '';
-        }
+        $tableClass = 'table table-striped table-hover';
+        $trClass = '';
 
         $content = [];
         foreach ($data as $key => $value) {
             $hasValueError = false;
-            $valueCell = $this->renderValueCell($value, $key, $depth, $hasValueError);
+            $valueCell = $this->renderValueCell($value, $key, $depth, $hasValueError, $controllerContext);
             $class = 'key';
             if ($hasValueError) {
                 $hasError = true;
                 $class .= ' error';
             }
             if ($humanKeyNames) {
-                $key = $this->processKey($key);
+                $key = $this->processKey($key, $controllerContext);
             }
             $content[] = sprintf('<tr class="' . $trClass . '"><td class="' . $class . '">%s</td>%s</tr>', htmlspecialchars($key), $valueCell);
         }
@@ -95,23 +110,22 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
      * @param string $key
      * @param int $depth
      * @param bool &$hasError
+     * @param \TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext $controllerContext
      * @return string
      */
-    protected function renderValueCell($value, $key, $depth, &$hasError)
+    protected function renderValueCell($value, $key, $depth, &$hasError, $controllerContext)
     {
         if ($key === '__errors') {
             $hasError = true;
         }
         if (is_array($value)) {
-            return sprintf('<td>%s</td>', $this->renderTable($value, false, $depth + 1, $hasError));
+            return sprintf('<td>%s</td>', $this->renderTable($value, false, $depth + 1, $hasError, $controllerContext));
         }
 
-        if (version_compare(TYPO3_version, '7.6', '>=')) {
-            /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
-            static $iconFactory = null;
-            if ($iconFactory === null) {
-                $iconFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconFactory::class);
-            }
+        /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
+        static $iconFactory = null;
+        if ($iconFactory === null) {
+            $iconFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconFactory::class);
         }
 
         $class = 'value-default';
@@ -126,12 +140,8 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
                 $messageId = 'module_status.messages.disabled';
                 $class = 'value-disabled';
             }
-            if (version_compare(TYPO3_version, '7.6', '>=')) {
-                $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
-            } else {
-                $value = \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon($icon);
-            }
-            $value .=  ' ' . htmlspecialchars($this->translate($messageId));
+            $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
+            $value .=  ' ' . htmlspecialchars($this->translate($messageId, null, $controllerContext));
         } elseif ($depth > 1 && $key === 'status') {
             $label = $value;
             if ($value === 'Success') {
@@ -142,11 +152,7 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
                 $class = 'value-error';
                 $hasError = true;
             }
-            if (version_compare(TYPO3_version, '7.6', '>=')) {
-                $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
-            } else {
-                $value = \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon($icon);
-            }
+            $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
             $value .=  ' ' . htmlspecialchars($label);
         } elseif ($value instanceof \TYPO3\CMS\Extbase\DomainObject\AbstractEntity) {
             if ($value instanceof \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup) {
@@ -159,23 +165,19 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
             $options = [
                 'title' => 'id=' . $value->getUid(),
             ];
-            if (version_compare(TYPO3_version, '7.6', '>=')) {
-                /** @var \Causal\IgLdapSsoAuth\Hooks\IconFactory $iconFactoryHook */
-                static $iconFactoryHook = null;
-                if ($iconFactoryHook === null) {
-                    $iconFactoryHook = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Hooks\IconFactory::class);
-                }
-                $overlay = $iconFactoryHook->postOverlayPriorityLookup(
-                    $table,
-                    ['uid' => $value->getUid()],
-                    [],
-                    null
-                );
-                $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL, $overlay)->render() . ' ' . htmlspecialchars($value->getTitle());
-                $value = str_replace('<img src=', '<img title="' . htmlspecialchars($options['title']) . '" src=', $value);
-            } else {
-                $value = \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon($icon, $options) . ' ' . htmlspecialchars($value->getTitle());
+            /** @var \Causal\IgLdapSsoAuth\Hooks\IconFactory $iconFactoryHook */
+            static $iconFactoryHook = null;
+            if ($iconFactoryHook === null) {
+                $iconFactoryHook = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Hooks\IconFactory::class);
             }
+            $overlay = $iconFactoryHook->postOverlayPriorityLookup(
+                $table,
+                ['uid' => $value->getUid()],
+                [],
+                null
+            );
+            $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL, $overlay)->render() . ' ' . htmlspecialchars($value->getTitle());
+            $value = str_replace('<img src=', '<img title="' . htmlspecialchars($options['title']) . '" src=', $value);
         } else {
             $value = htmlspecialchars($value);
         }
@@ -187,11 +189,12 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
      * Returns an meaningful description out of a configuration array key.
      *
      * @param string $key
+     * @param \TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext $controllerContext
      * @return string
      */
-    protected function processKey($key)
+    protected function processKey($key, $controllerContext)
     {
-        return $this->translate('module_status.configuration.' . $key);
+        return $this->translate('module_status.configuration.' . $key, null, $controllerContext);
     }
 
     /**
@@ -199,11 +202,12 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
      *
      * @param string $id
      * @param array $arguments
+     * @param \TYPO3\CMS\Extbase\Mvc\Controller\ControllerContext $controllerContext
      * @return string|null
      */
-    protected function translate($id, array $arguments = null)
+    protected function translate($id, array $arguments = null, $controllerContext)
     {
-        $request = $this->controllerContext->getRequest();
+        $request = $controllerContext->getRequest();
         $extensionName = $request->getControllerExtensionName();
         $value = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate($id, $extensionName, $arguments);
         return $value !== null ? $value : $id;

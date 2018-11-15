@@ -14,8 +14,9 @@
 
 namespace Causal\IgLdapSsoAuth\Domain\Repository;
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
  * Utility class for fetching LDAP configurations.
@@ -58,10 +59,18 @@ class ConfigurationRepository
      */
     public function findAll()
     {
-        $where = '1=1' . $this->getWhereClauseForEnabledFields();
-
-        $rows = static::getDatabaseConnection()->exec_SELECTgetRows('*', $this->table, $where, '', 'sorting');
-
+        $queryBuilder = static::getQueryBuilder();
+        $where = $this->getWhereClauseForEnabledFields($queryBuilder);
+        $query = $queryBuilder
+            ->select('*')
+            ->from($this->table);
+        if (count($where)) {
+            $query->where(...$where);
+        }
+        $rows = $query
+            ->orderBy('sorting')
+            ->execute()
+            ->fetchAll();
 
         if (!empty($this->config) && (bool)$this->config['useExtConfConfiguration']) {
             $rows[] = $this->config['configuration'];
@@ -87,12 +96,21 @@ class ConfigurationRepository
     public function findByUid($uid)
     {
 
-        if (!empty($this->config) && $this->config['useExtConfConfiguration'] && intval($this->config['configuration']['uid']) === $uid) {
-            $row = $this->config['configuration'];
-        } else {
-            $where = 'uid=' . (int)$uid . $this->getWhereClauseForEnabledFields();
-            $row = static::getDatabaseConnection()->exec_SELECTgetSingleRow('*', $this->table, $where);
+        $queryBuilder = static::getQueryBuilder();
+        $where = $this->getWhereClauseForEnabledFields($queryBuilder);
+        $query = $queryBuilder
+            ->select('*')
+            ->from($this->table)
+            ->where(
+                $queryBuilder->expr()->eq('uid', (int)$uid)
+            );
+        if (count($where)) {
+            $query->andWhere(...$where);
         }
+        $row = $query
+            ->orderBy('sorting')
+            ->execute()
+            ->fetch();
 
         if ($row) {
             /** @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration */
@@ -111,20 +129,25 @@ class ConfigurationRepository
      *
      * @return string The additional where clause, something like " AND deleted=0 AND hidden=0"
      */
-    protected function getWhereClauseForEnabledFields()
+    protected function getWhereClauseForEnabledFields(&$queryBuilder)
     {
+        $whereClause = [];
         if (TYPO3_MODE === 'FE') {
             // Frontend context
             // $GLOBALS['TCA'] is not yet available/initialized:
             // Cannot use $GLOBALS['TSFE']->sys_page->deleteClause() / ->enableFields()
-            $whereClause = ' AND deleted=0';
-            $whereClause .= ' AND hidden=0';
+            $whereClause = [
+                $queryBuilder->expr()->eq('deleted', 0),
+                $queryBuilder->expr()->eq('hidden', 0),
+            ];
 
         } else {
             // Backend context
-            $whereClause = BackendUtility::deleteClause($this->table);
-            if (!$this->fetchDisabledRecords) {
-                $whereClause .= BackendUtility::BEenableFields($this->table);
+            if ($this->fetchDisabledRecords) {
+                $queryBuilder
+                    ->getRestrictions()
+                    ->removeAll()
+                    ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
             }
         }
         return $whereClause;
@@ -217,9 +240,10 @@ class ConfigurationRepository
      *
      * @return \TYPO3\CMS\Core\Database\DatabaseConnection
      */
-    protected static function getDatabaseConnection()
+    protected static function getQueryBuilder()
     {
-        return $GLOBALS['TYPO3_DB'];
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_igldapssoauth_config');
+        return $queryBuilder;
     }
 
     /**

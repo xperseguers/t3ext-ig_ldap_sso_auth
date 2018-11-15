@@ -14,11 +14,12 @@
 
 namespace Causal\IgLdapSsoAuth\Task;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Exception\ImportUsersException;
 use Causal\IgLdapSsoAuth\Library\Authentication;
 use Causal\IgLdapSsoAuth\Library\Configuration;
 use Causal\IgLdapSsoAuth\Library\Ldap;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Synchronizes users for selected context and configuration.
@@ -42,7 +43,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
     /**
      * Selected LDAP configuration (may be 0 (for all) or a configuration uid).
      *
-     * @var integer
+     * @var int
      */
     protected $configuration = 0;
 
@@ -101,7 +102,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 
         // Start a database transaction with all our changes
         // Syntax is compatible with MySQL, Oracle, MSSQL and PostgreSQL
-        $this->getDatabaseConnection()->sql_query('START TRANSACTION');
+        $this->getDatabaseConnection()->beginTransaction();
 
         // Loop on each configuration and context and import the related users
         $failures = 0;
@@ -137,20 +138,28 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
                 // Consider that fetching no users from LDAP is an error
                 if (count($ldapUsers) === 0) {
                     $this->getLogger()->error(sprintf(
-                        'No users (%s) found for configuration record %s', $aContext, $configuration->getUid()
+                        'No users (%s) found for configuration record %s',
+                        $aContext,
+                        $configuration->getUid()
                     ));
                     $failures++;
                 } else {
                     // Disable or delete users, according to settings
                     if ($this->missingUsersHandling === 'disable') {
                         $this->getLogger()->debug(sprintf(
-                            'Disabling users (%s) for configuration record %s', $aContext, $configuration->getUid()
+                            'Disabling users (%s) for configuration record %s',
+                            $aContext,
+                            $configuration->getUid()
                         ));
                         $importUtility->disableUsers();
                     } elseif ($this->missingUsersHandling === 'delete') {
                         $this->getLogger()->debug(
-                            sprintf('Deleting users (%s) for configuration record %s', $aContext, $configuration->getUid()
-                        ));
+                            sprintf(
+                                'Deleting users (%s) for configuration record %s',
+                                $aContext,
+                                $configuration->getUid()
+                            )
+                        );
                         $importUtility->deleteUsers();
                     }
 
@@ -173,7 +182,10 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
                         }
 
                         $this->getLogger()->info(sprintf(
-                            'Configuration record %s: processed %s LDAP users (%s)', $configuration->getUid(), count($ldapUsers), $aContext
+                            'Configuration record %s: processed %s LDAP users (%s)',
+                            $configuration->getUid(),
+                            count($ldapUsers),
+                            $aContext
                         ));
 
                         // Free memory before going on
@@ -193,14 +205,14 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 
         // If some failures were registered, rollback the whole transaction and report error
         if ($failures > 0) {
-            $this->getDatabaseConnection()->sql_query('ROLLBACK');
+            $this->getDatabaseConnection()->rollBack();
             $message = 'Some or all imports failed. Synchronisation was aborted. Check your settings or your network connection';
             $this->getLogger()->error($message);
             throw new ImportUsersException($message, 1410774015);
 
         } else {
             // Everything went fine, commit the changes
-            $this->getDatabaseConnection()->sql_query('COMMIT');
+            $this->getDatabaseConnection()->commit();
         }
         return true;
     }
@@ -352,11 +364,12 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
     /**
      * Returns the database connection.
      *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @return \TYPO3\CMS\Core\Database\Connection
      */
-    protected function getDatabaseConnection()
+    protected static function getDatabaseConnection()
     {
-        return $GLOBALS['TYPO3_DB'];
+        $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_igldapssoauth_config');
+        return $databaseConnection;
     }
 
     /**

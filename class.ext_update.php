@@ -14,13 +14,14 @@
 
 $BACK_PATH = $GLOBALS['BACK_PATH'] . TYPO3_mainDir;
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Class to be used to migrate configuration to be compatible with a newer major
  * version of this extension.
  *
  * @category    Extension Manager
- * @package     TYPO3
- * @subpackage  tx_igldapssoauth
  * @author      Xavier Perseguers <xavier@causal.ch>
  * @license     http://www.gnu.org/copyleft/gpl.html
  */
@@ -39,23 +40,27 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
     /** @var string */
     protected $table = 'tx_igldapssoauth_config';
 
-    /** @var \TYPO3\CMS\Core\Database\DatabaseConnection */
+    /** @var \TYPO3\CMS\Core\Database\Connection */
     protected $databaseConnection;
+
+    /** @var \TYPO3\CMS\Core\Database\Query\QueryBuilder */
+    protected $queryBuilder;
 
     /**
      * Default constructor.
      */
     public function __construct()
     {
-        $this->configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey]);
-        $this->databaseConnection = $GLOBALS['TYPO3_DB'];
+        $this->configuration = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extKey];
+        $this->databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_igldapssoauth_config');
+        $this->queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_igldapssoauth_config');
     }
 
     /**
      * Checks whether the "UPDATE!" menu item should be
      * shown.
      *
-     * @return boolean
+     * @return bool
      */
     public function access()
     {
@@ -85,20 +90,22 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
         $updateNeeded = false;
         $mapping = $this->getMapping();
 
+        $queryBuilder = $this->queryBuilder;
         $where = [];
         foreach ($mapping as $configKey => $field) {
             if (!empty($this->configuration[$configKey])) {
                 // Global setting present => should be migrated if not already done
                 $updateNeeded = true;
             }
-            $where[] = $field . '=' . $this->databaseConnection->fullQuoteStr('', $this->table);
+            $where[] = $queryBuilder->expr()->eq($field, $queryBuilder->createNamedParameter(''));
         }
         if ($updateNeeded) {
-            $oldConfigurationRecords = $this->databaseConnection->exec_SELECTcountRows(
-                '*',
-                $this->table,
-                implode(' AND ', $where)
-            );
+            $oldConfigurationRecords = $queryBuilder
+                ->count('*')
+                ->from($this->table)
+                ->where(...$where)
+                ->execute()
+                ->fetchColumn(0);
             $updateNeeded = ($oldConfigurationRecords > 0);
         }
 
@@ -112,11 +119,13 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
      */
     protected function checkV12ToV13()
     {
-        $oldConfigurationRecords = $this->databaseConnection->exec_SELECTcountRows(
-            '*',
-            $this->table,
-            'group_membership=0'
-        );
+        $queryBuilder = $this->queryBuilder;
+        $oldConfigurationRecords = $queryBuilder
+            ->count('*')
+            ->from($this->table)
+            ->where($queryBuilder->expr()->eq('group_membership', 0))
+            ->execute()
+            ->fetchColumn(0);
         return $oldConfigurationRecords > 0;
     }
 
@@ -130,11 +139,18 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
         if (!\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('scheduler')) {
             return false;
         }
-        $oldTaskRecords = $this->databaseConnection->exec_SELECTcountRows(
-            '*',
-            'tx_scheduler_task',
-            'serialized_task_object LIKE ' . $this->databaseConnection->fullQuoteStr('O:33:"Tx_IgLdapSsoAuth_Task_ImportUsers":%', 'tx_scheduler_task')
-        );
+        $queryBuilder = $this->queryBuilder;
+        $oldTaskRecords = $queryBuilder
+            ->count('*')
+            ->from('tx_scheduler_task')
+            ->where(
+                $queryBuilder->expr()->like(
+                    'serialized_task_object',
+                    $queryBuilder->createNamedParameter('O:33:"Tx_IgLdapSsoAuth_Task_ImportUsers":%')
+                )
+            )
+            ->execute()
+            ->fetchColumn(0);
         return $oldTaskRecords > 0;
     }
 
@@ -150,24 +166,33 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
 
         // We check the database table itself and not whether EXT:eu_ldap is loaded
         // because it may have been deactivated since it is not incompatible
-        $existingTables = $this->databaseConnection->admin_get_tables();
-        if (!isset($existingTables[$table])) {
+        if (!$this->databaseConnection->getSchemaManager()->tablesExist([$table])) {
             return false;
         }
 
         // Ensure the column used to flag processed records is present
-        $fields = $this->databaseConnection->admin_get_fields($table);
+        $fields = $this->databaseConnection
+            ->getSchemaManager()
+            ->listTableColumns($table);
         if (!isset($fields[$migrationField])) {
             $alterTableQuery = 'ALTER TABLE ' . $table . ' ADD ' . $migrationField . ' tinyint(4) NOT NULL default \'0\'';
             // Method admin_query() will parse the query and make it compatible with DBAL, if needed
-            $this->databaseConnection->admin_query($alterTableQuery);
+            $this->databaseConnection->query($alterTableQuery);
         }
 
-        $euLdapConfigurationRecords = $this->databaseConnection->exec_SELECTcountRows(
-            '*',
-            $table,
-            $migrationField . '=0'
-        );
+        $queryBuilder = $this->queryBuilder;
+        $euLdapConfigurationRecords = $queryBuilder
+            ->count('*')
+            ->from($table)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    $migrationField,
+                    '0'
+                )
+            )
+            ->execute()
+            ->fetchColumn(0);
+
         return $euLdapConfigurationRecords > 0;
     }
 
@@ -200,26 +225,28 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
         $fieldValues = [
             'tstamp' => $GLOBALS['EXEC_TIME'],
         ];
+        $queryBuilder = $this->queryBuilder;
         $where = [];
         foreach ($mapping as $configKey => $field) {
             if (!empty($this->configuration[$configKey])) {
                 // Global setting present => should be migrated
                 $fieldValues[$field] = $this->configuration[$configKey];
             }
-            $where[] = $field . '=' . $this->databaseConnection->fullQuoteStr('', $this->table);
+            $where[] = $queryBuilder->expr()->eq($field, $queryBuilder->createNamedParameter(''));
         }
-        $oldConfigurationRecords = $this->databaseConnection->exec_SELECTgetRows(
-            'uid',
-            $this->table,
-            implode(' AND ', $where)
-        );
+        $oldConfigurationRecords = $queryBuilder
+            ->select('uid')
+            ->from($this->table)
+            ->where(...$where)
+            ->execute()
+            ->fetchAll();
 
         $i = 0;
         foreach ($oldConfigurationRecords as $oldConfigurationRecord) {
-            $this->databaseConnection->exec_UPDATEquery(
+            $this->databaseConnection->update(
                 $this->table,
-                'uid=' . $oldConfigurationRecord['uid'],
-                $fieldValues
+                $fieldValues,
+                ['uid' => $oldConfigurationRecord['uid']]
             );
             $i++;
         }
@@ -234,12 +261,12 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
      */
     protected function upgradeV12ToV13()
     {
-        $this->databaseConnection->exec_UPDATEquery(
+        $this->databaseConnection->update(
             $this->table,
-            '1=1',
             [
                 'group_membership' => (bool)$this->configuration['evaluateGroupsFromMembership'] ? 2 : 1,
-            ]
+            ],
+            ['1' => '1']
         );
 
         return $this->formatOk('Successfully transferred how the group membership should be extracted from LDAP from global configuration to the configuration records.');
@@ -258,21 +285,28 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
         $oldPattern = 'O:' . strlen($oldClassName) . ':"' . $oldClassName . '":';
         $newPattern = 'O:' . strlen($newClassName) . ':"' . $newClassName . '":';
 
-        $oldTaskRecords = $this->databaseConnection->exec_SELECTgetRows(
-            'uid, serialized_task_object',
-            $table,
-            'serialized_task_object LIKE ' . $this->databaseConnection->fullQuoteStr($oldPattern . '%', $table)
-        );
+        $queryBuilder = $this->queryBuilder;
+        $oldTaskRecords = $queryBuilder
+            ->select('uid', 'serialized_task_object')
+            ->from($table)
+            ->where(
+                $queryBuilder->expr()->like(
+                    'serialized_task_object',
+                    $queryBuilder->createNamedParameter($oldPattern . '%')
+                )
+            )
+            ->execute()
+            ->fetchAll();
 
         $i = 0;
         foreach ($oldTaskRecords as $oldTaskRecord) {
             $data = [
                 'serialized_task_object' => preg_replace('/^' . $oldPattern . '/', $newPattern, $oldTaskRecord['serialized_task_object']),
             ];
-            $this->databaseConnection->exec_UPDATEquery(
+            $this->databaseConnection->update(
                 $table,
-                'uid=' . (int)$oldTaskRecord['uid'],
-                $data
+                $data,
+                ['uid' => (int)$oldTaskRecord['uid']]
             );
             $i++;
         }
@@ -309,11 +343,12 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
      */
     protected function migrateEuLdapGlobalOptions(array &$out)
     {
-        $automaticImportRows = $this->databaseConnection->exec_SELECTgetRows(
-            'DISTINCT authenticate_be, automatic_import, doitfe',
-            'tx_euldap_server',
-            '1=1'
-        );
+        $queryBuilder = $this->queryBuilder;
+        $automaticImportRows = $queryBuilder
+            ->select('DISTINCT authenticate_be', 'automatic_import', 'doitfe')
+            ->from('tx_euldap_server')
+            ->execute()
+            ->fetchAll();
 
         $hasBackendAuthentication = false;
         $hasFrontendAuthentication = false;
@@ -385,11 +420,18 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
      */
     protected function migrateEuLdapConfiguration(array &$out)
     {
-        $euLdapConfigurationRecords = $this->databaseConnection->exec_SELECTgetRows(
-            '*',
-            'tx_euldap_server',
-            'tx_igldapssoauth_migrated=0'
-        );
+        $queryBuilder = $this->queryBuilder;
+        $euLdapConfigurationRecords = $queryBuilder
+            ->select('*')
+            ->from('tx_euldap_server')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'tx_igldapssoauth_migrated',
+                    0
+                )
+            )
+            ->execute()
+            ->fetchAll();
         foreach ($euLdapConfigurationRecords as $legacy) {
             $hasBackendAuthentication = $legacy['authenticate_be'] == 1 || $legacy['authenticate_be'] == 2;
             $hasFrontendAuthentication = $legacy['authenticate_be'] == 0 || $legacy['authenticate_be'] == 2;
@@ -531,28 +573,32 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
 
             if ($data['be_groups_required'] === '*') {
                 // Replace '*' by every local BE group
-                $groups = $this->databaseConnection->exec_SELECTgetRows(
-                    'uid',
-                    'be_groups',
-                    'hidden=0 AND deleted=0 AND tx_igldapssoauth_dn=\'\' AND eu_ldap=0',
-                    '',
-                    '',
-                    '',
-                    'uid'
-                );
+                $groups = $queryBuilder
+                    ->select('uid')
+                    ->from('be_groups')
+                    ->where(
+                        $queryBuilder->expr()->eq('hidden', 0),
+                        $queryBuilder->expr()->eq('deleted', 0),
+                        $queryBuilder->expr()->eq('tx_igldapssoauth_dn', ''),
+                        $queryBuilder->expr()->eq('eu_ldap', 0)
+                    )
+                    ->execute()
+                    ->fetchAll();
                 $data['be_groups_required'] = implode(',', array_keys($groups));
             }
             if ($data['fe_groups_required'] === '*') {
                 // Replace '*' by every local FE group
-                $groups = $this->databaseConnection->exec_SELECTgetRows(
-                    'uid',
-                    'fe_groups',
-                    'hidden=0 AND deleted=0 AND tx_igldapssoauth_dn=\'\' AND eu_ldap=0',
-                    '',
-                    '',
-                    '',
-                    'uid'
-                );
+                $groups = $queryBuilder
+                    ->select('uid')
+                    ->from('be_groups')
+                    ->where(
+                        $queryBuilder->expr()->eq('hidden', 0),
+                        $queryBuilder->expr()->eq('deleted', 0),
+                        $queryBuilder->expr()->eq('tx_igldapssoauth_dn', ''),
+                        $queryBuilder->expr()->eq('eu_ldap', 0)
+                    )
+                    ->execute()
+                    ->fetchAll();
                 $data['fe_groups_required'] = implode(',', array_keys($groups));
             }
             if ($legacy['only_emailusers'] == 1) {
@@ -566,14 +612,14 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
             }
 
             // Insert the migrated record to ig_ldap_sso_auth
-            $this->databaseConnection->exec_INSERTquery($this->table, $data);
-            if ($this->databaseConnection->sql_affected_rows() == 1) {
-                $this->databaseConnection->exec_UPDATEquery(
+            $this->databaseConnection->insert($this->table, $data);
+            if ($this->databaseConnection->prepare('SELECT ROW_COUNT()')->fetchColumn() == 1) {
+                $this->databaseConnection->update(
                     'tx_euldap_server',
-                    'uid=' . $legacy['uid'],
                     [
                         'tx_igldapssoauth_migrated' => 1,
-                    ]
+                    ],
+                    ['uid' => $legacy['uid']]
                 );
             }
         }
@@ -596,7 +642,7 @@ UPDATE $table
 SET tx_igldapssoauth_dn=tx_euldap_dn
 WHERE tx_igldapssoauth_dn='' AND tx_euldap_dn<>''
 SQL;
-            $this->databaseConnection->sql_query($query);
+            $this->databaseConnection->query($query);
         }
 
         $out[] = $this->formatOk('Successfully migrated eu_ldap users.');

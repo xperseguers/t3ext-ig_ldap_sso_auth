@@ -14,8 +14,8 @@
 
 namespace Causal\IgLdapSsoAuth\Hooks;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Library\Configuration;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Hook into \TYPO3\CMS\Core\DataHandling\DataHandler.
@@ -70,7 +70,7 @@ class DataHandler
                 /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
                 $flashMessage = GeneralUtility::makeInstance(
                     \TYPO3\CMS\Core\Messaging\FlashMessage::class,
-                    $this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:' . $key, true),
+                    $this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:' . $key),
                     '',
                     \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
                     true

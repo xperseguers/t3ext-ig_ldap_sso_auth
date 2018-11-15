@@ -59,7 +59,7 @@ class SuggestWizard
                 $onclick = "var node=document.getElementById('$suggestId');$fieldJs.value=(node.innerText || node.textContent);";
                 $onclick .= implode('', $PA['fieldChangeFunc']);    // Necessary to tell TCEforms that the value is updated
             }
-            $out[] = '<strong>' . $this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:suggestion.server.' . $serverType, true) . '</strong>';
+            $out[] = '<strong>' . $this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:suggestion.server.' . $serverType) . '</strong>';
 
             $out[] = '<pre style="margin:1em 0;" id="' . $suggestId . '">';
             $suggestion = htmlentities($suggestion);
@@ -69,7 +69,7 @@ class SuggestWizard
 
             // Prepare the "copy" button
             // TODO: remove class "formField" when dropping support for TYPO3 6.2
-            $button = '<input type="button" value="' . $this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:suggestion.copy', true) . '" onclick="' . htmlspecialchars($onclick) . '" class="formField btn btn-default btn-sm" />';
+            $button = '<input type="button" value="' . $this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:suggestion.copy') . '" onclick="' . htmlspecialchars($onclick) . '" class="formField btn btn-default btn-sm" />';
             $out[] = $button;
 
             $out[] = '</div>';

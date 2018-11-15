@@ -14,11 +14,14 @@
 
 namespace Causal\IgLdapSsoAuth\Domain\Repository;
 
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 use Causal\IgLdapSsoAuth\Exception\InvalidUserTableException;
 use Causal\IgLdapSsoAuth\Library\Configuration;
 use Causal\IgLdapSsoAuth\Utility\NotificationUtility;
+use TYPO3\CMS\Core\Crypto\Random;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class Typo3UserRepository for the 'ig_ldap_sso_auth' extension.
@@ -54,13 +57,15 @@ class Typo3UserRepository
         }
 
         $newUser = [];
-        $fieldsConfiguration = static::getDatabaseConnection()->admin_get_fields($table);
+        $fieldsConfiguration = static::getDatabaseConnection()
+            ->getSchemaManager()
+            ->listTableColumns($table);
 
         foreach ($fieldsConfiguration as $field => $configuration) {
-            if ($configuration['Null'] === 'NO' && $configuration['Default'] === null) {
+            if ($configuration->getNotnull() && $configuration->getDefault() === null) {
                 $newUser[$field] = '';
             } else {
-                $newUser[$field] = $configuration['Default'];
+                $newUser[$field] = $configuration->getDefault();
             }
             if (!empty($GLOBALS['TCA'][$table]['columns'][$field]['config']['default'])) {
                 $newUser[$field] = $GLOBALS['TCA'][$table]['columns'][$field]['config']['default'];
@@ -92,40 +97,71 @@ class Typo3UserRepository
         }
 
         $users = [];
-        $databaseConnection = static::getDatabaseConnection();
+        $queryBuilder = static::getQueryBuilder();
 
         if ($uid) {
             // Search with uid
-            $users = $databaseConnection->exec_SELECTgetRows(
-                '*',
-                $table,
-                'uid=' . (int)$uid
-            );
+            $users = $queryBuilder
+                ->select('*')
+                ->from($table)
+                ->where(
+                    $queryBuilder->expr()->eq(
+                        'uid',
+                        (int)$uid
+                    )
+                )
+                ->execute()
+                ->fetch();
         } elseif (!empty($dn)) {
             // Search with DN (or fall back to username) and pid
-            $where = '(' . 'tx_igldapssoauth_dn=' . $databaseConnection->fullQuoteStr($dn, $table);
+            $dnCheck = $queryBuilder->expr()->eq(
+                'tx_igldapssoauth_dn',
+                $queryBuilder->createNamedParameter($dn)
+            );
             if (!empty($username)) {
                 // This additional condition will automatically add the mapping between
                 // a local user unrelated to LDAP and a corresponding LDAP user
-                $where .= ' OR username=' . $databaseConnection->fullQuoteStr($username, $table);
+                $where[] = $queryBuilder->expr()->orX(
+                    $dnCheck,
+                    $queryBuilder->expr()->eq(
+                        'username',
+                        $queryBuilder->createNamedParameter($username)
+                    )
+                );
+            } else {
+                $where[] = $dnCheck;
             }
-            $where .= ')' . ($pid ? ' AND pid=' . (int)$pid : '');
-
-            $users = $databaseConnection->exec_SELECTgetRows(
-                '*',
-                $table,
-                $where,
-                '',
-                'tx_igldapssoauth_dn DESC, deleted ASC'    // rows from LDAP first, then privilege active records
-            );
+            if ($pid) {
+                $where[] = $queryBuilder->expr()->eq('pid', (int)$pid);
+            }
+            $users = $queryBuilder
+                ->select('*')
+                ->from($table)
+                ->where(...$where)
+                ->orderBy('tx_igldapssoauth_dn', 'DESC')
+                ->orderBy('deleted', 'ASC')
+                ->execute()
+                ->fetchAll();
         } elseif (!empty($username)) {
             // Search with username and pid
-            $users = $databaseConnection->exec_SELECTgetRows(
-                '*',
-                $table,
-                'username=' . $databaseConnection->fullQuoteStr($username, $table)
-                . ($pid ? ' AND pid=' . (int)$pid : '')
+            $where = [];
+            $where[] = $queryBuilder->expr()->eq(
+                'username',
+                $queryBuilder->createNamedParameter($username)
             );
+            if ($pid) {
+                $where[] = $queryBuilder->expr()->eq(
+                    'pid',
+                    (int)$pid
+                );
+            }
+            // Search with username and pid
+            $users = $queryBuilder
+                ->select('*')
+                ->from($table)
+                ->where(...$where)
+                ->execute()
+                ->fetchAll();
         }
 
         // Return TYPO3 users.
@@ -148,19 +184,23 @@ class Typo3UserRepository
         }
 
         $databaseConnection = static::getDatabaseConnection();
+        $queryBuilder = static::getQueryBuilder();
 
-        $databaseConnection->exec_INSERTquery(
-            $table,
-            $data,
-            false
-        );
-        $uid = $databaseConnection->sql_insert_id();
+        $databaseConnection
+            ->insert($table, $data);
 
-        $newRow = $databaseConnection->exec_SELECTgetSingleRow(
-            '*',
-            $table,
-            'uid=' . (int)$uid
-        );
+        $uid = (int)$databaseConnection->lastInsertId($table);
+        $newRow = $queryBuilder
+            ->select('*')
+            ->from($table)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'uid',
+                    (int)$uid
+                )
+            )
+            ->execute()
+            ->fetch();
 
         NotificationUtility::dispatch(
             __CLASS__,
@@ -193,13 +233,13 @@ class Typo3UserRepository
         $cleanData = $data;
         unset($cleanData['__extraData']);
 
-        $databaseConnection->exec_UPDATEquery(
+        $databaseConnection->update(
             $table,
             'uid=' . (int)$data['uid'],
             $cleanData,
-            false
+            ['uid' => (int)$data['uid']]
         );
-        $success = $databaseConnection->sql_errno() == 0;
+        $success = $databaseConnection->errorCode() == 0;
 
         if ($success) {
             NotificationUtility::dispatch(
@@ -233,10 +273,11 @@ class Typo3UserRepository
             if (isset($GLOBALS['TCA'][$table]['ctrl']['tstamp'])) {
                 $fields[$GLOBALS['TCA'][$table]['ctrl']['tstamp']] = $GLOBALS['EXEC_TIME'];
             }
-            static::getDatabaseConnection()->exec_UPDATEquery(
+            $databaseConnection = static::getDatabaseConnection();
+            $databaseConnection->update(
                 $table,
-                'tx_igldapssoauth_id = ' . (int)$uid,
-                $fields
+                $fields,
+                ['tx_igldapssoauth_id' => (int)$uid]
             );
 
             NotificationUtility::dispatch(
@@ -268,10 +309,11 @@ class Typo3UserRepository
             if (isset($GLOBALS['TCA'][$table]['ctrl']['tstamp'])) {
                 $fields[$GLOBALS['TCA'][$table]['ctrl']['tstamp']] = $GLOBALS['EXEC_TIME'];
             }
-            static::getDatabaseConnection()->exec_UPDATEquery(
+            $databaseConnection = static::getDatabaseConnection();
+            $databaseConnection->update(
                 $table,
-                'tx_igldapssoauth_id = ' . (int)$uid,
-                $fields
+                $fields,
+                ['tx_igldapssoauth_id' => (int)$uid]
             );
 
             NotificationUtility::dispatch(
@@ -315,16 +357,21 @@ class Typo3UserRepository
             $usergroup = GeneralUtility::intExplode(',', $typo3User['usergroup'], true);
             $localUserGroups = [];
             if (!empty($usergroup)) {
-                $database = static::getDatabaseConnection();
-                $rows = $database->exec_SELECTgetRows(
-                    'uid',
-                    $table,
-                    'uid IN (' . implode(',', $usergroup) . ') AND tx_igldapssoauth_dn=' . $database->fullQuoteStr('', $table),
-                    '',
-                    '',
-                    '',
-                    'uid'
-                );
+                $queryBuilder = static::getQueryBuilder();
+                $rows = $queryBuilder
+                    ->select('uid')
+                    ->from($table)
+                    ->where(
+                        $queryBuilder->expr()->in('uid', $usergroup)
+                    )
+                    ->andWhere(
+                        $queryBuilder->expr()->eq(
+                            'tx_igldapssoauth_dn',
+                            $queryBuilder->createNamedParameter('')
+                        )
+                    )
+                    ->execute()
+                    ->fetchAll();
                 $localUserGroups = array_keys($rows);
             }
 
@@ -379,7 +426,7 @@ class Typo3UserRepository
         if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('saltedpasswords')) {
             $instance = \TYPO3\CMS\Saltedpasswords\Salt\SaltFactory::getSaltingInstance(null, TYPO3_MODE);
         }
-        $password = GeneralUtility::generateRandomBytes(16);
+        $password = Random::generateRandomBytes(16);
         $password = $instance ? $instance->getHashedPassword($password) : md5($password);
         return $password;
     }
@@ -387,11 +434,12 @@ class Typo3UserRepository
     /**
      * Returns the database connection.
      *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
+     * @return \TYPO3\CMS\Core\Database\Connection
      */
     protected static function getDatabaseConnection()
     {
-        return $GLOBALS['TYPO3_DB'];
+        $databaseConnection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_igldapssoauth_config');
+        return $databaseConnection;
     }
 
 }

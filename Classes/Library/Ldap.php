@@ -39,6 +39,14 @@ class Ldap
     protected $ldapUtility;
 
     /**
+     * @param \Causal\IgLdapSsoAuth\Utility\LdapUtility $ldapUtility
+     */
+    public function injectLdapUtility(\Causal\IgLdapSsoAuth\Utility\LdapUtility $ldapUtility)
+    {
+        $this->ldapUtility = $ldapUtility;
+    }
+
+    /**
      * Returns an instance of this class.
      *
      * @return Ldap

@@ -37,6 +37,15 @@ class ConfigurationConverter extends \TYPO3\CMS\Extbase\Property\TypeConverter\A
     protected $configurationRepository;
 
     /**
+     * @param \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository
+     */
+    public function injectConfigurationRepository(\Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository)
+    {
+        $this->configurationRepository = $configurationRepository;
+    }
+
+
+    /**
      * @param string|int $source
      * @param string $targetType
      * @param array $convertedChildProperties

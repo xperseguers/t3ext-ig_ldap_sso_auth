@@ -14,9 +14,9 @@
 
 namespace Causal\IgLdapSsoAuth\Library;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3GroupRepository;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3UserRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Class Authentication for the 'ig_ldap_sso_auth' extension.
@@ -411,7 +411,7 @@ class Authentication
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['getGroupsProcessing'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['getGroupsProcessing'] as $className) {
                 /** @var $postProcessor \Causal\IgLdapSsoAuth\Utility\GetGroupsProcessorInterface */
-                $postProcessor = GeneralUtility::getUserObj($className);
+                $postProcessor = GeneralUtility::makeInstance($className);
                 if ($postProcessor instanceof \Causal\IgLdapSsoAuth\Utility\GetGroupsProcessorInterface) {
                     $postProcessor->getUserGroups($groupTable, $ldapUser, $typo3_groups);
                 } else {
@@ -666,7 +666,6 @@ class Authentication
                 ''
             );
             $GLOBALS['TSFE']->initTemplate();
-            $GLOBALS['TSFE']->renderCharset = 'utf-8';
 
             /** @var $contentObj \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer */
             $contentObj = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
@@ -681,15 +680,6 @@ class Authentication
                 $out = static::mergeSimple([$field => $value], $out, $field, $value);
             }
 
-            if (version_compare(TYPO3_version, '7.6.99', '<=')) {
-                // Instantiation of TypoScriptFrontendController instantiates PageRenderer which
-                // sets backPath to TYPO3_mainDir which is very bad in the Backend. Therefore,
-                // we must set it back to null to not get frontend-prefixed asset URLs.
-                if (TYPO3_MODE === 'BE') {
-                    $pageRenderer = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
-                    $pageRenderer->setBackPath(null);
-                }
-            }
 
             $GLOBALS['TSFE'] = $backupTSFE;
         }
@@ -737,7 +727,7 @@ class Authentication
                         !empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'][$hookName])
                     ) {
 
-                        $_procObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'][$hookName]);
+                        $_procObj = GeneralUtility::makeInstance($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'][$hookName]);
                         if (!is_callable([$_procObj, 'extraMerge'])) {
                             throw new \UnexpectedValueException(sprintf('Custom marker hook "%s" does not have a method "extraMerge"', $hookName), 1430140817);
                         }

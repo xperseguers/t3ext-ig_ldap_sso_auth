@@ -33,7 +33,7 @@ Case of option switches
 Basic authentication prompt is always shown
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Problem is that, although you set ``KrbMethodK5Passd off`` in your Apache configuration, the browser of your domain
+Problem is that, although you set ``KrbMethodK5Passwd off`` in your Apache configuration, the browser of your domain
 machines/computers always shows the basic authentication dialog and does not seem to silently pass your user credentials
 to the web server.
 

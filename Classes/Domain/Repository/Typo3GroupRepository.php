@@ -178,7 +178,7 @@ class Typo3GroupRepository
 
         $databaseConnection->update(
             $table,
-            'uid=' . (int)$data['uid'],
+            //'uid=' . (int)$data['uid'],
             $data,
             ['uid' => (int)$data['uid']]
         );

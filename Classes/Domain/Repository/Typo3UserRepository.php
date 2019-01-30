@@ -235,7 +235,7 @@ class Typo3UserRepository
 
         $databaseConnection->update(
             $table,
-            'uid=' . (int)$data['uid'],
+            //'uid=' . (int)$data['uid'],
             $cleanData,
             ['uid' => (int)$data['uid']]
         );
@@ -429,6 +429,17 @@ class Typo3UserRepository
         $password = Random::generateRandomBytes(16);
         $password = $instance ? $instance->getHashedPassword($password) : md5($password);
         return $password;
+    }
+
+    /**
+     * Returns the query builder for the database connection.
+     *
+     * @return \TYPO3\CMS\Core\Database\Query\QueryBuilder
+     */
+    protected static function getQueryBuilder()
+    {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_igldapssoauth_config');
+        return $queryBuilder;
     }
 
     /**

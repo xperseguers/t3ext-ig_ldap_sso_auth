@@ -62,13 +62,8 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
             return '<em>' . htmlspecialchars($this->translate('module_status.messages.empty')) . '</em>';
         }
 
-        if (version_compare(TYPO3_version, '7.0', '<')) {
-            $tableClass = 'typo3-dblist';
-            $trClass = 'db_list_normal';
-        } else {
-            $tableClass = 'table table-striped table-hover';
-            $trClass = '';
-        }
+        $tableClass = 'table table-striped table-hover';
+        $trClass = '';
 
         $content = [];
         foreach ($data as $key => $value) {
@@ -106,12 +101,10 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
             return sprintf('<td>%s</td>', $this->renderTable($value, false, $depth + 1, $hasError));
         }
 
-        if (version_compare(TYPO3_version, '7.6', '>=')) {
-            /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
-            static $iconFactory = null;
-            if ($iconFactory === null) {
-                $iconFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconFactory::class);
-            }
+        /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
+        static $iconFactory = null;
+        if ($iconFactory === null) {
+            $iconFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconFactory::class);
         }
 
         $class = 'value-default';
@@ -126,11 +119,7 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
                 $messageId = 'module_status.messages.disabled';
                 $class = 'value-disabled';
             }
-            if (version_compare(TYPO3_version, '7.6', '>=')) {
-                $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
-            } else {
-                $value = \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon($icon);
-            }
+            $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
             $value .=  ' ' . htmlspecialchars($this->translate($messageId));
         } elseif ($depth > 1 && $key === 'status') {
             $label = $value;
@@ -142,11 +131,7 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
                 $class = 'value-error';
                 $hasError = true;
             }
-            if (version_compare(TYPO3_version, '7.6', '>=')) {
-                $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
-            } else {
-                $value = \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon($icon);
-            }
+            $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
             $value .=  ' ' . htmlspecialchars($label);
         } elseif ($value instanceof \TYPO3\CMS\Extbase\DomainObject\AbstractEntity) {
             if ($value instanceof \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup) {
@@ -159,23 +144,19 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
             $options = [
                 'title' => 'id=' . $value->getUid(),
             ];
-            if (version_compare(TYPO3_version, '7.6', '>=')) {
-                /** @var \Causal\IgLdapSsoAuth\Hooks\IconFactory $iconFactoryHook */
-                static $iconFactoryHook = null;
-                if ($iconFactoryHook === null) {
-                    $iconFactoryHook = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Hooks\IconFactory::class);
-                }
-                $overlay = $iconFactoryHook->postOverlayPriorityLookup(
-                    $table,
-                    ['uid' => $value->getUid()],
-                    [],
-                    null
-                );
-                $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL, $overlay)->render() . ' ' . htmlspecialchars($value->getTitle());
-                $value = str_replace('<img src=', '<img title="' . htmlspecialchars($options['title']) . '" src=', $value);
-            } else {
-                $value = \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon($icon, $options) . ' ' . htmlspecialchars($value->getTitle());
+            /** @var \Causal\IgLdapSsoAuth\Hooks\IconFactory $iconFactoryHook */
+            static $iconFactoryHook = null;
+            if ($iconFactoryHook === null) {
+                $iconFactoryHook = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Hooks\IconFactory::class);
             }
+            $overlay = $iconFactoryHook->postOverlayPriorityLookup(
+                $table,
+                ['uid' => $value->getUid()],
+                [],
+                null
+            );
+            $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL, $overlay)->render() . ' ' . htmlspecialchars($value->getTitle());
+            $value = str_replace('<img src=', '<img title="' . htmlspecialchars($options['title']) . '" src=', $value);
         } else {
             $value = htmlspecialchars($value);
         }

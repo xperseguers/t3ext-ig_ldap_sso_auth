@@ -91,38 +91,3 @@ button {
     color: #000 !important;
     width: 10em;
 }
-
-/***************************
- TYPO3 6.2 specific
- ***************************/
-
-table table.typo3-dblist {
-    margin-bottom: 0;
-}
-
-.typo3-dblist th {
-    padding: 6px;
-    text-align: left;
-}
-
-.typo3-dblist td.key {
-    font-weight: bold;
-    width: 30%;
-}
-
-.typo3-deblist .typo3-dblist td.key {
-    width: 10%;
-    min-width: 14em;
-}
-
-.typo3-dblist td.key.error {
-    background-color: #f00 !important;
-}
-
-.typo3-dblist button {
-    margin: 0;
-}
-
-#tx-igldapssoauth-importform .typo3-dblist td {
-    vertical-align: middle;
-}

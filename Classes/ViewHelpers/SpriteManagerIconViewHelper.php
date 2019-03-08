@@ -44,19 +44,15 @@ class SpriteManagerIconViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Be\Abstra
         if (!isset($options['title']) && $uid > 0) {
             $options['title'] = 'id=' . $uid;
         }
-        if (version_compare(TYPO3_version, '7.6', '>=')) {
-            /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
-            $iconFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconFactory::class);
-            $html = $iconFactory->getIcon($iconName, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
-            if (!empty($options)) {
-                $attributes = '';
-                foreach ($options as $key => $value) {
-                    $attributes .= htmlspecialchars($key) . '="' . htmlspecialchars($value) . '" ';
-                }
-                $html = str_replace('<img src=', '<img ' . $attributes . 'src=', $html);
+        /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
+        $iconFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconFactory::class);
+        $html = $iconFactory->getIcon($iconName, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
+        if (!empty($options)) {
+            $attributes = '';
+            foreach ($options as $key => $value) {
+                $attributes .= htmlspecialchars($key) . '="' . htmlspecialchars($value) . '" ';
             }
-        } else {
-            $html = \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon($iconName, $options);
+            $html = str_replace('<img src=', '<img ' . $attributes . 'src=', $html);
         }
 
         return $html;

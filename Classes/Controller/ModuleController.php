@@ -695,11 +695,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         $editLink = '';
 
         $configurationRecords = $this->configurationRepository->findAll();
-        if (version_compare(TYPO3_version, '7.5', '<')) {
-            $editRecordModuleUrl = 'alt_doc.php?';
-        } else {
-            $editRecordModuleUrl = BackendUtility::getModuleUrl('record_edit') . '&amp;';
-        }
+        $editRecordModuleUrl = BackendUtility::getModuleUrl('record_edit') . '&amp;';
 
         if (count($configurationRecords) === 0) {
             $newRecordUri = $editRecordModuleUrl . 'returnUrl=' . urlencode($thisUri) . '&amp;edit[tx_igldapssoauth_config][0]=new';
@@ -721,13 +717,9 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
                 $configuration = $configurationRecords[0];
             }
             $editUri = $editRecordModuleUrl . 'returnUrl=' . urlencode($thisUri) . '&amp;edit[tx_igldapssoauth_config][' . $configuration->getUid() . ']=edit';
-            if (version_compare(TYPO3_version, '7.6', '>=')) {
-                /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
-                $iconFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconFactory::class);
-                $icon = $iconFactory->getIcon('actions-document-open', \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
-            } else {
-                $icon = \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-open');
-            }
+            /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
+            $iconFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconFactory::class);
+            $icon = $iconFactory->getIcon('actions-document-open', \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
             $editLink = sprintf(
                 ' <a href="%s" title="uid=%s">' . $icon . '</a>',
                 $editUri,
@@ -768,13 +760,8 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             ],
         ];
 
-        if (version_compare(TYPO3_version, '7.0', '<')) {
-            $tableClass = 'typo3-dblist';
-            $trClass = 'db_list_normal';
-        } else {
-            $tableClass = 'table table-striped table-hover';
-            $trClass = '';
-        }
+        $tableClass = 'table table-striped table-hover';
+        $trClass = '';
 
         $this->view->assignMultiple([
             'action' => $this->getControllerContext()->getRequest()->getControllerActionName(),

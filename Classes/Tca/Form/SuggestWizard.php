@@ -44,21 +44,9 @@ class SuggestWizard
         if (!empty($suggestion)) {
             $suggestId = 'tx_igldapssoauth_suggest_' . $PA['field'];
 
-            if (version_compare(TYPO3_branch, '8', '>=')) {
-                $out[] = '<div style="margin:1em 0 0 1em; font-size:11px;">';
-                $fieldJs = '$("[data-formengine-input-name=\'' . $PA['itemName'] . '\'").first()';
-                $onclick = "var node=document.getElementById('$suggestId');$fieldJs.val(node.innerText || node.textContent);$fieldJs.trigger('change');";
-            } elseif (version_compare(TYPO3_branch, '7', '>=')) {
-                $out[] = '<div style="margin:-2.5em 0 0 1em;">';
-                $fieldJs = 'TYPO3.jQuery("[data-formengine-input-name=\'' . $PA['itemName'] . '\'").first()';
-                $hiddenFieldJs = 'TYPO3.jQuery("[name=\'' . $PA['itemName'] . '\'").first()';
-                $onclick = "var node=document.getElementById('$suggestId');var content=(node.innerText || node.textContent);$fieldJs.val(content);$hiddenFieldJs.val(content);";
-            } else {
-                $out[] = '<div style="margin:-2.5em 0 0 1em;">';
-                $fieldJs = "document.{$PA['formName']}['{$PA['itemName']}']";
-                $onclick = "var node=document.getElementById('$suggestId');$fieldJs.value=(node.innerText || node.textContent);";
-                $onclick .= implode('', $PA['fieldChangeFunc']);    // Necessary to tell TCEforms that the value is updated
-            }
+            $out[] = '<div style="margin:1em 0 0 1em; font-size:11px;">';
+            $fieldJs = '$("[data-formengine-input-name=\'' . $PA['itemName'] . '\'").first()';
+            $onclick = "var node=document.getElementById('$suggestId');$fieldJs.val(node.innerText || node.textContent);$fieldJs.trigger('change');";
             $out[] = '<strong>' . $this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:suggestion.server.' . $serverType, true) . '</strong>';
 
             $out[] = '<pre style="margin:1em 0;" id="' . $suggestId . '">';
@@ -68,8 +56,7 @@ class SuggestWizard
             $out[] = $suggestion . '</pre>';
 
             // Prepare the "copy" button
-            // TODO: remove class "formField" when dropping support for TYPO3 6.2
-            $button = '<input type="button" value="' . $this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:suggestion.copy', true) . '" onclick="' . htmlspecialchars($onclick) . '" class="formField btn btn-default btn-sm" />';
+            $button = '<input type="button" value="' . $this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:suggestion.copy', true) . '" onclick="' . htmlspecialchars($onclick) . '" class="btn btn-default btn-sm" />';
             $out[] = $button;
 
             $out[] = '</div>';

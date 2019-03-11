@@ -41,14 +41,14 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['proc
 
 // Register the import users Scheduler task
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\Causal\IgLdapSsoAuth\Task\ImportUsers::class] = [
-    'extension' => $_EXTKEY,
-    'title' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:task.import_users.title',
-    'description' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:task.import_users.description',
+    'extension' => 'ig_ldap_sso_auth',
+    'title' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.title',
+    'description' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.description',
     'additionalFields' => \Causal\IgLdapSsoAuth\Task\ImportUsersAdditionalFields::class
 ];
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
-    $_EXTKEY,
+    'ig_ldap_sso_auth',
     'auth' /* sv type */,
     \Causal\IgLdapSsoAuth\Service\AuthenticationService::class, /* sv key */
     [

@@ -233,7 +233,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
                 return static::STATUS_AUTHENTICATION_FAILURE_CONTINUE;
             } else {
                 // Failed login attempt (wrong password) - write that to the log!
-                static::getLogger()->warning('Password not accepted: ' . [
+                static::getLogger()->warning('Password not accepted: ' , [
                         'username' => $this->login['uname'],
                         'remote' => sprintf('%s (%s)', $this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST']),
                     ]);

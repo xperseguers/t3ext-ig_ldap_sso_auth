@@ -241,6 +241,10 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             return;
         }
 
+        /** @var \TYPO3\CMS\Core\Page\PageRenderer $pageRenderer */
+        $pageRenderer = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
+        $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
+
         $groups = $this->getAvailableUserGroups($configuration, 'fe');
         $this->view->assign('groups', $groups);
     }
@@ -265,80 +269,12 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             return;
         }
 
+        /** @var \TYPO3\CMS\Core\Page\PageRenderer $pageRenderer */
+        $pageRenderer = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
+        $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
+
         $groups = $this->getAvailableUserGroups($configuration, 'be');
         $this->view->assign('groups', $groups);
-    }
-
-    /**
-     * Actual import of user groups using AJAX.
-     *
-     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
-     * @param string $mode
-     * @param string $dn
-     */
-    public function importUserGroupsAjaxAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null, $mode, $dn)
-    {
-        $data = [];
-
-        Configuration::initialize($mode, $configuration);
-        $config = ($mode === 'be')
-            ? Configuration::getBackendConfiguration()
-            : Configuration::getFrontendConfiguration();
-
-        try {
-            $success = $this->ldap->connect(Configuration::getLdapConfiguration());
-        } catch (\Exception $e) {
-            $data['message'] = $e->getMessage();
-            $success = false;
-        }
-
-        if ($success) {
-            list($filter, $baseDn) = explode(',', $dn, 2);
-            $attributes = Configuration::getLdapAttributes($config['groups']['mapping']);
-            $ldapGroup = $this->ldap->search($baseDn, '(' . $filter . ')', $attributes, true);
-
-            $pid = Configuration::getPid($config['groups']['mapping']);
-            $table = $mode === 'be' ? 'be_groups' : 'fe_groups';
-            $typo3Groups = Authentication::getTypo3Groups(
-                [$ldapGroup],
-                $table,
-                $pid
-            );
-
-            // Merge LDAP and TYPO3 information
-            $group = Authentication::merge($ldapGroup, $typo3Groups[0], $config['groups']['mapping']);
-
-            if ((int)$group['uid'] === 0) {
-                $group = Typo3GroupRepository::add($table, $group);
-            } else {
-                // Restore group that may have been previously deleted
-                $group['deleted'] = 0;
-                $success = Typo3GroupRepository::update($table, $group);
-            }
-
-            if (!empty($config['groups']['mapping']['parentGroup'])) {
-                $fieldParent = $config['groups']['mapping']['parentGroup'];
-                if (preg_match("`<([^$]*)>`", $fieldParent, $attribute)) {
-                    $fieldParent = $attribute[1];
-
-                    if (is_array($ldapGroup[$fieldParent])) {
-                        unset($ldapGroup[$fieldParent]['count']);
-
-                        $this->setParentGroup(
-                            $ldapGroup[$fieldParent],
-                            $fieldParent,
-                            $group['uid'],
-                            $pid,
-                            $mode
-                        );
-                    }
-                }
-            }
-
-            $data['id'] = (int)$group['uid'];
-        }
-
-        $this->returnAjax(array_merge($data, ['success' => $success]));
     }
 
     /**
@@ -512,6 +448,87 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             $user = $importUtility->import($user, $ldapUser);
 
             $data['id'] = (int)$user['uid'];
+        }
+
+        $response->getBody()->write(json_encode(array_merge($data, ['success' => $success])));
+        return $response;
+    }
+
+    /**
+     * Actual import of user groups using AJAX.
+     *
+     * @param ServerRequestInterface $request
+     * @param Response $response
+     * @return Response
+     */
+    public function ajaxGroupsImport(ServerRequestInterface $request, Response $response): Response
+    {
+        $params = $request->getQueryParams();
+
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $configurationRepository = $objectManager->get(ConfigurationRepository::class);
+        $ldap = $objectManager->get(Ldap::class);
+
+        $configuration = $configurationRepository->findByUid($params['configuration']);
+
+        $data = [];
+
+        Configuration::initialize($params['mode'], $configuration);
+        $config = ($params['mode'] === 'be')
+            ? Configuration::getBackendConfiguration()
+            : Configuration::getFrontendConfiguration();
+
+        try {
+            $success = $ldap->connect(Configuration::getLdapConfiguration());
+        } catch (\Exception $e) {
+            $data['message'] = $e->getMessage();
+            $success = false;
+        }
+
+        if ($success) {
+            list($filter, $baseDn) = explode(',', $params['dn'], 2);
+            $attributes = Configuration::getLdapAttributes($config['groups']['mapping']);
+            $ldapGroup = $ldap->search($baseDn, '(' . $filter . ')', $attributes, true);
+
+            $pid = Configuration::getPid($config['groups']['mapping']);
+            $table = $params['mode'] === 'be' ? 'be_groups' : 'fe_groups';
+            $typo3Groups = Authentication::getTypo3Groups(
+                [$ldapGroup],
+                $table,
+                $pid
+            );
+
+            // Merge LDAP and TYPO3 information
+            $group = Authentication::merge($ldapGroup, $typo3Groups[0], $config['groups']['mapping']);
+
+            if ((int)$group['uid'] === 0) {
+                $group = Typo3GroupRepository::add($table, $group);
+            } else {
+                // Restore group that may have been previously deleted
+                $group['deleted'] = 0;
+                $success = Typo3GroupRepository::update($table, $group);
+            }
+
+            if (!empty($config['groups']['mapping']['parentGroup'])) {
+                $fieldParent = $config['groups']['mapping']['parentGroup'];
+                if (preg_match("`<([^$]*)>`", $fieldParent, $attribute)) {
+                    $fieldParent = $attribute[1];
+
+                    if (is_array($ldapGroup[$fieldParent])) {
+                        unset($ldapGroup[$fieldParent]['count']);
+
+                        $this->setParentGroup(
+                            $ldapGroup[$fieldParent],
+                            $fieldParent,
+                            $group['uid'],
+                            $pid,
+                            $mode
+                        );
+                    }
+                }
+            }
+
+            $data['id'] = (int)$group['uid'];
         }
 
         $response->getBody()->write(json_encode(array_merge($data, ['success' => $success])));
@@ -879,25 +896,6 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             }
         }
         return $ret;
-    }
-
-    /**
-     * Returns an AJAX response.
-     *
-     * @param array $response
-     * @param bool $wrapForIframe see http://cmlenz.github.io/jquery-iframe-transport/#section-13
-     */
-    protected function returnAjax(array $response, bool $wrapForIframe = false)
-    {
-        $payload = json_encode($response);
-        if (!$wrapForIframe) {
-            header('Content-type: application/json');
-        } else {
-            header('Content-type: text/html');
-            $payload = '<textarea data-type="application/json">' . $payload . '</textarea>';
-        }
-        echo $payload;
-        exit;
     }
 
 }

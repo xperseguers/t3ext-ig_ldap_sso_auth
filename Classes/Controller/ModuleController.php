@@ -200,8 +200,6 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      * @param ServerRequestInterface $request
      * @param Response $response
      * @return Response
-     * @throws \Causal\IgLdapSsoAuth\Exception\InvalidUserGroupTableException
-     * @throws \Causal\IgLdapSsoAuth\Exception\InvalidUserTableException
      */
     public function ajaxSearch(ServerRequestInterface $request, Response $response): Response
     {

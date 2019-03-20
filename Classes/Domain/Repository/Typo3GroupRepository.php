@@ -53,7 +53,7 @@ class Typo3GroupRepository
             if ($configuration->getNotnull() === true && empty($configuration->getDefault())) {
                 $newGroup[$field] = '';
             } else {
-                $newGroup[$field] = $configuration['Default'];
+                $newGroup[$field] = $configuration->getDefault();
             }
         }
 

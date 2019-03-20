@@ -101,7 +101,7 @@ class Typo3UserRepository
             ->getQueryBuilderForTable($table);
         $queryBuilder->getRestrictions()->removeAll();
 
-        if ($uid) {
+        if (!empty($uid)) {
             // Search with uid
             $users = $queryBuilder
                 ->select('*')
@@ -154,7 +154,7 @@ class Typo3UserRepository
                 ->fetchAll();
         }
 
-        // Return TYPO3 users.
+        // Return TYPO3 users
         return $users;
     }
 

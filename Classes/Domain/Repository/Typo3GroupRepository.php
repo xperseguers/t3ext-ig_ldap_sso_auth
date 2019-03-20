@@ -71,33 +71,45 @@ class Typo3GroupRepository
      * @param int|null $pid
      * @param string $dn
      * @param string $groupName
-     * @return array|null
-     * @throws InvalidUserGroupTableException
+     * @return null
      */
-    public static function fetch($table, $uid = 0, $pid = null, $dn = null, $groupName = null)
+    public static function fetch(string $table, int $uid = 0, ?int $pid = null, ?string $dn = null, ?string $groupName = null): array
     {
         if (!GeneralUtility::inList('be_groups,fe_groups', $table)) {
             throw new InvalidUserGroupTableException('Invalid table "' . $table . '"', 1404891809);
         }
 
-        $databaseConnection = static::getDatabaseConnection();
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable($table);
+        $queryBuilder->getRestrictions()->removeAll();
 
-        if ($uid) {
-            $where = 'uid=' . (int)$uid;
+        if (!empty($uid)) {
+            $where = $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT));
         } else {
-            $where = '(' . 'tx_igldapssoauth_dn=' . $databaseConnection->fullQuoteStr($dn, $table);
+            $where = $queryBuilder->expr()->eq('tx_igldapssoauth_dn', $queryBuilder->createNamedParameter($dn, \PDO::PARAM_STR));
             if (!empty($groupName)) {
-                $where .= ' OR title=' . $databaseConnection->fullQuoteStr($groupName, $table);
+                $where = $queryBuilder->expr()->orX(
+                    $where,
+                    $queryBuilder->expr()->eq('title', $queryBuilder->createNamedParameter($groupName, \PDO::PARAM_STR))
+                );
             }
-            $where .= ')' . ($pid ? ' AND pid=' . (int)$pid : '');
+            if (!empty($pid)) {
+                $where = $queryBuilder->expr()->andX(
+                    $where,
+                    $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, \PDO::PARAM_INT))
+                );
+            }
         }
 
-        // Return TYPO3 group
-        return $databaseConnection->exec_SELECTgetRows(
-            '*',
-            $table,
-            $where
-        );
+        $groups = $queryBuilder
+            ->select('*')
+            ->from($table)
+            ->where($where)
+            ->execute()
+            ->fetchAll();
+
+        // Return TYPO3 groups
+        return $groups;
     }
 
     /**

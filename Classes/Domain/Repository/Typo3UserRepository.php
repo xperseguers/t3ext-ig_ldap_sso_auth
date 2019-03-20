@@ -89,47 +89,69 @@ class Typo3UserRepository
      * @return array Array of user records
      * @throws InvalidUserTableException
      */
-    public static function fetch($table, $uid = 0, $pid = null, $username = null, $dn = null)
+    public static function fetch(string $table, int $uid = 0, ?int $pid = null, ?string $username = null, ?string $dn = null): array
     {
         if (!GeneralUtility::inList('be_users,fe_users', $table)) {
             throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891636);
         }
 
         $users = [];
-        $databaseConnection = static::getDatabaseConnection();
+
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable($table);
+        $queryBuilder->getRestrictions()->removeAll();
 
         if ($uid) {
             // Search with uid
-            $users = $databaseConnection->exec_SELECTgetRows(
-                '*',
-                $table,
-                'uid=' . (int)$uid
-            );
+            $users = $queryBuilder
+                ->select('*')
+                ->from($table)
+                ->where(
+                    $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT))
+                )
+                ->execute()
+                ->fetchAll();
         } elseif (!empty($dn)) {
             // Search with DN (or fall back to username) and pid
-            $where = '(' . 'tx_igldapssoauth_dn=' . $databaseConnection->fullQuoteStr($dn, $table);
+            $where = $queryBuilder->expr()->eq('tx_igldapssoauth_dn', $queryBuilder->createNamedParameter($dn, \PDO::PARAM_STR));
             if (!empty($username)) {
                 // This additional condition will automatically add the mapping between
                 // a local user unrelated to LDAP and a corresponding LDAP user
-                $where .= ' OR username=' . $databaseConnection->fullQuoteStr($username, $table);
+                $where = $queryBuilder->expr()->orX(
+                    $where,
+                    $queryBuilder->expr()->eq('username', $queryBuilder->createNamedParameter($username, \PDO::PARAM_STR))
+                );
             }
-            $where .= ')' . ($pid ? ' AND pid=' . (int)$pid : '');
+            if (!empty($pid)) {
+                $where = $queryBuilder->expr()->andX(
+                    $where,
+                    $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, \PDO::PARAM_INT))
+                );
+            }
 
-            $users = $databaseConnection->exec_SELECTgetRows(
-                '*',
-                $table,
-                $where,
-                '',
-                'tx_igldapssoauth_dn DESC, deleted ASC'    // rows from LDAP first, then privilege active records
-            );
+            $users = $queryBuilder
+                ->select('*')
+                ->from($table)
+                ->where($where)
+                ->orderBy('tx_igldapssoauth_dn', 'DESC')    // rows from LDAP first...
+                ->addOrderBy('deleted', 'ASC')              // ... then privilege active records
+                ->execute()
+                ->fetchAll();
         } elseif (!empty($username)) {
             // Search with username and pid
-            $users = $databaseConnection->exec_SELECTgetRows(
-                '*',
-                $table,
-                'username=' . $databaseConnection->fullQuoteStr($username, $table)
-                . ($pid ? ' AND pid=' . (int)$pid : '')
-            );
+            $where = $queryBuilder->expr()->eq('username', $queryBuilder->createNamedParameter($username, \PDO::PARAM_STR));
+            if (!empty($pid)) {
+                $where = $queryBuilder->expr()->andX(
+                    $where,
+                    $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, \PDO::PARAM_INT))
+                );
+            }
+            $users = $queryBuilder
+                ->select('*')
+                ->from($table)
+                ->where($where)
+                ->execute()
+                ->fetchAll();
         }
 
         // Return TYPO3 users.

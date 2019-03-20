@@ -14,6 +14,7 @@
 
 namespace Causal\IgLdapSsoAuth\Domain\Repository;
 
+use TYPO3\CMS\Core\Crypto\Random;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -61,12 +62,8 @@ class Typo3UserRepository
             ->listTableColumns($table);
 
         foreach ($fieldsConfiguration as $field => $configuration) {
-            if ($configuration->getNotnull() === true && empty($configuration->getDefault())) {
-                $newUser[$field] = '';
-            } else {
-                $newUser[$field] = $configuration->getDefault();
-            }
-            if (!empty($GLOBALS['TCA'][$table]['columns'][$field]['config']['default'])) {
+            $newUser[$field] = $configuration->getDefault();
+            if (!empty($GLOBALS['TCA'][$table]['columns'][$field]['config']['default']) && $field !== 'disable') {
                 $newUser[$field] = $GLOBALS['TCA'][$table]['columns'][$field]['config']['default'];
             }
         }
@@ -173,20 +170,25 @@ class Typo3UserRepository
             throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891712);
         }
 
-        $databaseConnection = static::getDatabaseConnection();
+        $tableConnection = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable($table);
 
-        $databaseConnection->exec_INSERTquery(
+        $tableConnection->insert(
             $table,
-            $data,
-            false
+            $data
         );
-        $uid = $databaseConnection->sql_insert_id();
 
-        $newRow = $databaseConnection->exec_SELECTgetSingleRow(
-            '*',
-            $table,
-            'uid=' . (int)$uid
-        );
+        $uid = $tableConnection->lastInsertId();
+
+        $newRow = $tableConnection
+            ->select(
+                ['*'],
+                $table,
+                [
+                    'uid' => $uid,
+                ]
+            )
+            ->fetch();
 
         NotificationUtility::dispatch(
             __CLASS__,
@@ -214,18 +216,20 @@ class Typo3UserRepository
             throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891732);
         }
 
-        $databaseConnection = static::getDatabaseConnection();
-
         $cleanData = $data;
         unset($cleanData['__extraData']);
 
-        $databaseConnection->exec_UPDATEquery(
-            $table,
-            'uid=' . (int)$data['uid'],
-            $cleanData,
-            false
-        );
-        $success = $databaseConnection->sql_errno() == 0;
+        $affectedRows = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable($table)
+            ->update(
+                $table,
+                $cleanData,
+                [
+                    'uid' => (int)$data['uid'],
+                ]
+            );
+
+        $success = $affectedRows === 1;
 
         if ($success) {
             NotificationUtility::dispatch(
@@ -405,7 +409,7 @@ class Typo3UserRepository
         if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('saltedpasswords')) {
             $instance = \TYPO3\CMS\Saltedpasswords\Salt\SaltFactory::getSaltingInstance(null, TYPO3_MODE);
         }
-        $password = GeneralUtility::generateRandomBytes(16);
+        $password = GeneralUtility::makeInstance(Random::class)->generateRandomBytes(16);
         $password = $instance ? $instance->getHashedPassword($password) : md5($password);
         return $password;
     }

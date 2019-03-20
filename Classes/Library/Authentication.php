@@ -520,6 +520,7 @@ class Authentication
             $user = Typo3UserRepository::create(static::$authenticationService->authInfo['db_user']['table']);
 
             $user['pid'] = (int)$pid;
+            $user['cruser_id'] = (TYPO3_MODE === 'BE' ? $GLOBALS['BE_USER']->user['uid'] : 0);
             $user['crdate'] = $GLOBALS['EXEC_TIME'];
             $user['tstamp'] = $GLOBALS['EXEC_TIME'];
             $user['username'] = $username;
@@ -561,6 +562,7 @@ class Authentication
             } else {
                 $typo3Group = Typo3GroupRepository::create($table);
                 $typo3Group['pid'] = (int)$pid;
+                $typo3Group['cruser_id'] = (TYPO3_MODE === 'BE' ? $GLOBALS['BE_USER']->user['uid'] : 0);
                 $typo3Group['crdate'] = $GLOBALS['EXEC_TIME'];
                 $typo3Group['tstamp'] = $GLOBALS['EXEC_TIME'];
             }
@@ -602,6 +604,7 @@ class Authentication
             } else {
                 $typo3User = Typo3UserRepository::create($table);
                 $typo3User['pid'] = (int)$pid;
+                $user['cruser_id'] = (TYPO3_MODE === 'BE' ? $GLOBALS['BE_USER']->user['uid'] : 0);
                 $typo3User['crdate'] = $GLOBALS['EXEC_TIME'];
                 $typo3User['tstamp'] = $GLOBALS['EXEC_TIME'];
             }

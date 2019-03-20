@@ -14,23 +14,40 @@
 /**
  * Module: TYPO3/CMS/IgLdapSsoAuth/Import
  */
-IgLdapSsoAuthImport = {
+define([
+    'jquery'
+], function ($) {
+    'use strict';
 
-    $: null,
+    var IgLdapSsoAuthImport = {
+        fields: {
+            form: null
+        }
+    };
 
-    fields: {
-        form: null
-    },
+    IgLdapSsoAuthImport.initialize = function () {
+        IgLdapSsoAuthImport.fields.form = $('#tx-igldapssoauth-importform');
 
-    ldapImport: function (row) {
+        $('button').click(function () {
+            $('#tx-igldapssoauth-dn').val($(this).val());
+        });
+
+        IgLdapSsoAuthImport.fields.form.submit(function (e) {
+            e.preventDefault(); // this will prevent from submitting the form
+            var dn = $('#tx-igldapssoauth-dn').val();
+            IgLdapSsoAuthImport.ldapImport($("button[value='" + dn + "']").closest('tr'));
+        });
+    };
+
+    IgLdapSsoAuthImport.ldapImport = function (row) {
         var self = IgLdapSsoAuthImport;
+        var action = self.fields.form.data('ajaxaction');
 
         // Deactivate the button
         row.find('button').prop('disabled', true);
 
-        self.$.ajax({
-            type: 'POST',
-            url: self.fields.form.prop('action'),
+        $.ajax({
+            url: TYPO3.settings.ajaxUrls[action],
             data: self.fields.form.serialize()
         }).done(function (data) {
             if (data.success) {
@@ -43,24 +60,9 @@ IgLdapSsoAuthImport = {
                 alert(data.message);
             }
         });
-    }
+    };
 
-};
+    $(IgLdapSsoAuthImport.initialize);
 
-// IIFE for faster access to $ and safe $ use
-(function ($) {
-    $(document).ready(function () {
-        IgLdapSsoAuthImport.$ = $;
-        IgLdapSsoAuthImport.fields.form = $('#tx-igldapssoauth-importform');
-
-        $(' button[type=submit]').click(function () {
-            $('#tx-igldapssoauth-dn').val($(this).val());
-        });
-
-        IgLdapSsoAuthImport.fields.form.submit(function (e) {
-            e.preventDefault(); // this will prevent from submitting the form
-            var dn = $('#tx-igldapssoauth-dn').val();
-            IgLdapSsoAuthImport.ldapImport($("button[value='" + dn + "']").closest('tr'));
-        });
-    });
-}(jQuery || TYPO3.jQuery));
+    return IgLdapSsoAuthImport;
+});

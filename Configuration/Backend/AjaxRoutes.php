@@ -24,4 +24,12 @@ return [
         'path' => '/ldap/search',
         'target' => \Causal\IgLdapSsoAuth\Controller\ModuleController::class . '::ajaxSearch'
     ],
+    'ldap_users_import' => [
+        'path' => '/ldap/users/import',
+        'target' => \Causal\IgLdapSsoAuth\Controller\ModuleController::class . '::ajaxUsersImport'
+    ],
+    'ldap_groups_import' => [
+        'path' => '/ldap/groups/import',
+        'target' => \Causal\IgLdapSsoAuth\Controller\ModuleController::class . '::ajaxGroupsImport'
+    ],
 ];

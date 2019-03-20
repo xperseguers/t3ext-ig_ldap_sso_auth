@@ -50,11 +50,7 @@ class Typo3GroupRepository
             ->listTableColumns($table);
 
         foreach ($fieldsConfiguration as $field => $configuration) {
-            if ($configuration->getNotnull() === true && empty($configuration->getDefault())) {
-                $newGroup[$field] = '';
-            } else {
-                $newGroup[$field] = $configuration->getDefault();
-            }
+            $newGroup[$field] = $configuration->getDefault();
         }
 
         // uid is a primary key, it should not be specified at all
@@ -171,16 +167,16 @@ class Typo3GroupRepository
             throw new InvalidUserGroupTableException('Invalid table "' . $table . '"', 1404891867);
         }
 
-        $tableConnection = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getConnectionForTable($table);
-        $tableConnection->update(
-            $table,
-            $data,
-            [
-                'uid' => (int)$data['uid'],
-            ]
-        );
-        $success = $tableConnection->errorCode() === 0;
+        $affectedRows = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable($table)
+            ->update(
+                $table,
+                $data,
+                [
+                    'uid' => (int)$data['uid'],
+                ]
+            );
+        $success = $affectedRows === 1;
 
         if ($success) {
             NotificationUtility::dispatch(

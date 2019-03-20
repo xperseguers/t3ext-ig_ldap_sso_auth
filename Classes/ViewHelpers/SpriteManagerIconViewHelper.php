@@ -32,24 +32,31 @@ class SpriteManagerIconViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Be\Abstra
     protected $escapeOutput = false;
 
     /**
+     * Initialize arguments
+     */
+    public function initializeArguments()
+    {
+        $this->registerArgument('iconName', 'string', 'Icon to use', true);
+        $this->registerArgument('options', 'array', 'Additional tag attributes', false, []);
+        $this->registerArgument('uid', 'int', 'UID of the record', false, 0);
+    }
+
+    /**
      * Prints sprite icon html for $iconName key.
      *
-     * @param string $iconName
-     * @param array $options
-     * @param int $uid
      * @return string
      */
-    public function render($iconName, $options = [], $uid = 0)
+    public function render(): string
     {
-        if (!isset($options['title']) && $uid > 0) {
-            $options['title'] = 'id=' . $uid;
+        if (!isset($this->arguments['options']['title']) && $this->arguments['uid'] > 0) {
+            $this->arguments['options']['title'] = 'id=' . $this->arguments['uid'];
         }
         /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
         $iconFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconFactory::class);
-        $html = $iconFactory->getIcon($iconName, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
-        if (!empty($options)) {
+        $html = $iconFactory->getIcon($this->arguments['iconName'], \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
+        if (!empty($this->arguments['options'])) {
             $attributes = '';
-            foreach ($options as $key => $value) {
+            foreach ($this->arguments['options'] as $key => $value) {
                 $attributes .= htmlspecialchars($key) . '="' . htmlspecialchars($value) . '" ';
             }
             $html = str_replace('<img src=', '<img ' . $attributes . 'src=', $html);

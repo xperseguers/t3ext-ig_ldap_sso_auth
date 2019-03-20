@@ -23,7 +23,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
+class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper
 {
 
     /**
@@ -32,16 +32,23 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
     protected $escapeOutput = false;
 
     /**
+     * Initialize arguments
+     */
+    public function initializeArguments()
+    {
+        $this->registerArgument('data', 'mixed', 'Data as array or string', true);
+        $this->registerArgument('humanKeyNames', 'bool', 'Use human key names', false, false);
+    }
+
+    /**
      * Renders a configuration table.
      *
-     * @param array|string $data
-     * @param bool $humanKeyNames
      * @return string
      */
-    public function render($data, $humanKeyNames = false)
+    public function render(): string
     {
         $hasError = false;
-        $content = $this->renderTable($data, $humanKeyNames, 1, $hasError);
+        $content = $this->renderTable($this->arguments['data'], $this->arguments['humanKeyNames'], 1, $hasError);
         return $content;
     }
 
@@ -184,9 +191,7 @@ class ConfigurationTableViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\Abst
      */
     protected function translate($id, array $arguments = null)
     {
-        $request = $this->controllerContext->getRequest();
-        $extensionName = $request->getControllerExtensionName();
-        $value = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate($id, $extensionName, $arguments);
+        $value = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate($id, 'ig_ldap_sso_auth', $arguments);
         return $value !== null ? $value : $id;
     }
 

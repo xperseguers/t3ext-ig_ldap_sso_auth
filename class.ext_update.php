@@ -14,6 +14,9 @@
 
 $BACK_PATH = $GLOBALS['BACK_PATH'] . TYPO3_mainDir;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+
 /**
  * Class to be used to migrate configuration to be compatible with a newer major
  * version of this extension.
@@ -109,10 +112,14 @@ class ext_update extends \TYPO3\CMS\Backend\Module\BaseScriptClass
      */
     protected function checkV12ToV13()
     {
-        $oldConfigurationRecords = $this->databaseConnection->exec_SELECTcountRows(
+        $oldConfigurationRecords = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable($this->table)
+            ->count(
             '*',
             $this->table,
-            'group_membership=0'
+                [
+                    'group_membership' => 0,
+                ]
         );
         return $oldConfigurationRecords > 0;
     }

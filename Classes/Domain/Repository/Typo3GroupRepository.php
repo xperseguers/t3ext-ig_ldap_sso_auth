@@ -14,9 +14,9 @@
 
 namespace Causal\IgLdapSsoAuth\Domain\Repository;
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Exception\InvalidUserGroupTableException;
-use Causal\IgLdapSsoAuth\Library\Authentication;
 use Causal\IgLdapSsoAuth\Utility\NotificationUtility;
 
 /**
@@ -44,10 +44,13 @@ class Typo3GroupRepository
         }
 
         $newGroup = [];
-        $fieldsConfiguration = static::getDatabaseConnection()->admin_get_fields($table);
+        $fieldsConfiguration = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable($table)
+            ->getSchemaManager()
+            ->listTableColumns($table);
 
         foreach ($fieldsConfiguration as $field => $configuration) {
-            if ($configuration['Null'] === 'NO' && $configuration['Default'] === null) {
+            if ($configuration->getNotnull() === true && empty($configuration->getDefault())) {
                 $newGroup[$field] = '';
             } else {
                 $newGroup[$field] = $configuration['Default'];
@@ -112,20 +115,23 @@ class Typo3GroupRepository
             throw new InvalidUserGroupTableException('Invalid table "' . $table . '"', 1404891833);
         }
 
-        $databaseConnection = static::getDatabaseConnection();
-
-        $databaseConnection->exec_INSERTquery(
+        $tableConnection = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable($table);
+        $tableConnection->insert(
             $table,
-            $data,
-            false
+            $data
         );
-        $uid = $databaseConnection->sql_insert_id();
+        $uid = $tableConnection->lastInsertId();
 
-        $newRow = $databaseConnection->exec_SELECTgetSingleRow(
-            '*',
+        $newRow = $tableConnection
+            ->select(
+                ['*'],
             $table,
-            'uid=' . (int)$uid
-        );
+                [
+                    'uid' => (int)$uid,
+                ]
+            )
+            ->fetch();
 
         NotificationUtility::dispatch(
             __CLASS__,
@@ -153,15 +159,16 @@ class Typo3GroupRepository
             throw new InvalidUserGroupTableException('Invalid table "' . $table . '"', 1404891867);
         }
 
-        $databaseConnection = static::getDatabaseConnection();
-
-        $databaseConnection->exec_UPDATEquery(
+        $tableConnection = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable($table);
+        $tableConnection->update(
             $table,
-            'uid=' . (int)$data['uid'],
             $data,
-            false
+            [
+                'uid' => (int)$data['uid'],
+            ]
         );
-        $success = $databaseConnection->sql_errno() == 0;
+        $success = $tableConnection->errorCode() === 0;
 
         if ($success) {
             NotificationUtility::dispatch(
@@ -175,16 +182,6 @@ class Typo3GroupRepository
         }
 
         return $success;
-    }
-
-    /**
-     * Returns the database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected static function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
     }
 
 }

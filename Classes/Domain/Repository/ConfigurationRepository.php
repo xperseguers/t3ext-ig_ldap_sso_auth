@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,8 +16,9 @@
 
 namespace Causal\IgLdapSsoAuth\Domain\Repository;
 
+use Causal\IgLdapSsoAuth\Domain\Model\Configuration;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 
 /**
  * Utility class for fetching LDAP configurations.
@@ -56,12 +59,20 @@ class ConfigurationRepository
      *
      * @return \Causal\IgLdapSsoAuth\Domain\Model\Configuration[]
      */
-    public function findAll()
+    public function findAll(): array
     {
-        $where = '1=1' . $this->getWhereClauseForEnabledFields();
-
-        $rows = static::getDatabaseConnection()->exec_SELECTgetRows('*', $this->table, $where, '', 'sorting');
-
+        $rows = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable($this->table)
+            ->select(
+                ['*'],
+                $this->table,
+                [],
+                [],
+                [
+                    'sorting' => 'ASC',
+                ]
+            )
+            ->fetchAll();
 
         if (!empty($this->config) && (bool)$this->config['useExtConfConfiguration']) {
             $rows[] = $this->config['configuration'];
@@ -81,20 +92,27 @@ class ConfigurationRepository
     /**
      * Returns a single LDAP configuration.
      *
-     * @param integer $uid Primary key to look up
+     * @param int $uid Primary key to look up
      * @return \Causal\IgLdapSsoAuth\Domain\Model\Configuration
      */
-    public function findByUid($uid)
+    public function findByUid(int $uid): ?Configuration
     {
-
         if (!empty($this->config) && $this->config['useExtConfConfiguration'] && intval($this->config['configuration']['uid']) === $uid) {
             $row = $this->config['configuration'];
         } else {
-            $where = 'uid=' . (int)$uid . $this->getWhereClauseForEnabledFields();
-            $row = static::getDatabaseConnection()->exec_SELECTgetSingleRow('*', $this->table, $where);
+            $row = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionForTable($this->table)
+                ->select(
+                    ['*'],
+                    $this->table,
+                    [
+                        'uid' => $uid,
+                    ]
+                )
+                ->fetch();
         }
 
-        if ($row) {
+        if (!empty($row)) {
             /** @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration */
             $configuration = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Domain\Model\Configuration::class);
             $this->thawProperties($configuration, $row);
@@ -106,39 +124,14 @@ class ConfigurationRepository
     }
 
     /**
-     * Returns the WHERE clause for the enabled fields of this TCA table
-     * depending on the context.
-     *
-     * @return string The additional where clause, something like " AND deleted=0 AND hidden=0"
-     */
-    protected function getWhereClauseForEnabledFields()
-    {
-        if (TYPO3_MODE === 'FE') {
-            // Frontend context
-            // $GLOBALS['TCA'] is not yet available/initialized:
-            // Cannot use $GLOBALS['TSFE']->sys_page->deleteClause() / ->enableFields()
-            $whereClause = ' AND deleted=0';
-            $whereClause .= ' AND hidden=0';
-
-        } else {
-            // Backend context
-            $whereClause = BackendUtility::deleteClause($this->table);
-            if (!$this->fetchDisabledRecords) {
-                $whereClause .= BackendUtility::BEenableFields($this->table);
-            }
-        }
-        return $whereClause;
-    }
-
-    /**
      * Sets the flag for fetching disabled records or not.
      *
-     * @param boolean $flag Set to true to enable fetching of disabled record
+     * @param bool $flag Set to true to enable fetching of disabled record
      * @return void
      */
-    public function setFetchDisabledRecords($flag)
+    public function setFetchDisabledRecords(bool $flag): void
     {
-        $this->fetchDisabledRecords = (bool)$flag;
+        $this->fetchDisabledRecords = $flag;
     }
 
     /**
@@ -148,7 +141,7 @@ class ConfigurationRepository
      * @param array $row
      * @return void
      */
-    protected function thawProperties(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $object, array $row)
+    protected function thawProperties(Configuration $object, array $row): void
     {
         $object->_setProperty('uid', (int)$row['uid']);
 
@@ -210,16 +203,6 @@ class ConfigurationRepository
         $object->_setProperty('ldapTls', (bool)$row['ldap_tls']);
         $object->_setProperty('ldapSsl', (bool)$row['ldap_ssl']);
         $object->_setProperty('groupMembership', (int)$row['group_membership']);
-    }
-
-    /**
-     * Returns the database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected static function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
     }
 
     /**

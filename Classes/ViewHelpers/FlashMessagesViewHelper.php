@@ -28,7 +28,6 @@ class FlashMessagesViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FlashMessages
      *
      * @param array $flashMessages \TYPO3\CMS\Core\Messaging\FlashMessage[]
      * @return string
-     * @typo3 8
      */
     protected function renderDefault(array $flashMessages) : string
     {

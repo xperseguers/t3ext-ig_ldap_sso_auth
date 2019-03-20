@@ -14,6 +14,7 @@
 
 namespace Causal\IgLdapSsoAuth\Domain\Repository;
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Exception\InvalidUserTableException;
@@ -54,13 +55,16 @@ class Typo3UserRepository
         }
 
         $newUser = [];
-        $fieldsConfiguration = static::getDatabaseConnection()->admin_get_fields($table);
+        $fieldsConfiguration = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable($table)
+            ->getSchemaManager()
+            ->listTableColumns($table);
 
         foreach ($fieldsConfiguration as $field => $configuration) {
-            if ($configuration['Null'] === 'NO' && $configuration['Default'] === null) {
+            if ($configuration->getNotnull() === true && empty($configuration->getDefault())) {
                 $newUser[$field] = '';
             } else {
-                $newUser[$field] = $configuration['Default'];
+                $newUser[$field] = $configuration->getDefault();
             }
             if (!empty($GLOBALS['TCA'][$table]['columns'][$field]['config']['default'])) {
                 $newUser[$field] = $GLOBALS['TCA'][$table]['columns'][$field]['config']['default'];

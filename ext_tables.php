@@ -23,9 +23,9 @@ if (TYPO3_MODE === 'BE') {
             'Module' => implode(',', [
                 'index',
                 'status',
-                'search', 'updateSearchAjax', 'searchAjax',
-                'importFrontendUsers', 'importBackendUsers', 'importUsersAjax',
-                'importFrontendUserGroups', 'importBackendUserGroups', 'importUserGroupsAjax',
+                'search',
+                'importFrontendUsers', 'importBackendUsers',
+                'importFrontendUserGroups', 'importBackendUserGroups',
             ]),
         ], [
             'access' => 'admin',

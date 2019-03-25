@@ -12,7 +12,10 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Causal\IgLdapSsoAuth\Tca\Form;
+namespace Causal\IgLdapSsoAuth\Form\Element;
+
+use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Suggest wizard.
@@ -21,31 +24,43 @@ namespace Causal\IgLdapSsoAuth\Tca\Form;
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class SuggestWizard
+class LdapSuggestElement extends AbstractFormElement
 {
 
     /**
      * Renders a suggestion for the mapping.
      *
-     * @param array $PA
-     * @param object $pObj
-     * @return string
+     * @return array
      */
-    public function render(array &$PA, $pObj)
+    public function render(): array
     {
-        $serverType = (int)$PA['row']['ldap_server'];
+        $elementType = $this->data['parameterArray']['fieldConf']['config']['type'];
+        switch ($elementType) {
+            case 'input':
+                $baseElement = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Form\Element\InputTextElement::class, $this->nodeFactory, $this->data);
+                break;
+            case 'text':
+                $baseElement = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Form\Element\TextElement::class, $this->nodeFactory, $this->data);
+                break;
+            default:
+                throw new \RuntimeException('Suggest wizard is not configured for type "' . $elementType . '"', 1553522818);
+        }
 
-        if (substr($PA['field'], -7) === '_basedn') {
-            $suggestion = $this->suggestBaseDn($PA);
+        $resultArray = $baseElement->render();
+
+        $serverType = (int)$this->data['databaseRow']['ldap_server'][0];
+
+        if (substr($this->data['fieldName'], -7) === '_basedn') {
+            $suggestion = $this->suggestBaseDn();
         } else {
-            $suggestion = $this->suggestMappingOrFilter($serverType, $PA);
+            $suggestion = $this->suggestMappingOrFilter($serverType);
         }
 
         if (!empty($suggestion)) {
-            $suggestId = 'tx_igldapssoauth_suggest_' . $PA['field'];
+            $suggestId = 'tx_igldapssoauth_suggest_' . $this->data['fieldName'];
 
             $out[] = '<div style="margin:1em 0 0 1em; font-size:11px;">';
-            $fieldJs = '$("[data-formengine-input-name=\'' . $PA['itemName'] . '\'").first()';
+            $fieldJs = '$("[data-formengine-input-name=\'data' . $this->data['elementBaseName'] . '\'").first()';
             $onclick = "var node=document.getElementById('$suggestId');$fieldJs.val(node.innerText || node.textContent);$fieldJs.trigger('change');";
             $out[] = '<strong>' . htmlspecialchars($this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:suggestion.server.' . $serverType)) . '</strong>';
 
@@ -64,18 +79,18 @@ class SuggestWizard
             $suggestion = implode(LF, $out);
         }
 
-        return $suggestion;
+        $resultArray['html'] .= $suggestion;
+        return $resultArray;
     }
 
     /**
      * Suggests a base DN.
      *
-     * @param array $PA
      * @return string
      */
-    protected function suggestBaseDn(array $PA)
+    protected function suggestBaseDn(): string
     {
-        $bindDnParts = explode(',', $PA['row']['ldap_binddn']);
+        $bindDnParts = explode(',', $this->data['databaseRow']['ldap_binddn']);
         $suggestion = count($bindDnParts) > 2
             ? implode(',', array_slice($bindDnParts, -2))
             : '';
@@ -86,17 +101,16 @@ class SuggestWizard
      * Suggests a mapping or a filter.
      *
      * @param int $serverType
-     * @param array $PA
      * @return string
      */
-    protected function suggestMappingOrFilter($serverType, array $PA)
+    protected function suggestMappingOrFilter(int $serverType): string
     {
-        if (substr($PA['field'], -8) === '_mapping') {
+        if (substr($this->data['fieldName'], -8) === '_mapping') {
             $prefix = 'mapping_';
-            $table = substr($PA['field'], 0, -8);
+            $table = substr($this->data['fieldName'], 0, -8);
         } else {
             $prefix = 'filter_';
-            $table = substr($PA['field'], 0, -7);
+            $table = substr($this->data['fieldName'], 0, -7);
         }
 
         $templatePath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('ig_ldap_sso_auth') . 'Resources/Private/Templates/TCA/';

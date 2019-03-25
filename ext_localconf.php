@@ -68,6 +68,12 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\Causal\IgLdapSs
     ]
 );
 
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1553520893] = [
+    'nodeName' => 'ldapSuggest',
+    'priority' => 40,
+    'class' => \Causal\IgLdapSsoAuth\Form\Element\LdapSuggestElement::class,
+];
+
 // Register type converters
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerTypeConverter(\Causal\IgLdapSsoAuth\Property\TypeConverter\ConfigurationConverter::class);
 

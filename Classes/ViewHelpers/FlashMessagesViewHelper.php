@@ -14,6 +14,9 @@
 
 namespace Causal\IgLdapSsoAuth\ViewHelpers;
 
+use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+
 /**
  * Render a conf* View helper which renders the flash messages (if there are any).
  *
@@ -23,39 +26,82 @@ namespace Causal\IgLdapSsoAuth\ViewHelpers;
  */
 class FlashMessagesViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FlashMessagesViewHelper
 {
+
     /**
-     * Renders the flash messages as unordered list
-     *
-     * @param array $flashMessages \TYPO3\CMS\Core\Messaging\FlashMessage[]
-     * @return string
+     * @var string The message severity class names
      */
-    protected function renderDefault(array $flashMessages) : string
+    protected static $classes = [
+        FlashMessage::NOTICE => 'notice',
+        FlashMessage::INFO => 'info',
+        FlashMessage::OK => 'success',
+        FlashMessage::WARNING => 'warning',
+        FlashMessage::ERROR => 'danger'
+    ];
+
+    /**
+     * @var string The message severity icon names
+     */
+    protected static $icons = [
+        FlashMessage::NOTICE => 'lightbulb-o',
+        FlashMessage::INFO => 'info',
+        FlashMessage::OK => 'check',
+        FlashMessage::WARNING => 'exclamation',
+        FlashMessage::ERROR => 'times'
+    ];
+
+    /**
+     * Renders FlashMessages and flushes the FlashMessage queue
+     * Note: This disables the current page cache in order to prevent FlashMessage output
+     * from being cached.
+     *
+     * @see \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::no_cache
+     * @param array $arguments
+     * @param \Closure $renderChildrenClosure
+     * @param RenderingContextInterface $renderingContext
+     * @return mixed
+     */
+    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
-        $flashMessagesClass = $this->hasArgument('class') ? $this->arguments['class'] : 'typo3-messages';
-        $content = sprintf('<div class="%s">', $flashMessagesClass);
-        /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $singleFlashMessage */
-        foreach ($flashMessages as $singleFlashMessage) {
-            $content .= $this->renderFlashMessage($singleFlashMessage);
+        $as = $arguments['as'];
+        $queueIdentifier = isset($arguments['queueIdentifier']) ? $arguments['queueIdentifier'] : null;
+        $flashMessages = $renderingContext->getControllerContext()
+            ->getFlashMessageQueue($queueIdentifier)->getAllMessagesAndFlush();
+        if ($flashMessages === null || count($flashMessages) === 0) {
+            return '';
         }
-        $content .= '</div>';
+
+        if ($as === null) {
+            $out = [];
+            foreach ($flashMessages as $flashMessage) {
+                $out[] = static::renderFlashMessage($flashMessage);
+            }
+            return implode(LF, $out);
+        }
+        $templateVariableContainer = $renderingContext->getVariableProvider();
+        $templateVariableContainer->add($as, $flashMessages);
+        $content = $renderChildrenClosure();
+        $templateVariableContainer->remove($as);
+
         return $content;
     }
 
     /**
      * @param \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage
      * @return string
-     * @see \TYPO3\CMS\Core\Messaging\FlashMessage::getMessageAsMarkup
      */
-    protected function renderFlashMessage(\TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage)
+    protected static function renderFlashMessage(\TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage)
     {
+        $className = 'alert-' . static::$classes[$flashMessage->getSeverity()];
+        $iconName = 'fa-' . static::$icons[$flashMessage->getSeverity()];
+
         $messageTitle = $flashMessage->getTitle();
         $markup = [];
-        $markup[] = '<div class="alert ' . htmlspecialchars($flashMessage->getClass()) . '">';
+        $markup[] = '<div class="alert ' . $className . '">';
         $markup[] = '    <div class="media">';
         $markup[] = '        <div class="media-left">';
         $markup[] = '            <span class="fa-stack fa-lg">';
         $markup[] = '                <i class="fa fa-circle fa-stack-2x"></i>';
-        $markup[] = '                <i class="fa fa-' . htmlspecialchars($flashMessage->getIconName()) . ' fa-stack-1x"></i>';
+        $markup[] = '                <i class="fa ' . $iconName . ' fa-stack-1x"></i>';
         $markup[] = '            </span>';
         $markup[] = '        </div>';
         $markup[] = '        <div class="media-body">';
@@ -69,27 +115,4 @@ class FlashMessagesViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FlashMessages
         return implode('', $markup);
     }
 
-    /**
-     * Renders the flash messages as unordered list
-     *
-     * @param array $flashMessages \TYPO3\CMS\Core\Messaging\FlashMessage[]
-     * @return string
-
-     */
-    protected function renderAsList(array $flashMessages)
-    {
-        $flashMessagesClass = $this->hasArgument('class') ? $this->arguments['class'] : 'typo3-messages';
-        $content = sprintf('<ul class="%s">', $flashMessagesClass);
-        /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $singleFlashMessage */
-        foreach ($flashMessages as $singleFlashMessage) {
-            $severityClass = sprintf('alert %s', $singleFlashMessage->getClass());
-            $messageContent = $singleFlashMessage->getMessage();
-            if ($singleFlashMessage->getTitle() !== '') {
-                $messageContent = sprintf('<h4>%s</h4>', htmlspecialchars($singleFlashMessage->getTitle())) . $messageContent;
-            }
-            $content .= sprintf('<li class="%s">%s</li>', htmlspecialchars($severityClass), $messageContent);
-        }
-        $content .= '</ul>';
-        return $content;
-    }
 }

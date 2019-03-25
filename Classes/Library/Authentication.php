@@ -231,7 +231,9 @@ class Authentication
 
                 $typo3_user['tx_igldapssoauth_from'] = 'LDAP';
 
-                if ((bool)$typo3_user['deleted']) {
+                if ((bool)$typo3_user['deleted']
+                    || ($typo3_user['starttime'] > 0 && $typo3_user['starttime'] > $GLOBALS['EXEC_TIME'])
+                    || ($typo3_user['endtime'] > 0 && $typo3_user['endtime'] <= $GLOBALS['EXEC_TIME'])) {
                     // User has been updated in TYPO3, but it should not be granted to get an actual session
                     $typo3_user = false;
                 }

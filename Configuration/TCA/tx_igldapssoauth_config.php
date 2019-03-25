@@ -32,7 +32,7 @@ return [
                     --div--;GENERAL,
                         hidden, name, domains,
                     --div--;LDAP,
-                        ldap_server;;1,
+                        ldap_server, ldap_charset,
                     --palette--;LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:palette.connection;connection,
                         ldap_binddn, ldap_password, group_membership,
                     --div--;FE_USERS,
@@ -46,9 +46,6 @@ return [
         ],
     ],
     'palettes' => [
-        '1' => [
-            'showitem' => 'ldap_charset'
-        ],
         'connection' => [
             'showitem' => 'ldap_host, ldap_port, ldap_tls, ldap_ssl',
             'canNotCollapse' => 1,

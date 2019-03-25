@@ -197,7 +197,11 @@ return [
                 'minitems' => 1,
                 'maxitems' => 1,
                 'default' => 1,
-                'showIconTable' => true,
+                'fieldWizard' => [
+                    'selectIcons' => [
+                        'disabled' => false,
+                    ],
+                ],
             ],
         ],
         'be_users_basedn' => [

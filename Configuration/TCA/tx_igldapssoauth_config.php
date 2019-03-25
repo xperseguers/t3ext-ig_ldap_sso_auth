@@ -14,7 +14,6 @@ return [
         'enablecolumns' => [
             'disabled' => 'hidden',
         ],
-        'requestUpdate' => 'ldap_server',
         'iconfile' => 'EXT:ig_ldap_sso_auth/Resources/Public/Icons/icon_tx_igldapssoauth_config.png',
     ],
     'interface' => [
@@ -108,7 +107,8 @@ return [
                 ],
                 'size' => 1,
                 'maxitems' => 1,
-            ]
+            ],
+            'onChange' => 'reload',
         ],
         'ldap_charset' => [
             'exclude' => 1,

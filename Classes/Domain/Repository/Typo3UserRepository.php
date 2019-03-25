@@ -372,7 +372,8 @@ class Typo3UserRepository
                     )
                     ->execute()
                     ->fetchAll();
-                $localUserGroups = array_keys($rows);
+                $localUserGroups = array_map(function($row){return $row['uid'];},$rows);
+                //$localUserGroups = array_keys($rows);
             }
 
             foreach ($localUserGroups as $uid) {

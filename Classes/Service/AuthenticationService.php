@@ -207,7 +207,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
      * @param array $user Data of user.
      * @return int|false
      */
-    public function authUser(array $user)
+    public function authUser(array $user): int
     {
         if (!Configuration::isInitialized()) {
             // Early return since LDAP is not configured

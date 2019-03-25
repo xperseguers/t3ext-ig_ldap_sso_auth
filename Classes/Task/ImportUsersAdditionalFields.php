@@ -160,7 +160,7 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
                 $selected = ' selected="selected"';
             }
             if (strpos($label, 'LLL:') === 0) {
-                $optionLabel = $languageService->sL($localizationPrefix . substr($label, 4), true);
+                $optionLabel = htmlspecialchars($languageService->sL($localizationPrefix . substr($label, 4)));
             } else {
                 $optionLabel = htmlspecialchars($label);
             }

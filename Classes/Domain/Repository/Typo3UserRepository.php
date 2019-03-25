@@ -360,7 +360,7 @@ class Typo3UserRepository
                     ->from($table)
                     ->where(
                         $queryBuilder->expr()->in('uid', $usergroup),
-                        $queryBuilder->expr()->eq('tx_igldapssoauth_dn', '')
+                        $queryBuilder->expr()->eq('tx_igldapssoauth_dn', $queryBuilder->createNamedParameter('', \PDO::PARAM_STR))
                     )
                     ->execute()
                     ->fetchAll();

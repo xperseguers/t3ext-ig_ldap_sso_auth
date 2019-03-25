@@ -51,7 +51,8 @@ class ConfigurationRepository
      */
     public function __construct()
     {
-        $this->config = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']);
+        $config = $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth'] ?? '';
+        $this->config = unserialize($config) ?? [];
     }
 
     /**

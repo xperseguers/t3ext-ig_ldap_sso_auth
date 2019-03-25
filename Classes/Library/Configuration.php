@@ -14,6 +14,7 @@
 
 namespace Causal\IgLdapSsoAuth\Library;
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -70,7 +71,16 @@ class Configuration
         static::$domains = [];
         $domainUids = GeneralUtility::intExplode(',', $configuration->getDomains(), true);
         foreach ($domainUids as $domainUid) {
-            $row = static::getDatabaseConnection()->exec_SELECTgetSingleRow('domainName', 'sys_domain', 'uid=' . (int)$domainUid);
+            $row = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionForTable('sys_domain')
+                ->select(
+                    ['domainName'],
+                    'sys_domain',
+                    [
+                        'uid' => $domainUid,
+                    ]
+                )
+                ->fetch();
             static::$domains[] = $row['domainName'];
         }
 
@@ -434,25 +444,20 @@ class Configuration
      * @param int $uid
      * @return array
      */
-    protected static function select($uid = 0)
+    protected static function select(int $uid = 0): array
     {
-        $config = static::getDatabaseConnection()->exec_SELECTgetRows(
-            '*',
-            'tx_igldapssoauth_config',
-            'deleted=0 AND hidden=0 AND uid=' . (int)$uid
-        );
+        $config = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable('tx_igldapssoauth_config')
+            ->select(
+                ['*'],
+                'tx_igldapssoauth_config',
+                [
+                    'uid' => $uid,
+                ]
+            )
+            ->fetch();
 
-        return count($config) == 1 ? $config[0] : [];
-    }
-
-    /**
-     * Returns the database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected static function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
+        return !empty($config) ? $config : [];
     }
 
 }

@@ -276,16 +276,6 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
     }
 
     /**
-     * Returns the database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
-    }
-
-    /**
      * Returns a logger.
      *
      * @return \TYPO3\CMS\Core\Log\Logger

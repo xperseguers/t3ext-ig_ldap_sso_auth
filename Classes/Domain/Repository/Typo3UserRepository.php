@@ -164,7 +164,7 @@ class Typo3UserRepository
      * @return array The new record
      * @throws InvalidUserTableException
      */
-    public static function add($table, array $data = [])
+    public static function add(string $table, array $data = [])
     {
         if (!GeneralUtility::inList('be_users,fe_users', $table)) {
             throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891712);
@@ -210,7 +210,7 @@ class Typo3UserRepository
      * @return bool true on success, otherwise false
      * @throws InvalidUserTableException
      */
-    public static function update($table, array $data = [])
+    public static function update(string $table, array $data = [])
     {
         if (!GeneralUtility::inList('be_users,fe_users', $table)) {
             throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891732);
@@ -251,10 +251,10 @@ class Typo3UserRepository
      * This method is meant to be called before a full synchronization, so that existing users which are not
      * updated will be marked as disabled.
      *
-     * @param $table
-     * @param $uid
+     * @param string $table
+     * @param int $uid
      */
-    public static function disableForConfiguration($table, $uid)
+    public static function disableForConfiguration(string $table, int $uid)
     {
         if (isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled'])) {
             $fields = [
@@ -263,11 +263,15 @@ class Typo3UserRepository
             if (isset($GLOBALS['TCA'][$table]['ctrl']['tstamp'])) {
                 $fields[$GLOBALS['TCA'][$table]['ctrl']['tstamp']] = $GLOBALS['EXEC_TIME'];
             }
-            static::getDatabaseConnection()->exec_UPDATEquery(
-                $table,
-                'tx_igldapssoauth_id = ' . (int)$uid,
-                $fields
-            );
+            GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionForTable($table)
+                ->update(
+                    $table,
+                    $fields,
+                    [
+                        'tx_igldapssoauth_id' => $uid,
+                    ]
+                );
 
             NotificationUtility::dispatch(
                 __CLASS__,
@@ -286,10 +290,10 @@ class Typo3UserRepository
      * This method is meant to be called before a full synchronization, so that existing users which are not
      * updated will be marked as deleted.
      *
-     * @param $table
-     * @param $uid
+     * @param string $table
+     * @param int $uid
      */
-    public static function deleteForConfiguration($table, $uid)
+    public static function deleteForConfiguration(string $table, int $uid)
     {
         if (isset($GLOBALS['TCA'][$table]['ctrl']['delete'])) {
             $fields = [
@@ -298,11 +302,15 @@ class Typo3UserRepository
             if (isset($GLOBALS['TCA'][$table]['ctrl']['tstamp'])) {
                 $fields[$GLOBALS['TCA'][$table]['ctrl']['tstamp']] = $GLOBALS['EXEC_TIME'];
             }
-            static::getDatabaseConnection()->exec_UPDATEquery(
-                $table,
-                'tx_igldapssoauth_id = ' . (int)$uid,
-                $fields
-            );
+            GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionForTable($table)
+                ->update(
+                    $table,
+                    $fields,
+                    [
+                        'tx_igldapssoauth_id' => $uid,
+                    ]
+                );
 
             NotificationUtility::dispatch(
                 __CLASS__,
@@ -323,7 +331,7 @@ class Typo3UserRepository
      * @param string $table The TYPO3 table holding the user groups
      * @return array
      */
-    public static function setUserGroups(array $typo3User, array $typo3Groups, $table)
+    public static function setUserGroups(array $typo3User, array $typo3Groups, string $table): array
     {
         $groupUid = [];
 
@@ -345,17 +353,20 @@ class Typo3UserRepository
             $usergroup = GeneralUtility::intExplode(',', $typo3User['usergroup'], true);
             $localUserGroups = [];
             if (!empty($usergroup)) {
-                $database = static::getDatabaseConnection();
-                $rows = $database->exec_SELECTgetRows(
-                    'uid',
-                    $table,
-                    'uid IN (' . implode(',', $usergroup) . ') AND tx_igldapssoauth_dn=' . $database->fullQuoteStr('', $table),
-                    '',
-                    '',
-                    '',
-                    'uid'
-                );
-                $localUserGroups = array_keys($rows);
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                    ->getQueryBuilderForTable($table);
+                $rows = $queryBuilder
+                    ->select('uid')
+                    ->from($table)
+                    ->where(
+                        $queryBuilder->expr()->in('uid', $usergroup),
+                        $queryBuilder->expr()->eq('tx_igldapssoauth_dn', '')
+                    )
+                    ->execute()
+                    ->fetchAll();
+                foreach ($rows as $row) {
+                    $localUserGroups[] = $row['uid'];
+                }
             }
 
             foreach ($localUserGroups as $uid) {
@@ -388,7 +399,7 @@ class Typo3UserRepository
      * @param string $username
      * @return string
      */
-    public static function setUsername($username)
+    public static function setUsername(string $username): string
     {
         if (Configuration::getValue('forceLowerCaseUsername')) {
             // Possible enhancement: use \TYPO3\CMS\Core\Charset\CharsetConverter::conv_case instead
@@ -402,7 +413,7 @@ class Typo3UserRepository
      *
      * @return string
      */
-    public static function setRandomPassword()
+    public static function setRandomPassword(): string
     {
         /** @var \TYPO3\CMS\Saltedpasswords\Salt\SaltInterface $instance */
         $instance = null;
@@ -412,16 +423,6 @@ class Typo3UserRepository
         $password = GeneralUtility::makeInstance(Random::class)->generateRandomBytes(16);
         $password = $instance ? $instance->getHashedPassword($password) : md5($password);
         return $password;
-    }
-
-    /**
-     * Returns the database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected static function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
     }
 
 }

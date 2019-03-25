@@ -129,14 +129,4 @@ class LdapSuggestElement extends AbstractFormElement
         return trim($content);
     }
 
-    /**
-     * Returns the LanguageService.
-     *
-     * @return \TYPO3\CMS\Lang\LanguageService
-     */
-    protected function getLanguageService()
-    {
-        return $GLOBALS['LANG'];
-    }
-
 }

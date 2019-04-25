@@ -53,7 +53,11 @@ class Configuration
      */
     public static function initialize($mode, \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration)
     {
-        $globalConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']);
+        if (version_compare(TYPO3_version, '9.0', '<')) {
+            $globalConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']);
+        } else {
+            $globalConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['ig_ldap_sso_auth']);
+        }
         if (!is_array($globalConfiguration)) {
             $globalConfiguration = [];
         }

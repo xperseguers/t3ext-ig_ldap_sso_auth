@@ -14,6 +14,9 @@
 
 namespace Causal\IgLdapSsoAuth\Controller;
 
+use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3GroupRepository;
@@ -21,6 +24,7 @@ use Causal\IgLdapSsoAuth\Domain\Repository\Typo3UserRepository;
 use Causal\IgLdapSsoAuth\Library\Authentication;
 use Causal\IgLdapSsoAuth\Library\Configuration;
 use Causal\IgLdapSsoAuth\Library\Ldap;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Module controller.
@@ -46,8 +50,6 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 
     /**
      * Redirects to the saved action.
-     *
-     * @return void
      */
     public function initializeAction()
     {
@@ -60,16 +62,22 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
                 $this->redirect('index');
             }
         }
+
+        /** @var \TYPO3\CMS\Core\Page\PageRenderer $pageRenderer */
+        $pageRenderer = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
+        $pageRenderer->addCssFile('EXT:ig_ldap_sso_auth/Resources/Public/Css/styles.css');
+        $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Search');
     }
 
     /**
      * Index action.
      *
-     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
+     * @param int $configuration
      * @return void
      */
-    public function indexAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
+    public function indexAction(int $configuration = 0)
     {
+        $configuration = $this->configurationRepository->findByUid($configuration);
         $this->saveState($configuration);
         $this->populateView($configuration);
     }
@@ -78,7 +86,6 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      * Status action.
      *
      * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
-     * @return void
      */
     public function statusAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
     {
@@ -140,7 +147,6 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      * Search action.
      *
      * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
-     * @return void
      */
     public function searchAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
     {
@@ -153,6 +159,10 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         Configuration::initialize(TYPO3_MODE, $configuration);
         $this->populateView($configuration);
 
+        /** @var \TYPO3\CMS\Core\Page\PageRenderer $pageRenderer */
+        $pageRenderer = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
+        $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Search');
+
         $frontendConfiguration = Configuration::getFrontendConfiguration();
         $this->view->assignMultiple([
             'baseDn' => $frontendConfiguration['users']['basedn'],
@@ -161,111 +171,9 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     }
 
     /**
-     * Updates the search option using AJAX.
-     *
-     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
-     * @param string $type
-     * @return void
-     */
-    public function updateSearchAjaxAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration, $type)
-    {
-        list($mode, $key) = explode('_', $type, 2);
-
-        Configuration::initialize($mode, $configuration);
-        $config = ($mode === 'be')
-            ? Configuration::getBackendConfiguration()
-            : Configuration::getFrontendConfiguration();
-
-        $this->returnAjax([
-            'success' => true,
-            'configuration' => $config[$key],
-        ]);
-    }
-
-    /**
-     * Actual search action using AJAX.
-     *
-     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
-     * @param string $type
-     * @param bool $firstEntry
-     * @param bool $showStatus
-     * @param string $baseDn
-     * @param string $filter
-     * @return void
-     */
-    public function searchAjaxAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null, $type, $firstEntry, $showStatus, $baseDn, $filter)
-    {
-        list($mode, $key) = explode('_', $type, 2);
-
-        Configuration::initialize($mode, $configuration);
-        $config = ($mode === 'be')
-            ? Configuration::getBackendConfiguration()
-            : Configuration::getFrontendConfiguration();
-
-        try {
-            $success = $this->ldap->connect(Configuration::getLdapConfiguration());
-        } catch (\Exception $e) {
-            $success = false;
-        }
-
-        if ($showStatus) {
-            $this->view->assign('status', $this->ldap->getStatus());
-        }
-
-        if ($success) {
-            $filter = Configuration::replaceFilterMarkers($filter);
-            if ($firstEntry) {
-                $attributes = [];
-            } else {
-                $attributes = Configuration::getLdapAttributes($config[$key]['mapping']);
-                if (strpos($config[$key]['filter'], '{USERUID}') !== false) {
-                    $attributes[] = 'uid';
-                    $attributes = array_unique($attributes);
-                }
-            }
-
-            $resultset = $this->ldap->search($baseDn, $filter, $attributes, $firstEntry, 100);
-
-            // With PHP 5.4 and above this could be renamed as
-            // ksort_recursive($result, SORT_NATURAL)
-            if (is_array($resultset)) {
-                $this->uksort_recursive($resultset, 'strnatcmp');
-            }
-
-            $this->view->assign('resultset', $resultset);
-
-            if ($firstEntry && is_array($resultset) && count($resultset) > 1) {
-                if ($key === 'users') {
-                    $mapping = $config['users']['mapping'];
-                    $blankTypo3Record = Typo3UserRepository::create($type);
-                } else {
-                    $mapping = $config['groups']['mapping'];
-                    $blankTypo3Record = Typo3GroupRepository::create($type);
-                }
-                $preview = Authentication::merge($resultset, $blankTypo3Record, $mapping, true);
-
-                // Remove empty lines
-                $keys = array_keys($preview);
-                foreach ($keys as $key) {
-                    if (empty($preview[$key])) {
-                        unset($preview[$key]);
-                    }
-                }
-                $this->view->assign('preview', $preview);
-            }
-        }
-
-        $this->returnAjax([
-            'success' => $success,
-            'html' => $this->view->render()
-        ]);
-    }
-
-    /**
      * Import frontend users action.
      *
      * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
-     * @return void
      */
     public function importFrontendUsersAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
     {
@@ -282,6 +190,10 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             return;
         }
 
+        /** @var \TYPO3\CMS\Core\Page\PageRenderer $pageRenderer */
+        $pageRenderer = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
+        $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
+
         $users = $this->getAvailableUsers($configuration, 'fe');
         $this->view->assign('users', $users);
     }
@@ -290,7 +202,6 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      * Import backend users action.
      *
      * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
-     * @return void
      */
     public function importBackendUsersAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
     {
@@ -307,63 +218,18 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             return;
         }
 
+        /** @var \TYPO3\CMS\Core\Page\PageRenderer $pageRenderer */
+        $pageRenderer = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
+        $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
+
         $users = $this->getAvailableUsers($configuration, 'be');
         $this->view->assign('users', $users);
-    }
-
-    /**
-     * Actual import of users using AJAX.
-     *
-     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
-     * @param string $mode
-     * @param string $dn
-     * @return void
-     */
-    public function importUsersAjaxAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null, $mode, $dn)
-    {
-        /** @var \Causal\IgLdapSsoAuth\Utility\UserImportUtility $importUtility */
-        $importUtility = GeneralUtility::makeInstance(
-            \Causal\IgLdapSsoAuth\Utility\UserImportUtility::class,
-            $configuration,
-            $mode
-        );
-        $data = [];
-
-        Configuration::initialize($mode, $configuration);
-        $config = ($mode === 'be')
-            ? Configuration::getBackendConfiguration()
-            : Configuration::getFrontendConfiguration();
-
-        try {
-            $success = $this->ldap->connect(Configuration::getLdapConfiguration());
-        } catch (\Exception $e) {
-            $data['message'] = $e->getMessage();
-            $success = false;
-        }
-
-        if ($success) {
-            list($filter, $baseDn) = Authentication::getRelativeDistinguishedNames($dn, 2);
-            $attributes = Configuration::getLdapAttributes($config['users']['mapping']);
-            $ldapUser = $this->ldap->search($baseDn, '(' . $filter . ')', $attributes, true);
-            $typo3Users = $importUtility->fetchTypo3Users([$ldapUser]);
-
-            // Merge LDAP and TYPO3 information
-            $user = Authentication::merge($ldapUser, $typo3Users[0], $config['users']['mapping']);
-
-            // Import the user
-            $user = $importUtility->import($user, $ldapUser);
-
-            $data['id'] = (int)$user['uid'];
-        }
-
-        $this->returnAjax(array_merge($data, ['success' => $success]));
     }
 
     /**
      * Import frontend user groups action.
      *
      * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
-     * @return void
      */
     public function importFrontendUserGroupsAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
     {
@@ -380,6 +246,10 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             return;
         }
 
+        /** @var \TYPO3\CMS\Core\Page\PageRenderer $pageRenderer */
+        $pageRenderer = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
+        $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
+
         $groups = $this->getAvailableUserGroups($configuration, 'fe');
         $this->view->assign('groups', $groups);
     }
@@ -388,7 +258,6 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      * Import backend user groups action.
      *
      * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
-     * @return void
      */
     public function importBackendUserGroupsAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
     {
@@ -405,21 +274,60 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             return;
         }
 
+        /** @var \TYPO3\CMS\Core\Page\PageRenderer $pageRenderer */
+        $pageRenderer = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
+        $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
+
         $groups = $this->getAvailableUserGroups($configuration, 'be');
         $this->view->assign('groups', $groups);
     }
 
     /**
-     * Actual import of user groups using AJAX.
+     * Updates the search option using AJAX.
      *
-     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
-     * @param string $mode
-     * @param string $dn
-     * @return void
+     * @param ServerRequestInterface $request
+     * @param Response $response
+     * @return Response
      */
-    public function importUserGroupsAjaxAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null, $mode, $dn)
+    public function ajaxUpdateForm(ServerRequestInterface $request, Response $response): Response
     {
-        $data = [];
+        $params = $request->getQueryParams();
+
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $configurationRepository = $objectManager->get(ConfigurationRepository::class);
+
+        $configuration = $configurationRepository->findByUid($params['configuration']);
+        list($mode, $key) = explode('_', $params['type'], 2);
+
+        Configuration::initialize($mode, $configuration);
+        $config = ($mode === 'be')
+            ? Configuration::getBackendConfiguration()
+            : Configuration::getFrontendConfiguration();
+
+        $response->getBody()->write(json_encode([
+            'success' => true,
+            'configuration' => $config[$key],
+        ]));
+        return $response;
+    }
+
+    /**
+     * Actual search action using AJAX.
+     *
+     * @param ServerRequestInterface $request
+     * @param Response $response
+     * @return Response
+     */
+    public function ajaxSearch(ServerRequestInterface $request, Response $response): Response
+    {
+        $params = $request->getQueryParams();
+
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $configurationRepository = $objectManager->get(ConfigurationRepository::class);
+        $ldap = $objectManager->get(Ldap::class);
+
+        $configuration = $configurationRepository->findByUid($params['configuration']);
+        list($mode, $key) = explode('_', $params['type'], 2);
 
         Configuration::initialize($mode, $configuration);
         $config = ($mode === 'be')
@@ -427,19 +335,168 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             : Configuration::getFrontendConfiguration();
 
         try {
-            $success = $this->ldap->connect(Configuration::getLdapConfiguration());
+            $success = $ldap->connect(Configuration::getLdapConfiguration());
+        } catch (\Exception $e) {
+            $success = false;
+        }
+
+        $template = GeneralUtility::getFileAbsFileName('EXT:ig_ldap_sso_auth/Resources/Private/Templates/Ajax/Search.html');
+        $view = $objectManager->get(\TYPO3\CMS\Fluid\View\StandaloneView::class);
+        $view->getRequest()->setControllerExtensionName('ig_ldap_sso_auth');
+        $view->setFormat('html');
+        $view->setTemplatePathAndFilename($template);
+
+        if ((bool)$params['showStatus']) {
+            $view->assign('status', $ldap->getStatus());
+        }
+
+        if ($success) {
+            $firstEntry = (bool)$params['firstEntry'];
+            $filter = Configuration::replaceFilterMarkers($params['filter']);
+            if ($firstEntry) {
+                $attributes = [];
+            } else {
+                $attributes = Configuration::getLdapAttributes($config[$key]['mapping']);
+                if (strpos($config[$key]['filter'], '{USERUID}') !== false) {
+                    $attributes[] = 'uid';
+                    $attributes = array_unique($attributes);
+                }
+            }
+
+            $resultset = $ldap->search($params['baseDn'], $filter, $attributes, $firstEntry, 100);
+
+            // With PHP 5.4 and above this could be renamed as
+            // ksort_recursive($result, SORT_NATURAL)
+            if (is_array($resultset)) {
+                $this->uksort_recursive($resultset, 'strnatcmp');
+            }
+
+            $view->assign('resultset', $resultset);
+
+            if ($firstEntry && is_array($resultset) && count($resultset) > 1) {
+                if ($key === 'users') {
+                    $mapping = $config['users']['mapping'];
+                    $blankTypo3Record = Typo3UserRepository::create($params['type']);
+                } else {
+                    $mapping = $config['groups']['mapping'];
+                    $blankTypo3Record = Typo3GroupRepository::create($params['type']);
+                }
+                $preview = Authentication::merge($resultset, $blankTypo3Record, $mapping, true);
+
+                // Remove empty lines
+                $keys = array_keys($preview);
+                foreach ($keys as $key) {
+                    if (empty($preview[$key])) {
+                        unset($preview[$key]);
+                    }
+                }
+                $view->assign('preview', $preview);
+            }
+        }
+
+        $html = $view->render();
+
+        $response->getBody()->write(json_encode([
+            'success' => $success,
+            'html' => $html,
+        ]));
+        return $response;
+    }
+
+    /**
+     * Actual import of users using AJAX.
+     *
+     * @param ServerRequestInterface $request
+     * @param Response $response
+     * @return Response
+     */
+    public function ajaxUsersImport(ServerRequestInterface $request, Response $response): Response
+    {
+        $params = $request->getQueryParams();
+
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $configurationRepository = $objectManager->get(ConfigurationRepository::class);
+        $ldap = $objectManager->get(Ldap::class);
+
+        $configuration = $configurationRepository->findByUid($params['configuration']);
+
+        /** @var \Causal\IgLdapSsoAuth\Utility\UserImportUtility $importUtility */
+        $importUtility = GeneralUtility::makeInstance(
+            \Causal\IgLdapSsoAuth\Utility\UserImportUtility::class,
+            $configuration,
+            $params['mode']
+        );
+        $data = [];
+
+        Configuration::initialize($params['mode'], $configuration);
+        $config = ($params['mode'] === 'be')
+            ? Configuration::getBackendConfiguration()
+            : Configuration::getFrontendConfiguration();
+
+        try {
+            $success = $ldap->connect(Configuration::getLdapConfiguration());
         } catch (\Exception $e) {
             $data['message'] = $e->getMessage();
             $success = false;
         }
 
         if ($success) {
-            list($filter, $baseDn) = explode(',', $dn, 2);
+            list($filter, $baseDn) = Authentication::getRelativeDistinguishedNames($params['dn'], 2);
+            $attributes = Configuration::getLdapAttributes($config['users']['mapping']);
+            $ldapUser = $ldap->search($baseDn, '(' . $filter . ')', $attributes, true);
+            $typo3Users = $importUtility->fetchTypo3Users([$ldapUser]);
+
+            // Merge LDAP and TYPO3 information
+            $user = Authentication::merge($ldapUser, $typo3Users[0], $config['users']['mapping']);
+
+            // Import the user
+            $user = $importUtility->import($user, $ldapUser);
+
+            $data['id'] = (int)$user['uid'];
+        }
+
+        $response->getBody()->write(json_encode(array_merge($data, ['success' => $success])));
+        return $response;
+    }
+
+    /**
+     * Actual import of user groups using AJAX.
+     *
+     * @param ServerRequestInterface $request
+     * @param Response $response
+     * @return Response
+     */
+    public function ajaxGroupsImport(ServerRequestInterface $request, Response $response): Response
+    {
+        $params = $request->getQueryParams();
+
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $configurationRepository = $objectManager->get(ConfigurationRepository::class);
+        $ldap = $objectManager->get(Ldap::class);
+
+        $configuration = $configurationRepository->findByUid($params['configuration']);
+
+        $data = [];
+
+        Configuration::initialize($params['mode'], $configuration);
+        $config = ($params['mode'] === 'be')
+            ? Configuration::getBackendConfiguration()
+            : Configuration::getFrontendConfiguration();
+
+        try {
+            $success = $ldap->connect(Configuration::getLdapConfiguration());
+        } catch (\Exception $e) {
+            $data['message'] = $e->getMessage();
+            $success = false;
+        }
+
+        if ($success) {
+            list($filter, $baseDn) = explode(',', $params['dn'], 2);
             $attributes = Configuration::getLdapAttributes($config['groups']['mapping']);
-            $ldapGroup = $this->ldap->search($baseDn, '(' . $filter . ')', $attributes, true);
+            $ldapGroup = $ldap->search($baseDn, '(' . $filter . ')', $attributes, true);
 
             $pid = Configuration::getPid($config['groups']['mapping']);
-            $table = $mode === 'be' ? 'be_groups' : 'fe_groups';
+            $table = $params['mode'] === 'be' ? 'be_groups' : 'fe_groups';
             $typo3Groups = Authentication::getTypo3Groups(
                 [$ldapGroup],
                 $table,
@@ -479,7 +536,8 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             $data['id'] = (int)$group['uid'];
         }
 
-        $this->returnAjax(array_merge($data, ['success' => $success]));
+        $response->getBody()->write(json_encode(array_merge($data, ['success' => $success])));
+        return $response;
     }
 
     /**
@@ -490,10 +548,9 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      * @param int $childUid
      * @param int $pid
      * @param string $mode
-     * @return void
      * @throws \Causal\IgLdapSsoAuth\Exception\InvalidUserGroupTableException
      */
-    protected function setParentGroup(array $ldapParentGroups, $fieldParent, $childUid, $pid, $mode)
+    protected function setParentGroup(array $ldapParentGroups, string $fieldParent, int $childUid, int $pid, string $mode)
     {
         $subGroupList = [];
         if ($mode === 'be') {
@@ -567,7 +624,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      * @param string $mode
      * @return array
      */
-    protected function getAvailableUsers(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration, $mode)
+    protected function getAvailableUsers(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration, string $mode): array
     {
         /** @var \Causal\IgLdapSsoAuth\Utility\UserImportUtility $importUtility */
         $importUtility = GeneralUtility::makeInstance(
@@ -635,7 +692,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      * @param string $mode
      * @return array
      */
-    protected function getAvailableUserGroups(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration, $mode)
+    protected function getAvailableUserGroups(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration, $mode): array
     {
         $userGroups = [];
         $config = ($mode === 'be')
@@ -686,20 +743,15 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      * Populates the view with general objects.
      *
      * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
-     * @return void
      */
-    protected function populateView(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
+    protected function populateView(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null): void
     {
         $uriBuilder = $this->controllerContext->getUriBuilder();
         $thisUri = $uriBuilder->reset()->uriFor(null, ['configuration' => $configuration]);
         $editLink = '';
 
         $configurationRecords = $this->configurationRepository->findAll();
-        if (version_compare(TYPO3_version, '7.5', '<')) {
-            $editRecordModuleUrl = 'alt_doc.php?';
-        } else {
-            $editRecordModuleUrl = BackendUtility::getModuleUrl('record_edit') . '&amp;';
-        }
+        $editRecordModuleUrl = BackendUtility::getModuleUrl('record_edit') . '&amp;';
 
         if (count($configurationRecords) === 0) {
             $newRecordUri = $editRecordModuleUrl . 'returnUrl=' . urlencode($thisUri) . '&amp;edit[tx_igldapssoauth_config][0]=new';
@@ -721,13 +773,9 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
                 $configuration = $configurationRecords[0];
             }
             $editUri = $editRecordModuleUrl . 'returnUrl=' . urlencode($thisUri) . '&amp;edit[tx_igldapssoauth_config][' . $configuration->getUid() . ']=edit';
-            if (version_compare(TYPO3_version, '7.6', '>=')) {
-                /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
-                $iconFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconFactory::class);
-                $icon = $iconFactory->getIcon('actions-document-open', \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
-            } else {
-                $icon = \TYPO3\CMS\Backend\Utility\IconUtility::getSpriteIcon('actions-document-open');
-            }
+            /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
+            $iconFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconFactory::class);
+            $icon = $iconFactory->getIcon('actions-document-open', \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
             $editLink = sprintf(
                 ' <a href="%s" title="uid=%s">' . $icon . '</a>',
                 $editUri,
@@ -768,13 +816,8 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             ],
         ];
 
-        if (version_compare(TYPO3_version, '7.0', '<')) {
-            $tableClass = 'typo3-dblist';
-            $trClass = 'db_list_normal';
-        } else {
-            $tableClass = 'table table-striped table-hover';
-            $trClass = '';
-        }
+        $tableClass = 'table table-striped table-hover';
+        $trClass = '';
 
         $this->view->assignMultiple([
             'action' => $this->getControllerContext()->getRequest()->getControllerActionName(),
@@ -795,7 +838,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      *
      * @return bool
      */
-    protected function checkLdapConnection()
+    protected function checkLdapConnection(): bool
     {
         try {
             $success = $this->ldap->connect(Configuration::getLdapConfiguration());
@@ -816,9 +859,9 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      *
      * @param string $id
      * @param array $arguments
-     * @return null|string
+     * @return string
      */
-    protected function translate($id, array $arguments = null)
+    protected function translate($id, array $arguments = null): string
     {
         $request = $this->controllerContext->getRequest();
         $extensionName = $request->getControllerExtensionName();
@@ -830,7 +873,6 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      * Saves current state.
      *
      * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
-     * @return void
      */
     protected function saveState(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
     {
@@ -859,26 +901,6 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             }
         }
         return $ret;
-    }
-
-    /**
-     * Returns an AJAX response.
-     *
-     * @param array $response
-     * @param bool $wrapForIframe see http://cmlenz.github.io/jquery-iframe-transport/#section-13
-     * return void
-     */
-    protected function returnAjax(array $response, $wrapForIframe = false)
-    {
-        $payload = json_encode($response);
-        if (!$wrapForIframe) {
-            header('Content-type: application/json');
-        } else {
-            header('Content-type: text/html');
-            $payload = '<textarea data-type="application/json">' . $payload . '</textarea>';
-        }
-        echo $payload;
-        exit;
     }
 
 }

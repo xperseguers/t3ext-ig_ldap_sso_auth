@@ -231,7 +231,9 @@ class Authentication
 
                 $typo3_user['tx_igldapssoauth_from'] = 'LDAP';
 
-                if ((bool)$typo3_user['deleted']) {
+                if ((bool)$typo3_user['deleted']
+                    || ($typo3_user['starttime'] > 0 && $typo3_user['starttime'] > $GLOBALS['EXEC_TIME'])
+                    || ($typo3_user['endtime'] > 0 && $typo3_user['endtime'] <= $GLOBALS['EXEC_TIME'])) {
                     // User has been updated in TYPO3, but it should not be granted to get an actual session
                     $typo3_user = false;
                 }
@@ -520,6 +522,7 @@ class Authentication
             $user = Typo3UserRepository::create(static::$authenticationService->authInfo['db_user']['table']);
 
             $user['pid'] = (int)$pid;
+            $user['cruser_id'] = static::getCreationUserId();
             $user['crdate'] = $GLOBALS['EXEC_TIME'];
             $user['tstamp'] = $GLOBALS['EXEC_TIME'];
             $user['username'] = $username;
@@ -561,6 +564,7 @@ class Authentication
             } else {
                 $typo3Group = Typo3GroupRepository::create($table);
                 $typo3Group['pid'] = (int)$pid;
+                $typo3Group['cruser_id'] = static::getCreationUserId();
                 $typo3Group['crdate'] = $GLOBALS['EXEC_TIME'];
                 $typo3Group['tstamp'] = $GLOBALS['EXEC_TIME'];
             }
@@ -602,6 +606,7 @@ class Authentication
             } else {
                 $typo3User = Typo3UserRepository::create($table);
                 $typo3User['pid'] = (int)$pid;
+                $user['cruser_id'] = static::getCreationUserId();
                 $typo3User['crdate'] = $GLOBALS['EXEC_TIME'];
                 $typo3User['tstamp'] = $GLOBALS['EXEC_TIME'];
             }
@@ -679,16 +684,6 @@ class Authentication
                 $value = isset($out[$field]) ? $out[$field] : '';
                 $value = $contentObj->stdWrap($value, $mapping[$typoScriptKey]);
                 $out = static::mergeSimple([$field => $value], $out, $field, $value);
-            }
-
-            if (version_compare(TYPO3_version, '7.6.99', '<=')) {
-                // Instantiation of TypoScriptFrontendController instantiates PageRenderer which
-                // sets backPath to TYPO3_mainDir which is very bad in the Backend. Therefore,
-                // we must set it back to null to not get frontend-prefixed asset URLs.
-                if (TYPO3_MODE === 'BE') {
-                    $pageRenderer = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
-                    $pageRenderer->setBackPath(null);
-                }
             }
 
             $GLOBALS['TSFE'] = $backupTSFE;
@@ -826,6 +821,15 @@ class Authentication
             : preg_split($pattern, $dn, $limit);
 
         return $parts;
+    }
+
+    /**
+     * @return int
+     */
+    protected static function getCreationUserId(): int
+    {
+        $cruserId = (TYPO3_MODE === 'BE' ? $GLOBALS['BE_USER']->user['uid'] : null);
+        return $cruserId ?? 0;
     }
 
     /**

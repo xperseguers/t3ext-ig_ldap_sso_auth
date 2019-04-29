@@ -14,6 +14,7 @@
 
 namespace Causal\IgLdapSsoAuth\Task;
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Exception\ImportUsersException;
 use Causal\IgLdapSsoAuth\Library\Authentication;
@@ -100,8 +101,9 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
         $mode = $this->getMode();
 
         // Start a database transaction with all our changes
-        // Syntax is compatible with MySQL, Oracle, MSSQL and PostgreSQL
-        $this->getDatabaseConnection()->sql_query('START TRANSACTION');
+        $tableConnection = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable('be_users');    // arbitrary table
+        $tableConnection->beginTransaction();
 
         // Loop on each configuration and context and import the related users
         $failures = 0;
@@ -193,14 +195,14 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 
         // If some failures were registered, rollback the whole transaction and report error
         if ($failures > 0) {
-            $this->getDatabaseConnection()->sql_query('ROLLBACK');
+            $tableConnection->rollBack();
             $message = 'Some or all imports failed. Synchronisation was aborted. Check your settings or your network connection';
             $this->getLogger()->error($message);
             throw new ImportUsersException($message, 1410774015);
 
         } else {
             // Everything went fine, commit the changes
-            $this->getDatabaseConnection()->sql_query('COMMIT');
+            $tableConnection->commit();
         }
         return true;
     }
@@ -347,16 +349,6 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
         } else {
             return $ldapConfiguration->getName();
         }
-    }
-
-    /**
-     * Returns the database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
     }
 
     /**

@@ -67,7 +67,11 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
      */
     public function __construct()
     {
-        $config = $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey];
+        if (version_compare(TYPO3_version, '9.0', '<')) {
+            $config = $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey];
+        } else {
+            $config = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extKey];
+        }
         $this->config = $config ? unserialize($config) : [];
         Authentication::setAuthenticationService($this);
     }
@@ -207,7 +211,7 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
      * @param array $user Data of user.
      * @return int|false
      */
-    public function authUser(array $user)
+    public function authUser(array $user): int
     {
         if (!Configuration::isInitialized()) {
             // Early return since LDAP is not configured
@@ -273,16 +277,6 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
             $remoteUser = utf8_encode($remoteUser);
         }
         return $remoteUser;
-    }
-
-    /**
-     * Returns the database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
     }
 
     /**

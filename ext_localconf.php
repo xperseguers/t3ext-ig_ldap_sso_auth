@@ -3,10 +3,11 @@ defined('TYPO3_MODE') || die();
 
 // Configuration of authentication service
 if (version_compare(TYPO3_version, '9.0', '<')) {
-    $EXT_CONFIG = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']);
+    $extensionConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth'] ?? '');
 } else {
-    $EXT_CONFIG = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['ig_ldap_sso_auth']);
+    $extensionConfiguration = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['ig_ldap_sso_auth'];
 }
+$EXT_CONFIG = is_array($extensionConfiguration) ? $extensionConfiguration : [];
 
 // SSO configuration
 if ((bool)$EXT_CONFIG['enableFESSO']) {

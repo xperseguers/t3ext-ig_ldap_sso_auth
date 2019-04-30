@@ -68,11 +68,11 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
     public function __construct()
     {
         if (version_compare(TYPO3_version, '9.0', '<')) {
-            $config = $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey];
+            $config = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey] ?? '');
         } else {
             $config = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extKey];
         }
-        $this->config = $config ? unserialize($config) : [];
+        $this->config = is_array($config) ? $config : [];
         Authentication::setAuthenticationService($this);
     }
 

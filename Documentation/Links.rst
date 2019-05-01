@@ -50,8 +50,8 @@ Contribution rules
 - Commit message complies to the `format used by TYPO3`_ (the "releases:" line is useless here)
 - Unique logical change per patch [#]_
 
-.. _PSR-2: http://www.php-fig.org/psr/psr-2/
-.. _format used by TYPO3: https://wiki.typo3.org/CommitMessage_Format_(Git)
+.. _PSR-2: https://www.php-fig.org/psr/psr-2/
+.. _format used by TYP03: https://docs.typo3.org/typo3cms/ContributionWorkflowGuide/Appendix/CommitMessage.html
 
 
 .. rubric:: Footnotes

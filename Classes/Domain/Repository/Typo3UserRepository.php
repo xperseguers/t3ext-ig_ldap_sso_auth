@@ -180,14 +180,13 @@ class Typo3UserRepository
 
         $uid = $tableConnection->lastInsertId();
 
-        $newRow = $tableConnection
-            ->select(
-                ['*'],
-                $table,
-                [
-                    'uid' => $uid,
-                ]
-            )
+        $queryBuilder = $tableConnection->createQueryBuilder();
+        $queryBuilder->getRestrictions()->removeAll();
+        $newRow = $queryBuilder
+            ->select('*')
+            ->from($table)
+            ->andWhere($queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid)))
+            ->execute()
             ->fetch();
 
         NotificationUtility::dispatch(

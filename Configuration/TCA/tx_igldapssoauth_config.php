@@ -142,6 +142,14 @@ return [
                 'default' => '0',
             ]
         ],
+        'ldap_tls_reqcert' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_tls_reqcert',
+            'config' => [
+                'type' => 'check',
+                'default' => '1',
+            ]
+        ],
         'ldap_ssl' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_ssl',

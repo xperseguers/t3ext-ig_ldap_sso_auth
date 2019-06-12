@@ -47,7 +47,7 @@ return [
     ],
     'palettes' => [
         'connection' => [
-            'showitem' => 'ldap_host, ldap_port, ldap_tls, ldap_ssl',
+            'showitem' => 'ldap_host, ldap_port, ldap_tls, ldap_tls_reqcert, ldap_ssl',
             'canNotCollapse' => 1,
         ],
     ],

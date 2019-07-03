@@ -122,11 +122,13 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
 
             // Single Sign-On authentication
             if ($enableFrontendSso || $enableBackendSso) {
-                // Strip the domain name
-                if ($pos = strpos($remoteUser, '@')) {
-                    $remoteUser = substr($remoteUser, 0, $pos);
-                } elseif ($pos = strrpos($remoteUser, '\\')) {
-                    $remoteUser = substr($remoteUser, $pos + 1);
+                if (!Configuration::getValue('SSOKeepDomainName')) {
+                    // Strip the domain name
+                    if ($pos = strpos($remoteUser, '@')) {
+                        $remoteUser = substr($remoteUser, 0, $pos);
+                    } elseif ($pos = strrpos($remoteUser, '\\')) {
+                        $remoteUser = substr($remoteUser, $pos + 1);
+                    }
                 }
 
                 $userRecordOrIsValid = Authentication::ldapAuthenticate($remoteUser);

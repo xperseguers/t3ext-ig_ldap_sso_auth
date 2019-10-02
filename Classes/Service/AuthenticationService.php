@@ -125,14 +125,17 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
                 // Strip the domain name
                 if ($pos = strpos($remoteUser, '@')) {
                     $remoteUser = substr($remoteUser, 0, $pos);
+                    $domain = substr($this->getRemoteUser(), $pos + 1);
                 } elseif ($pos = strrpos($remoteUser, '\\')) {
                     $remoteUser = substr($remoteUser, $pos + 1);
+                    $domain = substr($this->getRemoteUser(), 0, $pos);
                 }
 
-                $userRecordOrIsValid = Authentication::ldapAuthenticate($remoteUser);
+                $userRecordOrIsValid = Authentication::ldapAuthenticate($remoteUser, null, $domain);
                 if (is_array($userRecordOrIsValid)) {
                     // Useful for debugging purpose
                     $this->login['uname'] = $remoteUser;
+                    $this->login['domain'] = $domain;
                 }
             }
 

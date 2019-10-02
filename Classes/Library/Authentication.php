@@ -76,6 +76,7 @@ class Authentication
      *
      * @param string $username
      * @param string $password
+     * @param string $domain
      * @return bool|array true or array of user info on success, otherwise false
      * @throws \Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException when LDAP extension for PHP is not available
      */

@@ -20,27 +20,27 @@
     </h1>
     <ldap:flashMessages/>
 
-    <f:form id="tx-igldapssoauth-searchform" action="searchAjax">
-        <f:form.hidden name="configuration" value="{currentConfiguration.uid}"/>
+    <form id="tx-igldapssoauth-searchform">
+        <input type="hidden" name="configuration" value="{currentConfiguration.uid}"/>
         <table class="{classes.table}">
             <tr class="{classes.tableRow}">
                 <td class="key">
                     <f:translate key="module_search_type"/>
                 </td>
                 <td>
-                    <f:form.radio id="tx-igldapssoauth-type-0" name="type" value="fe_users" checked="checked"/>
+                    <input type="radio" id="tx-igldapssoauth-type-0" name="type" value="fe_users" checked="checked"/>
                     <label for="tx-igldapssoauth-type-0">
                         <f:translate key="module_search_type.frontendUsers"/>
                     </label><br/>
-                    <f:form.radio id="tx-igldapssoauth-type-1" name="type" value="fe_groups"/>
+                    <input type="radio" id="tx-igldapssoauth-type-1" name="type" value="fe_groups"/>
                     <label for="tx-igldapssoauth-type-1">
                         <f:translate key="module_search_type.frontendUserGroups"/>
                     </label><br/>
-                    <f:form.radio id="tx-igldapssoauth-type-2" name="type" value="be_users"/>
+                    <input type="radio" id="tx-igldapssoauth-type-2" name="type" value="be_users"/>
                     <label for="tx-igldapssoauth-type-2">
                         <f:translate key="module_search_type.backendUsers"/>
                     </label><br/>
-                    <f:form.radio id="tx-igldapssoauth-type-3" name="type" value="be_groups"/>
+                    <input type="radio" id="tx-igldapssoauth-type-3" name="type" value="be_groups"/>
                     <label for="tx-igldapssoauth-type-3">
                         <f:translate key="module_search_type.backendUserGroups"/>
                     </label>
@@ -51,11 +51,11 @@
                     <f:translate key="module_search_options"/>
                 </td>
                 <td>
-                    <f:form.checkbox id="tx-igldapssoauth-firstentry" name="firstEntry" value="1" checked="checked"/>
+                    <input type="checkbox" id="tx-igldapssoauth-firstentry" name="firstEntry" value="1" checked="checked"/>
                     <label for="tx-igldapssoauth-firstentry">
                         <f:translate key="module_search_options.firstEntry"/>
                     </label><br/>
-                    <f:form.checkbox id="tx-igldapssoauth-showstatus" name="showStatus" value="1"/>
+                    <input type="checkbox" id="tx-igldapssoauth-showstatus" name="showStatus" value="1"/>
                     <label for="tx-igldapssoauth-showstatus">
                         <f:translate key="module_search_options.status"/>
                     </label>
@@ -66,7 +66,7 @@
                     <f:translate key="module_search_basedn"/>
                 </label></td>
                 <td>
-                    <f:form.textfield id="tx-igldapssoauth-basedn" name="baseDn" value="{baseDn}"/>
+                    <input type="text" id="tx-igldapssoauth-basedn" name="baseDn" value="{baseDn}"/>
                 </td>
             </tr>
             <tr class="{classes.tableRow}">
@@ -74,7 +74,7 @@
                     <f:translate key="module_search_filter"/>
                 </label></td>
                 <td>
-                    <f:form.textarea id="tx-igldapssoauth-filter" name="filter" value="{filter}"/>
+                    <textarea id="tx-igldapssoauth-filter" name="filter" value="{filter}"></textarea>
                 </td>
             </tr>
             <tr class="{classes.tableRow}">
@@ -83,14 +83,9 @@
                            value="{f:translate(key:'module_search.action.search')}"/></td>
             </tr>
         </table>
-    </f:form>
+    </form>
 
-    <div id="tx-igldapssoauth-result"></div>
-
-    <script type="text/javascript">
-        // Initialize the editor
-        IgLdapSsoAuthSearch.actions.updateForm = "{f:uri.action(action:'updateSearchAjax', arguments:{configuration:currentConfiguration.uid, type:'TYPE'}) -> f:format.raw()}";
-    </script>
+    <div id="tx-igldapssoauth-result" data-configuration="{currentConfiguration.uid}"></div>
 </f:section>
 
 </html>

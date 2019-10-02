@@ -70,41 +70,31 @@ Sponsorship
 -----------
 
 *Causal Sàrl*, a Swiss company actively contributing to TYPO3, has taken over this extension which has been initially
-developed by *Infoglobe*, a Canadian company specialized in open-source software.
+developed by *Infoglobe*, a former Canadian company specialized in open-source software.
 
 We would like to thank:
 
+- Support for TYPO3 9 LTS has been sponsored by *Plan.Net Suisse AG*, Switzerland and *TEC Competence UG*, Germany and *.
 - Support for TYPO3 8 LTS and some general bug fixes have been sponsored by *elementare teilchen*, Germany.
-- Support for TYPO3 6.2 LTS and some further enhancements have been sponsored by the *Centre électronique de gestion
-  (CEG)*, technically the IT department of the Swiss city Neuchâtel.
-- Full user import was sponsored by the *Ecole d'Etudes Sociales et Pédagogiques*, in Lausanne, Switzerland.
 
 .. tabularcolumns:: |p{7.53cm}|p{7.53cm}|
 
 +---------------------------------------------------+---------------------------------------------------+
-| .. image:: ../Images/logo-causal.png              | .. image:: ../Images/logo-ceg.png                 |
-|     :alt: Causal Sàrl                             |     :alt: CEG                                     |
+| .. image:: ../Images/logo-causal.png              | .. image:: ../Images/logo-plannet.png             |
+|     :alt: Causal Sàrl                             |     :alt: Plan.Net Suisse AG                      |
 |     :width: 200px                                 |     :width: 200px                                 |
 |                                                   |                                                   |
-| Causal Sàrl                                       | Centre électronique de gestion (CEG)              |
+| Causal Sàrl                                       | Plan.Net Suisse AG                                |
 |                                                   |                                                   |
-| https://www.causal.ch                             | http://www.neuchatelville.ch/ceg                  |
+| https://www.causal.ch                             | https://www.plan-net.ch                           |
 +---------------------------------------------------+---------------------------------------------------+
-| .. image:: ../Images/logo-elementare-teilchen.png | .. image:: ../Images/logo-eesp.png                |
-|     :alt: elementare teilchen GmbH                |     :alt: EESP                                    |
+| .. image:: ../Images/logo-tec-competence.png      | .. image:: ../Images/logo-elementare-teilchen.png |
+|     :alt: TEC Competence UG                       |     :alt: elementare teilchen GmbH                |
 |     :width: 200px                                 |     :width: 200px                                 |
 |                                                   |                                                   |
-| elementare teilchen GmbH                          | Ecole d'Etudes Sociales et Pédagogiques (EESP)    |
+| TEC Competence UG (halftungsbeschränkt) & Co. KG  | elementare teilchen GmbH                          |
 |                                                   |                                                   |
-| http://www.elementare-teilchen.de                 | https://www.eesp.ch                               |
-+---------------------------------------------------+---------------------------------------------------+
-| .. image:: ../Images/logo-infoglobe.png           |                                                   |
-|     :alt: Infoglobe                               |                                                   |
-|     :width: 200px                                 |                                                   |
-|                                                   |                                                   |
-| Infoglobe                                         |                                                   |
-|                                                   |                                                   |
-| http://www.infoglobe.ca                           |                                                   |
+| https://www.tec-competence.com                    | https://www.elementare-teilchen.de                |
 +---------------------------------------------------+---------------------------------------------------+
 
 
@@ -114,4 +104,4 @@ Support
 -------
 
 In case you need help to configure this extension, please ask for free support in
-`TYPO3 mailing lists <https://forum.typo3.org/index.php/f/10/>`_ or contact the maintainer for paid support.
+`TYPO3 Slack <https://typo3.slack.com/>`_ or contact the maintainer for paid support.

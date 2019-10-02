@@ -379,7 +379,7 @@ class LdapUtility
         } while ($entry = @ldap_next_entry($this->connection, $entry));
 
         if ($this->hasPagination) {
-            ldap_control_paged_result_response($this->connection, $this->searchResult, $this->paginationCookie);
+            @ldap_control_paged_result_response($this->connection, $this->searchResult, $this->paginationCookie);
         }
 
         $this->status['get_entries']['status'] = ldap_error($this->connection);

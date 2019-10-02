@@ -1,4 +1,5 @@
 tstamp = {DATE}
 realName = <cn>
 email = <mail>
+disable = 0
 usergroup = <memberOf>

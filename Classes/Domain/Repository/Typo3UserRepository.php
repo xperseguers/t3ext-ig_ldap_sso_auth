@@ -14,6 +14,8 @@
 
 namespace Causal\IgLdapSsoAuth\Domain\Repository;
 
+use TYPO3\CMS\Core\Crypto\Random;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Exception\InvalidUserTableException;
@@ -54,15 +56,14 @@ class Typo3UserRepository
         }
 
         $newUser = [];
-        $fieldsConfiguration = static::getDatabaseConnection()->admin_get_fields($table);
+        $fieldsConfiguration = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable($table)
+            ->getSchemaManager()
+            ->listTableColumns($table);
 
         foreach ($fieldsConfiguration as $field => $configuration) {
-            if ($configuration['Null'] === 'NO' && $configuration['Default'] === null) {
-                $newUser[$field] = '';
-            } else {
-                $newUser[$field] = $configuration['Default'];
-            }
-            if (!empty($GLOBALS['TCA'][$table]['columns'][$field]['config']['default'])) {
+            $newUser[$field] = $configuration->getDefault();
+            if (!empty($GLOBALS['TCA'][$table]['columns'][$field]['config']['default']) && $field !== 'disable') {
                 $newUser[$field] = $GLOBALS['TCA'][$table]['columns'][$field]['config']['default'];
             }
         }
@@ -85,50 +86,72 @@ class Typo3UserRepository
      * @return array Array of user records
      * @throws InvalidUserTableException
      */
-    public static function fetch($table, $uid = 0, $pid = null, $username = null, $dn = null)
+    public static function fetch(string $table, int $uid = 0, ?int $pid = null, ?string $username = null, ?string $dn = null): array
     {
         if (!GeneralUtility::inList('be_users,fe_users', $table)) {
             throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891636);
         }
 
         $users = [];
-        $databaseConnection = static::getDatabaseConnection();
 
-        if ($uid) {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable($table);
+        $queryBuilder->getRestrictions()->removeAll();
+
+        if (!empty($uid)) {
             // Search with uid
-            $users = $databaseConnection->exec_SELECTgetRows(
-                '*',
-                $table,
-                'uid=' . (int)$uid
-            );
+            $users = $queryBuilder
+                ->select('*')
+                ->from($table)
+                ->where(
+                    $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT))
+                )
+                ->execute()
+                ->fetchAll();
         } elseif (!empty($dn)) {
             // Search with DN (or fall back to username) and pid
-            $where = '(' . 'tx_igldapssoauth_dn=' . $databaseConnection->fullQuoteStr($dn, $table);
+            $where = $queryBuilder->expr()->eq('tx_igldapssoauth_dn', $queryBuilder->createNamedParameter($dn, \PDO::PARAM_STR));
             if (!empty($username)) {
                 // This additional condition will automatically add the mapping between
                 // a local user unrelated to LDAP and a corresponding LDAP user
-                $where .= ' OR username=' . $databaseConnection->fullQuoteStr($username, $table);
+                $where = $queryBuilder->expr()->orX(
+                    $where,
+                    $queryBuilder->expr()->eq('username', $queryBuilder->createNamedParameter($username, \PDO::PARAM_STR))
+                );
             }
-            $where .= ')' . ($pid ? ' AND pid=' . (int)$pid : '');
+            if (!empty($pid)) {
+                $where = $queryBuilder->expr()->andX(
+                    $where,
+                    $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, \PDO::PARAM_INT))
+                );
+            }
 
-            $users = $databaseConnection->exec_SELECTgetRows(
-                '*',
-                $table,
-                $where,
-                '',
-                'tx_igldapssoauth_dn DESC, deleted ASC'    // rows from LDAP first, then privilege active records
-            );
+            $users = $queryBuilder
+                ->select('*')
+                ->from($table)
+                ->where($where)
+                ->orderBy('tx_igldapssoauth_dn', 'DESC')    // rows from LDAP first...
+                ->addOrderBy('deleted', 'ASC')              // ... then privilege active records
+                ->execute()
+                ->fetchAll();
         } elseif (!empty($username)) {
             // Search with username and pid
-            $users = $databaseConnection->exec_SELECTgetRows(
-                '*',
-                $table,
-                'username=' . $databaseConnection->fullQuoteStr($username, $table)
-                . ($pid ? ' AND pid=' . (int)$pid : '')
-            );
+            $where = $queryBuilder->expr()->eq('username', $queryBuilder->createNamedParameter($username, \PDO::PARAM_STR));
+            if (!empty($pid)) {
+                $where = $queryBuilder->expr()->andX(
+                    $where,
+                    $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, \PDO::PARAM_INT))
+                );
+            }
+            $users = $queryBuilder
+                ->select('*')
+                ->from($table)
+                ->where($where)
+                ->execute()
+                ->fetchAll();
         }
 
-        // Return TYPO3 users.
+        // Return TYPO3 users
         return $users;
     }
 
@@ -141,26 +164,31 @@ class Typo3UserRepository
      * @return array The new record
      * @throws InvalidUserTableException
      */
-    public static function add($table, array $data = [])
+    public static function add(string $table, array $data = [])
     {
         if (!GeneralUtility::inList('be_users,fe_users', $table)) {
             throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891712);
         }
 
-        $databaseConnection = static::getDatabaseConnection();
+        $tableConnection = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable($table);
 
-        $databaseConnection->exec_INSERTquery(
+        $tableConnection->insert(
             $table,
-            $data,
-            false
+            $data
         );
-        $uid = $databaseConnection->sql_insert_id();
 
-        $newRow = $databaseConnection->exec_SELECTgetSingleRow(
-            '*',
-            $table,
-            'uid=' . (int)$uid
-        );
+        $uid = $tableConnection->lastInsertId();
+
+        $newRow = $tableConnection
+            ->select(
+                ['*'],
+                $table,
+                [
+                    'uid' => $uid,
+                ]
+            )
+            ->fetch();
 
         NotificationUtility::dispatch(
             __CLASS__,
@@ -182,24 +210,26 @@ class Typo3UserRepository
      * @return bool true on success, otherwise false
      * @throws InvalidUserTableException
      */
-    public static function update($table, array $data = [])
+    public static function update(string $table, array $data = [])
     {
         if (!GeneralUtility::inList('be_users,fe_users', $table)) {
             throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891732);
         }
 
-        $databaseConnection = static::getDatabaseConnection();
-
         $cleanData = $data;
         unset($cleanData['__extraData']);
 
-        $databaseConnection->exec_UPDATEquery(
-            $table,
-            'uid=' . (int)$data['uid'],
-            $cleanData,
-            false
-        );
-        $success = $databaseConnection->sql_errno() == 0;
+        $affectedRows = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable($table)
+            ->update(
+                $table,
+                $cleanData,
+                [
+                    'uid' => (int)$data['uid'],
+                ]
+            );
+
+        $success = $affectedRows === 1;
 
         if ($success) {
             NotificationUtility::dispatch(
@@ -221,10 +251,10 @@ class Typo3UserRepository
      * This method is meant to be called before a full synchronization, so that existing users which are not
      * updated will be marked as disabled.
      *
-     * @param $table
-     * @param $uid
+     * @param string $table
+     * @param int $uid
      */
-    public static function disableForConfiguration($table, $uid)
+    public static function disableForConfiguration(string $table, int $uid)
     {
         if (isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled'])) {
             $fields = [
@@ -233,11 +263,15 @@ class Typo3UserRepository
             if (isset($GLOBALS['TCA'][$table]['ctrl']['tstamp'])) {
                 $fields[$GLOBALS['TCA'][$table]['ctrl']['tstamp']] = $GLOBALS['EXEC_TIME'];
             }
-            static::getDatabaseConnection()->exec_UPDATEquery(
-                $table,
-                'tx_igldapssoauth_id = ' . (int)$uid,
-                $fields
-            );
+            GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionForTable($table)
+                ->update(
+                    $table,
+                    $fields,
+                    [
+                        'tx_igldapssoauth_id' => $uid,
+                    ]
+                );
 
             NotificationUtility::dispatch(
                 __CLASS__,
@@ -256,10 +290,10 @@ class Typo3UserRepository
      * This method is meant to be called before a full synchronization, so that existing users which are not
      * updated will be marked as deleted.
      *
-     * @param $table
-     * @param $uid
+     * @param string $table
+     * @param int $uid
      */
-    public static function deleteForConfiguration($table, $uid)
+    public static function deleteForConfiguration(string $table, int $uid)
     {
         if (isset($GLOBALS['TCA'][$table]['ctrl']['delete'])) {
             $fields = [
@@ -268,11 +302,15 @@ class Typo3UserRepository
             if (isset($GLOBALS['TCA'][$table]['ctrl']['tstamp'])) {
                 $fields[$GLOBALS['TCA'][$table]['ctrl']['tstamp']] = $GLOBALS['EXEC_TIME'];
             }
-            static::getDatabaseConnection()->exec_UPDATEquery(
-                $table,
-                'tx_igldapssoauth_id = ' . (int)$uid,
-                $fields
-            );
+            GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionForTable($table)
+                ->update(
+                    $table,
+                    $fields,
+                    [
+                        'tx_igldapssoauth_id' => $uid,
+                    ]
+                );
 
             NotificationUtility::dispatch(
                 __CLASS__,
@@ -293,7 +331,7 @@ class Typo3UserRepository
      * @param string $table The TYPO3 table holding the user groups
      * @return array
      */
-    public static function setUserGroups(array $typo3User, array $typo3Groups, $table)
+    public static function setUserGroups(array $typo3User, array $typo3Groups, string $table): array
     {
         $groupUid = [];
 
@@ -315,17 +353,20 @@ class Typo3UserRepository
             $usergroup = GeneralUtility::intExplode(',', $typo3User['usergroup'], true);
             $localUserGroups = [];
             if (!empty($usergroup)) {
-                $database = static::getDatabaseConnection();
-                $rows = $database->exec_SELECTgetRows(
-                    'uid',
-                    $table,
-                    'uid IN (' . implode(',', $usergroup) . ') AND tx_igldapssoauth_dn=' . $database->fullQuoteStr('', $table),
-                    '',
-                    '',
-                    '',
-                    'uid'
-                );
-                $localUserGroups = array_keys($rows);
+                $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                    ->getQueryBuilderForTable($table);
+                $rows = $queryBuilder
+                    ->select('uid')
+                    ->from($table)
+                    ->where(
+                        $queryBuilder->expr()->in('uid', $usergroup),
+                        $queryBuilder->expr()->eq('tx_igldapssoauth_dn', $queryBuilder->createNamedParameter('', \PDO::PARAM_STR))
+                    )
+                    ->execute()
+                    ->fetchAll();
+                foreach ($rows as $row) {
+                    $localUserGroups[] = $row['uid'];
+                }
             }
 
             foreach ($localUserGroups as $uid) {
@@ -358,7 +399,7 @@ class Typo3UserRepository
      * @param string $username
      * @return string
      */
-    public static function setUsername($username)
+    public static function setUsername(string $username): string
     {
         if (Configuration::getValue('forceLowerCaseUsername')) {
             // Possible enhancement: use \TYPO3\CMS\Core\Charset\CharsetConverter::conv_case instead
@@ -372,26 +413,16 @@ class Typo3UserRepository
      *
      * @return string
      */
-    public static function setRandomPassword()
+    public static function setRandomPassword(): string
     {
         /** @var \TYPO3\CMS\Saltedpasswords\Salt\SaltInterface $instance */
         $instance = null;
         if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('saltedpasswords')) {
             $instance = \TYPO3\CMS\Saltedpasswords\Salt\SaltFactory::getSaltingInstance(null, TYPO3_MODE);
         }
-        $password = GeneralUtility::generateRandomBytes(16);
+        $password = GeneralUtility::makeInstance(Random::class)->generateRandomBytes(16);
         $password = $instance ? $instance->getHashedPassword($password) : md5($password);
         return $password;
-    }
-
-    /**
-     * Returns the database connection.
-     *
-     * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-     */
-    protected static function getDatabaseConnection()
-    {
-        return $GLOBALS['TYPO3_DB'];
     }
 
 }

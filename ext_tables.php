@@ -2,37 +2,20 @@
 defined('TYPO3_MODE') || die();
 
 // Register additional sprite icons
-if (version_compare(TYPO3_version, '7.6', '>=')) {
-    /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
-    $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
-    $iconRegistry->registerIcon('extensions-' . $_EXTKEY . '-overlay-ldap-record',
-        \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
-        [
-            'source' => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/overlay-ldap-record.png',
-        ]
-    );
-    unset($iconRegistry);
-} else {
-    $extensionRelativePath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath($_EXTKEY);
-    $icons = [
-        'overlay-ldap-record' => $extensionRelativePath . 'Resources/Public/Icons/overlay-ldap-record-62.png',
-    ];
-    \TYPO3\CMS\Backend\Sprite\SpriteManager::addSingleIcons($icons, $_EXTKEY);
-
-    $GLOBALS['TBE_STYLES']['spriteIconApi']['spriteIconRecordOverlayPriorities'][] = 'is_ldap_record';
-    $GLOBALS['TBE_STYLES']['spriteIconApi']['spriteIconRecordOverlayNames']['is_ldap_record'] = 'extensions-' . $_EXTKEY . '-overlay-ldap-record';
-}
+/** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
+$iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
+$iconRegistry->registerIcon('extensions-ig_ldap_sso_auth-overlay-ldap-record',
+    \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+    [
+        'source' => 'EXT:ig_ldap_sso_auth/Resources/Public/Icons/overlay-ldap-record.png',
+    ]
+);
+unset($iconRegistry);
 
 if (TYPO3_MODE === 'BE') {
-    if (version_compare(TYPO3_version, '7.0', '>=')) {
-        $icon = 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/module-ldap.png';
-    } else {
-        $icon = 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/module-ldap-62.png';
-    }
-
     // Add BE module on top of system main module
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-        'Causal.' . $_EXTKEY,
+        'Causal.ig_ldap_sso_auth',
         'system',
         'txigldapssoauthM1',
         'top',
@@ -40,14 +23,14 @@ if (TYPO3_MODE === 'BE') {
             'Module' => implode(',', [
                 'index',
                 'status',
-                'search', 'updateSearchAjax', 'searchAjax',
-                'importFrontendUsers', 'importBackendUsers', 'importUsersAjax',
-                'importFrontendUserGroups', 'importBackendUserGroups', 'importUserGroupsAjax',
+                'search',
+                'importFrontendUsers', 'importBackendUsers',
+                'importFrontendUserGroups', 'importBackendUserGroups',
             ]),
         ], [
             'access' => 'admin',
-            'icon' => $icon,
-            'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf'
+            'icon' => 'EXT:ig_ldap_sso_auth/Resources/Public/Icons/module-ldap.png',
+            'labels' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf'
         ]
     );
 }

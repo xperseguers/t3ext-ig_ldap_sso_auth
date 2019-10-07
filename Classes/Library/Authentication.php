@@ -96,21 +96,20 @@ class Authentication
             // Set extension configuration from TYPO3 mode (BE/FE).
             static::initializeConfiguration();
 
-
-            if (null != $domain) {
+            if (!empty($domain)) {
                 // Domain is set, so check it
-                if (strpos($domain, '.') > -1 ) {
+                if (strpos($domain, '.') !== false ) {
                     // Format Domain
-                    $domain = "DC=" . implode(',DC=', explode('.', $domain));
+                    $domain = 'DC=' . implode(',DC=', explode('.', $domain));
                 }
                 $domain = strtolower($domain);
 
                 $configDomain = strtolower(static::$config['users']['basedn']);
                 $configDomain = substr($configDomain, strpos($configDomain, 'dc'));
 
-                if ($domain != $configDomain) {
+                if ($domain !== $configDomain) {
                     // Domain does not match, stop validating here
-                    static::getLogger()->notice(sprintf('User Domain "%s" missmatches Configuration Domain "%s"', $domain, $configDomain));
+                    static::getLogger()->notice(sprintf('User Domain "%s" mismatches Configuration Domain "%s"', $domain, $configDomain));
                     return false;
                 }
             }

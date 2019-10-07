@@ -1,11 +1,11 @@
-# cat=basic//1; type=user[EXT:ig_ldap_sso_auth/Classes/Em/ConfigurationHelper.php:Causal\IgLdapSsoAuth\Em\ConfigurationHelper->checkConfiguration]; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.checkConfiguration
-checkConfiguration=0
-
-# cat=basic//2; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.throwExceptionAtLogin
+# cat=basic//1; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.throwExceptionAtLogin
 throwExceptionAtLogin = 1
 
-# cat=basic//3; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.forceLowerCaseUsername
+# cat=basic//2; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.forceLowerCaseUsername
 forceLowerCaseUsername = 0
+
+# cat=basic/3; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.useExtensionConfiguration
+useExtConfConfiguration = 0
 
 # cat=backend/enable/1; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.enableBELDAPAuthentication
 enableBELDAPAuthentication = 0
@@ -51,3 +51,4 @@ keepFEGroups = 0
 
 # cat=frontend/enable; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.enableFESSO
 enableFESSO = 0
+

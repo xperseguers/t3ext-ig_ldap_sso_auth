@@ -1,6 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
       xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
-      xmlns:ldap="http://typo3.org/ns/Causal/IgLdapSsoAuth/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <f:be.menus.actionMenu>
@@ -8,8 +7,8 @@
                                arguments="{configuration:currentConfiguration.uid}"/>
     <f:if condition="{currentConfiguration}">
         <f:for each="{menu}" as="item">
-            <ldap:actionMenuItem label="{f:translate(key:item.titleKey)}" controller="Module" action="{item.action}"
-                                 arguments="{configuration:currentConfiguration.uid}"/>
+            <f:be.menus.actionMenuItem label="{f:translate(key:item.titleKey)}" controller="Module" action="{item.action}"
+                                       arguments="{configuration:currentConfiguration.uid}"/>
         </f:for>
     </f:if>
 </f:be.menus.actionMenu>

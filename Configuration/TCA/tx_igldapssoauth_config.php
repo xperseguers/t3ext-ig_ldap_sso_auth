@@ -14,7 +14,6 @@ return [
         'enablecolumns' => [
             'disabled' => 'hidden',
         ],
-        'requestUpdate' => 'ldap_server',
         'iconfile' => 'EXT:ig_ldap_sso_auth/Resources/Public/Icons/icon_tx_igldapssoauth_config.png',
     ],
     'interface' => [
@@ -33,7 +32,7 @@ return [
                     --div--;GENERAL,
                         hidden, name, domains,
                     --div--;LDAP,
-                        ldap_server;;1,
+                        ldap_server, ldap_charset,
                     --palette--;LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:palette.connection;connection,
                         ldap_binddn, ldap_password, group_membership,
                     --div--;FE_USERS,
@@ -47,9 +46,6 @@ return [
         ],
     ],
     'palettes' => [
-        '1' => [
-            'showitem' => 'ldap_charset'
-        ],
         'connection' => [
             'showitem' => 'ldap_host, ldap_port, ldap_tls, ldap_ssl',
             'canNotCollapse' => 1,
@@ -58,7 +54,7 @@ return [
     'columns' => [
         'hidden' => [
             'exclude' => 1,
-            'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
+            'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config' => [
                 'type' => 'check',
                 'default' => '0'
@@ -83,11 +79,6 @@ return [
                 'size' => 10,
                 'minitems' => 0,
                 'maxitems' => 999,
-                'wizards' => [
-                    'suggest' => [
-                        'type' => 'suggest'
-                    ],
-                ],
             ]
         ],
         'ldap_server' => [
@@ -108,7 +99,8 @@ return [
                 ],
                 'size' => 1,
                 'maxitems' => 1,
-            ]
+            ],
+            'onChange' => 'reload',
         ],
         'ldap_charset' => [
             'exclude' => 1,
@@ -197,7 +189,11 @@ return [
                 'minitems' => 1,
                 'maxitems' => 1,
                 'default' => 1,
-                'showIconTable' => true,
+                'fieldWizard' => [
+                    'selectIcons' => [
+                        'disabled' => false,
+                    ],
+                ],
             ],
         ],
         'be_users_basedn' => [
@@ -205,14 +201,9 @@ return [
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.be_users_basedn',
             'config' => [
                 'type' => 'input',
+                'renderType' => 'ldapSuggest',
                 'size' => '30',
                 'eval' => 'trim',
-                'wizards' => [
-                    'suggest' => [
-                        'type' => 'userFunc',
-                        'userFunc' => \Causal\IgLdapSsoAuth\Tca\Form\SuggestWizard::class . '->render',
-                    ],
-                ],
             ]
         ],
         'be_users_filter' => [
@@ -220,15 +211,10 @@ return [
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.be_users_filter',
             'config' => [
                 'type' => 'text',
+                'renderType' => 'ldapSuggest',
                 'rows' => 3,
                 'cols' => 30,
                 'eval' => 'trim',
-                'wizards' => [
-                    'suggest' => [
-                        'type' => 'userFunc',
-                        'userFunc' => \Causal\IgLdapSsoAuth\Tca\Form\SuggestWizard::class . '->render',
-                    ],
-                ],
             ]
         ],
         'be_users_mapping' => [
@@ -236,15 +222,10 @@ return [
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.be_users_mapping',
             'config' => [
                 'type' => 'text',
+                'renderType' => 'ldapSuggest',
                 'rows' => 8,
                 'cols' => 30,
                 'eval' => 'trim',
-                'wizards' => [
-                    'suggest' => [
-                        'type' => 'userFunc',
-                        'userFunc' => \Causal\IgLdapSsoAuth\Tca\Form\SuggestWizard::class . '->render',
-                    ],
-                ],
             ]
         ],
         'be_groups_basedn' => [
@@ -252,14 +233,9 @@ return [
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.be_groups_basedn',
             'config' => [
                 'type' => 'input',
+                'renderType' => 'ldapSuggest',
                 'size' => '30',
                 'eval' => 'trim',
-                'wizards' => [
-                    'suggest' => [
-                        'type' => 'userFunc',
-                        'userFunc' => \Causal\IgLdapSsoAuth\Tca\Form\SuggestWizard::class . '->render',
-                    ],
-                ],
             ]
         ],
         'be_groups_filter' => [
@@ -267,15 +243,10 @@ return [
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.be_groups_filter',
             'config' => [
                 'type' => 'text',
+                'renderType' => 'ldapSuggest',
                 'rows' => 3,
                 'cols' => 30,
                 'eval' => 'trim',
-                'wizards' => [
-                    'suggest' => [
-                        'type' => 'userFunc',
-                        'userFunc' => \Causal\IgLdapSsoAuth\Tca\Form\SuggestWizard::class . '->render',
-                    ],
-                ],
             ]
         ],
         'be_groups_mapping' => [
@@ -283,15 +254,10 @@ return [
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.be_groups_mapping',
             'config' => [
                 'type' => 'text',
+                'renderType' => 'ldapSuggest',
                 'rows' => 8,
                 'cols' => 30,
                 'eval' => 'trim',
-                'wizards' => [
-                    'suggest' => [
-                        'type' => 'userFunc',
-                        'userFunc' => \Causal\IgLdapSsoAuth\Tca\Form\SuggestWizard::class . '->render',
-                    ],
-                ],
             ]
         ],
         'be_groups_required' => [
@@ -305,11 +271,6 @@ return [
                 'size' => 6,
                 'minitems' => 0,
                 'maxitems' => 30,
-                'wizards' => [
-                    'suggest' => [
-                        'type' => 'suggest'
-                    ],
-                ],
             ]
         ],
         'be_groups_assigned' => [
@@ -323,11 +284,6 @@ return [
                 'size' => 10,
                 'minitems' => 0,
                 'maxitems' => 30,
-                'wizards' => [
-                    'suggest' => [
-                        'type' => 'suggest'
-                    ],
-                ],
             ]
         ],
         'be_groups_admin' => [
@@ -341,11 +297,6 @@ return [
                 'size' => 6,
                 'minitems' => 0,
                 'maxitems' => 30,
-                'wizards' => [
-                    'suggest' => [
-                        'type' => 'suggest'
-                    ],
-                ],
             ]
         ],
         'fe_users_basedn' => [
@@ -353,14 +304,9 @@ return [
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.fe_users_basedn',
             'config' => [
                 'type' => 'input',
+                'renderType' => 'ldapSuggest',
                 'size' => '30',
                 'eval' => 'trim',
-                'wizards' => [
-                    'suggest' => [
-                        'type' => 'userFunc',
-                        'userFunc' => \Causal\IgLdapSsoAuth\Tca\Form\SuggestWizard::class . '->render',
-                    ],
-                ],
             ]
         ],
         'fe_users_filter' => [
@@ -368,15 +314,10 @@ return [
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.fe_users_filter',
             'config' => [
                 'type' => 'text',
+                'renderType' => 'ldapSuggest',
                 'rows' => 3,
                 'cols' => 30,
                 'eval' => 'trim',
-                'wizards' => [
-                    'suggest' => [
-                        'type' => 'userFunc',
-                        'userFunc' => \Causal\IgLdapSsoAuth\Tca\Form\SuggestWizard::class . '->render',
-                    ],
-                ],
             ]
         ],
         'fe_users_mapping' => [
@@ -384,15 +325,10 @@ return [
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.fe_users_mapping',
             'config' => [
                 'type' => 'text',
+                'renderType' => 'ldapSuggest',
                 'rows' => 8,
                 'cols' => 30,
                 'eval' => 'trim',
-                'wizards' => [
-                    'suggest' => [
-                        'type' => 'userFunc',
-                        'userFunc' => \Causal\IgLdapSsoAuth\Tca\Form\SuggestWizard::class . '->render',
-                    ],
-                ],
             ]
         ],
         'fe_groups_basedn' => [
@@ -400,14 +336,9 @@ return [
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.fe_groups_basedn',
             'config' => [
                 'type' => 'input',
+                'renderType' => 'ldapSuggest',
                 'size' => '30',
                 'eval' => 'trim',
-                'wizards' => [
-                    'suggest' => [
-                        'type' => 'userFunc',
-                        'userFunc' => \Causal\IgLdapSsoAuth\Tca\Form\SuggestWizard::class . '->render',
-                    ],
-                ],
             ]
         ],
         'fe_groups_filter' => [
@@ -415,15 +346,10 @@ return [
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.fe_groups_filter',
             'config' => [
                 'type' => 'text',
+                'renderType' => 'ldapSuggest',
                 'rows' => 3,
                 'cols' => 30,
                 'eval' => 'trim',
-                'wizards' => [
-                    'suggest' => [
-                        'type' => 'userFunc',
-                        'userFunc' => \Causal\IgLdapSsoAuth\Tca\Form\SuggestWizard::class . '->render',
-                    ],
-                ],
             ]
         ],
         'fe_groups_mapping' => [
@@ -431,15 +357,10 @@ return [
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.fe_groups_mapping',
             'config' => [
                 'type' => 'text',
+                'renderType' => 'ldapSuggest',
                 'rows' => 8,
                 'cols' => 30,
                 'eval' => 'trim',
-                'wizards' => [
-                    'suggest' => [
-                        'type' => 'userFunc',
-                        'userFunc' => \Causal\IgLdapSsoAuth\Tca\Form\SuggestWizard::class . '->render',
-                    ],
-                ],
             ]
         ],
         'fe_groups_required' => [
@@ -453,11 +374,6 @@ return [
                 'size' => 10,
                 'minitems' => 0,
                 'maxitems' => 99,
-                'wizards' => [
-                    'suggest' => [
-                        'type' => 'suggest'
-                    ],
-                ],
             ]
         ],
         'fe_groups_assigned' => [
@@ -471,11 +387,6 @@ return [
                 'size' => 10,
                 'minitems' => 0,
                 'maxitems' => 99,
-                'wizards' => [
-                    'suggest' => [
-                        'type' => 'suggest'
-                    ],
-                ],
             ]
         ],
     ],

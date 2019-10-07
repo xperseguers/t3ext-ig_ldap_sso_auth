@@ -47,25 +47,4 @@ class DatabaseRecordListIconUtility implements \TYPO3\CMS\Backend\RecordList\Rec
         }
     }
 
-    /**
-     * Overrides the icon overlay with a LDAP symbol, if needed.
-     *
-     * @param string $table The current database table
-     * @param array $row The current record
-     * @param array &$status The array of associated statuses
-     * @return void
-     * @see \TYPO3\CMS\Backend\Utility\IconUtility::mapRecordOverlayToSpriteIconName()
-     * @target TYPO3 6.2 LTS, see \Causal\IgLdapSsoAuth\Hooks\IconFactory for TYPO3 >= 7 LTS
-     */
-    public function overrideIconOverlay($table, array $row, array &$status)
-    {
-        if (GeneralUtility::inList('be_groups,be_users,fe_groups,fe_users', $table)) {
-            if (!array_key_exists('tx_igldapssoauth_dn', $row)) {
-                // This is the case, e.g., in Backend users module
-                $row = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord($table, $row['uid']);
-            }
-            $status['is_ldap_record'] = !empty($row['tx_igldapssoauth_dn']);
-        }
-    }
-
 }

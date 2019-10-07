@@ -3,10 +3,10 @@
       xmlns:ldap="http://typo3.org/ns/Causal/IgLdapSsoAuth/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<f:form id="tx-igldapssoauth-importform" action="importUsersAjax">
-    <f:form.hidden name="configuration" value="{currentConfiguration.uid}"/>
-    <f:form.hidden name="mode" value="{mode}"/>
-    <f:form.hidden id="tx-igldapssoauth-dn" name="dn" value=""/>
+<form id="tx-igldapssoauth-importform" data-ajaxaction="ldap_users_import">
+    <input type="hidden" name="configuration" value="{currentConfiguration.uid}"/>
+    <input type="hidden" name="mode" value="{mode}"/>
+    <input type="hidden" id="tx-igldapssoauth-dn" name="dn" value=""/>
 
     <table class="{classes.table}">
         <tr class="{classes.tableRow}">
@@ -48,7 +48,7 @@
                     </td>
                 </f:if>
                 <td>
-                    <f:form.button name="item" value="{user.tx_igldapssoauth_dn}">
+                    <button name="item" value="{user.tx_igldapssoauth_dn}">
                         <f:if condition="{user.deleted}">
                             <f:then>
                                 <f:translate key="module_import.action.undelete"/>
@@ -64,7 +64,7 @@
                                 </f:if>
                             </f:else>
                         </f:if>
-                    </f:form.button>
+                    </button>
                 </td>
             </tr>
         </f:for>
@@ -80,6 +80,6 @@
             </ul>
         </caption>
     </table>
-</f:form>
+</form>
 
 </html>

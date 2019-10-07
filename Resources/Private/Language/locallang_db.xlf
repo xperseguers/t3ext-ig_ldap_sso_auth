@@ -12,6 +12,9 @@
 			<trans-unit id="settings.forceLowerCaseUsername">
 				<source>Force lower-case user name: If checked, user names will be always be stored in lower-cases. Useful for case-sensitive databases.</source>
 			</trans-unit>
+			<trans-unit id="settings.useExtensionConfiguration">
+				<source>Use the configuration specified in $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']['configuration']</source>
+			</trans-unit>
 			<trans-unit id="settings.enableBELDAPAuthentication">
 				<source>Backend LDAP authentication: Enable LDAP authentication for the backend.</source>
 			</trans-unit>
@@ -56,43 +59,6 @@
 			</trans-unit>
 			<trans-unit id="settings.enableFESSO">
 				<source>Frontend SSO: Enable Single Sign-On for Frontend users.</source>
-			</trans-unit>
-			<trans-unit id="settings.errors.error">
-				<source>Errors found in your configuration</source>
-			</trans-unit>
-			<trans-unit id="settings.errors.error">
-				<source>Errors found in your configuration</source>
-			</trans-unit>
-			<trans-unit id="settings.errors.warning">
-				<source>Warnings about your configuration</source>
-			</trans-unit>
-			<trans-unit id="settings.errors.ok">
-				<source>Congratulations!</source>
-			</trans-unit>
-			<trans-unit id="settings.errors.success">
-				<source>This extension has been successfully configured.</source>
-			</trans-unit>
-			<trans-unit id="settings.errors.invalidFrontendSecurityLevel" xml:space="preserve">
-				<source><![CDATA[LDAP authentification for Website-Users (FE) is not compatible with loginSecurityLevel set to "challenged" or
-"superchallenged" since the real password can never be sent against the LDAP repository.<br /><br />
-
-Value of loginSecurityLevel should be changed manually to "normal" or even better "rsa" in the Install Tool.<br/><br/>
-
-$GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'] = 'normal';<br/>
-$GLOBALS['TYPO3_CONF_VARS']['FE']['loginSecurityLevel'] = 'rsa';]]></source>
-			</trans-unit>
-			<trans-unit id="settings.errors.invalidBackendSecurityLevel" xml:space="preserve">
-				<source><![CDATA[LDAP authentification for backend is not compatible with loginSecurityLevel set to "challenged" or
-"superchallenged" since the real password can never be sent against the LDAP repository.<br /><br />
-
-Value of loginSecurityLevel should be changed manually to "normal" or even better "rsa" in the Install Tool.<br/><br/>
-
-$GLOBALS['TYPO3_CONF_VARS']['BE']['loginSecurityLevel'] = 'normal';<br/>
-$GLOBALS['TYPO3_CONF_VARS']['BE']['loginSecurityLevel'] = 'rsa';]]></source>
-			</trans-unit>
-			<trans-unit id="settings.errors.currentSecurityLevel" xml:space="preserve">
-				<source><![CDATA[Current value for frontend is: "%s"<br />
-Current value for backend is: "%s"]]></source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config">
 				<source>Configuration LDAP / SSO</source>

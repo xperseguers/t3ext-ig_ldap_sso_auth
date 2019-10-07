@@ -68,12 +68,12 @@ class Ldap
             'charset' => $config['charset'],
             'server' => $config['server'],
             'tls' => $config['tls'],
+            'tlsReqcert' => $config['tlsReqcert'],
             'ssl' => $config['ssl'],
         ];
-
         // Connect to ldap server.
-        if (!$this->ldapUtility->connect($config['host'], $config['port'], $config['protocol'], $config['charset'], $config['server'], $config['tls'], $config['ssl'])) {
-            static::getLogger()->error('Cannot connect', $debugConfiguration);
+        if (!$this->ldapUtility->connect($config['host'], $config['port'], $config['protocol'], $config['charset'], $config['server'], $config['tls'], $config['ssl'], $config['tlsReqcert'])) {
+            static::getLogger()->error( 'Cannot connect', $debugConfiguration);
             return false;
         }
 

@@ -73,6 +73,11 @@ class Configuration
     /**
      * @var bool
      */
+    protected $ldapTlsReqcert = true;
+
+    /**
+     * @var bool
+     */
     protected $ldapSsl;
 
     /**
@@ -287,6 +292,22 @@ class Configuration
     public function isLdapSsl()
     {
         return $this->ldapSsl;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLdapTlsReqcert(): bool
+    {
+        return $this->ldapTlsReqcert;
+    }
+
+    /**
+     * @param bool $ldapTlsReqcert
+     */
+    public function setLdapTlsReqcert(bool $ldapTlsReqcert): void
+    {
+        $this->ldapTlsReqcert = $ldapTlsReqcert;
     }
 
     /**

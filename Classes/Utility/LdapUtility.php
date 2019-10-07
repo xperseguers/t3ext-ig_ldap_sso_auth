@@ -114,11 +114,16 @@ class LdapUtility
      * @param int $serverType 0 = OpenLDAP, 1 = Active Directory
      * @param bool $tls
      * @param bool $ssl
+     * @param bool $tlsReqcert
      * @return bool true if connection succeeded.
      * @throws UnresolvedPhpDependencyException when LDAP extension for PHP is not available
      */
-    public function connect($host = null, $port = null, $protocol = null, $characterSet = null, $serverType = 0, $tls = false, $ssl = false)
+    public function connect($host = null, $port = null, $protocol = null, $characterSet = null, $serverType = 0, $tls = false, $ssl = false, $tlsReqcert = false)
     {
+        if ($tlsReqcert === false) {
+            putenv('LDAPTLS_REQCERT=never');
+        }
+
         // Valid if php load ldap module.
         if (!extension_loaded('ldap')) {
             throw new UnresolvedPhpDependencyException('Your PHP version seems to lack LDAP support. Please install/activate the extension.', 1409566275);

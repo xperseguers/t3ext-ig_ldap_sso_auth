@@ -75,6 +75,9 @@
 			<trans-unit id="module_status.configuration.tls">
 				<source>Use TLS</source>
 			</trans-unit>
+			<trans-unit id="module_status.configuration.tlsReqcert">
+				<source>TLS require cert</source>
+			</trans-unit>
 			<trans-unit id="module_status.configuration.ssl">
 				<source>Use SSL</source>
 			</trans-unit>

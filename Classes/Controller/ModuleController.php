@@ -16,9 +16,9 @@ namespace Causal\IgLdapSsoAuth\Controller;
 
 use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
 use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3GroupRepository;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3UserRepository;
 use Causal\IgLdapSsoAuth\Library\Authentication;
@@ -751,10 +751,12 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         $editLink = '';
 
         $configurationRecords = $this->configurationRepository->findAll();
-        $editRecordModuleUrl = BackendUtility::getModuleUrl('record_edit') . '&amp;';
+
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+        $editRecordModuleUrl = $uriBuilder->buildUriFromRoute('record_edit');
 
         if (count($configurationRecords) === 0) {
-            $newRecordUri = $editRecordModuleUrl . 'returnUrl=' . urlencode($thisUri) . '&amp;edit[tx_igldapssoauth_config][0]=new';
+            $newRecordUri = $editRecordModuleUrl . '&returnUrl=' . urlencode($thisUri) . '&edit[tx_igldapssoauth_config][0]=new';
 
             $message = $this->translate(
                 'configuration_missing.message',
@@ -772,7 +774,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             if ($configuration == null) {
                 $configuration = $configurationRecords[0];
             }
-            $editUri = $editRecordModuleUrl . 'returnUrl=' . urlencode($thisUri) . '&amp;edit[tx_igldapssoauth_config][' . $configuration->getUid() . ']=edit';
+            $editUri = $editRecordModuleUrl . '&returnUrl=' . urlencode($thisUri) . '&edit[tx_igldapssoauth_config][' . $configuration->getUid() . ']=edit';
             /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
             $iconFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconFactory::class);
             $icon = $iconFactory->getIcon('actions-document-open', \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();

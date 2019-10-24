@@ -136,10 +136,18 @@ class LdapUtility
 
         if ($ssl) {
             $this->status['option']['ssl'] = 'Enable';
-            $this->connection = @ldap_connect('ldaps://' . $host . ':' . $port);
+            $scheme = 'ldaps://';
         } else {
-            $this->connection = @ldap_connect($host, $port);
+            if (preg_match('#^(ldaps?)://(.*)$#', $host, $matches)) {
+                $errorMessage = sprintf('"%s" is not a valid host name. You need to remove the protocol scheme.', $host);
+                if ($matches[1] === 'ldaps') {
+                    $errorMessage .= ' Since you obviously want a SSL connection, please tick the "Use SSL" checkbox.';
+                }
+                throw new \RuntimeException($errorMessage, 1571920049);
+            }
+            $scheme = 'ldap://';
         }
+        $this->connection = @ldap_connect($scheme . $host . ':' . $port);
 
         if (!$this->connection) {
             // This block should never be reached according to PHP documentation

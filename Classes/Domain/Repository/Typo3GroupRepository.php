@@ -49,7 +49,8 @@ class Typo3GroupRepository
             ->getSchemaManager()
             ->listTableColumns($table);
 
-        foreach ($fieldsConfiguration as $field => $configuration) {
+        foreach ($fieldsConfiguration as $configuration) {
+            $field = $configuration->getName();
             $newGroup[$field] = $configuration->getDefault();
         }
 

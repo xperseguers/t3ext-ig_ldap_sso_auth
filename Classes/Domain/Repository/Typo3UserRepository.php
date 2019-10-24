@@ -61,7 +61,8 @@ class Typo3UserRepository
             ->getSchemaManager()
             ->listTableColumns($table);
 
-        foreach ($fieldsConfiguration as $field => $configuration) {
+        foreach ($fieldsConfiguration as $configuration) {
+            $field = $configuration->getName();
             $newUser[$field] = $configuration->getDefault();
             if (!empty($GLOBALS['TCA'][$table]['columns'][$field]['config']['default']) && $field !== 'disable') {
                 $newUser[$field] = $GLOBALS['TCA'][$table]['columns'][$field]['config']['default'];

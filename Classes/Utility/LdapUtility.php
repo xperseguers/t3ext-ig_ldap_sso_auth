@@ -111,14 +111,14 @@ class LdapUtility
      * @param int $port
      * @param int $protocol 3 for LDAP v3
      * @param string $characterSet
-     * @param int $serverType 0 = OpenLDAP, 1 = Active Directory
+     * @param string $serverType Either 'OpenLDAP' or 'Active Directory'
      * @param bool $tls
      * @param bool $ssl
      * @param bool $tlsReqcert
      * @return bool true if connection succeeded.
      * @throws UnresolvedPhpDependencyException when LDAP extension for PHP is not available
      */
-    public function connect($host = null, $port = null, $protocol = null, $characterSet = null, $serverType = 0, $tls = false, $ssl = false, $tlsReqcert = false)
+    public function connect($host = null, $port = null, $protocol = null, $characterSet = null, $serverType = 'OpenLDAP', $tls = false, $ssl = false, $tlsReqcert = false)
     {
         if ($tlsReqcert === false) {
             putenv('LDAPTLS_REQCERT=never');
@@ -132,7 +132,7 @@ class LdapUtility
         // Connect to ldap server.
         $this->status['connect']['host'] = $host;
         $this->status['connect']['port'] = $port;
-        $this->serverType = (int)$serverType;
+        $this->serverType = $serverType;
 
         if ($ssl) {
             $this->status['option']['ssl'] = 'Enable';
@@ -159,7 +159,7 @@ class LdapUtility
         @ldap_set_option($this->connection, LDAP_OPT_PROTOCOL_VERSION, $protocol);
 
         // Active Directory (User@Domain) configuration
-        if ($serverType == 1) {
+        if ($serverType === 'Active Directory') {
             @ldap_set_option($this->connection, LDAP_OPT_REFERRALS, 0);
         }
 
@@ -222,7 +222,7 @@ class LdapUtility
             // Could not bind to server
             $this->status['bind']['status'] = ldap_error($this->connection);
 
-            if ($this->serverType === 1) {
+            if ($this->serverType === 'Active Directory') {
                 // We need to get the diagnostic message right after the call to ldap_bind(),
                 // before any other LDAP operation
                 ldap_get_option($this->connection, LDAP_OPT_DIAGNOSTIC_MESSAGE, $extendedError);

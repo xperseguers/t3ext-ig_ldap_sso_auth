@@ -49,7 +49,7 @@ class LdapGroup
         unset($membership['count']);
 
         foreach ($membership as $groupDn) {
-            if (!empty($baseDn) && substr($groupDn, -strlen($baseDn)) !== $baseDn) {
+            if (!empty($baseDn) && strcasecmp(substr($groupDn, -strlen($baseDn)), $baseDn) !== 0) {
                 // Group $groupDn does not match the required baseDn for LDAP groups
                 continue;
             }

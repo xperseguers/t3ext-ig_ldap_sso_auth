@@ -181,14 +181,16 @@ class Typo3UserRepository
 
         $uid = $tableConnection->lastInsertId();
 
-        $newRow = $tableConnection
-            ->select(
-                ['*'],
-                $table,
-                [
-                    'uid' => $uid,
-                ]
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable($table);
+        $queryBuilder->getRestrictions()->removeAll();
+        $newRow = $queryBuilder
+            ->select('*')
+            ->from($table)
+            ->where(
+                $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT))
             )
+            ->execute()
             ->fetch();
 
         NotificationUtility::dispatch(

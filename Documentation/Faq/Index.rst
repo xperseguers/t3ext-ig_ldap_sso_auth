@@ -79,6 +79,23 @@ backend session active (e.g., frontend editing).*
 
 -------
 
+.. question
+
+**How can I find the Bind DN of a given Active Directory account?**
+
+.. answer
+
+*It is not always obvious when opening the properties of a given user in Active Directory to figure out the DN to be
+used. The trick is to open a command prompt and use ``dsquery``. E.g. when looking for the DN of the "administrator"
+account:*
+
+.. code::
+
+    > dsquery user -name administrator
+    CN=Administrator,OU=Users,DC=example,DC=com
+
+-------
+
 
 .. _faq-groups:
 

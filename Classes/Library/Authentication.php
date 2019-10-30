@@ -218,6 +218,10 @@ class Authentication
             // to authenticate is to set a "stop time" (endtime in DB) to the TYPO3 user record or
             // mark it as "disable"
             $typo3_user['deleted'] = 0;
+            if ($typo3_user['endtime'] < $GLOBALS['EXEC_TIME']) {
+                // Reset the stop time since we seem to want to restore a previously deleted account
+                $typo3_user['endtime'] = 0;
+            }
 
             $typo3_user['password'] = Typo3UserRepository::setRandomPassword();
 

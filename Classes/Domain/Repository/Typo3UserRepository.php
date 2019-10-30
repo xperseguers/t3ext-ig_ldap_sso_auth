@@ -260,21 +260,23 @@ class Typo3UserRepository
     public static function disableForConfiguration(string $table, int $uid)
     {
         if (isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled'])) {
-            $fields = [
-                $GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled'] => 1
-            ];
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable($table);
+            $queryBuilder->getRestrictions()->removeAll();
+
+            $queryBuilder
+                ->update($table)
+                ->where(
+                    $queryBuilder->expr()->eq('tx_igldapssoauth_id', $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)),
+                    $queryBuilder->expr()->eq($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled'], 0)
+                )
+                ->set($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled'], 1);
+
             if (isset($GLOBALS['TCA'][$table]['ctrl']['tstamp'])) {
-                $fields[$GLOBALS['TCA'][$table]['ctrl']['tstamp']] = $GLOBALS['EXEC_TIME'];
+                $queryBuilder->set($GLOBALS['TCA'][$table]['ctrl']['tstamp'], $GLOBALS['EXEC_TIME']);
             }
-            GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getConnectionForTable($table)
-                ->update(
-                    $table,
-                    $fields,
-                    [
-                        'tx_igldapssoauth_id' => $uid,
-                    ]
-                );
+
+            $affectedRows = $queryBuilder->execute();
 
             NotificationUtility::dispatch(
                 __CLASS__,
@@ -299,21 +301,23 @@ class Typo3UserRepository
     public static function deleteForConfiguration(string $table, int $uid)
     {
         if (isset($GLOBALS['TCA'][$table]['ctrl']['delete'])) {
-            $fields = [
-                $GLOBALS['TCA'][$table]['ctrl']['delete'] => 1
-            ];
+            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getQueryBuilderForTable($table);
+            $queryBuilder->getRestrictions()->removeAll();
+
+            $queryBuilder
+                ->update($table)
+                ->where(
+                    $queryBuilder->expr()->eq('tx_igldapssoauth_id', $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)),
+                    $queryBuilder->expr()->eq($GLOBALS['TCA'][$table]['ctrl']['delete'], 0)
+                )
+                ->set($GLOBALS['TCA'][$table]['ctrl']['delete'], 1);
+
             if (isset($GLOBALS['TCA'][$table]['ctrl']['tstamp'])) {
-                $fields[$GLOBALS['TCA'][$table]['ctrl']['tstamp']] = $GLOBALS['EXEC_TIME'];
+                $queryBuilder->set($GLOBALS['TCA'][$table]['ctrl']['tstamp'], $GLOBALS['EXEC_TIME']);
             }
-            GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getConnectionForTable($table)
-                ->update(
-                    $table,
-                    $fields,
-                    [
-                        'tx_igldapssoauth_id' => $uid,
-                    ]
-                );
+
+            $affectedRows = $queryBuilder->execute();
 
             NotificationUtility::dispatch(
                 __CLASS__,

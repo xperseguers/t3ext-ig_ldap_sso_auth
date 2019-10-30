@@ -411,7 +411,7 @@ class LdapUtility
      */
     public function hasMoreEntries()
     {
-        return !empty($this->paginationCookie);
+        return $this->paginationCookie !== null && $this->paginationCookie !== '';
     }
 
     /**

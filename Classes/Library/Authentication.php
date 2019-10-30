@@ -76,10 +76,11 @@ class Authentication
      *
      * @param string $username
      * @param string $password
+     * @param string $domain
      * @return bool|array true or array of user info on success, otherwise false
      * @throws \Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException when LDAP extension for PHP is not available
      */
-    public static function ldapAuthenticate($username, $password = null)
+    public static function ldapAuthenticate($username, $password = null, $domain = null)
     {
         static::$lastAuthenticationDiagnostic = '';
 
@@ -94,6 +95,23 @@ class Authentication
         if ($username && $ldapInstance->connect(Configuration::getLdapConfiguration())) {
             // Set extension configuration from TYPO3 mode (BE/FE).
             static::initializeConfiguration();
+
+            if (!empty($domain)) {
+                // Domain is set, so check it
+                if (strpos($domain, '.') !== false) {
+                    $domain = 'DC=' . implode(',DC=', explode('.', $domain));
+                }
+                $domain = strtolower($domain);
+
+                $configDomain = strtolower(static::$config['users']['basedn']);
+                $configDomain = substr($configDomain, strpos($configDomain, 'dc'));
+
+                if ($domain !== $configDomain) {
+                    // Domain does not match, stop validating here
+                    static::getLogger()->notice(sprintf('User domain "%s" mismatches configuration domain "%s"', $domain, $configDomain));
+                    return false;
+                }
+            }
 
             // Valid user from LDAP server
             if ($userdn = $ldapInstance->validateUser($username, $password, static::$config['users']['basedn'], static::$config['users']['filter'])) {

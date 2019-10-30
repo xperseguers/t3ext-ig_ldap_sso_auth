@@ -126,16 +126,22 @@ class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
             // Single Sign-On authentication
             if ($enableFrontendSso || $enableBackendSso) {
                 // Strip the domain name
+                $domain = null;
                 if ($pos = strpos($remoteUser, '@')) {
+                    $domain = substr($remoteUser, $pos + 1);
                     $remoteUser = substr($remoteUser, 0, $pos);
                 } elseif ($pos = strrpos($remoteUser, '\\')) {
+                    $domain = substr($remoteUser, 0, $pos);
                     $remoteUser = substr($remoteUser, $pos + 1);
                 }
 
-                $userRecordOrIsValid = Authentication::ldapAuthenticate($remoteUser);
+                $userRecordOrIsValid = Authentication::ldapAuthenticate($remoteUser, null, $domain);
                 if (is_array($userRecordOrIsValid)) {
                     // Useful for debugging purpose
                     $this->login['uname'] = $remoteUser;
+                    if (!empty($domain)) {
+                        $this->login['domain'] = $domain;
+                    }
                 }
             }
 

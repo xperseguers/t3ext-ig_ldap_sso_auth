@@ -441,9 +441,17 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         }
 
         if ($success) {
+            // If we assume that DN is
+            // CN=Mustermann\, Max (LAN),OU=Users,DC=example,DC=com
             list($filter, $baseDn) = Authentication::getRelativeDistinguishedNames($params['dn'], 2);
+            // ... we need to properly escape $filter "CN=Mustermann\, Max (LAN)" as "CN=Mustermann, Max \28LAN\29"
+            list($key, $value) = explode('=', $filter, 2);
+            // 1) Unescape the comma
+            $value = str_replace('\\', '', $value);
+            // 2) Create a proper search filter
+            $searchFilter = '(' . $key . '=' . ldap_escape($value, '', LDAP_ESCAPE_FILTER) . ')';
             $attributes = Configuration::getLdapAttributes($config['users']['mapping']);
-            $ldapUser = $ldap->search($baseDn, '(' . $filter . ')', $attributes, true);
+            $ldapUser = $ldap->search($baseDn, $searchFilter, $attributes, true);
             $typo3Users = $importUtility->fetchTypo3Users([$ldapUser]);
 
             // Merge LDAP and TYPO3 information

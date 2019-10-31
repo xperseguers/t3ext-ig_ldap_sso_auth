@@ -18,6 +18,7 @@ use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
+use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3GroupRepository;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3UserRepository;
@@ -286,10 +287,9 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      * Updates the search option using AJAX.
      *
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
      * @return ResponseInterface
      */
-    public function ajaxUpdateForm(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    public function ajaxUpdateForm(ServerRequestInterface $request): ResponseInterface
     {
         $params = $request->getQueryParams();
 
@@ -304,10 +304,19 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             ? Configuration::getBackendConfiguration()
             : Configuration::getFrontendConfiguration();
 
-        $response->getBody()->write(json_encode([
+        $payload = [
             'success' => true,
             'configuration' => $config[$key],
-        ]));
+        ];
+
+        if (version_compare(TYPO3_version, '9.0', '<')) {
+            /** @var ResponseInterface $response */
+            $response = func_get_arg(1);
+            $response->getBody()->write(json_encode($payload));
+        } else {
+            $response = (new JsonResponse())->setPayload($payload);
+        }
+
         return $response;
     }
 
@@ -315,10 +324,9 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      * Actual search action using AJAX.
      *
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
      * @return ResponseInterface
      */
-    public function ajaxSearch(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    public function ajaxSearch(ServerRequestInterface $request): ResponseInterface
     {
         $params = $request->getQueryParams();
 
@@ -396,10 +404,19 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 
         $html = $view->render();
 
-        $response->getBody()->write(json_encode([
+        $payload = [
             'success' => $success,
             'html' => $html,
-        ]));
+        ];
+
+        if (version_compare(TYPO3_version, '9.0', '<')) {
+            /** @var ResponseInterface $response */
+            $response = func_get_arg(1);
+            $response->getBody()->write(json_encode($payload));
+        } else {
+            $response = (new JsonResponse())->setPayload($payload);
+        }
+
         return $response;
     }
 
@@ -407,10 +424,9 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      * Actual import of users using AJAX.
      *
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
      * @return ResponseInterface
      */
-    public function ajaxUsersImport(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    public function ajaxUsersImport(ServerRequestInterface $request): ResponseInterface
     {
         $params = $request->getQueryParams();
 
@@ -463,7 +479,16 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             $data['id'] = (int)$user['uid'];
         }
 
-        $response->getBody()->write(json_encode(array_merge($data, ['success' => $success])));
+        $payload = array_merge($data, ['success' => $success]);
+
+        if (version_compare(TYPO3_version, '9.0', '<')) {
+            /** @var ResponseInterface $response */
+            $response = func_get_arg(1);
+            $response->getBody()->write(json_encode($payload));
+        } else {
+            $response = (new JsonResponse())->setPayload($payload);
+        }
+
         return $response;
     }
 
@@ -471,10 +496,9 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      * Actual import of user groups using AJAX.
      *
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
      * @return ResponseInterface
      */
-    public function ajaxGroupsImport(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    public function ajaxGroupsImport(ServerRequestInterface $request): ResponseInterface
     {
         $params = $request->getQueryParams();
 
@@ -544,7 +568,16 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             $data['id'] = (int)$group['uid'];
         }
 
-        $response->getBody()->write(json_encode(array_merge($data, ['success' => $success])));
+        $payload = array_merge($data, ['success' => $success]);
+
+        if (version_compare(TYPO3_version, '9.0', '<')) {
+            /** @var ResponseInterface $response */
+            $response = func_get_arg(1);
+            $response->getBody()->write(json_encode($payload));
+        } else {
+            $response = (new JsonResponse())->setPayload($payload);
+        }
+
         return $response;
     }
 

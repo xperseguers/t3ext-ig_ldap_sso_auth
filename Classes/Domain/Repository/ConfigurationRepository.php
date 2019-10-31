@@ -153,6 +153,7 @@ class ConfigurationRepository
         $mapping = [
             'name' => 'name',
             'domains' => 'domains',
+            'sites' => 'sites',
             'ldap_charset' => 'ldapCharset',
             'ldap_host' => 'ldapHost',
             'ldap_binddn' => 'ldapBindDn',

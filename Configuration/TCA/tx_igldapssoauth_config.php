@@ -1,4 +1,6 @@
 <?php
+$sitesField = version_compare(TYPO3_version, '9.0', '>=') ? 'sites,' : '';
+
 return [
     'ctrl' => [
         'title' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config',
@@ -17,7 +19,7 @@ return [
         'iconfile' => 'EXT:ig_ldap_sso_auth/Resources/Public/Icons/icon_tx_igldapssoauth_config.png',
     ],
     'interface' => [
-        'showRecordFieldList' => 'hidden, name, domains,
+        'showRecordFieldList' => 'hidden, name, domains, ' . $sitesField . '
                         ldap_server, ldap_charset, ldap_host, ldap_port, ldap_tls, ldap_ssl, ldap_binddn,
                         ldap_password, group_membership,
                         be_users_basedn, be_users_filter, be_users_mapping,
@@ -30,7 +32,7 @@ return [
         '1' => [
             'showitem' => '
                     --div--;GENERAL,
-                        hidden, name, domains,
+                        hidden, name, domains, ' . $sitesField . '
                     --div--;LDAP,
                         ldap_server, ldap_charset,
                     --palette--;LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:palette.connection;connection,
@@ -79,6 +81,17 @@ return [
                 'size' => 10,
                 'minitems' => 0,
                 'maxitems' => 999,
+            ]
+        ],
+        'sites' => [
+            'exclude' => 1,
+            'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.sites',
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectMultipleSideBySide',
+                'itemsProcFunc' => \Causal\IgLdapSsoAuth\Utility\SiteConfigurationItemsProcFunc::class . '->getSites',
+                'allowNonIdValues' => true,
+                'size' => 10,
             ]
         ],
         'ldap_server' => [

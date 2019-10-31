@@ -469,15 +469,8 @@ class LdapUtility
      */
     protected function initializeCharacterSet($characterSet = null)
     {
-        /** @var \TYPO3\CMS\Core\Charset\CharsetConverter $csObj */
-        if ((isset($GLOBALS['TSFE'])) && (isset($GLOBALS['TSFE']->csConvObj))) {
-            $csObj = $GLOBALS['TSFE']->csConvObj;
-        } else {
-            $csObj = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class);
-        }
-
         // LDAP server charset
-        $this->ldapCharacterSet = $csObj->parse_charset($characterSet ? $characterSet : 'utf-8');
+        $this->ldapCharacterSet = !empty($characterSet) ? trim(strtolower($characterSet)) : 'utf-8';
 
         // TYPO3 charset
         $this->typo3CharacterSet = 'utf-8';

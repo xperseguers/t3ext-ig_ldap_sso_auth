@@ -16,8 +16,8 @@ namespace Causal\IgLdapSsoAuth\Controller;
 
 use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
-use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3GroupRepository;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3UserRepository;
@@ -286,10 +286,10 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      * Updates the search option using AJAX.
      *
      * @param ServerRequestInterface $request
-     * @param Response $response
-     * @return Response
+     * @param ResponseInterface $response
+     * @return ResponseInterface
      */
-    public function ajaxUpdateForm(ServerRequestInterface $request, Response $response): Response
+    public function ajaxUpdateForm(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $params = $request->getQueryParams();
 
@@ -315,10 +315,10 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      * Actual search action using AJAX.
      *
      * @param ServerRequestInterface $request
-     * @param Response $response
-     * @return Response
+     * @param ResponseInterface $response
+     * @return ResponseInterface
      */
-    public function ajaxSearch(ServerRequestInterface $request, Response $response): Response
+    public function ajaxSearch(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $params = $request->getQueryParams();
 
@@ -407,10 +407,10 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      * Actual import of users using AJAX.
      *
      * @param ServerRequestInterface $request
-     * @param Response $response
-     * @return Response
+     * @param ResponseInterface $response
+     * @return ResponseInterface
      */
-    public function ajaxUsersImport(ServerRequestInterface $request, Response $response): Response
+    public function ajaxUsersImport(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $params = $request->getQueryParams();
 
@@ -471,10 +471,10 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
      * Actual import of user groups using AJAX.
      *
      * @param ServerRequestInterface $request
-     * @param Response $response
-     * @return Response
+     * @param ResponseInterface $response
+     * @return ResponseInterface
      */
-    public function ajaxGroupsImport(ServerRequestInterface $request, Response $response): Response
+    public function ajaxGroupsImport(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $params = $request->getQueryParams();
 

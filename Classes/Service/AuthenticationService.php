@@ -39,19 +39,14 @@ class AuthenticationService extends BaseAuthenticationService
 {
 
     /**
-     * true - this service was able to authenticate the user
-     */
-    const STATUS_AUTHENTICATION_SUCCESS_CONTINUE = true;
-
-    /**
      * 200 - authenticated and no more checking needed
      */
     const STATUS_AUTHENTICATION_SUCCESS_BREAK = 200;
 
     /**
-     * false - this service was the right one to authenticate the user but it failed
+     * 0 - this service was the right one to authenticate the user but it failed
      */
-    const STATUS_AUTHENTICATION_FAILURE_BREAK = false;
+    const STATUS_AUTHENTICATION_FAILURE_BREAK = 0;
 
     /**
      * 100 - just go on. User is not authenticated but there's still no reason to stop
@@ -220,7 +215,7 @@ class AuthenticationService extends BaseAuthenticationService
      * authentication, e.g., password match, domain, IP, etc.).
      *
      * @param array $user Data of user.
-     * @return int|false
+     * @return int
      */
     public function authUser(array $user): int
     {

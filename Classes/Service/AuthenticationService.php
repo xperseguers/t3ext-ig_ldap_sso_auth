@@ -21,6 +21,12 @@ use Causal\IgLdapSsoAuth\Library\Authentication;
 use Causal\IgLdapSsoAuth\Library\Configuration;
 use Causal\IgLdapSsoAuth\Utility\NotificationUtility;
 
+if (version_compare(TYPO3_version, '9.0', '>=')) {
+    class BaseAuthenticationService extends \TYPO3\CMS\Core\Authentication\AuthenticationService {}
+} else {
+    class BaseAuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {}
+}
+
 /**
  * LDAP / SSO authentication service.
  *
@@ -29,7 +35,7 @@ use Causal\IgLdapSsoAuth\Utility\NotificationUtility;
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class AuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService
+class AuthenticationService extends BaseAuthenticationService
 {
 
     /**

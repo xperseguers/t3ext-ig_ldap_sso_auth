@@ -36,7 +36,7 @@ In case of use in an intranet environment, this extension is a perfect match sin
     'constraints' => [
         'depends' => [
             'php' => '7.2.0-7.3.99',
-            'typo3' => '8.7.0-9.5.99',
+            'typo3' => '8.7.0-10.2.99',
         ],
         'conflicts' => [],
         'suggests' => [],

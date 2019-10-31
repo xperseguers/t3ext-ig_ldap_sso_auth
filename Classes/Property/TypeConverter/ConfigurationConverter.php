@@ -33,6 +33,11 @@ class ConfigurationConverter extends \TYPO3\CMS\Extbase\Property\TypeConverter\A
     protected $targetType = 'Causal\\IgLdapSsoAuth\\Domain\\Model\\Configuration';
 
     /**
+     * @var int
+     */
+    protected $priority = 10;
+
+    /**
      * @var ConfigurationRepository
      */
     protected $configurationRepository;

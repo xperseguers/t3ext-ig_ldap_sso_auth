@@ -15,6 +15,8 @@
 namespace Causal\IgLdapSsoAuth\Library;
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -83,6 +85,21 @@ class Configuration
                 )
                 ->fetch();
             static::$domains[] = $row['domainName'];
+        }
+
+        if (version_compare(TYPO3_version, '9.0', '>=')) {
+            $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+            $siteIdentifiers = GeneralUtility::trimExplode(',', $configuration->getSites(), true);
+            foreach ($siteIdentifiers as $siteIdentifier) {
+                try {
+                    $host = $siteFinder->getSiteByIdentifier($siteIdentifier)->getBase()->getHost();
+                    static::$domains[] = $host;
+                } catch (SiteNotFoundException $e) {
+                    // Ignore invalid site identifiers.
+                }
+            }
+
+            static::$domains = array_unique(static::$domains);
         }
 
         static::$be['LDAPAuthentication'] = (bool)$globalConfiguration['enableBELDAPAuthentication'];

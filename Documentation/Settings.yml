@@ -6,8 +6,8 @@
 conf.py:
   copyright: 2000-2019
   project: LDAP / SSO Authentication
-  version: 3.4
-  release: 3.4.0
+  version: 3.5
+  release: 3.5.0
   latex_documents:
   - - Index
     - ig_ldap_sso_auth.tex
@@ -31,9 +31,9 @@ conf.py:
     - 'EXT:'
   intersphinx_mapping:
     t3api:
-    - https://docs.typo3.org/typo3cms/CoreApiReference/
+    - https://docs.typo3.org/m/typo3/reference-coreapi/master/en-us/
     - null
     t3tsref:
-    - https://docs.typo3.org/typo3cms/TyposcriptReference/
+    - https://docs.typo3.org/m/typo3/reference-typoscript/master/en-us/
     - null
 ...

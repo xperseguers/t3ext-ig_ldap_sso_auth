@@ -15,6 +15,7 @@
 namespace Causal\IgLdapSsoAuth\Library;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Causal\IgLdapSsoAuth\Utility\LdapUtility;
 
 /**
  * Class Ldap for the 'ig_ldap_sso_auth' extension.
@@ -33,15 +34,23 @@ class Ldap
     protected $lastBindDiagnostic = '';
 
     /**
-     * @var \Causal\IgLdapSsoAuth\Utility\LdapUtility
-     * @inject
+     * @var LdapUtility
      */
     protected $ldapUtility;
+
+    /**
+     * @param LdapUtility $ldapUtility
+     */
+    public function injectLdapUtility(\Causal\IgLdapSsoAuth\Utility\LdapUtility $ldapUtility)
+    {
+        $this->ldapUtility = $ldapUtility;
+    }
 
     /**
      * Returns an instance of this class.
      *
      * @return Ldap
+     * @throws \TYPO3\CMS\Extbase\Object\Exception
      */
     public static function getInstance()
     {

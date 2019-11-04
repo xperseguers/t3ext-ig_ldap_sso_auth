@@ -14,6 +14,8 @@
 
 namespace Causal\IgLdapSsoAuth\Property\TypeConverter;
 
+use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
+
 /**
  * Converter which transforms simple types to \Causal\IgLdapSsoAuth\Domain\Model\Configuration.
  */
@@ -31,10 +33,22 @@ class ConfigurationConverter extends \TYPO3\CMS\Extbase\Property\TypeConverter\A
     protected $targetType = 'Causal\\IgLdapSsoAuth\\Domain\\Model\\Configuration';
 
     /**
-     * @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository
-     * @inject
+     * @var int
+     */
+    protected $priority = 10;
+
+    /**
+     * @var ConfigurationRepository
      */
     protected $configurationRepository;
+
+    /**
+     * @param ConfigurationRepository $configurationRepository
+     */
+    public function injectConfigurationRepository(\Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository)
+    {
+        $this->configurationRepository = $configurationRepository;
+    }
 
     /**
      * @param string|int $source

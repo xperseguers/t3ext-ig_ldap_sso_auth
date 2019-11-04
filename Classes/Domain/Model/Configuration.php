@@ -236,6 +236,7 @@ class Configuration
 
     /**
      * @return string
+     * @deprecated since TYPO3 v10
      */
     public function getDomains()
     {

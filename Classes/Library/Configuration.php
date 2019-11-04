@@ -72,19 +72,21 @@ class Configuration
         // Select configuration from database, merge with extension configuration template and initialise class attributes.
 
         static::$domains = [];
-        $domainUids = GeneralUtility::intExplode(',', $configuration->getDomains(), true);
-        foreach ($domainUids as $domainUid) {
-            $row = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getConnectionForTable('sys_domain')
-                ->select(
-                    ['domainName'],
-                    'sys_domain',
-                    [
-                        'uid' => $domainUid,
-                    ]
-                )
-                ->fetch();
-            static::$domains[] = $row['domainName'];
+        if (version_compare(TYPO3_version, '10.0', '<')) {
+            $domainUids = GeneralUtility::intExplode(',', $configuration->getDomains(), true);
+            foreach ($domainUids as $domainUid) {
+                $row = GeneralUtility::makeInstance(ConnectionPool::class)
+                    ->getConnectionForTable('sys_domain')
+                    ->select(
+                        ['domainName'],
+                        'sys_domain',
+                        [
+                            'uid' => $domainUid,
+                        ]
+                    )
+                    ->fetch();
+                static::$domains[] = $row['domainName'];
+            }
         }
 
         if (version_compare(TYPO3_version, '9.0', '>=')) {
@@ -190,6 +192,7 @@ class Configuration
      * Returns the list of domains.
      *
      * @return array
+     * @deprecated since TYPO3 v10
      */
     public static function getDomains()
     {

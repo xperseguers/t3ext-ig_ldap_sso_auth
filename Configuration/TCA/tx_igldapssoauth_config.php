@@ -1,4 +1,5 @@
 <?php
+$domainsField = version_compare(TYPO3_version, '10.0', '<') ? 'domains,' : '';
 $sitesField = version_compare(TYPO3_version, '9.0', '>=') ? 'sites,' : '';
 
 return [
@@ -19,7 +20,7 @@ return [
         'iconfile' => 'EXT:ig_ldap_sso_auth/Resources/Public/Icons/icon_tx_igldapssoauth_config.png',
     ],
     'interface' => [
-        'showRecordFieldList' => 'hidden, name, domains, ' . $sitesField . '
+        'showRecordFieldList' => 'hidden, name, ' . $domainsField . $sitesField . '
                         ldap_server, ldap_charset, ldap_host, ldap_port, ldap_tls, ldap_ssl, ldap_binddn,
                         ldap_password, group_membership,
                         be_users_basedn, be_users_filter, be_users_mapping,
@@ -32,7 +33,7 @@ return [
         '1' => [
             'showitem' => '
                     --div--;GENERAL,
-                        hidden, name, domains, ' . $sitesField . '
+                        hidden, name, ' . $domainsField . $sitesField . '
                     --div--;LDAP,
                         ldap_server, ldap_charset,
                     --palette--;LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:palette.connection;connection,

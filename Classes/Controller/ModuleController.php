@@ -14,12 +14,12 @@
 
 namespace Causal\IgLdapSsoAuth\Controller;
 
-use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3GroupRepository;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3UserRepository;
 use Causal\IgLdapSsoAuth\Library\Authentication;
@@ -38,16 +38,30 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 {
 
     /**
-     * @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository
-     * @inject
+     * @var ConfigurationRepository
      */
     protected $configurationRepository;
 
     /**
-     * @var \Causal\IgLdapSsoAuth\Library\Ldap
-     * @inject
+     * @var Ldap
      */
     protected $ldap;
+
+    /**
+     * @param ConfigurationRepository $configurationRepository
+     */
+    public function injectConfigurationRepository(\Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository)
+    {
+        $this->configurationRepository = $configurationRepository;
+    }
+
+    /**
+     * @param Ldap $ldap
+     */
+    public function injectLdap(\Causal\IgLdapSsoAuth\Library\Ldap $ldap)
+    {
+        $this->ldap = $ldap;
+    }
 
     /**
      * Redirects to the saved action.

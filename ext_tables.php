@@ -15,25 +15,47 @@ $boot = function ($_EXTKEY) {
 
     if (TYPO3_MODE === 'BE') {
         // Add BE module on top of system main module
-        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-            'Causal.' . $_EXTKEY,
-            'system',
-            'txigldapssoauthM1',
-            'top',
-            [
-                'Module' => implode(',', [
-                    'index',
-                    'status',
-                    'search',
-                    'importFrontendUsers', 'importBackendUsers',
-                    'importFrontendUserGroups', 'importBackendUserGroups',
-                ]),
-            ], [
-                'access' => 'admin',
-                'icon' => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/module-ldap.png',
-                'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf'
-            ]
-        );
+        if (version_compare(TYPO3_version, '10.0', '<')) {
+            \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
+                'Causal.' . $_EXTKEY,
+                'system',
+                'txigldapssoauthM1',
+                'top',
+                [
+                    'Module' => implode(',', [
+                        'index',
+                        'status',
+                        'search',
+                        'importFrontendUsers', 'importBackendUsers',
+                        'importFrontendUserGroups', 'importBackendUserGroups',
+                    ]),
+                ], [
+                    'access' => 'admin',
+                    'icon' => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/module-ldap.png',
+                    'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf'
+                ]
+            );
+        } else {
+            \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
+                $_EXTKEY,
+                'system',
+                'txigldapssoauthM1',
+                'top',
+                [
+                    \Causal\IgLdapSsoAuth\Controller\ModuleController::class => implode(',', [
+                        'index',
+                        'status',
+                        'search',
+                        'importFrontendUsers', 'importBackendUsers',
+                        'importFrontendUserGroups', 'importBackendUserGroups',
+                    ]),
+                ], [
+                    'access' => 'admin',
+                    'icon' => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/module-ldap.png',
+                    'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf'
+                ]
+            );
+        }
     }
 
     // Initialize "context sensitive help" (csh)

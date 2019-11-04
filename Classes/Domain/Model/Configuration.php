@@ -40,6 +40,11 @@ class Configuration
     protected $domains;
 
     /**
+     * @var string
+     */
+    protected $sites;
+
+    /**
      * @var int
      */
     protected $ldapServer;
@@ -235,6 +240,14 @@ class Configuration
     public function getDomains()
     {
         return $this->domains;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSites()
+    {
+        return $this->sites;
     }
 
     /**

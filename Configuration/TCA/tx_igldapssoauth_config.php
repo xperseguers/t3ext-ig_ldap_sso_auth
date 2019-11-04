@@ -74,13 +74,13 @@ return [
         'domains' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.domains',
+            'description' => version_compare(TYPO3_version, '9.0', '>=')
+                ? 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.domains.v9_description' : '',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
-                'foreign_table' => 'sys_domain',
+                'itemsProcFunc' => \Causal\IgLdapSsoAuth\Tca\DomainItemsProcFunc::class . '->getDomains',
                 'size' => 10,
-                'minitems' => 0,
-                'maxitems' => 999,
             ]
         ],
         'sites' => [
@@ -89,7 +89,7 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
-                'itemsProcFunc' => \Causal\IgLdapSsoAuth\Utility\SiteConfigurationItemsProcFunc::class . '->getSites',
+                'itemsProcFunc' => \Causal\IgLdapSsoAuth\Tca\SiteConfigurationItemsProcFunc::class . '->getSites',
                 'allowNonIdValues' => true,
                 'size' => 10,
             ]

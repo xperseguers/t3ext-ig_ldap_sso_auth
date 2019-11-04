@@ -69,6 +69,9 @@
 			<trans-unit id="tx_igldapssoauth_config.domains">
 				<source>Associated domains:</source>
 			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.domains.v9_description">
+				<source>BEWARE: Usage of domains is deprecated since TYPO3 v9. Please migrate your configuration to site configurations.</source>
+			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.sites">
 				<source>Associated site configurations:</source>
 			</trans-unit>

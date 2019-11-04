@@ -88,6 +88,13 @@ class Configuration
         }
 
         if (version_compare(TYPO3_version, '9.0', '>=')) {
+            if (!empty(static::$domains)) {
+                trigger_error(
+                    'LDAP configuration record uid=' . $configuration->getUid() . ' uses associated domains which are deprecated since TYPO3 v9.',
+                    E_USER_DEPRECATED
+                );
+            }
+
             $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
             $siteIdentifiers = GeneralUtility::trimExplode(',', $configuration->getSites(), true);
             foreach ($siteIdentifiers as $siteIdentifier) {

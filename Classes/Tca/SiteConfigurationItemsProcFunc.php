@@ -12,12 +12,16 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Causal\IgLdapSsoAuth\Utility;
+namespace Causal\IgLdapSsoAuth\Tca;
 
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+/**
+ * Class SiteConfigurationItemsProcFunc
+ * @package Causal\IgLdapSsoAuth\Tca
+ */
 class SiteConfigurationItemsProcFunc
 {
     /**
@@ -25,6 +29,9 @@ class SiteConfigurationItemsProcFunc
      */
     protected $siteFinder;
 
+    /**
+     * SiteConfigurationItemsProcFunc constructor.
+     */
     public function __construct()
     {
         $this->siteFinder = GeneralUtility::makeInstance(SiteFinder::class);

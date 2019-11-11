@@ -89,8 +89,8 @@ class LdapUtility
     protected $status;
 
     /**
-     * 0 = OpenLDAP, 1 = Active Directory
-     * @var int
+     * 'OpenLDAP' OR 'Active Directory'
+     * @var string
      */
     protected $serverType;
 

@@ -114,6 +114,20 @@ Bind DN
 	E.g., ``CN=Administrator,CN=Users,DC=mycompany,DC=com``. This user account must have at least domain user
 	privileges.
 
+.. note::
+    On a Windows Server, you may find the DN of a given user using a command prompt::
+
+        dsquery user -name <known username>
+
+    Example: If you are searching for all users named "John", you can enter the username as ``John*`` to get a list of
+    all users whose name is John. The result will look like::
+
+        "CN=John.Smith,CN=Users,DC=MyDomain,DC=com"
+
+    Similarly, you can find the Group Base DN using::
+
+        dsquery group -name <known group name>
+
 
 .. _admin-manual-ldap-password:
 

@@ -16,7 +16,7 @@ $EM_CONF[$_EXTKEY] = [
 In case of use in an intranet environment, this extension is a perfect match since it natively brings Single Sign-On (SSO) capability to TYPO3 without any complex configuration.',
     'category' => 'services',
     'shy' => 0,
-    'version' => '3.5.0',
+    'version' => '3.5.1',
     'dependencies' => '',
     'conflicts' => '',
     'priority' => '',
@@ -35,8 +35,8 @@ In case of use in an intranet environment, this extension is a perfect match sin
     'CGLcompliance_note' => '',
     'constraints' => [
         'depends' => [
-            'php' => '7.2.0-7.3.99',
-            'typo3' => '8.7.0-10.2.99',
+            'php' => '7.2.0-7.4.99',
+            'typo3' => '8.7.0-10.3.99',
         ],
         'conflicts' => [],
         'suggests' => [],

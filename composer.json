@@ -23,10 +23,10 @@
   ],
   "license": "GPL-2.0-or-later",
   "require": {
-    "php": ">= 7.2.0, <= 7.3.99",
+    "php": ">= 7.2.0, <= 7.4.99",
     "ext-ldap": "*",
     "ext-json": "*",
-    "typo3/cms-core": "^8.7 || ^9.5 || ^10.1"
+    "typo3/cms-core": "^8.7 || ^9.5 || ^10.3"
   },
   "autoload": {
     "psr-4": {

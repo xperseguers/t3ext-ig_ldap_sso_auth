@@ -61,3 +61,10 @@ $hookParameters
 	An associative array with all hook parameters found in your mapping definition (thus including ``hookName``).
 
 Your method should simply return a string for the value to be given to ``$field``.
+
+.. note::
+
+    It is worth mentioning that in ``$hookParameters`` the LDAP attributes are not replaced yet. And this can quickly
+    be done by using::
+
+        \Causal\IgLdapSsoAuth\Library\Authentication::replaceLdapMarkers($hookParameters['param2'], $ldapRecord);

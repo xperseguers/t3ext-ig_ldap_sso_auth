@@ -128,12 +128,14 @@ class AuthenticationService extends BaseAuthenticationService
             if ($enableFrontendSso || $enableBackendSso) {
                 // Strip the domain name
                 $domain = null;
-                if ($pos = strpos($remoteUser, '@')) {
-                    $domain = substr($remoteUser, $pos + 1);
-                    $remoteUser = substr($remoteUser, 0, $pos);
-                } elseif ($pos = strrpos($remoteUser, '\\')) {
-                    $domain = substr($remoteUser, 0, $pos);
-                    $remoteUser = substr($remoteUser, $pos + 1);
+                if (!Configuration::getValue('SSOKeepDomainName')) {
+                    if ($pos = strpos($remoteUser, '@')) {
+                        $domain = substr($remoteUser, $pos + 1);
+                        $remoteUser = substr($remoteUser, 0, $pos);
+                    } elseif ($pos = strrpos($remoteUser, '\\')) {
+                        $domain = substr($remoteUser, 0, $pos);
+                        $remoteUser = substr($remoteUser, $pos + 1);
+                    }
                 }
 
                 $userRecordOrIsValid = Authentication::ldapAuthenticate($remoteUser, null, $domain);

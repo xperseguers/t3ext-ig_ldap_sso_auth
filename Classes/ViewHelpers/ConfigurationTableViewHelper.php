@@ -87,7 +87,7 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
             $content[] = sprintf('<tr class="' . $trClass . '"><td class="' . $class . '">%s</td>%s</tr>', htmlspecialchars($key), $valueCell);
         }
 
-        return '<table class="' . $tableClass . '">' . implode($content, LF) . '</table>';
+        return '<table class="' . $tableClass . '">' . implode(LF, $content) . '</table>';
     }
 
     /**

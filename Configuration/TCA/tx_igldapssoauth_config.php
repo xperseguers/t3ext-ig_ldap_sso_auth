@@ -1,6 +1,9 @@
 <?php
-$domainsField = version_compare(TYPO3_version, '10.0', '<') ? 'domains,' : '';
-$sitesField = version_compare(TYPO3_version, '9.0', '>=') ? 'sites,' : '';
+$typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
+    ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
+    : TYPO3_branch;
+$domainsField = version_compare($typo3Branch, '10.0', '<') ? 'domains,' : '';
+$sitesField = version_compare($typo3Branch, '9.0', '>=') ? 'sites,' : '';
 
 return [
     'ctrl' => [
@@ -65,7 +68,7 @@ return [
         'domains' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.domains',
-            'description' => version_compare(TYPO3_version, '9.0', '>=')
+            'description' => version_compare($typo3Branch, '9.0', '>=')
                 ? 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.domains.v9_description' : '',
             'config' => [
                 'type' => 'select',

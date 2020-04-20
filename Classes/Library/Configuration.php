@@ -55,7 +55,10 @@ class Configuration
      */
     public static function initialize($mode, \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration)
     {
-        if (version_compare(TYPO3_version, '9.0', '<')) {
+        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
+            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
+            : TYPO3_branch;
+        if (version_compare($typo3Branch, '9.0', '<')) {
             $globalConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth'] ?? '') ?? [];
         } else {
             $globalConfiguration = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['ig_ldap_sso_auth'] ?? [];
@@ -72,7 +75,10 @@ class Configuration
         // Select configuration from database, merge with extension configuration template and initialise class attributes.
 
         static::$domains = [];
-        if (version_compare(TYPO3_version, '10.0', '<')) {
+        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
+            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
+            : TYPO3_branch;
+        if (version_compare($typo3Branch, '10.0', '<')) {
             $domainUids = GeneralUtility::intExplode(',', $configuration->getDomains(), true);
             foreach ($domainUids as $domainUid) {
                 $row = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -89,7 +95,10 @@ class Configuration
             }
         }
 
-        if (version_compare(TYPO3_version, '9.0', '>=')) {
+        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
+            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
+            : TYPO3_branch;
+        if (version_compare($typo3Branch, '9.0', '>=')) {
             if (!empty(static::$domains)) {
                 trigger_error(
                     'LDAP configuration record uid=' . $configuration->getUid() . ' uses associated domains which are deprecated since TYPO3 v9.',

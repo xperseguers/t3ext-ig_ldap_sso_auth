@@ -1,7 +1,7 @@
 <?php
 defined('TYPO3_MODE') || die();
 
-$boot = function ($_EXTKEY) {
+$boot = function (string $_EXTKEY): void {
     // Register additional sprite icons
     /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
     $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
@@ -15,7 +15,10 @@ $boot = function ($_EXTKEY) {
 
     if (TYPO3_MODE === 'BE') {
         // Add BE module on top of system main module
-        if (version_compare(TYPO3_version, '10.0', '<')) {
+        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
+            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
+            : TYPO3_branch;
+        if (version_compare($typo3Branch, '10.0', '<')) {
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
                 'Causal.' . $_EXTKEY,
                 'system',

@@ -21,7 +21,10 @@ use Causal\IgLdapSsoAuth\Library\Authentication;
 use Causal\IgLdapSsoAuth\Library\Configuration;
 use Causal\IgLdapSsoAuth\Utility\NotificationUtility;
 
-if (version_compare(TYPO3_version, '9.0', '>=')) {
+$typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
+    ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
+    : TYPO3_branch;
+if (version_compare($typo3Branch, '9.0', '>=')) {
     class BaseAuthenticationService extends \TYPO3\CMS\Core\Authentication\AuthenticationService {}
 } else {
     class BaseAuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {}
@@ -68,7 +71,10 @@ class AuthenticationService extends BaseAuthenticationService
      */
     public function __construct()
     {
-        if (version_compare(TYPO3_version, '9.0', '<')) {
+        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
+            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
+            : TYPO3_branch;
+        if (version_compare($typo3Branch, '9.0', '<')) {
             $this->config = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey] ?? '') ?? [];
         } else {
             $this->config = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extKey] ?? [];

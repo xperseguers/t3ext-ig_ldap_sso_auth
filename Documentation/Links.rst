@@ -46,11 +46,11 @@ Contribution rules
 """"""""""""""""""
 
 - There must be a ticket in the project's bug tracker explaining the problem / the suggested enhancement
-- `PSR-2`_ coding guidelines are enforced
+- `PSR-12`_ coding guidelines are enforced
 - Commit message complies to the `format used by TYPO3`_ (the "releases:" line is useless here)
 - Unique logical change per patch [#]_
 
-.. _PSR-2: https://www.php-fig.org/psr/psr-2/
+.. _PSR-12: https://www.php-fig.org/psr/psr-12/
 .. _format used by TYP03: https://docs.typo3.org/m/typo3/guide-contributionworkflow/master/en-us/Appendix/CommitMessage.html
 
 

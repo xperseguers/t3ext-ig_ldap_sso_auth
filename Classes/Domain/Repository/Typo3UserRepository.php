@@ -64,7 +64,7 @@ class Typo3UserRepository
         foreach ($fieldsConfiguration as $configuration) {
             $field = $configuration->getName();
             $newUser[$field] = $configuration->getDefault();
-            if (!isset($GLOBALS['TCA'][$table]['columns'][$field]['config']['default']) && $field !== 'disable') {
+            if (isset($GLOBALS['TCA'][$table]['columns'][$field]['config']['default']) && $field !== 'disable') {
                 $newUser[$field] = $GLOBALS['TCA'][$table]['columns'][$field]['config']['default'];
             }
         }

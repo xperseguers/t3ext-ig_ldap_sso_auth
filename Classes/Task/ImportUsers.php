@@ -352,16 +352,6 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
     }
 
     /**
-     * Returns the LanguageService.
-     *
-     * @return \TYPO3\CMS\Lang\LanguageService
-     */
-    protected function getLanguageService()
-    {
-        return $GLOBALS['LANG'];
-    }
-
-    /**
      * Returns a logger.
      *
      * @return \TYPO3\CMS\Core\Log\Logger

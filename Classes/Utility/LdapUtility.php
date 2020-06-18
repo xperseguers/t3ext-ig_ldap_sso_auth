@@ -368,7 +368,7 @@ class LdapUtility
             if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['attributesProcessing'])) {
                 foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['attributesProcessing'] as $className) {
                     /** @var \Causal\IgLdapSsoAuth\Utility\AttributesProcessorInterface $postProcessor */
-                    $postProcessor = GeneralUtility::getUserObj($className);
+                    $postProcessor = GeneralUtility::makeInstance($className);
                     if ($postProcessor instanceof \Causal\IgLdapSsoAuth\Utility\AttributesProcessorInterface) {
                         $postProcessor->processAttributes($this->connection, $entry, $attributes);
                     } else {

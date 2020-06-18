@@ -435,7 +435,7 @@ class Authentication
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['getGroupsProcessing'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['getGroupsProcessing'] as $className) {
                 /** @var $postProcessor \Causal\IgLdapSsoAuth\Utility\GetGroupsProcessorInterface */
-                $postProcessor = GeneralUtility::getUserObj($className);
+                $postProcessor = GeneralUtility::makeInstance($className);
                 if ($postProcessor instanceof \Causal\IgLdapSsoAuth\Utility\GetGroupsProcessorInterface) {
                     $postProcessor->getUserGroups($groupTable, $ldapUser, $typo3_groups);
                 } else {
@@ -754,7 +754,7 @@ class Authentication
                         !empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'][$hookName])
                     ) {
 
-                        $_procObj = GeneralUtility::getUserObj($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'][$hookName]);
+                        $_procObj = GeneralUtility::makeInstance($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraMergeField'][$hookName]);
                         if (!is_callable([$_procObj, 'extraMerge'])) {
                             throw new \UnexpectedValueException(sprintf('Custom marker hook "%s" does not have a method "extraMerge"', $hookName), 1430140817);
                         }

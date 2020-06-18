@@ -258,7 +258,7 @@ class UserImportUtility
             if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'])) {
                 foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'] as $className) {
                     /** @var \Causal\IgLdapSsoAuth\Utility\ExtraDataProcessorInterface $postProcessor */
-                    $postProcessor = GeneralUtility::getUserObj($className);
+                    $postProcessor = GeneralUtility::makeInstance($className);
                     if ($postProcessor instanceof \Causal\IgLdapSsoAuth\Utility\ExtraDataProcessorInterface) {
                         $postProcessor->processExtraData($this->userTable, $user);
                     } else {

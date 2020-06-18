@@ -214,7 +214,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
      */
     public function getAdditionalInformation()
     {
-        $languageService = $this->getLanguageService();
+        $languageService = $this->getLanguageServiceForLdap();
 
         if (empty($this->configuration)) {
             $configurationName = $languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.configuration.all');
@@ -354,9 +354,9 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
     /**
      * Returns the LanguageService.
      *
-     * @return \TYPO3\CMS\Lang\LanguageService
+     * @return \TYPO3\CMS\Lang\LanguageService|\TYPO3\CMS\Core\Localization\LanguageService
      */
-    protected function getLanguageService()
+    protected function getLanguageServiceForLdap()
     {
         return $GLOBALS['LANG'];
     }

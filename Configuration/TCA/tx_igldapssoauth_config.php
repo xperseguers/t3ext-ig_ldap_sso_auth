@@ -75,6 +75,7 @@ return [
                 'renderType' => 'selectMultipleSideBySide',
                 'itemsProcFunc' => \Causal\IgLdapSsoAuth\Tca\DomainItemsProcFunc::class . '->getDomains',
                 'size' => 10,
+                'default' => '',
             ]
         ],
         'sites' => [

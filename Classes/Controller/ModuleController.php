@@ -14,6 +14,8 @@
 
 namespace Causal\IgLdapSsoAuth\Controller;
 
+use Causal\IgLdapSsoAuth\Exception\InvalidHostnameException;
+use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
@@ -911,8 +913,15 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
     {
         try {
             $success = $this->ldap->connect(Configuration::getLdapConfiguration());
-        } catch (\Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException $e) {
+        } catch (UnresolvedPhpDependencyException $e) {
             // Possible known exception: 1409566275, LDAP extension is not available for PHP
+            $this->addFlashMessage(
+                $e->getMessage(),
+                'Error ' . $e->getCode(),
+                \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
+            );
+            return false;
+        } catch (InvalidHostnameException $e) {
             $this->addFlashMessage(
                 $e->getMessage(),
                 'Error ' . $e->getCode(),

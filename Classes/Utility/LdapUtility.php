@@ -15,6 +15,7 @@
 namespace Causal\IgLdapSsoAuth\Utility;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Causal\IgLdapSsoAuth\Exception\InvalidHostnameException;
 use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
 
 /**
@@ -143,7 +144,7 @@ class LdapUtility
                 if ($matches[1] === 'ldaps') {
                     $errorMessage .= ' Since you obviously want a SSL connection, please tick the "Use SSL" checkbox.';
                 }
-                throw new \RuntimeException($errorMessage, 1571920049);
+                throw new InvalidHostnameException($errorMessage, 1571920049);
             }
             $scheme = 'ldap://';
         }

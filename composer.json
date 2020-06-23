@@ -36,16 +36,6 @@
   "replace": {
     "typo3-ter/ig-ldap-sso-auth": "self.version"
   },
-  "config": {
-    "vendor-dir": ".Build/vendor",
-    "bin-dir": ".Build/bin"
-  },
-  "scripts": {
-    "post-autoload-dump": [
-      "mkdir -p .Build/Web/typo3conf/ext/",
-      "[ -L .Build/Web/typo3conf/ext/ig_ldap_sso_auth ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/ig_ldap_sso_auth"
-    ]
-  },
   "extra": {
     "branch-alias": {
       "dev-master": "3.6.x-dev",
@@ -53,8 +43,7 @@
     },
     "typo3/cms": {
       "extension-key": "ig_ldap_sso_auth",
-      "cms-package-dir": "{$vendor-dir}/typo3/cms",
-      "web-dir": ".Build/Web"
+      "cms-package-dir": "{$vendor-dir}/typo3/cms"
     }
   }
 }

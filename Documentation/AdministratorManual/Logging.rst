@@ -18,7 +18,7 @@ As an administrator, what you should know is that the TYPO3 Logger forwards log 
 log record.
 
 By default, with a vanilla TYPO3 installation, messages are written to the default log file
-(:file:`typo3temp/logs/typo3_*.log`).
+(:file:`var/log/typo3_*.log`).
 
 
 .. _admin-manual-logging-dedicatedogfile:
@@ -26,7 +26,7 @@ By default, with a vanilla TYPO3 installation, messages are written to the defau
 Dedicated log file for LDAP
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If you want to redirect every logging information from this extension to :file:`typo3temp/logs/ldap.log` and send log
+If you want to redirect every logging information from this extension to :file:`var/log/ldap.log` and send log
 entries with level "WARNING" or above to the system log, you may add following configuration to
 :file:`typo3conf/AdditionalConfiguration.php`:
 
@@ -35,7 +35,7 @@ entries with level "WARNING" or above to the system log, you may add following c
 	$GLOBALS['TYPO3_CONF_VARS']['LOG']['Causal']['IgLdapSsoAuth']['writerConfiguration'] = [
 	    \TYPO3\CMS\Core\Log\LogLevel::DEBUG => [
 	        \TYPO3\CMS\Core\Log\Writer\FileWriter::class => [
-	            'logFile' => 'typo3temp/logs/ldap.log'
+	            'logFile' => Environment::getVarPath() . '/log/ldap.log'
 	        ],
 	    ],
 

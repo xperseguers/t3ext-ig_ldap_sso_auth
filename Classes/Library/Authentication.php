@@ -686,13 +686,30 @@ class Authentication
             $backupTSFE = $GLOBALS['TSFE'];
 
             // Advanced stdWrap methods require a valid $GLOBALS['TSFE'] => create the most lightweight one
+            // Use SiteFinder to get a Site object for the current page tree
+            $siteFinder = GeneralUtility::makeInstance(
+                \TYPO3\CMS\Core\Site\SiteFinder::class
+            );
+            $currentSite = $siteFinder->getSiteByPageId($typo3['uid']);
+
+            // Context is a singleton, so we can get the current Context by instantiation
+            $currentContext = GeneralUtility::makeInstance(
+                \TYPO3\CMS\Core\Context\Context::class
+            );
+
+            // Use Site & Context to instatiate TSFE properly for Typo3 v10+
             $GLOBALS['TSFE'] = GeneralUtility::makeInstance(
                 \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::class,
-                $GLOBALS['TYPO3_CONF_VARS'],
-                0,
-                ''
+                $currentContext,
+                $currentSite,
+                $currentSite->getDefaultLanguage()
             );
-            $GLOBALS['TSFE']->initTemplate();
+
+            // initTemplate() has been removed. The deprecation notice suggest setting the property directly by yourself
+            $GLOBALS['TSFE']->tmpl = GeneralUtility::makeInstance(
+                \TYPO3\CMS\Core\TypoScript\TemplateService::class,
+                $currentContext
+            );
             $GLOBALS['TSFE']->renderCharset = 'utf-8';
 
             /** @var $contentObj \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer */

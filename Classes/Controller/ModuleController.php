@@ -848,7 +848,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             $iconFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconFactory::class);
             $icon = $iconFactory->getIcon('actions-document-open', \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
             $editLink = sprintf(
-                ' <a href="%s" title="uid=%s">' . $icon . '</a>',
+                ' <a href="%s" title="uid=%s" class="btn btn-default btn-sm" style="vertical-align: inherit;">' . $icon . '</a>',
                 $editUri,
                 $configuration->getUid()
             );

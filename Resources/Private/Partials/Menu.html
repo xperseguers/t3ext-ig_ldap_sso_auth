@@ -2,7 +2,7 @@
       xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<f:be.menus.actionMenu>
+<f:be.menus.actionMenu additionalAttributes="{'class':'form-control t3-js-jumpMenuBox'}">
     <f:be.menus.actionMenuItem label="{f:translate(key:'module_overview')}" controller="Module" action="index"
                                arguments="{configuration:currentConfiguration.uid}"/>
     <f:if condition="{currentConfiguration}">

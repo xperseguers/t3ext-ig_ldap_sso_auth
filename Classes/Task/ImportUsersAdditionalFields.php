@@ -15,6 +15,7 @@
 namespace Causal\IgLdapSsoAuth\Task;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
 
 /**
  * Provides additional fields to the "Synchronize Users" Scheduler task.
@@ -42,6 +43,13 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
         /** @var \Causal\IgLdapSsoAuth\Task\ImportUsers $task */
         $additionalFields = [];
 
+        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
+            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
+            : TYPO3_branch;
+        $isEdit = version_compare($typo3Branch, '9.5', '>=')
+            ? (string)$schedulerModule->getCurrentAction() === Action::EDIT
+            : $schedulerModule->CMD === 'edit';
+
         // Process the mode field
         $parameters = [
             'field' => 'mode',
@@ -53,7 +61,7 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
             'value' => $task ? $task->getMode() : null,
             'css' => 'wide',
         ];
-        $this->registerSelect($taskInfo, $schedulerModule->CMD, $parameters, $additionalFields);
+        $this->registerSelect($taskInfo, $isEdit, $parameters, $additionalFields);
 
         // Process the context field
         $parameters = [
@@ -66,7 +74,7 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
             ],
             'value' => $task ? $task->getContext() : null,
         ];
-        $this->registerSelect($taskInfo, $schedulerModule->CMD, $parameters, $additionalFields);
+        $this->registerSelect($taskInfo, $isEdit, $parameters, $additionalFields);
 
         // Process the configuration field
         $parameters = [
@@ -85,7 +93,7 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
             $uid = $configuration->getUid();
             $parameters['options'][$uid] = $configuration->getName();
         }
-        $this->registerSelect($taskInfo, $schedulerModule->CMD, $parameters, $additionalFields);
+        $this->registerSelect($taskInfo, $isEdit, $parameters, $additionalFields);
 
         // Process the missing user handling field
         $parameters = [
@@ -98,7 +106,7 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
             ],
             'value' => $task ? $task->getMissingUsersHandling() : null,
         ];
-        $this->registerSelect($taskInfo, $schedulerModule->CMD, $parameters, $additionalFields);
+        $this->registerSelect($taskInfo, $isEdit, $parameters, $additionalFields);
 
         // Process the restored user handling field
         $parameters = [
@@ -112,7 +120,7 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
             ],
             'value' => $task ? $task->getRestoredUsersHandling() : null,
         ];
-        $this->registerSelect($taskInfo, $schedulerModule->CMD, $parameters, $additionalFields);
+        $this->registerSelect($taskInfo, $isEdit, $parameters, $additionalFields);
 
         return $additionalFields;
     }
@@ -121,12 +129,12 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
      * Generates and registers a HTML select field.
      *
      * @param array $taskInfo Values of the fields from the add/edit task form
-     * @param string $command
+     * @param bool $isEdit
      * @param array $parameters
      * @param array $additionalFields
      * @return void
      */
-    protected function registerSelect(array &$taskInfo, $command, array $parameters, array &$additionalFields)
+    protected function registerSelect(array &$taskInfo, bool $isEdit, array $parameters, array &$additionalFields)
     {
         $languageService = $this->getLanguageService();
         $extensionKey = 'ig_ldap_sso_auth';
@@ -137,11 +145,11 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
 
         // Initialize extra field value, if not yet defined
         if (empty($taskInfo[$fieldName])) {
-            if ($command === 'add') {
-                $taskInfo[$fieldName] = current($parameters['options']);
-            } elseif ($command === 'edit') {
+            if ($isEdit) {
                 // In case of edit, set to internal value if no data was submitted already
                 $taskInfo[$fieldName] = $parameters['value'];
+            } else {
+                $taskInfo[$fieldName] = current($parameters['options']);
             }
         }
 

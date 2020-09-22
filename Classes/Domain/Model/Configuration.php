@@ -78,7 +78,7 @@ class Configuration
     /**
      * @var bool
      */
-    protected $ldapTlsReqcert = true;
+    protected $ldapTlsReqcert;
 
     /**
      * @var bool

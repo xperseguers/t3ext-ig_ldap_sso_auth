@@ -48,9 +48,13 @@ class SiteConfigurationItemsProcFunc
 
         $config['items'] = array_map(
             static function (Site $site) {
+                $host = $site->getBase()->getHost();
+                if (empty($host)) {
+                    $host = GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY');
+                }
                 return [
                     // displayed value
-                    $site->getBase()->getHost(),
+                    $host,
                     // stored value
                     $site->getIdentifier()
                 ];

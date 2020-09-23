@@ -111,6 +111,9 @@ class Configuration
             foreach ($siteIdentifiers as $siteIdentifier) {
                 try {
                     $host = $siteFinder->getSiteByIdentifier($siteIdentifier)->getBase()->getHost();
+                    if (empty($host)) {
+                        $host = GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY');
+                    }
                     static::$domains[] = $host;
                 } catch (SiteNotFoundException $e) {
                     // Ignore invalid site identifiers.

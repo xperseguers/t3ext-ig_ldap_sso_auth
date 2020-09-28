@@ -686,13 +686,45 @@ class Authentication
             $backupTSFE = $GLOBALS['TSFE'];
 
             // Advanced stdWrap methods require a valid $GLOBALS['TSFE'] => create the most lightweight one
-            $GLOBALS['TSFE'] = GeneralUtility::makeInstance(
-                \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::class,
-                $GLOBALS['TYPO3_CONF_VARS'],
-                0,
-                ''
-            );
-            $GLOBALS['TSFE']->initTemplate();
+            $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
+                ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
+                : TYPO3_branch;
+            if (version_compare($typo3Branch, '10.0', '<')) {
+                // Keep the old approach to init TSFE before Typo3 v10
+                $GLOBALS['TSFE'] = GeneralUtility::makeInstance(
+                    \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::class,
+                    $GLOBALS['TYPO3_CONF_VARS'],
+                    0,
+                    ''
+                );
+                $GLOBALS['TSFE']->initTemplate();
+            } else {
+                // Use a modern approach to init TSFE on TYPO3 v10+
+                // Use SiteFinder to get a Site object for the current page tree
+                $siteFinder = GeneralUtility::makeInstance(
+                    \TYPO3\CMS\Core\Site\SiteFinder::class
+                );
+                $currentSite = $siteFinder->getSiteByPageId($typo3['uid']);
+
+                // Context is a singleton, so we can get the current Context by instantiation
+                $currentContext = GeneralUtility::makeInstance(
+                    \TYPO3\CMS\Core\Context\Context::class
+                );
+
+                // Use Site & Context to instantiate TSFE properly for TYPO3 v10+
+                $GLOBALS['TSFE'] = GeneralUtility::makeInstance(
+                    \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::class,
+                    $currentContext,
+                    $currentSite,
+                    $currentSite->getDefaultLanguage()
+                );
+
+                // initTemplate() has been removed. The deprecation notice suggests setting the property directly
+                $GLOBALS['TSFE']->tmpl = GeneralUtility::makeInstance(
+                    \TYPO3\CMS\Core\TypoScript\TemplateService::class,
+                    $currentContext
+                );
+            }
             $GLOBALS['TSFE']->renderCharset = 'utf-8';
 
             /** @var $contentObj \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer */

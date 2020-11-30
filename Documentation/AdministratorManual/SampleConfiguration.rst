@@ -1,19 +1,14 @@
-.. ==================================================
-.. FOR YOUR INFORMATION
-.. --------------------------------------------------
-.. -*- coding: utf-8 -*- with BOM.
-
-.. include:: ../Includes.txt
-
-
+.. include:: ../Includes.rst.txt
 .. _admin-manual-sample:
 
 Sample Configuration
 --------------------
 
-`Forum Systems <http://www.forumsys.com>`_ is providing a free online LDAP test server that you can use for testing.
-If all you need is to test connectivity and do a proof of concept of connecting TYPO3 with an LDAP server, this is the
-right place to eliminate the need to download, install and configure an LDAP server just for testing.
+`Forum Systems <http://www.forumsys.com>`_ is providing a free online LDAP test
+server that you can use for testing. If all you need is to test connectivity and
+do a proof of concept of connecting TYPO3 with an LDAP server, this is the right
+place to eliminate the need to download, install and configure an LDAP server
+just for testing.
 `read more <http://www.forumsys.com/tutorials/integration-how-to/ldap/online-ldap-test-server/>`_.
 
 
@@ -67,8 +62,10 @@ Mapping                             .. code-block:: typoscript
 =================================== ===========================================
 
 .. warning::
-	In this example, the last mapping line will automatically promote every LDAP user as TYPO3 administrator. This
-	should of course be enabled only for quick testing without having to bother with available modules.
+
+	In this example, the last mapping line will automatically promote every LDAP
+	user as TYPO3 administrator. This should of course be enabled only for quick
+	testing without having to bother with available modules.
 
 
 .. _admin-manual-sample-begroups:

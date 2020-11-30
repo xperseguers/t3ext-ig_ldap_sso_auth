@@ -1,18 +1,12 @@
-.. ==================================================
-.. FOR YOUR INFORMATION
-.. --------------------------------------------------
-.. -*- coding: utf-8 -*- with BOM.
-
-.. include:: ../Includes.txt
-
-
+.. include:: ../Includes.rst.txt
 .. _admin-manual-kerberos-apache:
 .. _sso:
 
 Single Sign-On
 ==============
 
-This chapter describes how to configure Kerberos for Apache so that :term:`SSO` is available for your TYPO3 website.
+This chapter describes how to configure Kerberos for Apache so that :term:`SSO`
+is available for your TYPO3 website.
 
 .. only:: html
 

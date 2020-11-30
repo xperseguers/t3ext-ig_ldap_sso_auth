@@ -1,11 +1,4 @@
-﻿.. ==================================================
-.. FOR YOUR INFORMATION
-.. --------------------------------------------------
-.. -*- coding: utf-8 -*- with BOM.
-
-.. include:: ../Includes.txt
-
-
+﻿.. include:: ../Includes.rst.txt
 .. _faq:
 
 Frequently Asked Questions
@@ -27,55 +20,62 @@ Users
 
 .. question
 
-**Is it possible to have both users manually defined (thus authenticated with a TYPO3 password) and users authenticated
-with LDAP?**
+**Is it possible to have both users manually defined (thus authenticated with a
+TYPO3 password) and users authenticated with LDAP?**
 
 .. answer
 
-*Yes. Both for frontend and backend authentication it is possible to manually define users unrelated to your LDAP
-server(s). When a user is manually defined, the record's column* ``tx_igldapssoauth_dn`` *is empty and thus, since the
-LDAP authentication will fail, it will automatically fall back to the standard TYPO3 authentication service. This
-behaviour may be enabled/disabled globally for backend and/or frontend within Extension Manager.*
+*Yes. Both for frontend and backend authentication it is possible to manually
+define users unrelated to your LDAP server(s). When a user is manually defined,
+the record's column* ``tx_igldapssoauth_dn`` *is empty and thus, since the LDAP
+authentication will fail, it will automatically fall back to the standard TYPO3
+authentication service. This behaviour may be enabled/disabled globally for
+backend and/or frontend within Extension Manager.*
 
 -------
 
 .. question
 
-**I have a local user with the same username as a LDAP user but which has been manually created in TYPO3. Which password
-will be taken into account?**
+**I have a local user with the same username as a LDAP user but which has been
+manually created in TYPO3. Which password will be taken into account?**
 
 .. answer
 
-*When you manually create a user in TYPO3, it is not related to LDAP. This local user may authenticate with the
-password you set. However is the user matches a LDAP user* **and the password provided** *results into a successful
-LDAP authentication, the manually created user will be automatically linked to the LDAP user.* **Afterwards, only
-the LDAP password will be valid**.
+*When you manually create a user in TYPO3, it is not related to LDAP. This local
+user may authenticate with the password you set. However is the user matches a
+LDAP user* **and the password provided** *results into a successful LDAP
+authentication, the manually created user will be automatically linked to the
+LDAP user.* **Afterwards, only the LDAP password will be valid**.
 
 -------
 
 .. question
 
-**I would like to silently and automatically authenticate my users in frontend (Single Sign On / SSO). Since Apache is
-configured to restrict access using** :term:`Kerberos`, **no login form should be needed in my website. Is this possible
+**I would like to silently and automatically authenticate my users in frontend
+(Single Sign On / SSO). Since Apache is configured to restrict access using**
+:term:`Kerberos`, **no login form should be needed in my website. Is this
+possible with this extension?**
+
+.. answer
+
+*Yes. You have to activate this option in Extension Manager and ensure you have
+properly configured mod_ntlm or Kerberos with Apache (or any other supported web
+server). This extension will look for a username in* ``$_SERVER['REMOTE_USER']``
+*(without any domain part) to silently create the session in TYPO3.*
+
+-------
+
+.. question
+
+**I would like to do SSO in backend just like I do in frontend. Is this possible
 with this extension?**
 
 .. answer
 
-*Yes. You have to activate this option in Extension Manager and ensure you have properly configured mod_ntlm or
-Kerberos with Apache (or any other supported web server). This extension will look for a username
-in* ``$_SERVER['REMOTE_USER']`` *(without any domain part) to silently create the session in TYPO3.*
-
--------
-
-.. question
-
-**I would like to do SSO in backend just like I do in frontend. Is this possible with this extension?**
-
-.. answer
-
-*Yes. This is possible since version 3.2.0. Please keep in mind though that enabling SSO for the backend means it is
-then impossible for a user to log out. And TYPO3 may behave differently if you show the frontend while having a
-backend session active (e.g., frontend editing).*
+*Yes. This is possible since version 3.2.0. Please keep in mind though that
+enabling SSO for the backend means it is then impossible for a user to log out.
+And TYPO3 may behave differently if you show the frontend while having a backend
+session active (e.g., frontend editing).*
 
 -------
 
@@ -85,8 +85,9 @@ backend session active (e.g., frontend editing).*
 
 .. answer
 
-*It is not always obvious when opening the properties of a given user in Active Directory to figure out the DN to be
-used. The trick is to open a command prompt and use ``dsquery``. E.g. when looking for the DN of the "administrator"
+*It is not always obvious when opening the properties of a given user in Active
+Directory to figure out the DN to be used. The trick is to open a command prompt
+and use ``dsquery``. E.g. when looking for the DN of the "administrator"
 account:*
 
 .. code::
@@ -118,20 +119,23 @@ Groups
 
 .. answer
 
-*Yes. To do so, you should enable the global option in Extension Manager preventing the automatic synchronization of
-groups (may be configured separately for backend and frontend). In order to import new groups manually, use the LDAP /
-SSO backend module. Once imported, you may change their name to fit your needs and conventions.*
+*Yes. To do so, you should enable the global option in Extension Manager
+preventing the automatic synchronization of groups (may be configured separately
+for backend and frontend). In order to import new groups manually, use the LDAP
+/ SSO backend module. Once imported, you may change their name to fit your needs
+and conventions.*
 
 -------
 
 .. question
 
-**My server is providing a hierarchy of groups. Is it possible to automatically mirror this structure in TYPO3?**
+**My server is providing a hierarchy of groups. Is it possible to automatically
+mirror this structure in TYPO3?**
 
 .. answer
 
-*Yes. You should provide a be_groups and/or fe_groups mapping instruction for the LDAP attribute holding the reference
-to the parent group. E.g.,* ::
+*Yes. You should provide a be_groups and/or fe_groups mapping instruction for
+the LDAP attribute holding the reference to the parent group. E.g.,* ::
 
 	parentGroup = <memberof>
 
@@ -149,16 +153,19 @@ to the parent group. E.g.,* ::
 
 .. question
 
-**My infrastructure provides 2 LDAP servers, one containing group records, the second containing only users but with
-"memberOf" attributes corresponding to groups found on the other server. Is it possible to map those groups to the
+**My infrastructure provides 2 LDAP servers, one containing group records, the
+second containing only users but with "memberOf" attributes corresponding to
+groups found on the other server. Is it possible to map those groups to the
 users?**
 
 .. answer
 
-*Yes. In order to do that, you will need to manually import the LDAP user groups into your TYPO3 website and then
-configure the global option in Extension Manager that disables the synchronization of user groups. This way, only the
-configured baseDN for groups will be compared with the groups assigned as "memberOf" attributes, without actively
-retrieving corresponding group records from the LDAP server.*
+*Yes. In order to do that, you will need to manually import the LDAP user groups
+into your TYPO3 website and then configure the global option in Extension
+Manager that disables the synchronization of user groups. This way, only the
+configured baseDN for groups will be compared with the groups assigned as
+"memberOf" attributes, without actively retrieving corresponding group records
+from the LDAP server.*
 
 -------
 
@@ -174,9 +181,10 @@ Security
 
 .. answer
 
-*No. The password provided in the login form is sent directly to the LDAP server and never stored in TYPO3. However,
-since TYPO3 requires a password to be set for frontend and backend user records, this extension generates and saves
-a random 16 byte password for the sole purpose of making TYPO3 happy.*
+*No. The password provided in the login form is sent directly to the LDAP server
+and never stored in TYPO3. However, since TYPO3 requires a password to be set
+for frontend and backend user records, this extension generates and saves a
+random 16 byte password for the sole purpose of making TYPO3 happy.*
 
 -------
 
@@ -186,7 +194,8 @@ a random 16 byte password for the sole purpose of making TYPO3 happy.*
 
 .. answer
 
-*Yes. This extension is supporting SSL-encrypted connection to the LDAP server as well as TLS-based connection.*
+*Yes. This extension is supporting SSL-encrypted connection to the LDAP server
+as well as TLS-based connection.*
 
 -------
 
@@ -196,7 +205,8 @@ a random 16 byte password for the sole purpose of making TYPO3 happy.*
 
 .. answer
 
-*It is not possible to answer without knowing your infrastructure but it is worth to mention that*
+*It is not possible to answer without knowing your infrastructure but it is
+worth to mention that*
 
 - **389** *is the industry standard port for LDAP connections over TCP/IP, and*
 - **636** *is the industry standard port for LDAP connections over SSL.*

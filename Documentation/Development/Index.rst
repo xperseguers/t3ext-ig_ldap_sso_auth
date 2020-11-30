@@ -1,17 +1,11 @@
-﻿.. ==================================================
-.. FOR YOUR INFORMATION
-.. --------------------------------------------------
-.. -*- coding: utf-8 -*- with BOM.
-
-.. include:: ../Includes.txt
-
-
+﻿.. include:: ../Includes.rst.txt
 .. _development:
 
 Development
 ===========
 
-This chapter describes some internals of the ig_ldap_sso_auth extension to let you extend it easily.
+This chapter describes some internals of the ig_ldap_sso_auth extension to let
+you extend it easily.
 
 
 .. _development-hooks:
@@ -32,8 +26,9 @@ Hooks
 Continuous Deployment
 ---------------------
 
-To support continuous deployment, it is possible to set a configuration via PHP through the following code either in
-:file:`AdditionalConfiguration.php` or in :file:`ext_localconf.php` within your extension.
+To support continuous deployment, it is possible to set a configuration via PHP
+through the following code either in :file:`AdditionalConfiguration.php` or in
+:file:`ext_localconf.php` within your extension.
 
 .. code-block:: php
 

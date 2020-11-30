@@ -1,11 +1,4 @@
-﻿.. ==================================================
-.. FOR YOUR INFORMATION
-.. --------------------------------------------------
-.. -*- coding: utf-8 -*- with BOM.
-
-.. include:: Includes.txt
-
-
+﻿.. include:: Includes.rst.txt
 .. _start:
 
 =========================
@@ -24,12 +17,15 @@ LDAP / SSO Authentication
 		en
 
 	:Description:
-		This extension provides LDAP support for TYPO3 by delegating the authentication of frontend and/or backend users
-		to the centrally-managed directory of your organization. It fully supports OpenLDAP and Active Directory and is
-		capable of connecting securely to the authentication server using either TLS or SSL (ldaps://).
+		This extension provides LDAP support for TYPO3 by delegating the
+		authentication of frontend and/or backend users to the centrally-managed
+		directory of your organization. It fully supports OpenLDAP and Active
+		Directory and is capable of connecting securely to the authentication
+		server using either TLS or SSL (ldaps://).
 
-		In case of use in an intranet environment, this extension is a perfect match since it natively brings Single
-		Sign-On (SSO) capability to TYPO3 without any complex configuration.
+		In case of use in an intranet environment, this extension is a perfect
+		match since it natively brings Single Sign-On (SSO) capability to TYPO3
+		without any complex configuration.
 
 	:Keywords:
 		openldap, active directory, ldap, authentication

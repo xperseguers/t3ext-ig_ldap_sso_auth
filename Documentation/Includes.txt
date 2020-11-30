@@ -1,22 +1,32 @@
-﻿.. ==================================================
-.. FOR YOUR INFORMATION
-.. --------------------------------------------------
-.. -*- coding: utf-8 -*- with BOM.
+﻿.. This is 'Includes.rst.txt'. It is included at the very top of each and
+   every ReST source file in THIS documentation project (= manual).
+.. This files lives at
+   https://github.com/TYPO3-Documentation/TYPO3CMS-Guide-HowToDocument/blob/master/Documentation/Includes.rst.txt
+   Version: 2018-10-16
+.. More information about this file:
+   https://docs.typo3.org/typo3cms/HowToDocument/GeneralConventions/DirectoryFilenames.html#includes-txt
+.. Define some additional textroles
+   See: https://docs.typo3.org/typo3cms/HowToDocument/WritingReST/InlineCode.html
+.. ---------
+.. textroles
+.. ---------
+.. role:: aspect (emphasis)
+.. role:: html(code)
+.. role:: js(code)
+.. role:: php(code)
+.. role:: rst(code)
+.. role:: sep (strong)
+.. role:: typoscript(code)
 
-.. This is 'Includes.txt'. It is included at the very top of each and
-   every ReST source file in this documentation project (= manual).
+.. role:: ts(typoscript)
+   :class: typoscript
 
+.. role:: yaml(code)
 
-.. ==================================================
-.. DEFINE SOME TEXT ROLES
-.. --------------------------------------------------
+.. default-role:: code
 
-.. role::   typoscript(code)
-
-.. role::   ts(typoscript)
-   :class:  typoscript
-
-.. role::   php(code)
-	:language: php
-
+.. ---------
+.. highlight
+.. ---------
+.. By default, code blocks are php
 .. highlight:: php

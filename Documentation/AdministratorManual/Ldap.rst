@@ -1,11 +1,4 @@
-.. ==================================================
-.. FOR YOUR INFORMATION
-.. --------------------------------------------------
-.. -*- coding: utf-8 -*- with BOM.
-
-.. include:: ../Includes.txt
-
-
+.. include:: ../Includes.rst.txt
 .. _admin-manual-ldap:
 
 LDAP
@@ -27,8 +20,9 @@ The second tab is the global configuration about a single LDAP server.
 Server
 ^^^^^^
 
-Choose your LDAP type (OpenLDAP or Active Directory). This is used internally to follow (or not)
-referrals returned by the LDAP server and to help you with suggested mapping configuration.
+Choose your LDAP type (OpenLDAP or Active Directory). This is used internally to
+follow (or not) referrals returned by the LDAP server and to help you with
+suggested mapping configuration.
 
 
 .. _admin-manual-ldap-characterset:
@@ -44,8 +38,9 @@ Character set of your LDAP connection. Usually ``utf-8``.
 Host
 ^^^^
 
-Host of your LDAP. You may use either a host name / IP address or prefix it with a protocol such as
-``ldap://<hostname>`` or ``ldaps://<hostname>`` (latter in case you want to connect with SSL).
+Host of your LDAP. You may use either a host name / IP address or prefix it with
+a protocol such as ``ldap://<hostname>`` or ``ldaps://<hostname>`` (latter in
+case you want to connect with SSL).
 
 
 .. _admin-manual-ldap-port:
@@ -53,7 +48,8 @@ Host of your LDAP. You may use either a host name / IP address or prefix it with
 Port
 ^^^^
 
-Port your LDAP uses. Default LDAP ports are 389 (``ldap://``) and 636 (``ldaps://``).
+Port your LDAP uses. Default LDAP ports are 389 (``ldap://``) and 636
+(``ldaps://``).
 
 
 .. _admin-manual-ldap-tls:
@@ -61,10 +57,13 @@ Port your LDAP uses. Default LDAP ports are 389 (``ldap://``) and 636 (``ldaps:/
 TLS
 ^^^
 
-Whether you want to use :abbr:`TLS (Transport Layer Security)`, that is typically start with an connection on default
-port 389 and then set up an encrypted connection.
+Whether you want to use :abbr:`TLS (Transport Layer Security)`, that is
+typically start with an connection on default port 389 and then set up an
+encrypted connection.
 
-.. note:: More information on TLS may be found at http://www.openldap.org/doc/admin24/tls.html.
+.. note::
+
+   More information on TLS may be found at http://www.openldap.org/doc/admin24/tls.html.
 
 
 .. _admin-manual-ldap-ssl:
@@ -72,13 +71,16 @@ port 389 and then set up an encrypted connection.
 SSL
 ^^^
 
-Whether you want to use :abbr:`SSL (Secure Socket Layer)`, that is start with an encrypted connection on default port
-636.
+Whether you want to use :abbr:`SSL (Secure Socket Layer)`, that is start with an
+encrypted connection on default port 636.
 
 .. note::
-    Some web servers may fail at connecting to the LDAP server since they report that the server certificate is
-    untrusted (although issued by a valid CA such as Letsencrypt). In case this happens and you cannot change the web
-    server configuration (e.g., shared hosting), you may add this line to :file:`typo3conf/AdditionalConfiguration.php`:
+
+    Some web servers may fail at connecting to the LDAP server since they report
+    that the server certificate is untrusted (although issued by a valid CA such
+    as Letsencrypt). In case this happens and you cannot change the web server
+    configuration (e.g., shared hosting), you may add this line to
+    :file:`typo3conf/AdditionalConfiguration.php`:
 
     .. code-block:: php
 
@@ -91,14 +93,17 @@ Whether you want to use :abbr:`SSL (Secure Socket Layer)`, that is start with an
 Bind DN
 ^^^^^^^
 
-:term:`DN` of the LDAP user you will use to connect to the LDAP server. The :term:`DN` is composed of a series of
-:abbr:`RDN (Relative Distinguished Names)`'s which are the unique (or unique'ish) attributes at each level in the
-:term:`DIT`. The following diagram illustrates building up the DN from the RDN's.
+:term:`DN` of the LDAP user you will use to connect to the LDAP server. The
+:term:`DN` is composed of a series of :abbr:`RDN (Relative Distinguished Names)`'s
+which are the unique (or unique'ish) attributes at each level in the
+:term:`DIT`. The following diagram illustrates building up the DN from the
+RDN's.
 
 .. figure:: ../Images/dit-dn-rdn.png
 	:alt: DN is the sum of all RDNs
 
-	Building up the DN (Distinguished Name) from the RDN's (Relative Distinguished Names)
+	Building up the DN (Distinguished Name) from the RDN's (Relative
+	Distinguished Names)
 
 **Example:**
 
@@ -107,20 +112,26 @@ Bind DN
 	cn=Robert Smith,ou=people,dc=example,dc=com
 
 .. note::
-	Your LDAP user needs to be granted access to the directory where users and groups are stored and full read access to
-	users and groups for all attributes you plan to fetch.
 
-	When connecting to an Active Directory, this corresponds to a user account that has privileges to search for users.
-	E.g., ``CN=Administrator,CN=Users,DC=mycompany,DC=com``. This user account must have at least domain user
-	privileges.
+	Your LDAP user needs to be granted access to the directory where users and
+	groups are stored and full read access to users and groups for all attributes
+	you plan to fetch.
+
+	When connecting to an Active Directory, this corresponds to a user account
+	that has privileges to search for users. E.g.,
+	``CN=Administrator,CN=Users,DC=mycompany,DC=com``. This user account must
+	have at least domain user privileges.
 
 .. note::
-    On a Windows Server, you may find the DN of a given user using a command prompt::
+
+    On a Windows Server, you may find the DN of a given user using a command
+    prompt::
 
         dsquery user -name <known username>
 
-    Example: If you are searching for all users named "John", you can enter the username as ``John*`` to get a list of
-    all users whose name is John. The result will look like::
+    Example: If you are searching for all users named "John", you can enter the$
+    username as ``John*`` to get a list of all users whose name is John. The
+    result will look like::
 
         "CN=John.Smith,CN=Users,DC=MyDomain,DC=com"
 
@@ -134,5 +145,5 @@ Bind DN
 Password
 ^^^^^^^^
 
-This password is the same password used in association with the :term:`Bind DN` user account to connect to the LDAP
-server.
+This password is the same password used in association with the :term:`Bind DN`
+user account to connect to the LDAP server.

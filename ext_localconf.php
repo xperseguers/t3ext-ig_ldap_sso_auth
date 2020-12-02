@@ -1,7 +1,7 @@
 <?php
 defined('TYPO3_MODE') || die();
 
-$boot = function (string $_EXTKEY): void {
+(static function (string $_EXTKEY) {
     // Configuration of authentication service
     $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
         ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
@@ -87,7 +87,4 @@ $boot = function (string $_EXTKEY): void {
 
     // User have save doc new button
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('options.saveDocNew.tx_igldapssoauth_config=1');
-};
-
-$boot('ig_ldap_sso_auth');
-unset($boot);
+})('ig_ldap_sso_auth');

@@ -1,7 +1,7 @@
 <?php
 defined('TYPO3_MODE') || die();
 
-$boot = function (string $_EXTKEY): void {
+(static function (string $_EXTKEY) {
     // Register additional sprite icons
     /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
     $iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
@@ -63,7 +63,4 @@ $boot = function (string $_EXTKEY): void {
 
     // Initialize "context sensitive help" (csh)
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('tx_igldapssoauth_config', 'EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_csh_db.xlf');
-};
-
-$boot('ig_ldap_sso_auth');
-unset($boot);
+})('ig_ldap_sso_auth');

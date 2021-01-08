@@ -173,7 +173,8 @@ class Typo3UserRepository
 
         $tableConnection = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getConnectionForTable($table);
-
+        //tstamp needs to be int. If it's empty it's transferred as ""
+        $cleanData['tstamp'] = intval($data['tstamp']);
         $tableConnection->insert(
             $table,
             $data
@@ -221,6 +222,8 @@ class Typo3UserRepository
 
         $cleanData = $data;
         unset($cleanData['__extraData']);
+        //tstamp needs to be int. If it's empty it's transferred as ""
+        $cleanData['tstamp'] = intval($cleanData['tstamp']);
 
         $affectedRows = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getConnectionForTable($table)

@@ -439,7 +439,11 @@ class LdapUtility
      */
     public function getDn()
     {
-        return (@ldap_get_dn($this->connection, $this->firstResultEntry));
+        $dn = ''; // TODO: better return null?
+        if (is_resource($this->firstResultEntry)) {
+            $dn = ldap_get_dn($this->connection, $this->firstResultEntry);
+        }
+        return $dn;
     }
 
     /**
@@ -449,7 +453,11 @@ class LdapUtility
      */
     public function getAttributes()
     {
-        return (@ldap_get_attributes($this->connection, $this->firstResultEntry));
+        $attributes = [];
+        if (is_resource($this->firstResultEntry)) {
+            $attributes = ldap_get_attributes($this->connection, $this->firstResultEntry);
+        }
+        return $attributes;
     }
 
     /**

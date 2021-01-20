@@ -12,6 +12,25 @@ Frequently Asked Questions
 		:local:
 		:depth: 1
 
+.. _faq-webserver:
+
+Web Server
+----------
+
+.. question
+
+**Everything in this documentation is assuming that I am using Apache as web
+server. Does Kerberos authentication works with Nginx as well?**
+
+.. answer
+
+*We do not have tested this configuration ourselves but you can read an article
+explaining how to set up Kerberos on Nginx in Ubuntu 16.04:
+https://medium.com/@meeramarygeorge/setup-kerberos-on-nginx-in-ubuntu-16-04-408a5b95cdee.
+Please be aware that this requires compiling Nginx from source in order to be
+able to add a SPNEGO module to it
+(https://github.com/stnoonan/spnego-http-auth-nginx-module).*
+
 
 .. _faq-users:
 

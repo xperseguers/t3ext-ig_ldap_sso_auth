@@ -14,6 +14,7 @@
 
 namespace Causal\IgLdapSsoAuth\Library;
 
+use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3GroupRepository;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3UserRepository;
@@ -96,7 +97,11 @@ class Authentication
             // Set extension configuration from TYPO3 mode (BE/FE).
             static::initializeConfiguration();
 
-            if (!empty($domain)) {
+            $numberOfConfigurationRecords = count(
+                GeneralUtility::makeInstance(ConfigurationRepository::class)
+                ->findAll()
+            );
+            if (!empty($domain) && $numberOfConfigurationRecords > 1) {
                 // Domain is set, so check it
                 if (strpos($domain, '.') !== false) {
                     $domain = 'DC=' . implode(',DC=', explode('.', $domain));

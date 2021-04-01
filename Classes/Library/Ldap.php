@@ -132,7 +132,7 @@ class Ldap
     public function validateUser($username = null, $password = null, $baseDn = null, $filter = null)
     {
         // If user found on ldap server.
-        if ($this->ldapUtility->search($baseDn, str_replace('{USERNAME}', $username, $filter), ['dn'])) {
+        if ($this->ldapUtility->search($baseDn, str_replace('{USERNAME}', ldap_escape($username, '', LDAP_ESCAPE_FILTER), $filter), ['dn'])) {
 
             // Validate with password.
             if ($password !== null) {

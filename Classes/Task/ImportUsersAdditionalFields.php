@@ -155,7 +155,10 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
 
         // Write the code for the field
         $fieldID = 'task_' . $fieldName;
-        $cssClass = 'form-control';
+        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
+            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
+            : TYPO3_branch;
+        $cssClass = version_compare($typo3Branch, '11.0', '<') ? 'form-control' : 'form-select';
         if (isset($parameters['css'])) {
             $cssClass .= ' ' . $parameters['css'];
         }

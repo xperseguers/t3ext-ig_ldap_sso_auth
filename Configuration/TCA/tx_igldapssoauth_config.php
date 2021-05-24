@@ -2,8 +2,25 @@
 $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
     ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
     : TYPO3_branch;
-$domainsField = version_compare($typo3Branch, '10.0', '<') ? 'domains,' : '';
-$sitesField = version_compare($typo3Branch, '9.0', '>=') ? 'sites,' : '';
+$domainsField = version_compare($typo3Branch, '10.4', '<') ? 'domains,' : '';
+$sitesField = version_compare($typo3Branch, '9.5', '>=') ? 'sites,' : '';
+
+$toggleCheckboxConfig = version_compare($typo3Branch, '9.5', '<')
+    ? [
+        'type' => 'check',
+    ]
+    : [
+        'type' => 'check',
+        'renderType' => 'checkboxToggle',
+        'items' => [
+            [
+                0 => '',
+                1 => '',
+            ]
+        ],
+    ];
+$toggleCheckboxConfigDefaultOn = $toggleCheckboxConfig;
+$toggleCheckboxConfigDefaultOn['default'] = 1;
 
 return [
     'ctrl' => [
@@ -51,10 +68,7 @@ return [
         'hidden' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
-            'config' => [
-                'type' => 'check',
-                'default' => '0'
-            ]
+            'config' => $toggleCheckboxConfig,
         ],
         'name' => [
             'exclude' => 1,
@@ -145,26 +159,17 @@ return [
         'ldap_tls' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_tls',
-            'config' => [
-                'type' => 'check',
-                'default' => '0',
-            ]
+            'config' => $toggleCheckboxConfig,
         ],
         'ldap_tls_reqcert' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_tls_reqcert',
-            'config' => [
-                'type' => 'check',
-                'default' => '1',
-            ]
+            'config' => $toggleCheckboxConfigDefaultOn,
         ],
         'ldap_ssl' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_ssl',
-            'config' => [
-                'type' => 'check',
-                'default' => '0',
-            ]
+            'config' => $toggleCheckboxConfig,
         ],
         'ldap_binddn' => [
             'exclude' => 1,

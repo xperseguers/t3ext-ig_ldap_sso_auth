@@ -15,9 +15,17 @@
 namespace Causal\IgLdapSsoAuth\Library;
 
 use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
+use TYPO3\CMS\Core\Domain\Repository\PageRepository;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Routing\PageArguments;
+use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3GroupRepository;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3UserRepository;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Class Authentication for the 'ig_ldap_sso_auth' extension.
@@ -136,7 +144,7 @@ class Authentication
             // LDAP authentication failed.
             $ldapInstance->disconnect();
 
-            // This is a notice because it is fine to fallback to standard TYPO3 authentication
+            // This is a notice because it is fine to fall back to standard TYPO3 authentication
             static::getLogger()->notice(sprintf('Could not authenticate user "%s" with LDAP', $username));
 
             return false;
@@ -242,7 +250,7 @@ class Authentication
                 static::getLogger()->debug('User record has been deleted because she has no LDAP groups.', $typo3_user);
             }
             // Set groups to user.
-            $groupTable = static::$authenticationService->authInfo['db_groups']['table'];
+            $groupTable = static::getGroupTable();
             $typo3_user = Typo3UserRepository::setUserGroups($typo3_user, $typo3_groups, $groupTable);
             // Merge LDAP user with TYPO3 user from mapping.
             if ($typo3_user) {
@@ -326,15 +334,7 @@ class Authentication
             $configuration = static::$config;
         }
         if (empty($groupTable)) {
-            if (isset(static::$authenticationService)) {
-                $groupTable = static::$authenticationService->authInfo['db_groups']['table'];
-            } else {
-                if (TYPO3_MODE === 'BE') {
-                    $groupTable = 'be_groups';
-                } else {
-                    $groupTable = 'fe_groups';
-                }
-            }
+            $groupTable = static::getGroupTable();
         }
 
         // User is valid only if exist in TYPO3.
@@ -437,7 +437,7 @@ class Authentication
             }
         }
         // Hook for processing the groups
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['getGroupsProcessing'])) {
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['getGroupsProcessing'] ?? null)) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['getGroupsProcessing'] as $className) {
                 /** @var $postProcessor \Causal\IgLdapSsoAuth\Utility\GetGroupsProcessorInterface */
                 $postProcessor = GeneralUtility::makeInstance($className);
@@ -688,20 +688,62 @@ class Authentication
                 }
             }
 
-            $backupTSFE = $GLOBALS['TSFE'];
+            $backupTSFE = $GLOBALS['TSFE'] ?? null;
 
             // Advanced stdWrap methods require a valid $GLOBALS['TSFE'] => create the most lightweight one
-            $GLOBALS['TSFE'] = GeneralUtility::makeInstance(
-                \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::class,
-                $GLOBALS['TYPO3_CONF_VARS'],
-                0,
-                ''
-            );
-            $GLOBALS['TSFE']->initTemplate();
+            $typoBranch = (new Typo3Version())->getBranch();
+            if (version_compare($typoBranch, '10.0', '>')) {
+                $pageId = $typo3['pid'];
+                // Use SiteFinder to get a Site object for the current page tree
+                $siteFinder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Site\SiteFinder::class);
+                try {
+                    $currentSite = $siteFinder->getSiteByPageId($pageId);
+                } catch (SiteNotFoundException $e) {
+                    $allSites = $siteFinder->getAllSites();
+                    $currentSite = reset($allSites);
+                    $pageId = $currentSite->getRootPageId();
+                }
+
+                // Context is a singleton, so we can get the current Context by instantiation
+                $currentContext = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class);
+
+                if (version_compare($typoBranch, '11.5', '>=')) {
+                    $pageArguments = GeneralUtility::makeInstance(PageArguments::class, $pageId, PageRepository::DOKTYPE_SYSFOLDER, []);
+                    $frontendUserAuthentication = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
+                } else {
+                    $pageArguments = null;
+                    $frontendUserAuthentication = null;
+                }
+
+                // Use Site & Context to instantiate TSFE properly for TYPO3 v10+
+                $GLOBALS['TSFE'] = GeneralUtility::makeInstance(
+                    TypoScriptFrontendController::class,
+                    $currentContext,
+                    $currentSite,
+                    $currentSite->getDefaultLanguage(),
+                    $pageArguments,
+                    $frontendUserAuthentication
+                );
+
+                // initTemplate() has been removed. The deprecation notice suggests setting the property directly
+                $GLOBALS['TSFE']->tmpl = GeneralUtility::makeInstance(
+                    TemplateService::class,
+                    $currentContext
+                );
+            } else {
+                // Backward compatibility with TYPO3 v9
+                $GLOBALS['TSFE'] = GeneralUtility::makeInstance(
+                    TypoScriptFrontendController::class,
+                    $GLOBALS['TYPO3_CONF_VARS'],
+                    0,
+                    ''
+                );
+                $GLOBALS['TSFE']->initTemplate();
+            }
             $GLOBALS['TSFE']->renderCharset = 'utf-8';
 
-            /** @var $contentObj \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer */
-            $contentObj = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
+            /** @var $contentObj ContentObjectRenderer */
+            $contentObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
             $contentObj->start($flattenedLdap, '');
 
             // Process every TypoScript definition
@@ -857,6 +899,23 @@ class Authentication
     {
         $cruserId = (TYPO3_MODE === 'BE' ? $GLOBALS['BE_USER']->user['uid'] : null);
         return $cruserId ?? 0;
+    }
+
+    /**
+     * @return string
+     */
+    protected static function getGroupTable(): string
+    {
+        if (isset(static::$authenticationService) && !empty(static::$authenticationService->authInfo['db_groups']['table'])) {
+            $groupTable = static::$authenticationService->authInfo['db_groups']['table'];
+        } else {
+            if (TYPO3_MODE === 'BE') {
+                $groupTable = 'be_groups';
+            } else {
+                $groupTable = 'fe_groups';
+            }
+        }
+        return $groupTable;
     }
 
     /**

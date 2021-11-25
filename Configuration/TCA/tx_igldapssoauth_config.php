@@ -1,9 +1,6 @@
 <?php
-$typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
-    ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
-    : TYPO3_branch;
-$domainsField = version_compare($typo3Branch, '10.0', '<') ? 'domains,' : '';
-$sitesField = version_compare($typo3Branch, '9.0', '>=') ? 'sites,' : '';
+$typo3Branch = (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch();
+$domainsField = version_compare($typo3Branch, '10.4', '<') ? 'domains,' : '';
 
 return [
     'ctrl' => [
@@ -26,7 +23,7 @@ return [
         '1' => [
             'showitem' => '
                     --div--;GENERAL,
-                        hidden, name, ' . $domainsField . $sitesField . '
+                        hidden, name, ' . $domainsField . 'sites,
                     --div--;LDAP,
                         ldap_server, ldap_charset,
                     --palette--;LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:palette.connection;connection,
@@ -53,8 +50,14 @@ return [
             'label' => 'LLL:EXT:lang/Resources/Private/Language/locallang_general.xlf:LGL.hidden',
             'config' => [
                 'type' => 'check',
-                'default' => '0'
-            ]
+                'renderType' => 'checkboxToggle',
+                'items' => [
+                    [
+                        0 => '',
+                        1 => '',
+                    ]
+                ],
+            ],
         ],
         'name' => [
             'exclude' => 1,
@@ -68,8 +71,7 @@ return [
         'domains' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.domains',
-            'description' => version_compare($typo3Branch, '9.0', '>=')
-                ? 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.domains.v9_description' : '',
+            'description' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.domains.v9_description',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
@@ -147,24 +149,43 @@ return [
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_tls',
             'config' => [
                 'type' => 'check',
-                'default' => '0',
-            ]
+                'renderType' => 'checkboxToggle',
+                'items' => [
+                    [
+                        0 => '',
+                        1 => '',
+                    ]
+                ],
+            ],
         ],
         'ldap_tls_reqcert' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_tls_reqcert',
             'config' => [
                 'type' => 'check',
-                'default' => '1',
-            ]
+                'renderType' => 'checkboxToggle',
+                'items' => [
+                    [
+                        0 => '',
+                        1 => '',
+                    ]
+                ],
+                'default' => 1,
+            ],
         ],
         'ldap_ssl' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_ssl',
             'config' => [
                 'type' => 'check',
-                'default' => '0',
-            ]
+                'renderType' => 'checkboxToggle',
+                'items' => [
+                    [
+                        0 => '',
+                        1 => '',
+                    ]
+                ],
+            ],
         ],
         'ldap_binddn' => [
             'exclude' => 1,

@@ -19,14 +19,16 @@ td.col-icon {
 
 tr.local-ldap-user-or-group,
 .square-local,
-.typo3-dblist tr.local-ldap-user-or-group td {
+tr.local-ldap-user-or-group,
+tr.local-ldap-user-or-group td {
     background-color: #093 !important;
     color: #fff;
 }
 
 tr.deleted-ldap-user-or-group,
 .square-deleted,
-.typo3-dblist tr.deleted-ldap-user-or-group td {
+tr.deleted-ldap-user-or-group,
+tr.deleted-ldap-user-or-group td {
     background-color: #f00 !important;
     color: #fff;
 }
@@ -88,6 +90,5 @@ textarea {
 }
 
 button {
-    color: #000 !important;
     width: 10em;
 }

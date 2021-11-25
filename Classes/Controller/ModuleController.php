@@ -325,16 +325,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             'configuration' => $config[$key],
         ];
 
-        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
-            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
-            : TYPO3_branch;
-        if (version_compare($typo3Branch, '9.0', '<')) {
-            /** @var ResponseInterface $response */
-            $response = func_get_arg(1);
-            $response->getBody()->write(json_encode($payload));
-        } else {
-            $response = (new JsonResponse())->setPayload($payload);
-        }
+        $response = (new JsonResponse())->setPayload($payload);
 
         return $response;
     }
@@ -373,12 +364,12 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         $view->setFormat('html');
         $view->setTemplatePathAndFilename($template);
 
-        if ((bool)$params['showStatus']) {
+        if ((bool)($params['showStatus'] ?? false)) {
             $view->assign('status', $ldap->getStatus());
         }
 
         if ($success) {
-            $firstEntry = (bool)$params['firstEntry'];
+            $firstEntry = (bool)($params['firstEntry'] ?? false);
             $filter = Configuration::replaceFilterMarkers($params['filter']);
             if ($firstEntry) {
                 $attributes = [];
@@ -428,16 +419,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
             'html' => $html,
         ];
 
-        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
-            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
-            : TYPO3_branch;
-        if (version_compare($typo3Branch, '9.0', '<')) {
-            /** @var ResponseInterface $response */
-            $response = func_get_arg(1);
-            $response->getBody()->write(json_encode($payload));
-        } else {
-            $response = (new JsonResponse())->setPayload($payload);
-        }
+        $response = (new JsonResponse())->setPayload($payload);
 
         return $response;
     }
@@ -503,16 +485,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 
         $payload = array_merge($data, ['success' => $success]);
 
-        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
-            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
-            : TYPO3_branch;
-        if (version_compare($typo3Branch, '9.0', '<')) {
-            /** @var ResponseInterface $response */
-            $response = func_get_arg(1);
-            $response->getBody()->write(json_encode($payload));
-        } else {
-            $response = (new JsonResponse())->setPayload($payload);
-        }
+        $response = (new JsonResponse())->setPayload($payload);
 
         return $response;
     }
@@ -595,16 +568,7 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
 
         $payload = array_merge($data, ['success' => $success]);
 
-        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
-            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
-            : TYPO3_branch;
-        if (version_compare($typo3Branch, '9.0', '<')) {
-            /** @var ResponseInterface $response */
-            $response = func_get_arg(1);
-            $response->getBody()->write(json_encode($payload));
-        } else {
-            $response = (new JsonResponse())->setPayload($payload);
-        }
+        $response = (new JsonResponse())->setPayload($payload);
 
         return $response;
     }

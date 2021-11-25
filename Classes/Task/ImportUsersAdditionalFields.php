@@ -43,12 +43,7 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
         /** @var \Causal\IgLdapSsoAuth\Task\ImportUsers $task */
         $additionalFields = [];
 
-        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
-            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
-            : TYPO3_branch;
-        $isEdit = version_compare($typo3Branch, '9.5', '>=')
-            ? (string)$schedulerModule->getCurrentAction() === Action::EDIT
-            : $schedulerModule->CMD === 'edit';
+        $isEdit = (string)$schedulerModule->getCurrentAction() === Action::EDIT;
 
         // Process the mode field
         $parameters = [
@@ -155,7 +150,8 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
 
         // Write the code for the field
         $fieldID = 'task_' . $fieldName;
-        $cssClass = 'form-control';
+        $typo3Branch = (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch();
+        $cssClass = version_compare($typo3Branch, '11.0', '<') ? 'form-control' : 'form-select';
         if (isset($parameters['css'])) {
             $cssClass .= ' ' . $parameters['css'];
         }

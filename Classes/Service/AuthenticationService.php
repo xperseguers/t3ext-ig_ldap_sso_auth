@@ -21,15 +21,6 @@ use Causal\IgLdapSsoAuth\Library\Authentication;
 use Causal\IgLdapSsoAuth\Library\Configuration;
 use Causal\IgLdapSsoAuth\Utility\NotificationUtility;
 
-$typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
-    ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
-    : TYPO3_branch;
-if (version_compare($typo3Branch, '9.0', '>=')) {
-    class BaseAuthenticationService extends \TYPO3\CMS\Core\Authentication\AuthenticationService {}
-} else {
-    class BaseAuthenticationService extends \TYPO3\CMS\Sv\AuthenticationService {}
-}
-
 /**
  * LDAP / SSO authentication service.
  *
@@ -38,7 +29,7 @@ if (version_compare($typo3Branch, '9.0', '>=')) {
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class AuthenticationService extends BaseAuthenticationService
+class AuthenticationService extends \TYPO3\CMS\Core\Authentication\AuthenticationService
 {
 
     /**
@@ -71,14 +62,7 @@ class AuthenticationService extends BaseAuthenticationService
      */
     public function __construct()
     {
-        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
-            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
-            : TYPO3_branch;
-        if (version_compare($typo3Branch, '9.0', '<')) {
-            $this->config = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$this->extKey] ?? '') ?? [];
-        } else {
-            $this->config = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extKey] ?? [];
-        }
+        $this->config = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extKey] ?? [];
         Authentication::setAuthenticationService($this);
     }
 
@@ -158,7 +142,10 @@ class AuthenticationService extends BaseAuthenticationService
             if (!$userRecordOrIsValid && $this->login['status'] === 'login' && $this->login['uident']) {
 
                 // Configuration of authentication service.
-                $loginSecurityLevel = $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['loginSecurityLevel'];
+                $typo3Branch = (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch();
+                $loginSecurityLevel = version_compare($typo3Branch, '11.0', '>')
+                    ? 'normal'
+                    : $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['loginSecurityLevel'];
                 // normal case
                 // Check if $loginSecurityLevel is set to "challenged" or "superchallenged" and throw an error if the configuration allows it
                 // By default, it will not throw an exception
@@ -259,7 +246,7 @@ class AuthenticationService extends BaseAuthenticationService
             }
 
             // Checking the domain (lockToDomain)
-            if ($status && $user['lockToDomain'] && $user['lockToDomain'] != $this->authInfo['HTTP_HOST']) {
+            if ($status && !empty($user['lockToDomain']) && $user['lockToDomain'] !== $this->authInfo['HTTP_HOST']) {
 
                 // Lock domain didn't match, so error:
                 static::getLogger()->error(sprintf('Locked domain "%s" did not match "%s"', $user['lockToDomain'], $this->authInfo['HTTP_HOST']), [

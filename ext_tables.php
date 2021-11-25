@@ -15,9 +15,7 @@ defined('TYPO3_MODE') || die();
 
     if (TYPO3_MODE === 'BE') {
         // Add BE module on top of system main module
-        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
-            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
-            : TYPO3_branch;
+        $typo3Branch = (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch();
         if (version_compare($typo3Branch, '10.0', '<')) {
             \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
                 'Causal.' . $_EXTKEY,

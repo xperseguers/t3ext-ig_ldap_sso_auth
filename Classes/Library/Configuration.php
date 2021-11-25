@@ -55,14 +55,7 @@ class Configuration
      */
     public static function initialize($mode, \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration)
     {
-        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
-            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
-            : TYPO3_branch;
-        if (version_compare($typo3Branch, '9.0', '<')) {
-            $globalConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth'] ?? '') ?? [];
-        } else {
-            $globalConfiguration = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['ig_ldap_sso_auth'] ?? [];
-        }
+        $globalConfiguration = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['ig_ldap_sso_auth'] ?? [];
 
         // Legacy configuration options
         unset($globalConfiguration['evaluateGroupsFromMembership']);
@@ -75,9 +68,7 @@ class Configuration
         // Select configuration from database, merge with extension configuration template and initialise class attributes.
 
         static::$domains = [];
-        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
-            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
-            : TYPO3_branch;
+        $typo3Branch = (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch();
         if (version_compare($typo3Branch, '10.0', '<')) {
             $domainUids = GeneralUtility::intExplode(',', $configuration->getDomains(), true);
             foreach ($domainUids as $domainUid) {
@@ -95,33 +86,28 @@ class Configuration
             }
         }
 
-        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
-            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
-            : TYPO3_branch;
-        if (version_compare($typo3Branch, '9.0', '>=')) {
-            if (!empty(static::$domains)) {
-                trigger_error(
-                    'LDAP configuration record uid=' . $configuration->getUid() . ' uses associated domains which are deprecated since TYPO3 v9.',
-                    E_USER_DEPRECATED
-                );
-            }
-
-            $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
-            $siteIdentifiers = GeneralUtility::trimExplode(',', $configuration->getSites(), true);
-            foreach ($siteIdentifiers as $siteIdentifier) {
-                try {
-                    $host = $siteFinder->getSiteByIdentifier($siteIdentifier)->getBase()->getHost();
-                    if (empty($host)) {
-                        $host = GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY');
-                    }
-                    static::$domains[] = $host;
-                } catch (SiteNotFoundException $e) {
-                    // Ignore invalid site identifiers.
-                }
-            }
-
-            static::$domains = array_unique(static::$domains);
+        if (!empty(static::$domains)) {
+            trigger_error(
+                'LDAP configuration record uid=' . $configuration->getUid() . ' uses associated domains which are deprecated since TYPO3 v9.',
+                E_USER_DEPRECATED
+            );
         }
+
+        $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
+        $siteIdentifiers = GeneralUtility::trimExplode(',', $configuration->getSites(), true);
+        foreach ($siteIdentifiers as $siteIdentifier) {
+            try {
+                $host = $siteFinder->getSiteByIdentifier($siteIdentifier)->getBase()->getHost();
+                if (empty($host)) {
+                    $host = GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY');
+                }
+                static::$domains[] = $host;
+            } catch (SiteNotFoundException $e) {
+                // Ignore invalid site identifiers.
+            }
+        }
+
+        static::$domains = array_unique(static::$domains);
 
         static::$be['LDAPAuthentication'] = (bool)$globalConfiguration['enableBELDAPAuthentication'];
         static::$be['SSOAuthentication'] = (bool)$globalConfiguration['enableBESSO'];
@@ -423,6 +409,10 @@ class Configuration
      */
     public static function hasExtendedMapping($mapping = [])
     {
+        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth'] ?? null)) {
+            return false;
+        }
+
         // Shortcut: if hooks are registered, take for granted extended syntax will be used
         $extended = is_array($mapping)
             && (

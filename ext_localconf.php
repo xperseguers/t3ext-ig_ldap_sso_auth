@@ -3,14 +3,7 @@ defined('TYPO3_MODE') || die();
 
 (static function (string $_EXTKEY) {
     // Configuration of authentication service
-    $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
-        ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
-        : TYPO3_branch;
-    if (version_compare($typo3Branch, '9.0', '<')) {
-        $EXT_CONFIG = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$_EXTKEY] ?? '') ?? [];
-    } else {
-        $EXT_CONFIG = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$_EXTKEY] ?? [];
-    }
+    $EXT_CONFIG = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$_EXTKEY] ?? [];
 
     // SSO configuration
     if ((bool)$EXT_CONFIG['enableFESSO']) {

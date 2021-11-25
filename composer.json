@@ -23,7 +23,7 @@
   ],
   "license": "GPL-2.0-or-later",
   "require": {
-    "php": ">= 7.2.0, <= 7.4.99",
+    "php": ">=7.2.0 <=7.4.99 || >=8.0.0 <=8.1.99",
     "ext-ldap": "*",
     "ext-json": "*",
     "typo3/cms-core": "^9.5 || ^10 || ^11"
@@ -39,6 +39,7 @@
   "extra": {
     "branch-alias": {
       "dev-master": "3.6.x-dev",
+      "dev-feature/TYPO3v11": "3.7.x-dev",
       "dev-3-3": "3.3.x-dev"
     },
     "typo3/cms": {

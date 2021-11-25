@@ -31,7 +31,7 @@ LDAP / SSO Authentication
 		openldap, active directory, ldap, authentication
 
 	:Copyright:
-		2000-2020
+		2000-2021
 
 	:Author:
 		Xavier Perseguers

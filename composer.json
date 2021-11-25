@@ -38,8 +38,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "3.6.x-dev",
-      "dev-feature/TYPO3v11": "3.7.x-dev",
+      "dev-master": "3.7.x-dev",
       "dev-3-3": "3.3.x-dev"
     },
     "typo3/cms": {

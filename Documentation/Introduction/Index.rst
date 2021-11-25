@@ -70,12 +70,15 @@ Sponsorship
 this extension which has been initially developed by *Infoglobe*, a former
 Canadian company specialized in open-source software.
 
+*Causal Sàrl* is regularly working on compatibility updates for new TYPO3
+releases.
+
 We would like to thank:
 
 - Support for TYPO3 9 LTS has been sponsored by *Plan.Net Suisse AG*,
   Switzerland and *TEC Competence UG*, Germany.
-- Support for TYPO3 8 LTS and some general bug fixes have been sponsored by
-  *elementare teilchen*, Germany.
+- All the various developers reportings bugs and providing patches in the
+  bug tracker.
 
 .. tabularcolumns:: |p{7.53cm}|p{7.53cm}|
 
@@ -88,13 +91,13 @@ We would like to thank:
 |                                                   |                                                   |
 | https://www.causal.ch                             | https://www.plan-net.ch                           |
 +---------------------------------------------------+---------------------------------------------------+
-| .. image:: ../Images/logo-tec-competence.png      | .. image:: ../Images/logo-elementare-teilchen.png |
-|     :alt: TEC Competence UG                       |     :alt: elementare teilchen GmbH                |
-|     :width: 200px                                 |     :width: 200px                                 |
+| .. image:: ../Images/logo-tec-competence.png      |                                                   |
+|     :alt: TEC Competence UG                       |                                                   |
+|     :width: 200px                                 |                                                   |
 |                                                   |                                                   |
-| TEC Competence UG (halftungsbeschränkt) & Co. KG  | elementare teilchen GmbH                          |
+| TEC Competence UG (halftungsbeschränkt) & Co. KG  |                                                   |
 |                                                   |                                                   |
-| https://www.tec-competence.com                    | https://www.elementare-teilchen.de                |
+| https://www.tec-competence.com                    |                                                   |
 +---------------------------------------------------+---------------------------------------------------+
 
 

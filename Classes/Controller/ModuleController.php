@@ -364,12 +364,12 @@ class ModuleController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionControlle
         $view->setFormat('html');
         $view->setTemplatePathAndFilename($template);
 
-        if ((bool)$params['showStatus']) {
+        if ((bool)($params['showStatus'] ?? false)) {
             $view->assign('status', $ldap->getStatus());
         }
 
         if ($success) {
-            $firstEntry = (bool)$params['firstEntry'];
+            $firstEntry = (bool)($params['firstEntry'] ?? false);
             $filter = Configuration::replaceFilterMarkers($params['filter']);
             if ($firstEntry) {
                 $attributes = [];

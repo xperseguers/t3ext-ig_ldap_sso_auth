@@ -411,6 +411,10 @@ class Configuration
      */
     public static function hasExtendedMapping($mapping = [])
     {
+        if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth'] ?? null)) {
+            return false;
+        }
+
         // Shortcut: if hooks are registered, take for granted extended syntax will be used
         $extended = is_array($mapping)
             && (

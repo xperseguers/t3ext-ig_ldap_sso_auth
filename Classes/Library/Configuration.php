@@ -68,9 +68,7 @@ class Configuration
         // Select configuration from database, merge with extension configuration template and initialise class attributes.
 
         static::$domains = [];
-        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
-            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
-            : TYPO3_branch;
+        $typo3Branch = (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch();
         if (version_compare($typo3Branch, '10.0', '<')) {
             $domainUids = GeneralUtility::intExplode(',', $configuration->getDomains(), true);
             foreach ($domainUids as $domainUid) {

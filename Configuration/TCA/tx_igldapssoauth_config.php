@@ -1,7 +1,5 @@
 <?php
-$typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
-    ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
-    : TYPO3_branch;
+$typo3Branch = (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch();
 $domainsField = version_compare($typo3Branch, '10.4', '<') ? 'domains,' : '';
 
 return [

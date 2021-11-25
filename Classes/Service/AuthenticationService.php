@@ -142,7 +142,10 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
             if (!$userRecordOrIsValid && $this->login['status'] === 'login' && $this->login['uident']) {
 
                 // Configuration of authentication service.
-                $loginSecurityLevel = $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['loginSecurityLevel'];
+                $typo3Branch = (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch();
+                $loginSecurityLevel = version_compare($typo3Branch, '11.0', '>')
+                    ? 'normal'
+                    : $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['loginSecurityLevel'];
                 // normal case
                 // Check if $loginSecurityLevel is set to "challenged" or "superchallenged" and throw an error if the configuration allows it
                 // By default, it will not throw an exception
@@ -243,7 +246,7 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
             }
 
             // Checking the domain (lockToDomain)
-            if ($status && $user['lockToDomain'] && $user['lockToDomain'] != $this->authInfo['HTTP_HOST']) {
+            if ($status && !empty($user['lockToDomain']) && $user['lockToDomain'] !== $this->authInfo['HTTP_HOST']) {
 
                 // Lock domain didn't match, so error:
                 static::getLogger()->error(sprintf('Locked domain "%s" did not match "%s"', $user['lockToDomain'], $this->authInfo['HTTP_HOST']), [

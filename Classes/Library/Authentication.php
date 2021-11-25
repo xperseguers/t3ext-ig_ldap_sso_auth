@@ -250,7 +250,7 @@ class Authentication
                 static::getLogger()->debug('User record has been deleted because she has no LDAP groups.', $typo3_user);
             }
             // Set groups to user.
-            $groupTable = static::$authenticationService->authInfo['db_groups']['table'];
+            $groupTable = static::getGroupTable();
             $typo3_user = Typo3UserRepository::setUserGroups($typo3_user, $typo3_groups, $groupTable);
             // Merge LDAP user with TYPO3 user from mapping.
             if ($typo3_user) {
@@ -334,15 +334,7 @@ class Authentication
             $configuration = static::$config;
         }
         if (empty($groupTable)) {
-            if (isset(static::$authenticationService)) {
-                $groupTable = static::$authenticationService->authInfo['db_groups']['table'];
-            } else {
-                if (TYPO3_MODE === 'BE') {
-                    $groupTable = 'be_groups';
-                } else {
-                    $groupTable = 'fe_groups';
-                }
-            }
+            $groupTable = static::getGroupTable();
         }
 
         // User is valid only if exist in TYPO3.
@@ -445,7 +437,7 @@ class Authentication
             }
         }
         // Hook for processing the groups
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['getGroupsProcessing'])) {
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['getGroupsProcessing'] ?? null)) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['getGroupsProcessing'] as $className) {
                 /** @var $postProcessor \Causal\IgLdapSsoAuth\Utility\GetGroupsProcessorInterface */
                 $postProcessor = GeneralUtility::makeInstance($className);
@@ -907,6 +899,23 @@ class Authentication
     {
         $cruserId = (TYPO3_MODE === 'BE' ? $GLOBALS['BE_USER']->user['uid'] : null);
         return $cruserId ?? 0;
+    }
+
+    /**
+     * @return string
+     */
+    protected static function getGroupTable(): string
+    {
+        if (isset(static::$authenticationService) && !empty(static::$authenticationService->authInfo['db_groups']['table'])) {
+            $groupTable = static::$authenticationService->authInfo['db_groups']['table'];
+        } else {
+            if (TYPO3_MODE === 'BE') {
+                $groupTable = 'be_groups';
+            } else {
+                $groupTable = 'fe_groups';
+            }
+        }
+        return $groupTable;
     }
 
     /**

@@ -16,6 +16,7 @@ namespace Causal\IgLdapSsoAuth\Library;
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -97,11 +98,9 @@ class Configuration
         $siteIdentifiers = GeneralUtility::trimExplode(',', $configuration->getSites(), true);
         foreach ($siteIdentifiers as $siteIdentifier) {
             try {
-                $host = $siteFinder->getSiteByIdentifier($siteIdentifier)->getBase()->getHost();
-                if (empty($host)) {
-                    $host = GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY');
-                }
-                static::$domains[] = $host;
+                $site = $siteFinder->getSiteByIdentifier($siteIdentifier);
+                $domains = self::extractHostsFromSite($site);
+                static::$domains = array_merge(static::$domains, $domains);
             } catch (SiteNotFoundException $e) {
                 // Ignore invalid site identifiers.
             }
@@ -491,6 +490,33 @@ class Configuration
             ->fetch();
 
         return !empty($config) ? $config : [];
+    }
+
+    /**
+     * Extract relevant hosts from a given site configuration.
+     * Respects base host and hosts for alternative site languages.
+     *
+     * @param Site $site
+     * @return string[]
+     */
+    protected static function extractHostsFromSite(Site $site): array
+    {
+        $hosts = [];
+
+        if ($site->getBase()->getHost() !== '') {
+            $hosts[] = $site->getBase()->getHost();
+        } else {
+            $hosts[] = GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY');
+        }
+
+        // Allow domains from alternative languages.
+        foreach ($site->getLanguages() as $siteLanguage) {
+            if ($siteLanguage->getBase()->getHost() !== '') {
+                $hosts[] = $siteLanguage->getBase()->getHost();
+            }
+        }
+
+        return $hosts;
     }
 
 }

@@ -14,6 +14,8 @@
 
 namespace Causal\IgLdapSsoAuth\Hooks;
 
+use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Library\Configuration;
 
@@ -67,17 +69,16 @@ class DataHandler
             }
 
             foreach ($warningMessageKeys as $key) {
-                /** @var \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage */
+                /** @var FlashMessage $flashMessage */
                 $flashMessage = GeneralUtility::makeInstance(
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+                    FlashMessage::class,
                     htmlspecialchars($this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:' . $key)),
                     '',
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING,
+                    FlashMessage::WARNING,
                     true
                 );
-                /** @var \TYPO3\CMS\Core\Messaging\FlashMessageService $flashMessageService */
-                $flashMessageService = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class);
-                /** @var \TYPO3\CMS\Core\Messaging\FlashMessageQueue $defaultFlashMessageQueue */
+                /** @var FlashMessageService $flashMessageService */
+                $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
                 $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
                 $defaultFlashMessageQueue->enqueue($flashMessage);
             }
@@ -87,7 +88,7 @@ class DataHandler
     /**
      * Returns the LanguageService.
      *
-     * @return \TYPO3\CMS\Lang\LanguageService
+     * @return \TYPO3\CMS\Core\Localization\LanguageService
      */
     protected function getLanguageService()
     {

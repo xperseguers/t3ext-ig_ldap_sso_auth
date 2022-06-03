@@ -43,7 +43,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
     /**
      * Selected LDAP configuration (may be 0 (for all) or a configuration uid).
      *
-     * @var integer
+     * @var int
      */
     protected $configuration = 0;
 
@@ -74,7 +74,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
     /**
      * Performs the synchronization of LDAP users according to selected parameters.
      *
-     * @return boolean Returns true on successful execution, false on error
+     * @return bool Returns true on successful execution, false on error
      * @throws ImportUsersException
      */
     public function execute()

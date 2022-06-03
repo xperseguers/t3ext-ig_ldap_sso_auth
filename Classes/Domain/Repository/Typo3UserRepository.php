@@ -259,13 +259,25 @@ class Typo3UserRepository
      *
      * @param string $table
      * @param int $uid
+     * @return int[] List of uids of users who got disabled
      */
-    public static function disableForConfiguration(string $table, int $uid)
+    public static function disableForConfiguration(string $table, int $uid): array
     {
+        $uids = [];
         if (isset($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled'])) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable($table);
             $queryBuilder->getRestrictions()->removeAll();
+
+            $uids = $queryBuilder
+                ->select('uid')
+                ->from($table)
+                ->where(
+                    $queryBuilder->expr()->eq('tx_igldapssoauth_id', $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)),
+                    $queryBuilder->expr()->eq($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled'], 0)
+                )
+                ->execute()
+                ->fetchFirstColumn();
 
             $queryBuilder
                 ->update($table)
@@ -279,7 +291,7 @@ class Typo3UserRepository
                 $queryBuilder->set($GLOBALS['TCA'][$table]['ctrl']['tstamp'], $GLOBALS['EXEC_TIME']);
             }
 
-            $affectedRows = $queryBuilder->execute();
+            $queryBuilder->execute();
 
             NotificationUtility::dispatch(
                 __CLASS__,
@@ -290,6 +302,7 @@ class Typo3UserRepository
                 ]
             );
         }
+        return $uids;
     }
 
     /**
@@ -300,13 +313,25 @@ class Typo3UserRepository
      *
      * @param string $table
      * @param int $uid
+     * @return int[] List of uids of users who got deleted
      */
-    public static function deleteForConfiguration(string $table, int $uid)
+    public static function deleteForConfiguration(string $table, int $uid): array
     {
+        $uids = [];
         if (isset($GLOBALS['TCA'][$table]['ctrl']['delete'])) {
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable($table);
             $queryBuilder->getRestrictions()->removeAll();
+
+            $uids = $queryBuilder
+                ->select('uid')
+                ->from($table)
+                ->where(
+                    $queryBuilder->expr()->eq('tx_igldapssoauth_id', $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)),
+                    $queryBuilder->expr()->eq($GLOBALS['TCA'][$table]['ctrl']['delete'], 0)
+                )
+                ->execute()
+                ->fetchFirstColumn();
 
             $queryBuilder
                 ->update($table)
@@ -320,7 +345,7 @@ class Typo3UserRepository
                 $queryBuilder->set($GLOBALS['TCA'][$table]['ctrl']['tstamp'], $GLOBALS['EXEC_TIME']);
             }
 
-            $affectedRows = $queryBuilder->execute();
+            $queryBuilder->execute();
 
             NotificationUtility::dispatch(
                 __CLASS__,
@@ -331,6 +356,7 @@ class Typo3UserRepository
                 ]
             );
         }
+        return $uids;
     }
 
     /**

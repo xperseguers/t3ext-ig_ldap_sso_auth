@@ -101,11 +101,11 @@ class UserImportUtility
     /**
      * Disables all users related to the current configuration.
      *
-     * @return void
+     * @return int[] List of uids of users who got disabled
      */
-    public function disableUsers()
+    public function disableUsers(): array
     {
-        Typo3UserRepository::disableForConfiguration(
+        return Typo3UserRepository::disableForConfiguration(
             $this->userTable,
             Configuration::getUid()
         );
@@ -114,11 +114,11 @@ class UserImportUtility
     /**
      * Deletes all users related to the current configuration.
      *
-     * @return void
+     * @return int[] List of uids of users who got deleted
      */
-    public function deleteUsers()
+    public function deleteUsers(): array
     {
-        Typo3UserRepository::deleteForConfiguration(
+        return Typo3UserRepository::deleteForConfiguration(
             $this->userTable,
             Configuration::getUid()
         );

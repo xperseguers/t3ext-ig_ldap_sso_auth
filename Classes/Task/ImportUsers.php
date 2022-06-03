@@ -79,7 +79,6 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
      */
     public function execute()
     {
-
         // Assemble a list of configuration and contexts for import
         /** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
         $configurationRepository = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository::class);
@@ -144,16 +143,17 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
                     $failures++;
                 } else {
                     // Disable or delete users, according to settings
+                    $disabledOrDeletedUserUids = [];
                     if ($this->missingUsersHandling === 'disable') {
                         $this->getLogger()->debug(sprintf(
                             'Disabling users (%s) for configuration record %s', $aContext, $configuration->getUid()
                         ));
-                        $importUtility->disableUsers();
+                        $disabledOrDeletedUserUids = $importUtility->disableUsers();
                     } elseif ($this->missingUsersHandling === 'delete') {
                         $this->getLogger()->debug(
                             sprintf('Deleting users (%s) for configuration record %s', $aContext, $configuration->getUid()
                         ));
-                        $importUtility->deleteUsers();
+                        $disabledOrDeletedUserUids = $importUtility->deleteUsers();
                     }
 
                     // Proceed with import (handle partial result sets until every LDAP record has been returned)
@@ -171,7 +171,26 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
                             $user = Authentication::merge($aUser, $typo3Users[$index], $config['users']['mapping']);
 
                             // Import the user using information from LDAP
-                            $importUtility->import($user, $aUser, $this->restoredUsersHandling);
+                            $restoreBehaviour = $this->restoredUsersHandling;
+                            if (in_array($user['uid'], $disabledOrDeletedUserUids, true)) {
+                                // We disabled this user ourselves
+                                if ($this->missingUsersHandling === 'disable') {
+                                    if ($restoreBehaviour === 'nothing') {
+                                        $restoreBehaviour = 'enable';
+                                    } elseif ($restoreBehaviour === 'undelete') {
+                                        $restoreBehaviour = 'both';
+                                    }
+                                } elseif ($this->missingUsersHandling === 'delete') {
+                                    // We deleted this user ourselves
+                                    if ($restoreBehaviour === 'nothing') {
+                                        $restoreBehaviour = 'undelete';
+                                    } elseif ($restoreBehaviour === 'enable') {
+                                        $restoreBehaviour = 'both';
+                                    }
+                                }
+                            }
+
+                            $importUtility->import($user, $aUser, $restoreBehaviour);
                         }
 
                         $this->getLogger()->info(sprintf(

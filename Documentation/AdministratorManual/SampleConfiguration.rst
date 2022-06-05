@@ -58,6 +58,7 @@ Mapping                             .. code-block:: typoscript
                                         realName = <cn>
                                         tstamp = {DATE}
                                         admin = 1
+                                        disable = 0
 
 =================================== ===========================================
 

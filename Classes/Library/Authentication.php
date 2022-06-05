@@ -214,7 +214,7 @@ class Authentication
             $userTable = static::$authenticationService->authInfo['db_user']['table'];
             if (is_array($GLOBALS['TCA'][$userTable]['columns'])) {
                 foreach ($GLOBALS['TCA'][$userTable]['columns'] as $column => $columnConfig) {
-                    if (isset($columnConfig['config']['default'])) {
+                    if (isset($columnConfig['config']['default']) && $column !== 'disable') {
                         $defaultValue = $columnConfig['config']['default'];
                         $typo3_user[$column] = $defaultValue;
                     }

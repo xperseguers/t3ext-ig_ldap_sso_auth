@@ -897,7 +897,7 @@ class Authentication
      */
     protected static function getCreationUserId(): int
     {
-        $cruserId = (TYPO3_MODE === 'BE' ? $GLOBALS['BE_USER']->user['uid'] : null);
+        $cruserId = (TYPO3_MODE === 'BE' ? ($GLOBALS['BE_USER']->user['uid'] ?? null) : null);
         return $cruserId ?? 0;
     }
 

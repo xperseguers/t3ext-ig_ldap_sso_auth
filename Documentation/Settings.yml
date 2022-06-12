@@ -4,7 +4,7 @@
 
 ---
 conf.py:
-  copyright: 2000-2021
+  copyright: 2000-2022
   project: LDAP / SSO Authentication
   version: 3.7-dev
   release: 3.7.0-dev

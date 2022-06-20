@@ -274,7 +274,7 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
                 ? $_SERVER['REDIRECT_REMOTE_USER']
                 : null
             );
-        if (function_exists('mb_detect_encoding') && mb_detect_encoding($remoteUser, mb_detect_order(), true) !== 'UTF-8') {
+        if (!empty($remoteUser) && function_exists('mb_detect_encoding') && mb_detect_encoding($remoteUser, mb_detect_order(), true) !== 'UTF-8') {
             $remoteUser = utf8_encode($remoteUser);
         }
         return $remoteUser;

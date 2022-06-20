@@ -461,7 +461,7 @@ class LdapUtility
     public function getDn()
     {
         $dn = ''; // TODO: better return null?
-        if (is_resource($this->firstResultEntry)) {
+        if (is_resource($this->firstResultEntry) || is_object($this->firstResultEntry) /* PHP 8.1 */) {
             $dn = ldap_get_dn($this->connection, $this->firstResultEntry);
         }
         return $dn;
@@ -475,7 +475,7 @@ class LdapUtility
     public function getAttributes()
     {
         $attributes = [];
-        if (is_resource($this->firstResultEntry)) {
+        if (is_resource($this->firstResultEntry) || is_object($this->firstResultEntry) /* PHP 8.1 */) {
             $attributes = ldap_get_attributes($this->connection, $this->firstResultEntry);
         }
         return $attributes;

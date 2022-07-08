@@ -75,6 +75,7 @@ releases.
 
 We would like to thank:
 
+- Support for TYPO3 11 LTS has been sponsored by *TEC Competence UG*, Germany.
 - Support for TYPO3 9 LTS has been sponsored by *Plan.Net Suisse AG*,
   Switzerland and *TEC Competence UG*, Germany.
 - All the various developers reportings bugs and providing patches in the

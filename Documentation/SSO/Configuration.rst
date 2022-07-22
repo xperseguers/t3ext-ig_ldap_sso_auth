@@ -37,6 +37,13 @@ Within an ``intranet.example.com`` shell, install the package:
 	``krb5-user`` is not an actual requirement but it will provide handy
 	command-line tools for Kerberos.
 
+.. hint::
+
+	In Debian 11 (Bullseye) the module ``libapache2-mod-auth-kerb`` is not
+	available anymore. You can use ``libapache2-mod-auth-gssapi`` instead.
+
+	``$ sudo apt-get install libapache2-mod-auth-gssapi``
+
 In additional to ``libapache2-mod-auth-kerb``, this will install the dependency
 package ``krb5-config`` and then show you a configuration wizard asking for:
 
@@ -263,6 +270,20 @@ virtual host configuration:
 	    # prevent KDC spoofing attacks
 	    # It should be used only for testing purposes
 	    KrbVerifyKDC off
+	</Location>
+
+**If you are using ``libapache2-mod-auth-gssapi``, add the following snippet instead:**
+
+.. code-block:: apache
+
+	<Location />
+			SSLRequireSSL
+			AuthType GSSAPI
+			AuthName "Intranet of example.com"
+			GssapiBasicAuth On
+			GssapiCredStore keytab:/etc/apache2/http_intranet.keytab
+			GssapiLocalName On
+			require valid-user
 	</Location>
 
 .. note::

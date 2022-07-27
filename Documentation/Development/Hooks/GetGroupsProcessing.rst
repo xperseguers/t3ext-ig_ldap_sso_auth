@@ -13,7 +13,7 @@ using a code like:
 .. code-block:: php
 
 	$GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['getGroupsProcessing'][]
-		= 'EXT:extension/Path/To/Class/ClassName.php:VendorName\\ClassName';
+		= \VendorName\Extension\YourClass::class;
 
 Your class has to implement the
 :code:`\Causal\IgLdapSsoAuth\Utility\GetGroupsProcessorInterface` interface.

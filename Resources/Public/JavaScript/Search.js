@@ -84,9 +84,7 @@ define([
             url: TYPO3.settings.ajaxUrls['ldap_search'],
             data: self.fields.form.serialize()
         }).done(function (data) {
-            if (data.success) {
-                self.fields.result.html(data.html);
-            }
+            self.fields.result.html(data.html);
         });
     };
 

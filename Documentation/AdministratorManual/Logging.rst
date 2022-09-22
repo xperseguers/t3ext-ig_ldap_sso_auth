@@ -30,7 +30,7 @@ the system log, you may add following configuration to
 	$GLOBALS['TYPO3_CONF_VARS']['LOG']['Causal']['IgLdapSsoAuth']['writerConfiguration'] = [
 	    \TYPO3\CMS\Core\Log\LogLevel::DEBUG => [
 	        \TYPO3\CMS\Core\Log\Writer\FileWriter::class => [
-	            'logFile' => Environment::getVarPath() . '/log/ldap.log'
+	            'logFile' => \TYPO3\CMS\Core\Core\Environment::getVarPath() . '/log/ldap.log'
 	        ],
 	    ],
 

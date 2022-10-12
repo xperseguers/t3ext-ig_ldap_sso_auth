@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -13,6 +12,8 @@ declare(strict_types=1);
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+declare(strict_types=1);
 
 namespace Causal\IgLdapSsoAuth\Domain\Repository;
 

@@ -73,7 +73,12 @@ class ModuleController extends ActionController
     public function initializeAction()
     {
         $vars = GeneralUtility::_GET('tx_igldapssoauth_system_igldapssoauthtxigldapssoauthm1');
-        if (!isset($vars['redirect']) && !isset($vars['action']) && is_array($GLOBALS['BE_USER']->uc['ig_ldap_sso_auth']['selection'])) {
+        if (
+            !isset($vars['redirect'])
+            && !isset($vars['action'])
+            && isset($GLOBALS['BE_USER']->uc['ig_ldap_sso_auth'])
+            && is_array($GLOBALS['BE_USER']->uc['ig_ldap_sso_auth']['selection'])
+        ) {
             $previousSelection = $GLOBALS['BE_USER']->uc['ig_ldap_sso_auth']['selection'];
             if (!empty($previousSelection['action']) && !empty($previousSelection['configuration'])) {
                 $this->redirect($previousSelection['action'], 'Module', null, ['configuration' => $previousSelection['configuration'], 'redirect' => 1]);

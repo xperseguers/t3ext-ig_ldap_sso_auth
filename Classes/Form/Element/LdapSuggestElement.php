@@ -14,6 +14,7 @@
 
 namespace Causal\IgLdapSsoAuth\Form\Element;
 
+use Causal\IgLdapSsoAuth\Library\Configuration;
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -48,7 +49,9 @@ class LdapSuggestElement extends AbstractFormElement
 
         $resultArray = $baseElement->render();
 
-        $serverType = (int)$this->data['databaseRow']['ldap_server'][0];
+        $serverType = !empty($this->data['databaseRow']['ldap_server'])
+            ? (int)$this->data['databaseRow']['ldap_server'][0]
+            : Configuration::SERVER_OPENLDAP;
 
         if (substr($this->data['fieldName'], -7) === '_basedn') {
             $suggestion = $this->suggestBaseDn();

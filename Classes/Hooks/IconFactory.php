@@ -45,7 +45,8 @@ class IconFactory
                 // This is the case, e.g., in Backend users module
                 $row = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord($table, $row['uid']);
             }
-            if (!empty($row['tx_igldapssoauth_dn']) && !(bool)$row['disable']) {
+            $isDisabled = $row['disable'] ?? $row['hidden'];
+            if (!empty($row['tx_igldapssoauth_dn']) && !$isDisabled) {
                 $iconName = 'extensions-ig_ldap_sso_auth-overlay-ldap-record';
             }
         }

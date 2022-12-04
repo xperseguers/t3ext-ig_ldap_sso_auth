@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2015-02-17T16:10:14Z" product-name="ig_ldap_sso_auth" target-language="cs">
+    <header/>
+    <body>
+      <trans-unit id="mlang_tabs_tab">
+        <source>LDAP / SSO</source>
+        <target state="needs-translation">LDAP / SSO</target>
+      </trans-unit>
+      <trans-unit id="mlang_labels_tabdescr">
+        <source>LDAP management and configuration module.</source>
+        <target state="needs-translation">LDAP management and configuration module.</target>
+      </trans-unit>
+      <trans-unit id="mlang_labels_tablabel">
+        <source>LDAP management</source>
+        <target state="needs-translation">LDAP management</target>
+      </trans-unit>
+      <trans-unit id="title">
+        <source>LDAP / SSO service management</source>
+        <target state="needs-translation">LDAP / SSO service management</target>
+      </trans-unit>
+      <trans-unit id="configuration_missing.title">
+        <source>No Configuration Records</source>
+        <target state="needs-translation">No Configuration Records</target>
+      </trans-unit>
+      <trans-unit id="configuration_missing.message">
+        <source><![CDATA[This module cannot be used until you create at least one configuration record. Please refer to the <a href="%s" target="_blank">administrator manual</a> for further information.<br /><br /><a href="%s">Click here</a> to create a configuration record.]]></source>
+        <target state="needs-translation"><![CDATA[This module cannot be used until you create at least one configuration record. Please refer to the <a href="%s" target="_blank">administrator manual</a> for further information.<br /><br /><a href="%s">Click here</a> to create a configuration record.]]></target>
+      </trans-unit>
+      <trans-unit id="module_overview">
+        <source>Overview</source>
+        <target state="needs-translation">Overview</target>
+      </trans-unit>
+      <trans-unit id="module_status">
+        <source>Status</source>
+        <target state="needs-translation">Status</target>
+      </trans-unit>
+      <trans-unit id="module_status.title.domains">
+        <source>Domains</source>
+        <target state="needs-translation">Domains</target>
+      </trans-unit>
+      <trans-unit id="module_status.description.domains">
+        <source>Current LDAP configuration is restricted to following domain(s):</source>
+        <target state="needs-translation">Current LDAP configuration is restricted to following domain(s):</target>
+      </trans-unit>
+      <trans-unit id="module_status.title.ldap">
+        <source>LDAP</source>
+        <target state="needs-translation">LDAP</target>
+      </trans-unit>
+      <trans-unit id="module_status.messages.ldapDisable">
+        <source>LDAP is disabled since the host name is undefined.</source>
+        <target state="needs-translation">LDAP is disabled since the host name is undefined.</target>
+      </trans-unit>
+      <trans-unit id="module_status.messages.enabled">
+        <source>enabled</source>
+        <target state="needs-translation">enabled</target>
+      </trans-unit>
+      <trans-unit id="module_status.messages.disabled">
+        <source>disabled</source>
+        <target state="needs-translation">disabled</target>
+      </trans-unit>
+      <trans-unit id="module_status.messages.empty">
+        <source>none</source>
+        <target state="needs-translation">none</target>
+      </trans-unit>
+      <trans-unit id="module_status.title.connection">
+        <source>Connection status</source>
+        <target state="needs-translation">Connection status</target>
+      </trans-unit>
+      <trans-unit id="module_status.title.frontend">
+        <source>Frontend authentication</source>
+        <target state="needs-translation">Frontend authentication</target>
+      </trans-unit>
+      <trans-unit id="module_status.title.backend">
+        <source>Backend authentication</source>
+        <target state="needs-translation">Backend authentication</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.server">
+        <source>Server type</source>
+        <target state="needs-translation">Server type</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.charset">
+        <source>Character set</source>
+        <target state="needs-translation">Character set</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.host">
+        <source>Host</source>
+        <target state="needs-translation">Host</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.port">
+        <source>Port</source>
+        <target state="needs-translation">Port</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.tls">
+        <source>Use TLS</source>
+        <target state="needs-translation">Use TLS</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.tlsReqcert">
+        <source>TLS require cert</source>
+        <target state="needs-translation">TLS require cert</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.ssl">
+        <source>Use SSL</source>
+        <target state="needs-translation">Use SSL</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.binddn">
+        <source>Bind DN</source>
+        <target state="needs-translation">Bind DN</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.password">
+        <source>Password</source>
+        <target state="needs-translation">Password</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.connect">
+        <source>LDAP connect</source>
+        <target state="needs-translation">LDAP connect</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.bind">
+        <source>LDAP bind</source>
+        <target state="needs-translation">LDAP bind</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.LDAPAuthentication">
+        <source>LDAP authentication</source>
+        <target state="needs-translation">LDAP authentication</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.SSOAuthentication">
+        <source>Single Sign On (SSO)</source>
+        <target state="needs-translation">Single Sign On (SSO)</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.forceLowerCaseUsername">
+        <source>Convert user name to lower-case</source>
+        <target state="needs-translation">Convert user name to lower-case</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.evaluateGroupsFromMembership">
+        <source>Extract groups from membership attribute</source>
+        <target state="needs-translation">Extract groups from membership attribute</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.IfUserExist">
+        <source>User must exist already</source>
+        <target state="needs-translation">User must exist already</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.IfGroupExist">
+        <source>User group must exist already</source>
+        <target state="needs-translation">User group must exist already</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.BEfailsafe">
+        <source>Local (non-LDAP) users may authenticate</source>
+        <target state="needs-translation">Local (non-LDAP) users may authenticate</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.updateAdminAttribForGroups">
+        <source>User groups promoted as TYPO3 administrators</source>
+        <target state="needs-translation">User groups promoted as TYPO3 administrators</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.DeleteUserIfNoTYPO3Groups">
+        <source>Delete user if not in any TYPO3 user groups</source>
+        <target state="needs-translation">Delete user if not in any TYPO3 user groups</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.DeleteUserIfNoLDAPGroups">
+        <source>Delete user if not in any LDAP user groups</source>
+        <target state="needs-translation">Delete user if not in any LDAP user groups</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.GroupsNotSynchronize">
+        <source>Prevent synchronization of user groups</source>
+        <target state="needs-translation">Prevent synchronization of user groups</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.assignGroups">
+        <source>Additional TYPO3 user groups assigned</source>
+        <target state="needs-translation">Additional TYPO3 user groups assigned</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.keepTYPO3Groups">
+        <source>Keep locally-assigned TYPO3 user groups</source>
+        <target state="needs-translation">Keep locally-assigned TYPO3 user groups</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.requiredLDAPGroups">
+        <source>Required LDAP user groups to validate authentication</source>
+        <target state="needs-translation">Required LDAP user groups to validate authentication</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.users">
+        <source>Configuration for users</source>
+        <target state="needs-translation">Configuration for users</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.groups">
+        <source>Configuration for user groups</source>
+        <target state="needs-translation">Configuration for user groups</target>
+      </trans-unit>
+      <trans-unit id="module_search">
+        <source>Search wizard</source>
+        <target state="needs-translation">Search wizard</target>
+      </trans-unit>
+      <trans-unit id="module_search_type">
+        <source>Type</source>
+        <target state="needs-translation">Type</target>
+      </trans-unit>
+      <trans-unit id="module_search_type.frontendUsers">
+        <source>Frontend users</source>
+        <target state="needs-translation">Frontend users</target>
+      </trans-unit>
+      <trans-unit id="module_search_type.frontendUserGroups">
+        <source>Frontend user groups</source>
+        <target state="needs-translation">Frontend user groups</target>
+      </trans-unit>
+      <trans-unit id="module_search_type.backendUsers">
+        <source>Backend users</source>
+        <target state="needs-translation">Backend users</target>
+      </trans-unit>
+      <trans-unit id="module_search_type.backendUserGroups">
+        <source>Backend user groups</source>
+        <target state="needs-translation">Backend user groups</target>
+      </trans-unit>
+      <trans-unit id="module_search_options">
+        <source>Options</source>
+        <target state="needs-translation">Options</target>
+      </trans-unit>
+      <trans-unit id="module_search_options.firstEntry">
+        <source>First entry only</source>
+        <target state="needs-translation">First entry only</target>
+      </trans-unit>
+      <trans-unit id="module_search_options.status">
+        <source>Show status</source>
+        <target state="needs-translation">Show status</target>
+      </trans-unit>
+      <trans-unit id="module_search_basedn">
+        <source>Base DN</source>
+        <target state="needs-translation">Base DN</target>
+      </trans-unit>
+      <trans-unit id="module_search_filter">
+        <source>Filter</source>
+        <target state="needs-translation">Filter</target>
+      </trans-unit>
+      <trans-unit id="module_search.action.search">
+        <source>search</source>
+        <target state="needs-translation">search</target>
+      </trans-unit>
+      <trans-unit id="module_search_status">
+        <source>LDAP search status</source>
+        <target state="needs-translation">LDAP search status</target>
+      </trans-unit>
+      <trans-unit id="module_search_result">
+        <source>Result</source>
+        <target state="needs-translation">Result</target>
+      </trans-unit>
+      <trans-unit id="module_search_noResult">
+        <source>No results</source>
+        <target state="needs-translation">No results</target>
+      </trans-unit>
+      <trans-unit id="module_search_preview">
+        <source>Preview mapping</source>
+        <target state="needs-translation">Preview mapping</target>
+      </trans-unit>
+      <trans-unit id="module_import.action.import">
+        <source>import</source>
+        <target state="needs-translation">import</target>
+      </trans-unit>
+      <trans-unit id="module_import.action.update">
+        <source>update</source>
+        <target state="needs-translation">update</target>
+      </trans-unit>
+      <trans-unit id="module_import.action.undelete">
+        <source>undelete</source>
+        <target state="needs-translation">undelete</target>
+      </trans-unit>
+      <trans-unit id="module_import_users_fe">
+        <source>Import LDAP users (Frontend)</source>
+        <target state="needs-translation">Import LDAP users (Frontend)</target>
+      </trans-unit>
+      <trans-unit id="module_import_users_be">
+        <source>Import LDAP users (Backend)</source>
+        <target state="needs-translation">Import LDAP users (Backend)</target>
+      </trans-unit>
+      <trans-unit id="module_import_users.empty">
+        <source>No users found.</source>
+        <target state="needs-translation">No users found.</target>
+      </trans-unit>
+      <trans-unit id="module_import_users.caption_local">
+        <source>LDAP user is available locally</source>
+        <target state="needs-translation">LDAP user is available locally</target>
+      </trans-unit>
+      <trans-unit id="module_import_users.caption_deleted">
+        <source>LDAP user has been imported but then manually deleted</source>
+        <target state="needs-translation">LDAP user has been imported but then manually deleted</target>
+      </trans-unit>
+      <trans-unit id="module_import.field.name">
+        <source>Name</source>
+        <target state="needs-translation">Name</target>
+      </trans-unit>
+      <trans-unit id="module_import_groups_fe">
+        <source>Import LDAP groups (Frontend)</source>
+        <target state="needs-translation">Import LDAP groups (Frontend)</target>
+      </trans-unit>
+      <trans-unit id="module_import_groups_be">
+        <source>Import LDAP groups (Backend)</source>
+        <target state="needs-translation">Import LDAP groups (Backend)</target>
+      </trans-unit>
+      <trans-unit id="module_import_groups.empty">
+        <source>No groups found.</source>
+        <target state="needs-translation">No groups found.</target>
+      </trans-unit>
+      <trans-unit id="module_import_groups.caption_local">
+        <source>LDAP group is available locally</source>
+        <target state="needs-translation">LDAP group is available locally</target>
+      </trans-unit>
+      <trans-unit id="module_import_groups.caption_deleted">
+        <source>LDAP group has been imported but then manually deleted</source>
+        <target state="needs-translation">LDAP group has been imported but then manually deleted</target>
+      </trans-unit>
+      <trans-unit id="task.import_users.title">
+        <source>Import LDAP users</source>
+        <target state="needs-translation">Import LDAP users</target>
+      </trans-unit>
+      <trans-unit id="task.import_users.description">
+        <source>Import LDAP for one or all configurations, for FE, BE or both. Users missing on the LDAP side will be disabled.</source>
+        <target state="needs-translation">Import LDAP for one or all configurations, for FE, BE or both. Users missing on the LDAP side will be disabled.</target>
+      </trans-unit>
+      <trans-unit id="task.import_users.field.mode">
+        <source>Mode</source>
+        <target state="needs-translation">Mode</target>
+      </trans-unit>
+      <trans-unit id="task.import_users.field.mode.import">
+        <source>Import missing LDAP users and synchronize existing TYPO3 users</source>
+        <target state="needs-translation">Import missing LDAP users and synchronize existing TYPO3 users</target>
+      </trans-unit>
+      <trans-unit id="task.import_users.field.mode.sync">
+        <source>Only synchronize existing TYPO3 users</source>
+        <target state="needs-translation">Only synchronize existing TYPO3 users</target>
+      </trans-unit>
+      <trans-unit id="task.import_users.field.mode.import.short">
+        <source><![CDATA[Import & synchronize]]></source>
+        <target state="needs-translation"><![CDATA[Import & synchronize]]></target>
+      </trans-unit>
+      <trans-unit id="task.import_users.field.mode.sync.short">
+        <source>Synchronize</source>
+        <target state="needs-translation">Synchronize</target>
+      </trans-unit>
+      <trans-unit id="task.import_users.field.context">
+        <source>Context</source>
+        <target state="needs-translation">Context</target>
+      </trans-unit>
+      <trans-unit id="task.import_users.field.context.both">
+        <source>Both</source>
+        <target state="needs-translation">Both</target>
+      </trans-unit>
+      <trans-unit id="task.import_users.field.context.fe">
+        <source>Frontend</source>
+        <target state="needs-translation">Frontend</target>
+      </trans-unit>
+      <trans-unit id="task.import_users.field.context.be">
+        <source>Backend</source>
+        <target state="needs-translation">Backend</target>
+      </trans-unit>
+      <trans-unit id="task.import_users.field.configuration">
+        <source>Configuration</source>
+        <target state="needs-translation">Configuration</target>
+      </trans-unit>
+      <trans-unit id="task.import_users.field.configuration.all">
+        <source>All</source>
+        <target state="needs-translation">All</target>
+      </trans-unit>
+      <trans-unit id="task.import_users.additionalinformation">
+        <source>Mode: %s, Context: %s, Configuration: %s</source>
+        <target state="needs-translation">Mode: %s, Context: %s, Configuration: %s</target>
+      </trans-unit>
+      <trans-unit id="task.import_users.field.missinguserhandling">
+        <source>Handling of missing users</source>
+        <target state="needs-translation">Handling of missing users</target>
+      </trans-unit>
+      <trans-unit id="task.import_users.field.missinguserhandling.disable">
+        <source>Disable</source>
+        <target state="needs-translation">Disable</target>
+      </trans-unit>
+      <trans-unit id="task.import_users.field.missinguserhandling.delete">
+        <source>Delete</source>
+        <target state="needs-translation">Delete</target>
+      </trans-unit>
+      <trans-unit id="task.import_users.field.missinguserhandling.nothing">
+        <source>Do nothing</source>
+        <target state="needs-translation">Do nothing</target>
+      </trans-unit>
+      <trans-unit id="task.import_users.field.restoreduserhandling">
+        <source>Handling of restored users</source>
+        <target state="needs-translation">Handling of restored users</target>
+      </trans-unit>
+      <trans-unit id="task.import_users.field.restoreduserhandling.enable">
+        <source>Re-enable</source>
+        <target state="needs-translation">Re-enable</target>
+      </trans-unit>
+      <trans-unit id="task.import_users.field.restoreduserhandling.undelete">
+        <source>Undelete</source>
+        <target state="needs-translation">Undelete</target>
+      </trans-unit>
+      <trans-unit id="task.import_users.field.restoreduserhandling.both">
+        <source>Re-enable and undelete</source>
+        <target state="needs-translation">Re-enable and undelete</target>
+      </trans-unit>
+      <trans-unit id="task.import_users.field.restoreduserhandling.nothing">
+        <source>Do nothing</source>
+        <target state="needs-translation">Do nothing</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

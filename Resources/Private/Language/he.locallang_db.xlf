@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2015-02-17T16:10:14Z" product-name="ig_ldap_sso_auth" target-language="he">
+    <header/>
+    <body>
+      <trans-unit id="settings.checkConfiguration">
+        <source>Configuration check</source>
+        <target state="needs-translation">Configuration check</target>
+      </trans-unit>
+      <trans-unit id="settings.throwExceptionAtLogin">
+        <source>Throw exception if configured incorrectly: Recommended for new installation - LDAP authentication is not compatible with loginSecurityLevel set to "challenged" or "superchallenged" since the real password can never be sent against the LDAP repository. Instead of failing silently, the extension will throw an exception at login. If the method appears to be brutal it will save a lot of headaches. Value of loginSecurityLevel should be handled manually to "normal" or even better "rsa" in the Install Tool.</source>
+        <target state="needs-translation">Throw exception if configured incorrectly: Recommended for new installation - LDAP authentication is not compatible with loginSecurityLevel set to "challenged" or "superchallenged" since the real password can never be sent against the LDAP repository. Instead of failing silently, the extension will throw an exception at login. If the method appears to be brutal it will save a lot of headaches. Value of loginSecurityLevel should be handled manually to "normal" or even better "rsa" in the Install Tool.</target>
+      </trans-unit>
+      <trans-unit id="settings.forceLowerCaseUsername">
+        <source>Force lower-case user name: If checked, user names will be always be stored in lower-cases. Useful for case-sensitive databases.</source>
+        <target state="needs-translation">Force lower-case user name: If checked, user names will be always be stored in lower-cases. Useful for case-sensitive databases.</target>
+      </trans-unit>
+      <trans-unit id="settings.useExtensionConfiguration">
+        <source>Use the configuration specified in $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']['configuration']</source>
+        <target state="needs-translation">Use the configuration specified in $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']['configuration']</target>
+      </trans-unit>
+      <trans-unit id="settings.enableBELDAPAuthentication">
+        <source>Backend LDAP authentication: Enable LDAP authentication for the backend.</source>
+        <target state="needs-translation">Backend LDAP authentication: Enable LDAP authentication for the backend.</target>
+      </trans-unit>
+      <trans-unit id="settings.TYPO3BEGroupExist">
+        <source>Backend user group must exist: If no groups are found locally, the user may not log on.</source>
+        <target state="needs-translation">Backend user group must exist: If no groups are found locally, the user may not log on.</target>
+      </trans-unit>
+      <trans-unit id="settings.TYPO3BEUserExist">
+        <source>Backend user must exist: If checked, users that are not already present in TYPO3 may not log on.</source>
+        <target state="needs-translation">Backend user must exist: If checked, users that are not already present in TYPO3 may not log on.</target>
+      </trans-unit>
+      <trans-unit id="settings.BEfailsafe">
+        <source>Enable local Backend users: If checked, Backend users without a reference to LDAP (e.g., "admin") may log on.</source>
+        <target state="needs-translation">Enable local Backend users: If checked, Backend users without a reference to LDAP (e.g., "admin") may log on.</target>
+      </trans-unit>
+      <trans-unit id="settings.TYPO3BEGroupsNotSynchronize">
+        <source>Disable Backend group synchronization: If checked, TYPO3 Backend user groups will not get updated.</source>
+        <target state="needs-translation">Disable Backend group synchronization: If checked, TYPO3 Backend user groups will not get updated.</target>
+      </trans-unit>
+      <trans-unit id="settings.keepBEGroups">
+        <source>Keep Backend groups: Keep the Backend user groups assigned locally.</source>
+        <target state="needs-translation">Keep Backend groups: Keep the Backend user groups assigned locally.</target>
+      </trans-unit>
+      <trans-unit id="settings.enableBESSO">
+        <source>Backend SSO: Enable Single Sign-On for Backend users.</source>
+        <target state="needs-translation">Backend SSO: Enable Single Sign-On for Backend users.</target>
+      </trans-unit>
+      <trans-unit id="settings.keepBESSODomainName">
+        <source>Backend SSO: Keep the domain name after a successful login (for example on a CAS-Server), to continue the chain of authentication through LDAP.</source>
+        <target state="needs-translation">Backend SSO: Keep the domain name after a successful login (for example on a CAS-Server), to continue the chain of authentication through LDAP.</target>
+      </trans-unit>
+      <trans-unit id="settings.enableFELDAPAuthentication">
+        <source>Frontend LDAP authentication: Enable LDAP authentication for the frontend.</source>
+        <target state="needs-translation">Frontend LDAP authentication: Enable LDAP authentication for the frontend.</target>
+      </trans-unit>
+      <trans-unit id="settings.TYPO3FEDeleteUserIfNoLDAPGroups">
+        <source>Purge Frontend users: Delete Frontend user upon login if no LDAP groups are found.</source>
+        <target state="needs-translation">Purge Frontend users: Delete Frontend user upon login if no LDAP groups are found.</target>
+      </trans-unit>
+      <trans-unit id="settings.TYPO3FEDeleteUserIfNoTYPO3Groups">
+        <source>Restrict new Frontend users: This option will prevent new Frontend users to be created and will delete existing ones whenever the LDAP groups they are member of are not found locally.</source>
+        <target state="needs-translation">Restrict new Frontend users: This option will prevent new Frontend users to be created and will delete existing ones whenever the LDAP groups they are member of are not found locally.</target>
+      </trans-unit>
+      <trans-unit id="settings.TYPO3FEGroupExist">
+        <source>Frontend user group must exist: If no groups are found locally, the user may not log on.</source>
+        <target state="needs-translation">Frontend user group must exist: If no groups are found locally, the user may not log on.</target>
+      </trans-unit>
+      <trans-unit id="settings.TYPO3FEUserExist">
+        <source>Frontend user must exist: If checked, users that are not already present in TYPO3 may not log on.</source>
+        <target state="needs-translation">Frontend user must exist: If checked, users that are not already present in TYPO3 may not log on.</target>
+      </trans-unit>
+      <trans-unit id="settings.TYPO3FEGroupsNotSynchronize">
+        <source>Disable Frontend group synchronization: If checked, TYPO3 Frontend user groups will not get updated.</source>
+        <target state="needs-translation">Disable Frontend group synchronization: If checked, TYPO3 Frontend user groups will not get updated.</target>
+      </trans-unit>
+      <trans-unit id="settings.keepFEGroups">
+        <source>Keep Frontend groups: Keep the Frontend user groups assigned locally.</source>
+        <target state="needs-translation">Keep Frontend groups: Keep the Frontend user groups assigned locally.</target>
+      </trans-unit>
+      <trans-unit id="settings.enableFESSO">
+        <source>Frontend SSO: Enable Single Sign-On for Frontend users.</source>
+        <target state="needs-translation">Frontend SSO: Enable Single Sign-On for Frontend users.</target>
+      </trans-unit>
+      <trans-unit id="settings.keepFESSODomainName">
+        <source>Frontend SSO: Keep the domain name after a successful login (for example on a CAS-Server), to continue the chain of authentication through LDAP.</source>
+        <target state="needs-translation">Frontend SSO: Keep the domain name after a successful login (for example on a CAS-Server), to continue the chain of authentication through LDAP.</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config">
+        <source>Configuration LDAP / SSO</source>
+        <target state="needs-translation">Configuration LDAP / SSO</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.name">
+        <source>Name:</source>
+        <target state="needs-translation">Name:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.domains">
+        <source>Associated domains:</source>
+        <target state="needs-translation">Associated domains:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.domains.v9_description">
+        <source>BEWARE: Usage of domains is deprecated since TYPO3 v9. Please migrate your configuration to site configurations.</source>
+        <target state="needs-translation">BEWARE: Usage of domains is deprecated since TYPO3 v9. Please migrate your configuration to site configurations.</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.sites">
+        <source>Associated site configurations:</source>
+        <target state="needs-translation">Associated site configurations:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_server">
+        <source>Server Type:</source>
+        <target state="needs-translation">Server Type:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_server.I.0">
+        <source>OpenLDAP</source>
+        <target state="needs-translation">OpenLDAP</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_server.I.1">
+        <source>Active Directory</source>
+        <target state="needs-translation">Active Directory</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_charset">
+        <source>Character set:</source>
+        <target state="needs-translation">Character set:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_host">
+        <source>Host:</source>
+        <target state="needs-translation">Host:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_port">
+        <source>Port:</source>
+        <target state="needs-translation">Port:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_tls">
+        <source>Use TLS:</source>
+        <target state="needs-translation">Use TLS:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_tls_reqcert">
+        <source>TLS require cert:</source>
+        <target state="needs-translation">TLS require cert:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_ssl">
+        <source>Use SSL:</source>
+        <target state="needs-translation">Use SSL:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_binddn">
+        <source>Bind DN:</source>
+        <target state="needs-translation">Bind DN:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_password">
+        <source>Password:</source>
+        <target state="needs-translation">Password:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.group_membership">
+        <source>Relation between groups and users:</source>
+        <target state="needs-translation">Relation between groups and users:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.group_membership.I.1">
+        <source>Group contains the list of its members</source>
+        <target state="needs-translation">Group contains the list of its members</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.group_membership.I.2">
+        <source>User contains the list of its associated groups</source>
+        <target state="needs-translation">User contains the list of its associated groups</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.group_membership.fe.missingUsergroupMapping">
+        <source><![CDATA[Mapping for field "usergroup" is missing in the configuration of frontend users. You may end up importing ALL groups in LDAP into TYPO3 and get users associated to wrong groups. Suggestion: usergroup = <memberOf>]]></source>
+        <target state="needs-translation"><![CDATA[Mapping for field "usergroup" is missing in the configuration of frontend users. You may end up importing ALL groups in LDAP into TYPO3 and get users associated to wrong groups. Suggestion: usergroup = <memberOf>]]></target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.group_membership.be.missingUsergroupMapping">
+        <source><![CDATA[Mapping for field "usergroup" is missing in the configuration of backend users. You may end up importing ALL groups in LDAP into TYPO3 and get users associated to wrong groups. Suggestion: usergroup = <memberOf>]]></source>
+        <target state="needs-translation"><![CDATA[Mapping for field "usergroup" is missing in the configuration of backend users. You may end up importing ALL groups in LDAP into TYPO3 and get users associated to wrong groups. Suggestion: usergroup = <memberOf>]]></target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_users_basedn">
+        <source>Base DN:</source>
+        <target state="needs-translation">Base DN:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_users_filter">
+        <source>Filter:</source>
+        <target state="needs-translation">Filter:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_users_mapping">
+        <source>Mapping:</source>
+        <target state="needs-translation">Mapping:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_groups_basedn">
+        <source>Base DN:</source>
+        <target state="needs-translation">Base DN:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_groups_filter">
+        <source>Filter:</source>
+        <target state="needs-translation">Filter:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_groups_mapping">
+        <source>Mapping:</source>
+        <target state="needs-translation">Mapping:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_groups_required">
+        <source>Required LDAP groups:</source>
+        <target state="needs-translation">Required LDAP groups:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_groups_assigned">
+        <source>Local groups to be assigned:</source>
+        <target state="needs-translation">Local groups to be assigned:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_groups_admin">
+        <source>TYPO3 administrator groups:</source>
+        <target state="needs-translation">TYPO3 administrator groups:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_groups.tx_igldapssoauth_dn">
+        <source>Groups DN (Distinguished Name)</source>
+        <target state="needs-translation">Groups DN (Distinguished Name)</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.fe_users_basedn">
+        <source>Base DN:</source>
+        <target state="needs-translation">Base DN:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.fe_users_filter">
+        <source>Filter:</source>
+        <target state="needs-translation">Filter:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.fe_users_mapping">
+        <source>Mapping:</source>
+        <target state="needs-translation">Mapping:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.fe_groups_basedn">
+        <source>Base DN:</source>
+        <target state="needs-translation">Base DN:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.fe_groups_filter">
+        <source>Filter:</source>
+        <target state="needs-translation">Filter:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.fe_groups_mapping">
+        <source>Mapping:</source>
+        <target state="needs-translation">Mapping:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.fe_groups_required">
+        <source>Required LDAP groups:</source>
+        <target state="needs-translation">Required LDAP groups:</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.fe_groups_assigned">
+        <source>Local groups to be assigned:</source>
+        <target state="needs-translation">Local groups to be assigned:</target>
+      </trans-unit>
+      <trans-unit id="be_groups.tx_igldapssoauth_dn">
+        <source>Group's DN (Distinguished Name)</source>
+        <target state="needs-translation">Group's DN (Distinguished Name)</target>
+      </trans-unit>
+      <trans-unit id="be_users.tx_igldapssoauth_dn">
+        <source>User's DN (Distinguished Name)</source>
+        <target state="needs-translation">User's DN (Distinguished Name)</target>
+      </trans-unit>
+      <trans-unit id="fe_groups.tx_igldapssoauth_dn">
+        <source>Group's DN (Distinguished Name)</source>
+        <target state="needs-translation">Group's DN (Distinguished Name)</target>
+      </trans-unit>
+      <trans-unit id="fe_users.tx_igldapssoauth_dn">
+        <source>User's DN (Distinguished Name)</source>
+        <target state="needs-translation">User's DN (Distinguished Name)</target>
+      </trans-unit>
+      <trans-unit id="tt_content.list_type_pi1">
+        <source>Central Authentication Service</source>
+        <target state="needs-translation">Central Authentication Service</target>
+      </trans-unit>
+      <trans-unit id="palette.connection">
+        <source>Connection</source>
+        <target state="needs-translation">Connection</target>
+      </trans-unit>
+      <trans-unit id="suggestion.server.0">
+        <source>Suggestion for OpenLDAP:</source>
+        <target state="needs-translation">Suggestion for OpenLDAP:</target>
+      </trans-unit>
+      <trans-unit id="suggestion.server.1">
+        <source>Suggestion for Active Directory:</source>
+        <target state="needs-translation">Suggestion for Active Directory:</target>
+      </trans-unit>
+      <trans-unit id="suggestion.copy">
+        <source>copy and use</source>
+        <target state="needs-translation">copy and use</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

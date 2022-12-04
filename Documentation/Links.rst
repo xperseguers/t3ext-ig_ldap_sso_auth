@@ -24,7 +24,7 @@ Links
 	https://github.com/xperseguers/t3ext-ig_ldap_sso_auth
 
 :Translation:
-	https://translation.typo3.org/projects/TYPO3.ext.ig_ldap_sso_auth/
+	https://crowdin.com/project/typo3-extension-igldapssoauth
 
 :Contact:
 	`@xperseguers <https://twitter.com/xperseguers>`__

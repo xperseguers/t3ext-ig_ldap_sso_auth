@@ -57,8 +57,8 @@ Mapping                             .. code-block:: typoscript
                                         email = <mail>
                                         realName = <cn>
                                         tstamp = {DATE}
-                                        admin = 1
                                         disable = 0
+                                        admin = 1
 
 =================================== ===========================================
 

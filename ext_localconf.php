@@ -6,10 +6,10 @@ defined('TYPO3_MODE') || die();
     $EXT_CONFIG = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$_EXTKEY] ?? [];
 
     // SSO configuration
-    if ((bool)$EXT_CONFIG['enableFESSO']) {
+    if ($EXT_CONFIG['enableFESSO'] ?? false) {
         $GLOBALS['TYPO3_CONF_VARS']['SVCONF']['auth']['setup']['FE_fetchUserIfNoSession'] = 1;
     }
-    if ((bool)$EXT_CONFIG['enableBESSO']) {
+    if ($EXT_CONFIG['enableBESSO'] ?? false) {
         $GLOBALS['TYPO3_CONF_VARS']['SVCONF']['auth']['setup']['BE_fetchUserIfNoSession'] = 1;
     }
 
@@ -21,12 +21,12 @@ defined('TYPO3_MODE') || die();
     // Service configuration
     $subTypesArr = [];
     $subTypes = '';
-    if ($EXT_CONFIG['enableFELDAPAuthentication']) {
+    if ($EXT_CONFIG['enableFELDAPAuthentication'] ?? false) {
         $subTypesArr[] = 'getUserFE';
         $subTypesArr[] = 'authUserFE';
         $subTypesArr[] = 'getGroupsFE';
     }
-    if ($EXT_CONFIG['enableBELDAPAuthentication']) {
+    if ($EXT_CONFIG['enableBELDAPAuthentication'] ?? false) {
         $subTypesArr[] = 'getUserBE';
         $subTypesArr[] = 'authUserBE';
 

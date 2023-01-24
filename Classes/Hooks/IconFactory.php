@@ -27,7 +27,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class IconFactory
 {
-
     /**
      * Overrides the icon overlay with a LDAP symbol, if needed.
      *
@@ -40,15 +39,16 @@ class IconFactory
      */
     public function postOverlayPriorityLookup($table, array $row, array $status, $iconName)
     {
-        if (!empty($row) && GeneralUtility::inList('be_groups,be_users,fe_groups,fe_users', $table)) {
+        if (!empty($row)
+            && GeneralUtility::inList('be_groups,be_users,fe_groups,fe_users', $table)) {
             if (!array_key_exists('tx_igldapssoauth_dn', $row)) {
                 // This is the case, e.g., in Backend users module
-                if(array_key_exists('uid',$row)){
+                if (array_key_exists('uid', $row)) {
                     $row = \TYPO3\CMS\Backend\Utility\BackendUtility::getRecord($table, $row['uid']);
                 }
             }
             $isDisabled = true;
-            if(array_key_exists('disable',$row)){
+            if (array_key_exists('disable', $row)) {
                 $isDisabled = $row['disable'] ?? $row['hidden'];
             }
             if (!empty($row['tx_igldapssoauth_dn']) && !$isDisabled) {
@@ -58,5 +58,4 @@ class IconFactory
 
         return $iconName;
     }
-
 }

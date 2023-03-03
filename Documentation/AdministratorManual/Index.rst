@@ -9,8 +9,15 @@ Administrator manual
 	This chapter describes how to manage the extension from an administrator
 	point of view.
 
+First step is to set a global configuration for this extension. You can do that
+by opening Admin Tools > Settings and then clicking on the button "Configure
+extensions" within the block "Extension Configuration". You should go through
+each global option and enable what you need for your installation:
 
-First step for configuring your LDAP authentication is to create one or more
+.. figure:: ../Images/extension-configuration.png
+	:alt: Configuring global settings of the extension
+
+Second step for configuring your LDAP authentication is to create one or more
 server configuration records. To do this, use module Web > List and create a
 record "Configuration LDAP / SSO" on the root level of your TYPO3 website
 (pid 0):

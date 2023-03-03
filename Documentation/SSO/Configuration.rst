@@ -83,7 +83,7 @@ configuration:
 
 .. note::
 	A description of each section and the meaning of keys is available on
-	http://web.mit.edu/kerberos/krb5-1.5/krb5-1.5/doc/krb5-admin/krb5.conf.html.
+	`http://web.mit.edu/kerberos/krb5-1.5/krb5-1.5/doc/krb5-admin/krb5.conf.html`__.
 
 You should now check that Kerberos works on ``intranet.example.com``. Do a basic
 check using :command:`kinit`:
@@ -355,4 +355,4 @@ frontend login plugin for your website.
 
     If you are not using Microsoft Internet Explorer, you may need to configure
     your browser to enable Single Sign-On. Please refer to
-    https://wiki.shibboleth.net/confluence/display/SHIB2/Single+sign-on+Browser+configuration.
+    `https://wiki.shibboleth.net/confluence/display/SHIB2/Single+sign-on+Browser+configuration`__.

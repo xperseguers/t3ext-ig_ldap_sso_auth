@@ -26,10 +26,10 @@ server. Does Kerberos authentication works with Nginx as well?**
 
 *We do not have tested this configuration ourselves but you can read an article
 explaining how to set up Kerberos on Nginx in Ubuntu 16.04:
-https://medium.com/@meeramarygeorge/setup-kerberos-on-nginx-in-ubuntu-16-04-408a5b95cdee.
+`https://medium.com/@meeramarygeorge/setup-kerberos-on-nginx-in-ubuntu-16-04-408a5b95cdee`__.
 Please be aware that this requires compiling Nginx from source in order to be
 able to add a SPNEGO module to it
-(https://github.com/stnoonan/spnego-http-auth-nginx-module).*
+(`https://github.com/stnoonan/spnego-http-auth-nginx-module`__).*
 
 
 .. _faq-users:

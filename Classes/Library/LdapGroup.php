@@ -30,15 +30,15 @@ class LdapGroup
      * Returns LDAP group records based on a list of DNs provided as $membership,
      * taking group's baseDN and filter into consideration.
      *
-     * @param array $membership
      * @param string $baseDn
      * @param string $filter
+     * @param array $membership
      * @param array $attributes
      * @param bool $extendedCheck true if groups should be actively checked against LDAP server, false to check against baseDN solely
      * @param \Causal\IgLdapSsoAuth\Library\Ldap $ldapInstance
      * @return array
      */
-    public static function selectFromMembership(array $membership = [], $baseDn, $filter, array $attributes = [], $extendedCheck = true, \Causal\IgLdapSsoAuth\Library\Ldap $ldapInstance = null)
+    public static function selectFromMembership($baseDn, $filter, array $membership = [], array $attributes = [], $extendedCheck = true, \Causal\IgLdapSsoAuth\Library\Ldap $ldapInstance = null)
     {
         $ldapGroups['count'] = 0;
 

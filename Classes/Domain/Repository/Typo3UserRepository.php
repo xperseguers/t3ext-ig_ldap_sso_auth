@@ -451,14 +451,11 @@ class Typo3UserRepository
      */
     public static function setRandomPassword(): string
     {
-        /** @var \TYPO3\CMS\Saltedpasswords\Salt\SaltInterface $instance */
-        $instance = null;
-        if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('saltedpasswords')) {
-            $instance = \TYPO3\CMS\Saltedpasswords\Salt\SaltFactory::getSaltingInstance(null, \Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode());
-        }
+		$factory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Crypto\PasswordHashing\PasswordHashFactory::class);
+		$instance = $factory->getDefaultHashInstance(\Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode());
         $password = GeneralUtility::makeInstance(Random::class)->generateRandomBytes(16);
-        $password = $instance ? $instance->getHashedPassword($password) : md5($password);
-        return $password;
+
+        return $instance->getHashedPassword($password);
     }
 
 }

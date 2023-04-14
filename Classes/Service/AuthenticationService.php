@@ -188,7 +188,9 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
                     'configUid' => $configurationRecord->getUid(),
                 ];
                 static::getLogger()->error('Authentication failed', $info);
-                NotificationUtility::dispatch(__CLASS__, 'authenticationFailed', $info);
+                NotificationUtility::dispatch(
+					new \Causal\IgLdapSsoAuth\Event\AuthenticationFailedEvent($info)
+				);
             }
 
             // Continue and try with next configuration record...

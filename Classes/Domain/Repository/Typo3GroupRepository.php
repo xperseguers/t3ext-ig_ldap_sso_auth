@@ -143,12 +143,7 @@ class Typo3GroupRepository
             ->fetchAssociative();
 
         NotificationUtility::dispatch(
-            __CLASS__,
-            'groupAdded',
-            [
-                'table' => $table,
-                'group' => $newRow,
-            ]
+			new \Causal\IgLdapSsoAuth\Event\GroupAddedEvent($table, $newRow)
         );
 
         return $newRow;
@@ -181,12 +176,7 @@ class Typo3GroupRepository
 
         if ($success) {
             NotificationUtility::dispatch(
-                __CLASS__,
-                'groupUpdated',
-                [
-                    'table' => $table,
-                    'group' => $data,
-                ]
+				new \Causal\IgLdapSsoAuth\Event\GroupUpdatedEvent($table, $data)
             );
         }
 

@@ -195,12 +195,7 @@ class Typo3UserRepository
             ->fetchAssociative();
 
         NotificationUtility::dispatch(
-            __CLASS__,
-            'userAdded',
-            [
-                'table' => $table,
-                'user' => $newRow,
-            ]
+			new \Causal\IgLdapSsoAuth\Event\UserAddedEvent($table, $newRow)
         );
 
         return $newRow;
@@ -239,12 +234,7 @@ class Typo3UserRepository
 
         if ($success) {
             NotificationUtility::dispatch(
-                __CLASS__,
-                'userUpdated',
-                [
-                    'table' => $table,
-                    'user' => $data,
-                ]
+				new \Causal\IgLdapSsoAuth\Event\UserUpdatedEvent($table, $data)
             );
         }
 
@@ -294,12 +284,7 @@ class Typo3UserRepository
             $queryBuilder->executeStatement();
 
             NotificationUtility::dispatch(
-                __CLASS__,
-                'userDisabled',
-                [
-                    'table' => $table,
-                    'configuration' => $uid,
-                ]
+				new \Causal\IgLdapSsoAuth\Event\UserDisabledEvent($table, $uid)
             );
         }
         return $uids;
@@ -348,12 +333,7 @@ class Typo3UserRepository
             $queryBuilder->executeStatement();
 
             NotificationUtility::dispatch(
-                __CLASS__,
-                'userDeleted',
-                [
-                    'table' => $table,
-                    'configuration' => $uid,
-                ]
+				new \Causal\IgLdapSsoAuth\Event\UserDeletedEvent($table, $uid)
             );
         }
         return $uids;

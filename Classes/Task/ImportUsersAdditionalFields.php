@@ -213,7 +213,7 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
     /**
      * Returns the LanguageService.
      *
-     * @return \TYPO3\CMS\Lang\LanguageService
+     * @return \TYPO3\CMS\Core\Localization\LanguageService
      */
     protected function getLanguageService()
     {

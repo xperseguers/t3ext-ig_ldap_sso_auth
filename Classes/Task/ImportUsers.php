@@ -373,7 +373,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
     /**
      * Returns the LanguageService.
      *
-     * @return \TYPO3\CMS\Lang\LanguageService|\TYPO3\CMS\Core\Localization\LanguageService
+     * @return \TYPO3\CMS\Core\Localization\LanguageService
      */
     protected function getLanguageServiceForLdap()
     {

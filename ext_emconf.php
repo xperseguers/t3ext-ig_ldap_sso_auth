@@ -25,8 +25,8 @@ In case of use in an intranet environment, this extension is a perfect match sin
     'author_company' => '',
     'constraints' => [
         'depends' => [
-            'php' => '7.2.0-8.1.99',
-            'typo3' => '9.5.0-11.5.99',
+            'php' => '8.1.0-8.1.99',
+            'typo3' => '12.0.0-12.4.99',
         ],
         'conflicts' => [],
         'suggests' => [],

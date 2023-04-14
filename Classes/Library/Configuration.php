@@ -64,7 +64,7 @@ class Configuration
         static::$configuration = $configuration;
 
         // Default TYPO3_MODE is BE
-        static::setMode($mode ?: TYPO3_MODE);
+        static::setMode($mode ?: \Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode());
 
         // Select configuration from database, merge with extension configuration template and initialise class attributes.
 

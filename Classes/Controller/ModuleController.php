@@ -119,7 +119,7 @@ class ModuleController extends ActionController
         }
         $this->saveState($configuration);
 
-        Configuration::initialize(TYPO3_MODE, $configuration);
+        Configuration::initialize(\Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode(), $configuration);
         $this->populateView($configuration);
 
         $ldapConfiguration = Configuration::getLdapConfiguration();
@@ -180,7 +180,7 @@ class ModuleController extends ActionController
         }
         $this->saveState($configuration);
 
-        Configuration::initialize(TYPO3_MODE, $configuration);
+        Configuration::initialize(\Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode(), $configuration);
         $this->populateView($configuration);
 
         /** @var PageRenderer $pageRenderer */

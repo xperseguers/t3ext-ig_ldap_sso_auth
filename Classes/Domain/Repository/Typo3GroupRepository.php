@@ -46,7 +46,7 @@ class Typo3GroupRepository
         $newGroup = [];
         $fieldsConfiguration = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getConnectionForTable($table)
-            ->getSchemaManager()
+            ->createSchemaManager()
             ->listTableColumns($table);
 
         foreach ($fieldsConfiguration as $configuration) {
@@ -85,13 +85,13 @@ class Typo3GroupRepository
         } else {
             $where = $queryBuilder->expr()->eq('tx_igldapssoauth_dn', $queryBuilder->createNamedParameter($dn, \PDO::PARAM_STR));
             if (!empty($groupName)) {
-                $where = $queryBuilder->expr()->orX(
+                $where = $queryBuilder->expr()->or(
                     $where,
                     $queryBuilder->expr()->eq('title', $queryBuilder->createNamedParameter($groupName, \PDO::PARAM_STR))
                 );
             }
             if (!empty($pid)) {
-                $where = $queryBuilder->expr()->andX(
+                $where = $queryBuilder->expr()->and(
                     $where,
                     $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, \PDO::PARAM_INT))
                 );
@@ -102,8 +102,8 @@ class Typo3GroupRepository
             ->select('*')
             ->from($table)
             ->where($where)
-            ->execute()
-            ->fetchAll();
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         // Return TYPO3 groups
         return $groups;
@@ -140,7 +140,7 @@ class Typo3GroupRepository
                     'uid' => (int)$uid,
                 ]
             )
-            ->fetch();
+            ->fetchAssociative();
 
         NotificationUtility::dispatch(
             __CLASS__,

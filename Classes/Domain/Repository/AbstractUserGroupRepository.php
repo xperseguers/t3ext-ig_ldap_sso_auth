@@ -76,7 +76,7 @@ abstract class AbstractUserGroupRepository
                     'uid' => (int)$uid,
                 ]
             )
-            ->fetch();
+            ->fetchAssociative();
 
         if (!empty($row)) {
             $userGroup = GeneralUtility::makeInstance($this->className);

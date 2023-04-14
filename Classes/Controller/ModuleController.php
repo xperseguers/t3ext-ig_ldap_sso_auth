@@ -21,6 +21,7 @@ use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Page\PageRenderer;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3GroupRepository;
@@ -135,7 +136,7 @@ class ModuleController extends ActionController
                 $this->addFlashMessage(
                     $e->getMessage(),
                     'Error ' . $e->getCode(),
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
+					ContextualFeedbackSeverity::ERROR
                 );
             }
 
@@ -808,7 +809,7 @@ class ModuleController extends ActionController
             $this->addFlashMessage(
                 $message,
                 $this->translate('configuration_missing.title'),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
+                ContextualFeedbackSeverity::WARNING
             );
         } else {
             if ($configuration == null) {
@@ -889,14 +890,14 @@ class ModuleController extends ActionController
             $this->addFlashMessage(
                 $e->getMessage(),
                 'Error ' . $e->getCode(),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
+				ContextualFeedbackSeverity::ERROR
             );
             return false;
         } catch (InvalidHostnameException $e) {
             $this->addFlashMessage(
                 $e->getMessage(),
                 'Error ' . $e->getCode(),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
+				ContextualFeedbackSeverity::ERROR
             );
             return false;
         }

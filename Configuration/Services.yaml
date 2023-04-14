@@ -1,0 +1,10 @@
+services:
+  # Set defaults for the DI container.
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  # Define the namespaces to add to the container.
+  Causal\IgLdapSsoAuth\:
+    resource: '../Classes/*'

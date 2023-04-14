@@ -30,7 +30,6 @@ use Causal\IgLdapSsoAuth\Library\Authentication;
 use Causal\IgLdapSsoAuth\Library\Configuration;
 use Causal\IgLdapSsoAuth\Library\Ldap;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Module controller.
@@ -317,8 +316,7 @@ class ModuleController extends ActionController
     {
         $params = $request->getQueryParams();
 
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $configurationRepository = $objectManager->get(ConfigurationRepository::class);
+        $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
 
         $configuration = $configurationRepository->findByUid($params['configuration']);
         list($mode, $key) = explode('_', $params['type'], 2);
@@ -348,9 +346,8 @@ class ModuleController extends ActionController
     {
         $params = $request->getQueryParams();
 
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $configurationRepository = $objectManager->get(ConfigurationRepository::class);
-        $ldap = $objectManager->get(Ldap::class);
+        $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
+        $ldap = GeneralUtility::makeInstance(Ldap::class);
 
         $configuration = $configurationRepository->findByUid($params['configuration']);
         list($mode, $key) = explode('_', $params['type'], 2);
@@ -367,7 +364,7 @@ class ModuleController extends ActionController
         }
 
         $template = GeneralUtility::getFileAbsFileName('EXT:ig_ldap_sso_auth/Resources/Private/Templates/Ajax/Search.html');
-        $view = $objectManager->get(\TYPO3\CMS\Fluid\View\StandaloneView::class);
+        $view = GeneralUtility::makeInstance(\TYPO3\CMS\Fluid\View\StandaloneView::class);
         $view->getRequest()->setControllerExtensionName('ig_ldap_sso_auth');
         $view->setFormat('html');
         $view->setTemplatePathAndFilename($template);
@@ -442,9 +439,8 @@ class ModuleController extends ActionController
     {
         $params = $request->getQueryParams();
 
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $configurationRepository = $objectManager->get(ConfigurationRepository::class);
-        $ldap = $objectManager->get(Ldap::class);
+        $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
+        $ldap = GeneralUtility::makeInstance(Ldap::class);
 
         $configuration = $configurationRepository->findByUid($params['configuration']);
 
@@ -508,9 +504,8 @@ class ModuleController extends ActionController
     {
         $params = $request->getQueryParams();
 
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $configurationRepository = $objectManager->get(ConfigurationRepository::class);
-        $ldap = $objectManager->get(Ldap::class);
+        $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
+        $ldap = GeneralUtility::makeInstance(Ldap::class);
 
         $configuration = $configurationRepository->findByUid($params['configuration']);
 
@@ -618,7 +613,7 @@ class ModuleController extends ActionController
                 $filter = '(&' . Configuration::replaceFilterMarkers($config['groups']['filter']) . '&(distinguishedName=' . $parentDn . '))';
                 $attributes = Configuration::getLdapAttributes($config['groups']['mapping']);
 
-                $ldapInstance = Ldap::getInstance();
+                $ldapInstance = GeneralUtility::makeInstance(Ldap::class);
                 $ldapInstance->connect(Configuration::getLdapConfiguration());
                 $ldapGroups = $ldapInstance->search($config['groups']['basedn'], $filter, $attributes);
                 $ldapInstance->disconnect();
@@ -674,7 +669,7 @@ class ModuleController extends ActionController
             $mode
         );
 
-        $ldapInstance = Ldap::getInstance();
+        $ldapInstance = GeneralUtility::makeInstance(Ldap::class);
         $ldapInstance->connect(Configuration::getLdapConfiguration());
         $ldapUsers = $importUtility->fetchLdapUsers(false, $ldapInstance);
 
@@ -744,7 +739,7 @@ class ModuleController extends ActionController
         if (!empty($config['groups']['basedn'])) {
             $filter = Configuration::replaceFilterMarkers($config['groups']['filter']);
             $attributes = Configuration::getLdapAttributes($config['groups']['mapping']);
-            $ldapInstance = Ldap::getInstance();
+            $ldapInstance = GeneralUtility::makeInstance(Ldap::class);
             $ldapInstance->connect(Configuration::getLdapConfiguration());
             $ldapGroups = $ldapInstance->search($config['groups']['basedn'], $filter, $attributes);
             $ldapInstance->disconnect();

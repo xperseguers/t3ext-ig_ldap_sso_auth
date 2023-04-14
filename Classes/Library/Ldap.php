@@ -47,22 +47,6 @@ class Ldap
     }
 
     /**
-     * Returns an instance of this class.
-     *
-     * @return Ldap
-     * @throws \TYPO3\CMS\Extbase\Object\Exception
-     */
-    public static function getInstance()
-    {
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        static $objectManager = null;
-        if ($objectManager === null) {
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
-        }
-        return $objectManager->get(__CLASS__);
-    }
-
-    /**
      * Initializes a connection to the LDAP server.
      *
      * @param array $config

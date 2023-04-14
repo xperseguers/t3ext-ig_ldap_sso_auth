@@ -98,7 +98,7 @@ class Authentication
             $username = strtolower($username);
         }
 
-        $ldapInstance = Ldap::getInstance();
+        $ldapInstance = GeneralUtility::makeInstance(Ldap::class);
 
         // Valid user only if username and connect to LDAP server.
         if ($username && $ldapInstance->connect(Configuration::getLdapConfiguration())) {
@@ -302,7 +302,7 @@ class Authentication
             }
         }
 
-        $ldapInstance = Ldap::getInstance();
+        $ldapInstance = GeneralUtility::makeInstance(Ldap::class);
         $ldapInstance->connect(Configuration::getLdapConfiguration());
 
         $users = $ldapInstance->search(
@@ -467,7 +467,7 @@ class Authentication
         $ldapGroupAttributes = Configuration::getLdapAttributes(static::$config['groups']['mapping']);
         $ldapGroups = ['count' => 0];
 
-        $ldapInstance = Ldap::getInstance();
+        $ldapInstance = GeneralUtility::makeInstance(Ldap::class);
         $ldapInstance->connect(Configuration::getLdapConfiguration());
 
         if (Configuration::getValue('evaluateGroupsFromMembership')) {

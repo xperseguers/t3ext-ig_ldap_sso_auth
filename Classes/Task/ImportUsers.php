@@ -124,7 +124,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
                 }
 
                 // Start by connecting to the designated LDAP/AD server
-                $ldapInstance = Ldap::getInstance();
+                $ldapInstance = GeneralUtility::makeInstance(Ldap::class);
                 $success = $ldapInstance->connect(Configuration::getLdapConfiguration());
                 // Proceed with import if successful
                 if (!$success) {

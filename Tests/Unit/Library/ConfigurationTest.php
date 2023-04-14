@@ -19,7 +19,7 @@ use Causal\IgLdapSsoAuth\Library\Configuration;
 /**
  * Test cases for class \Causal\IgLdapSsoAuth\Library\Configuration.
  */
-class ConfigurationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
+class ConfigurationTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
 {
 
     /**

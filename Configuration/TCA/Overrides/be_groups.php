@@ -1,6 +1,7 @@
 <?php
 defined('TYPO3') || die();
 
+// Add new fields.
 $tempColumns = [
     'tx_igldapssoauth_dn' => [
         'exclude' => 1,
@@ -11,6 +12,5 @@ $tempColumns = [
         ]
     ],
 ];
-
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('be_groups', $tempColumns);
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('be_groups', 'tx_igldapssoauth_dn');

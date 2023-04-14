@@ -33,7 +33,4 @@ defined('TYPO3') || die();
 			'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf'
 		]
 	);
-
-    // Initialize "context sensitive help" (csh)
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addLLrefForTCAdescr('tx_igldapssoauth_config', 'EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_csh_db.xlf');
 })('ig_ldap_sso_auth');

@@ -101,9 +101,9 @@ class Configuration
         static::$be['DeleteUserIfNoLDAPGroups'] = false;
         static::$be['DeleteUserIfNoTYPO3Groups'] = false;
         static::$be['GroupsNotSynchronize'] = (bool)$globalConfiguration['TYPO3BEGroupsNotSynchronize'];
-        static::$be['requiredLDAPGroups'] = $configuration->getBackendGroupsRequired() ? $configuration->getBackendGroupsRequired() : [];
-        static::$be['updateAdminAttribForGroups'] = $configuration->getBackendGroupsAdministrator() ? $configuration->getBackendGroupsAdministrator() : [];
-        static::$be['assignGroups'] = $configuration->getBackendGroupsAssigned() ? $configuration->getBackendGroupsAssigned() : [];
+        static::$be['requiredLDAPGroups'] = $configuration->getBackendGroupsRequired() ?: [];
+        static::$be['updateAdminAttribForGroups'] = $configuration->getBackendGroupsAdministrator() ?: [];
+        static::$be['assignGroups'] = $configuration->getBackendGroupsAssigned() ?: [];
         static::$be['keepTYPO3Groups'] = (bool)$globalConfiguration['keepBEGroups'];
         static::$be['users']['basedn'] = $configuration->getBackendUsersBaseDn();
         static::$be['users']['filter'] = $configuration->getBackendUsersFilter();
@@ -124,9 +124,9 @@ class Configuration
         static::$fe['DeleteUserIfNoTYPO3Groups'] = (bool)$globalConfiguration['TYPO3FEDeleteUserIfNoTYPO3Groups'];
         static::$fe['DeleteUserIfNoLDAPGroups'] = (bool)$globalConfiguration['TYPO3FEDeleteUserIfNoLDAPGroups'];
         static::$fe['GroupsNotSynchronize'] = (bool)$globalConfiguration['TYPO3FEGroupsNotSynchronize'];
-        static::$fe['assignGroups'] = $configuration->getFrontendGroupsAssigned() ? $configuration->getFrontendGroupsAssigned() : [];
+        static::$fe['assignGroups'] = $configuration->getFrontendGroupsAssigned() ?: [];
         static::$fe['keepTYPO3Groups'] = (bool)$globalConfiguration['keepFEGroups'];
-        static::$fe['requiredLDAPGroups'] = $configuration->getFrontendGroupsRequired() ? $configuration->getFrontendGroupsRequired() : [];
+        static::$fe['requiredLDAPGroups'] = $configuration->getFrontendGroupsRequired() ?: [];
         static::$fe['users']['basedn'] = $configuration->getFrontendUsersBaseDn();
         static::$fe['users']['filter'] = $configuration->getFrontendUsersFilter();
         static::$fe['users']['mapping'] = static::makeUserMapping($configuration->getFrontendUsersMapping(), $configuration->getFrontendUsersFilter());
@@ -135,7 +135,7 @@ class Configuration
         static::$fe['groups']['mapping'] = static::makeGroupMapping($configuration->getFrontendGroupsMapping());
 
         static::$ldap['server'] = $configuration->getLdapServer();
-        static::$ldap['charset'] = $configuration->getLdapCharset() ? $configuration->getLdapCharset() : 'utf-8';
+        static::$ldap['charset'] = $configuration->getLdapCharset() ?: 'utf-8';
         static::$ldap['host'] = $configuration->getLdapHost();
         static::$ldap['port'] = $configuration->getLdapPort();
         static::$ldap['tls'] = $configuration->isLdapTls();

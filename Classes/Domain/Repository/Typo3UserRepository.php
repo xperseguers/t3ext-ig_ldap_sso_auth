@@ -46,15 +46,6 @@ class Typo3UserRepository
             throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891582);
         }
 
-        if (empty($GLOBALS['TCA'][$table])) {
-            $bootstrap = \TYPO3\CMS\Core\Core\Bootstrap::getInstance();
-            if (is_callable([$bootstrap, 'loadCachedTca'])) {
-                $bootstrap->loadCachedTca();
-            } else {
-                ExtensionManagementUtility::loadBaseTca();
-            }
-        }
-
         $newUser = [];
         $fieldsConfiguration = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getConnectionForTable($table)

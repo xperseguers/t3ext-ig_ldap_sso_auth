@@ -8,3 +8,11 @@ services:
   # Define the namespaces to add to the container.
   Causal\IgLdapSsoAuth\:
     resource: '../Classes/*'
+
+  # Register type converter.
+  Causal\IgLdapSsoAuth\Property\TypeConverter\ConfigurationConverter:
+    tags:
+      - name: extbase.type_converter
+        priority: 10
+        target: Causal\IgLdapSsoAuth\Domain\Model\Configuration
+        sources: integer,string

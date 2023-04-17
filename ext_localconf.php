@@ -75,9 +75,6 @@ defined('TYPO3') || die();
         'class' => \Causal\IgLdapSsoAuth\Form\Element\LdapSuggestElement::class,
     ];
 
-    // Register type converters
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerTypeConverter(\Causal\IgLdapSsoAuth\Property\TypeConverter\ConfigurationConverter::class);
-
     // User have save doc new button
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('options.saveDocNew.tx_igldapssoauth_config=1');
 })('ig_ldap_sso_auth');

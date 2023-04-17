@@ -441,8 +441,8 @@ class LdapUtility
         foreach ($attributes as $key => $value) {
             $tempEntry[strtolower($key)] = $value;
         }
-        $entry = $this->convertCharacterSetForArray($tempEntry, $this->ldapCharacterSet, $this->typo3CharacterSet);
-        return $entry;
+
+		return $this->convertCharacterSetForArray($tempEntry, $this->ldapCharacterSet, $this->typo3CharacterSet);
     }
 
     /**

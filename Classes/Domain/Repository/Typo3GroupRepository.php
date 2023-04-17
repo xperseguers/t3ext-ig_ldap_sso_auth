@@ -98,15 +98,13 @@ class Typo3GroupRepository
             }
         }
 
-        $groups = $queryBuilder
+		// Return TYPO3 groups
+        return $queryBuilder
             ->select('*')
             ->from($table)
             ->where($where)
             ->executeQuery()
             ->fetchAllAssociative();
-
-        // Return TYPO3 groups
-        return $groups;
     }
 
     /**

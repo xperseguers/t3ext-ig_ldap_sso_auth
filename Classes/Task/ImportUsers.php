@@ -239,13 +239,13 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
         } else {
             $configurationName = $this->getConfigurationName();
         }
-        $info = sprintf(
-            $languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.additionalinformation'),
-            $languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.mode.' . $this->getMode() . '.short'),
-            $languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.context.' . strtolower($this->getContext())),
-            $configurationName
-        );
-        return $info;
+
+		return sprintf(
+			$languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.additionalinformation'),
+			$languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.mode.' . $this->getMode() . '.short'),
+			$languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.context.' . strtolower($this->getContext())),
+			$configurationName
+		);
     }
 
     /**

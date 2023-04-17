@@ -94,10 +94,10 @@ class LdapSuggestElement extends AbstractFormElement
     protected function suggestBaseDn(): string
     {
         $bindDnParts = explode(',', $this->data['databaseRow']['ldap_binddn']);
-        $suggestion = count($bindDnParts) > 2
-            ? implode(',', array_slice($bindDnParts, -2))
-            : '';
-        return $suggestion;
+
+		return count($bindDnParts) > 2
+			? implode(',', array_slice($bindDnParts, -2))
+			: '';
     }
 
     /**

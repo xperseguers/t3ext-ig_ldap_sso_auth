@@ -261,8 +261,7 @@ class LdapTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
     {
         $extPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('ig_ldap_sso_auth');
         $json = file_get_contents($extPath . 'Tests/Functional/Fixtures/' . $file);
-        $data = json_decode($json, true);
-        return $data;
-    }
 
+		return json_decode($json, true);
+    }
 }

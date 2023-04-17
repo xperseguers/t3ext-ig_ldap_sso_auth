@@ -327,9 +327,7 @@ class ModuleController extends ActionController
             'configuration' => $config[$key],
         ];
 
-        $response = (new JsonResponse())->setPayload($payload);
-
-        return $response;
+		return (new JsonResponse())->setPayload($payload);
     }
 
     /**
@@ -420,9 +418,7 @@ class ModuleController extends ActionController
             'html' => $html,
         ];
 
-        $response = (new JsonResponse())->setPayload($payload);
-
-        return $response;
+		return (new JsonResponse())->setPayload($payload);
     }
 
     /**
@@ -485,9 +481,7 @@ class ModuleController extends ActionController
 
         $payload = array_merge($data, ['success' => $success]);
 
-        $response = (new JsonResponse())->setPayload($payload);
-
-        return $response;
+		return (new JsonResponse())->setPayload($payload);
     }
 
     /**
@@ -567,9 +561,7 @@ class ModuleController extends ActionController
 
         $payload = array_merge($data, ['success' => $success]);
 
-        $response = (new JsonResponse())->setPayload($payload);
-
-        return $response;
+		return (new JsonResponse())->setPayload($payload);
     }
 
     /**

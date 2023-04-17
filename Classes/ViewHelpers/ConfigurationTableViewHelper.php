@@ -48,8 +48,7 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
     public function render(): string
     {
         $hasError = false;
-        $content = $this->renderTable($this->arguments['data'], $this->arguments['humanKeyNames'], 1, $hasError);
-        return $content;
+		return $this->renderTable($this->arguments['data'], $this->arguments['humanKeyNames'], 1, $hasError);
     }
 
     /**

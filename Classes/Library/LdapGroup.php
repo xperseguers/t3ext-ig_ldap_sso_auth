@@ -121,8 +121,7 @@ class LdapGroup
 			$filter
 		);
 
-		$groups = $ldapInstance->search($baseDn, $filter, $attributes);
-		return $groups;
+		return $ldapInstance->search($baseDn, $filter, $attributes);
 	}
 
 	/**

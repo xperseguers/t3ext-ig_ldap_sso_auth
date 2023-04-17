@@ -448,8 +448,7 @@ class Configuration
      */
     public static function replaceFilterMarkers($filter)
     {
-        $filter = str_replace(['{USERNAME}', '{USERDN}', '{USERUID}'], '*', $filter);
-        return $filter;
+		return str_replace(['{USERNAME}', '{USERDN}', '{USERUID}'], '*', $filter);
     }
 
     /**

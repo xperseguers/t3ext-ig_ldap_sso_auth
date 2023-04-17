@@ -198,9 +198,6 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
                             'Configuration record %s: processed %s LDAP users (%s)', $configuration->getUid(), count($ldapUsers), $aContext
                         ));
 
-                        // Free memory before going on
-                        $typo3Users = null;
-                        $ldapUsers = null;
                         $ldapUsers = $importUtility->hasMoreLdapUsers($ldapInstance)
                             ? $importUtility->fetchLdapUsers(true, $ldapInstance)
                             : [];

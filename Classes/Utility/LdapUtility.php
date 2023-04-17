@@ -211,7 +211,8 @@ class LdapUtility
     public function disconnect()
     {
         if ($this->connection) {
-            @ldap_close($this->connection);
+            @ldap_unbind($this->connection);
+			unset($this->connection);
         }
     }
 

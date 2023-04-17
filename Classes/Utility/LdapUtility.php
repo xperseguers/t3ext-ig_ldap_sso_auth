@@ -327,28 +327,14 @@ class LdapUtility
                 $this->paginationCookie = null;
             }
 
-            // It was reported that ldap_control_paged_result() may not be available;
-            // we thus check for existence before proceeding
-            // ldap_control_paged_result() has been removed in PHP8
-            if (version_compare(PHP_VERSION, '7.4.0', '<')) {
-                $this->hasPagination = function_exists('ldap_control_paged_result') &&
-                    @ldap_control_paged_result(
-                        $this->connection,
-                        static::PAGE_SIZE,
-                        false,  // Pagination is not critical for search to work anyway
-                        $this->paginationCookie
-                    );
-                $this->searchResult = @ldap_search($this->connection, $baseDn, $filter, $attributes, $attributesOnly, $sizeLimit, $timeLimit, $dereferenceAliases);
-            } else {
-                $ldapControls = ldap_read($this->connection, '', '(objectClass=*)', ['supportedControl']);
-                $ldapEntries = ldap_get_entries($this->connection, $ldapControls);
-                if (isset($ldapEntries[0]['supportedcontrol']) && in_array(LDAP_CONTROL_PAGEDRESULTS, $ldapEntries[0]['supportedcontrol'])) {
-                  $this->hasPagination = true;
-                }
+			$ldapControls = ldap_read($this->connection, '', '(objectClass=*)', ['supportedControl']);
+			$ldapEntries = ldap_get_entries($this->connection, $ldapControls);
+			if (isset($ldapEntries[0]['supportedcontrol']) && in_array(LDAP_CONTROL_PAGEDRESULTS, $ldapEntries[0]['supportedcontrol'])) {
+			  $this->hasPagination = true;
+			}
 
-                $controls = [['oid' => LDAP_CONTROL_PAGEDRESULTS, 'value' => ['size' => static::MAX_ENTRIES, 'cookie' => $this->paginationCookie]]];
-                $this->searchResult = @ldap_search($this->connection, $baseDn, $filter, $attributes, $attributesOnly, $sizeLimit, $timeLimit, $dereferenceAliases, $controls);
-            }
+			$controls = [['oid' => LDAP_CONTROL_PAGEDRESULTS, 'value' => ['size' => static::MAX_ENTRIES, 'cookie' => $this->paginationCookie]]];
+			$this->searchResult = @ldap_search($this->connection, $baseDn, $filter, $attributes, $attributesOnly, $sizeLimit, $timeLimit, $dereferenceAliases, $controls);
 
             if (!$this->searchResult) {
                 // Search failed.
@@ -414,17 +400,13 @@ class LdapUtility
         } while ($entry = @ldap_next_entry($this->connection, $entry));
 
         if ($this->hasPagination) {
-            if (version_compare(PHP_VERSION, '7.4.0', '<')) {
-                @ldap_control_paged_result_response($this->connection, $this->searchResult, $this->paginationCookie);
-            } else {
-                ldap_parse_result($this->connection, $this->searchResult, $errcode, $matcheddn, $errmsg, $referrals, $controls);
-                if (isset($controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'])) {
-                    // You need to pass the cookie from the last call to the next one
-                    $this->paginationCookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'];
-                } else {
-                    $this->paginationCookie = null;
-                }
-            }
+			ldap_parse_result($this->connection, $this->searchResult, $errcode, $matcheddn, $errmsg, $referrals, $controls);
+			if (isset($controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'])) {
+				// You need to pass the cookie from the last call to the next one
+				$this->paginationCookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'];
+			} else {
+				$this->paginationCookie = null;
+			}
         }
 
         $this->status['get_entries']['status'] = ldap_error($this->connection);

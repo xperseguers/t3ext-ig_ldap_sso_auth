@@ -348,7 +348,7 @@ class Typo3UserRepository
             }
         }
 
-        /** @var \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]|\TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup[] $assignGroups */
+        /** @var \Causal\IgLdapSsoAuth\Domain\Model\BackendUserGroup[]|\Causal\IgLdapSsoAuth\Domain\Model\FrontendUserGroup[] $assignGroups */
         $assignGroups = Configuration::getValue('assignGroups');
         foreach ($assignGroups as $group) {
             if (!in_array($group->getUid(), $groupUid)) {
@@ -383,7 +383,7 @@ class Typo3UserRepository
             }
         }
 
-        /** @var \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]|\TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup[] $administratorGroups */
+        /** @var \Causal\IgLdapSsoAuth\Domain\Model\BackendUserGroup[]|\Causal\IgLdapSsoAuth\Domain\Model\FrontendUserGroup[] $administratorGroups */
         $administratorGroups = Configuration::getValue('updateAdminAttribForGroups');
         if (count($administratorGroups) > 0) {
             $typo3User['admin'] = 0;

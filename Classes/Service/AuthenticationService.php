@@ -141,7 +141,7 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
             // Authenticate user from LDAP
             if (!$userRecordOrIsValid && $this->login['status'] === 'login' && $this->login['uident']) {
                 // normal case
-                $password = isset($this->login['uident_text']) ? $this->login['uident_text'] : $this->login['uident'];
+                $password = $this->login['uident_text'] ?? $this->login['uident'];
 
                 try {
                     if ($password !== null) {

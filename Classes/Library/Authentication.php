@@ -733,7 +733,7 @@ class Authentication
             foreach ($typoScriptKeys as $typoScriptKey) {
                 // Remove the trailing period to get corresponding field name
                 $field = substr($typoScriptKey, 0, -1);
-                $value = isset($out[$field]) ? $out[$field] : '';
+                $value = $out[$field] ?? '';
                 $value = $contentObj->stdWrap($value, $mapping[$typoScriptKey]);
                 $out = static::mergeSimple([$field => $value], $out, $field, $value);
             }

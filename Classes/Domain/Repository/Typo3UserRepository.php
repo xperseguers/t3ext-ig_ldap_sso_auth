@@ -16,7 +16,6 @@ namespace Causal\IgLdapSsoAuth\Domain\Repository;
 
 use TYPO3\CMS\Core\Crypto\Random;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Exception\InvalidUserTableException;
 use Causal\IgLdapSsoAuth\Library\Configuration;

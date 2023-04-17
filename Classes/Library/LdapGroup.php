@@ -14,8 +14,6 @@
 
 namespace Causal\IgLdapSsoAuth\Library;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 /**
  * Class tx_igldapssoauth_typo3_group for the 'ig_ldap_sso_auth' extension.
  *

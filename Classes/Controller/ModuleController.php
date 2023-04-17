@@ -40,32 +40,14 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
  */
 class ModuleController extends ActionController
 {
-
-    /**
-     * @var ConfigurationRepository
-     */
-    protected $configurationRepository;
-
-    /**
-     * @var Ldap
-     */
-    protected $ldap;
-
-    /**
-     * @param ConfigurationRepository $configurationRepository
-     */
-    public function injectConfigurationRepository(ConfigurationRepository $configurationRepository)
-    {
-        $this->configurationRepository = $configurationRepository;
-    }
-
-    /**
-     * @param Ldap $ldap
-     */
-    public function injectLdap(Ldap $ldap)
-    {
-        $this->ldap = $ldap;
-    }
+	/**
+	 * ModuleController constructor.
+	 *
+	 * @param \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository
+	 * @param \Causal\IgLdapSsoAuth\Library\Ldap $ldap
+	 */
+	public function __construct(protected ConfigurationRepository $configurationRepository, protected Ldap $ldap)
+	{}
 
     /**
      * Redirects to the saved action.
@@ -365,7 +347,7 @@ class ModuleController extends ActionController
 
         $template = GeneralUtility::getFileAbsFileName('EXT:ig_ldap_sso_auth/Resources/Private/Templates/Ajax/Search.html');
         $view = GeneralUtility::makeInstance(\TYPO3\CMS\Fluid\View\StandaloneView::class);
-        $view->getRequest()->setControllerExtensionName('ig_ldap_sso_auth');
+        //$view->getRequest()->setControllerExtensionName('ig_ldap_sso_auth');
         $view->setFormat('html');
         $view->setTemplatePathAndFilename($template);
 
@@ -782,8 +764,7 @@ class ModuleController extends ActionController
      */
     protected function populateView(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null): void
     {
-        $uriBuilder = $this->controllerContext->getUriBuilder();
-        $thisUri = $uriBuilder->reset()->uriFor(null, ['configuration' => $configuration]);
+        $thisUri = $this->uriBuilder->reset()->uriFor(null, ['configuration' => $configuration]);
         $editLink = '';
 
         $configurationRecords = $this->configurationRepository->findAll();
@@ -858,7 +839,7 @@ class ModuleController extends ActionController
         $trClass = '';
 
         $this->view->assignMultiple([
-            'action' => $this->getControllerContext()->getRequest()->getControllerActionName(),
+            'action' => $this->request->getControllerActionName(),
             'configurationRecords' => $configurationRecords,
             'currentConfiguration' => $configuration,
             'mode' => Configuration::getMode(),
@@ -908,8 +889,7 @@ class ModuleController extends ActionController
      */
     protected function translate($id, array $arguments = null): string
     {
-        $request = $this->controllerContext->getRequest();
-        $extensionName = $request->getControllerExtensionName();
+        $extensionName = $this->request->getControllerExtensionName();
         $value = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate($id, $extensionName, $arguments);
         return $value !== null ? $value : $id;
     }
@@ -922,7 +902,7 @@ class ModuleController extends ActionController
     protected function saveState(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
     {
         $GLOBALS['BE_USER']->uc['ig_ldap_sso_auth']['selection'] = [
-            'action' => $this->getControllerContext()->getRequest()->getControllerActionName(),
+            'action' => $this->request->getControllerActionName(),
             'configuration' => $configuration !== null ? $configuration->getUid() : 0,
         ];
         $GLOBALS['BE_USER']->writeUC();

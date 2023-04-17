@@ -53,7 +53,7 @@ class NotificationUtility
 	protected static function getInstance(): self
 	{
 		if (self::$instance === null) {
-			self::$instance = GeneralUtility::makeInstance(self::class);
+			self::$instance = GeneralUtility::makeInstance(self::class, GeneralUtility::makeInstance(\Psr\EventDispatcher\EventDispatcherInterface::class));
 		}
 
 		return self::$instance;

@@ -38,12 +38,19 @@ class Ldap
 	protected string $lastBindDiagnostic = '';
 
 	/**
-	 * Ldap constructor.
+	 * LDAP utility
 	 *
-	 * @param \Causal\IgLdapSsoAuth\Utility\LdapUtility $ldapUtility
+	 * @var \Causal\IgLdapSsoAuth\Utility\LdapUtility
 	 */
-	public function __construct(protected LdapUtility $ldapUtility)
+	protected LdapUtility $ldapUtility;
+
+	/**
+	 * Ldap constructor.
+	 */
+	public function __construct()
 	{
+		// @todo Use DI here, but to do it right, we have to get rid of all the static methods, so...
+		$this->ldapUtility = GeneralUtility::makeInstance(LdapUtility::class, GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class));
 	}
 
 	/**

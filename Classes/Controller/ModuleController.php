@@ -81,11 +81,13 @@ class ModuleController extends ActionController
      * @param int $configuration
      * @return void
      */
-    public function indexAction(int $configuration = 0)
+    public function indexAction(int $configuration = 0): ResponseInterface
     {
         $configuration = $this->configurationRepository->findByUid($configuration);
         $this->saveState($configuration);
         $this->populateView($configuration);
+
+		return $this->htmlResponse();
     }
 
     /**
@@ -93,7 +95,7 @@ class ModuleController extends ActionController
      *
      * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
      */
-    public function statusAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
+    public function statusAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null): ResponseInterface
     {
         // If configuration has been deleted
         if ($configuration === null) {
@@ -147,6 +149,8 @@ class ModuleController extends ActionController
             'frontend' => $frontendConfiguration,
             'backend' => $backendConfiguration,
         ]);
+
+		return $this->htmlResponse();
     }
 
     /**
@@ -154,7 +158,7 @@ class ModuleController extends ActionController
      *
      * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
      */
-    public function searchAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
+    public function searchAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null): ResponseInterface
     {
         // If configuration has been deleted
         if ($configuration === null) {
@@ -174,6 +178,8 @@ class ModuleController extends ActionController
             'baseDn' => $frontendConfiguration['users']['basedn'],
             'filter' => $frontendConfiguration['users']['filter'],
         ]);
+
+		return $this->htmlResponse();
     }
 
     /**
@@ -181,7 +187,7 @@ class ModuleController extends ActionController
      *
      * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
      */
-    public function importFrontendUsersAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
+    public function importFrontendUsersAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null): ResponseInterface
     {
         // If configuration has been deleted
         if ($configuration === null) {
@@ -193,7 +199,7 @@ class ModuleController extends ActionController
         $this->populateView($configuration);
 
         if (!$this->checkLdapConnection()) {
-            return;
+            return $this->htmlResponse();
         }
 
         /** @var PageRenderer $pageRenderer */
@@ -202,6 +208,8 @@ class ModuleController extends ActionController
 
         $users = $this->getAvailableUsers($configuration, 'fe');
         $this->view->assign('users', $users);
+
+		return $this->htmlResponse();
     }
 
     /**
@@ -209,7 +217,7 @@ class ModuleController extends ActionController
      *
      * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
      */
-    public function importBackendUsersAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
+    public function importBackendUsersAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null): ResponseInterface
     {
         // If configuration has been deleted
         if ($configuration === null) {
@@ -221,7 +229,7 @@ class ModuleController extends ActionController
         $this->populateView($configuration);
 
         if (!$this->checkLdapConnection()) {
-            return;
+            return $this->htmlResponse();
         }
 
         /** @var PageRenderer $pageRenderer */
@@ -230,6 +238,8 @@ class ModuleController extends ActionController
 
         $users = $this->getAvailableUsers($configuration, 'be');
         $this->view->assign('users', $users);
+
+		return $this->htmlResponse();
     }
 
     /**
@@ -237,7 +247,7 @@ class ModuleController extends ActionController
      *
      * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
      */
-    public function importFrontendUserGroupsAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
+    public function importFrontendUserGroupsAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null): ResponseInterface
     {
         // If configuration has been deleted
         if ($configuration === null) {
@@ -249,7 +259,7 @@ class ModuleController extends ActionController
         $this->populateView($configuration);
 
         if (!$this->checkLdapConnection()) {
-            return;
+            return $this->htmlResponse();
         }
 
         /** @var PageRenderer $pageRenderer */
@@ -258,6 +268,8 @@ class ModuleController extends ActionController
 
         $groups = $this->getAvailableUserGroups($configuration, 'fe');
         $this->view->assign('groups', $groups);
+
+		return $this->htmlResponse();
     }
 
     /**
@@ -265,7 +277,7 @@ class ModuleController extends ActionController
      *
      * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
      */
-    public function importBackendUserGroupsAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
+    public function importBackendUserGroupsAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null): ResponseInterface
     {
         // If configuration has been deleted
         if ($configuration === null) {
@@ -277,7 +289,7 @@ class ModuleController extends ActionController
         $this->populateView($configuration);
 
         if (!$this->checkLdapConnection()) {
-            return;
+            return $this->htmlResponse();
         }
 
         /** @var PageRenderer $pageRenderer */
@@ -286,6 +298,8 @@ class ModuleController extends ActionController
 
         $groups = $this->getAvailableUserGroups($configuration, 'be');
         $this->view->assign('groups', $groups);
+
+		return $this->htmlResponse();
     }
 
     /**

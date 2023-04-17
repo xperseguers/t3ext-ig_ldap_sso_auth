@@ -137,6 +137,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 
                 // Consider that fetching no users from LDAP is an error
                 if (count($ldapUsers) === 0) {
+					// @extensionScannerIgnoreLine
                     $this->getLogger()->error(sprintf(
                         'No users (%s) found for configuration record %s', $aContext, $configuration->getUid()
                     ));
@@ -216,6 +217,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
         if ($failures > 0) {
             $tableConnection->rollBack();
             $message = 'Some or all imports failed. Synchronisation was aborted. Check your settings or your network connection';
+			// @extensionScannerIgnoreLine
             $this->getLogger()->error($message);
             throw new ImportUsersException($message, 1410774015);
 

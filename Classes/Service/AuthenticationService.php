@@ -187,6 +187,7 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
                     'diagnostic' => $diagnostic,
                     'configUid' => $configurationRecord->getUid(),
                 ];
+				// @extensionScannerIgnoreLine
                 static::getLogger()->error('Authentication failed', $info);
                 NotificationUtility::dispatch(
 					new \Causal\IgLdapSsoAuth\Event\AuthenticationFailedEvent($info)
@@ -251,6 +252,7 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
             if ($status && !empty($user['lockToDomain']) && $user['lockToDomain'] !== $this->authInfo['HTTP_HOST']) {
 
                 // Lock domain didn't match, so error:
+				// @extensionScannerIgnoreLine
                 static::getLogger()->error(sprintf('Locked domain "%s" did not match "%s"', $user['lockToDomain'], $this->authInfo['HTTP_HOST']), [
                     'username' => $user[$this->db_user['username_column']],
                     'remote' => sprintf('%s (%s)', $this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST']),

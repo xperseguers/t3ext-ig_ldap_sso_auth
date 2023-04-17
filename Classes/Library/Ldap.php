@@ -66,6 +66,7 @@ class Ldap
         ];
         // Connect to ldap server.
         if (!$this->ldapUtility->connect($config['host'], $config['port'], 3, $config['charset'], Configuration::getServerType($config['server']), $config['tls'], $config['ssl'], $config['tlsReqcert'])) {
+			// @extensionScannerIgnoreLine
             static::getLogger()->error( 'Cannot connect', $debugConfiguration);
             return false;
         }
@@ -82,6 +83,7 @@ class Ldap
             if (!empty($this->lastBindDiagnostic)) {
                 $message .= ': ' . $this->lastBindDiagnostic;
             }
+			// @extensionScannerIgnoreLine
             static::getLogger()->error($message, $debugConfiguration);
 
             $this->disconnect();

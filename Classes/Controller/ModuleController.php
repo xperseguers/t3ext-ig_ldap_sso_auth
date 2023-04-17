@@ -456,7 +456,6 @@ class ModuleController extends ActionController
 		$params = $request->getQueryParams();
 
 		$configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
-		$ldap = GeneralUtility::makeInstance(Ldap::class);
 
 		$configuration = $configurationRepository->findByUid($params['configuration']);
 
@@ -474,7 +473,7 @@ class ModuleController extends ActionController
 			: Configuration::getFrontendConfiguration();
 
 		try {
-			$success = $ldap->connect(Configuration::getLdapConfiguration());
+			$success = $this->ldap->connect(Configuration::getLdapConfiguration());
 		} catch (\Exception $e) {
 			$data['message'] = $e->getMessage();
 			$success = false;
@@ -491,7 +490,7 @@ class ModuleController extends ActionController
 			// 2) Create a proper search filter
 			$searchFilter = '(' . $key . '=' . ldap_escape($value, '', LDAP_ESCAPE_FILTER) . ')';
 			$attributes = Configuration::getLdapAttributes($config['users']['mapping']);
-			$ldapUser = $ldap->search($baseDn, $searchFilter, $attributes, true);
+			$ldapUser = $this->ldap->search($baseDn, $searchFilter, $attributes, true);
 			$typo3Users = $importUtility->fetchTypo3Users([$ldapUser]);
 
 			// Merge LDAP and TYPO3 information
@@ -519,7 +518,6 @@ class ModuleController extends ActionController
 		$params = $request->getQueryParams();
 
 		$configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
-		$ldap = GeneralUtility::makeInstance(Ldap::class);
 
 		$configuration = $configurationRepository->findByUid($params['configuration']);
 
@@ -531,7 +529,7 @@ class ModuleController extends ActionController
 			: Configuration::getFrontendConfiguration();
 
 		try {
-			$success = $ldap->connect(Configuration::getLdapConfiguration());
+			$success = $this->ldap->connect(Configuration::getLdapConfiguration());
 		} catch (\Exception $e) {
 			$data['message'] = $e->getMessage();
 			$success = false;
@@ -540,7 +538,7 @@ class ModuleController extends ActionController
 		if ($success) {
 			list($filter, $baseDn) = explode(',', $params['dn'], 2);
 			$attributes = Configuration::getLdapAttributes($config['groups']['mapping']);
-			$ldapGroup = $ldap->search($baseDn, '(' . $filter . ')', $attributes, true);
+			$ldapGroup = $this->ldap->search($baseDn, '(' . $filter . ')', $attributes, true);
 
 			$pid = Configuration::getPid($config['groups']['mapping']);
 			$table = $params['mode'] === 'be' ? 'be_groups' : 'fe_groups';

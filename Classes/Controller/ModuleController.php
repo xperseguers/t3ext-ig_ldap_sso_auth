@@ -670,13 +670,11 @@ class ModuleController extends ActionController
         $ldapUsers = $importUtility->fetchLdapUsers(false, $ldapInstance);
 
         $users = [];
-        $numberOfUsers = 0;
         $config = ($mode === 'be')
             ? Configuration::getBackendConfiguration()
             : Configuration::getFrontendConfiguration();
 
         do {
-            $numberOfUsers += count($ldapUsers);
             $typo3Users = $importUtility->fetchTypo3Users($ldapUsers);
             foreach ($ldapUsers as $index => $ldapUser) {
                 // Merge LDAP and TYPO3 information

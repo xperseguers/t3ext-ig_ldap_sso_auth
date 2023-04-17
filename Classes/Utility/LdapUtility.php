@@ -105,6 +105,14 @@ class LdapUtility
      */
     protected $paginationCookie = null;
 
+	/**
+	 * LdapUtility constructor.
+	 *
+	 * @param \TYPO3\CMS\Core\Charset\CharsetConverter $charsetConverter
+	 */
+	public function __construct(protected \TYPO3\CMS\Core\Charset\CharsetConverter $charsetConverter)
+	{}
+
     /**
      * Connects to an LDAP server.
      *
@@ -119,7 +127,7 @@ class LdapUtility
      * @return bool true if connection succeeded.
      * @throws UnresolvedPhpDependencyException when LDAP extension for PHP is not available
      */
-    public function connect($host = null, $port = null, $protocol = null, $characterSet = null, $serverType = 'OpenLDAP', $tls = false, $ssl = false, $tlsReqcert = false)
+    public function connect($host = null, $port = null, $protocol = 3, $characterSet = null, $serverType = 'OpenLDAP', $tls = false, $ssl = false, $tlsReqcert = false)
     {
         if ($tlsReqcert === false) {
             putenv('LDAPTLS_REQCERT=never');
@@ -164,7 +172,6 @@ class LdapUtility
         $this->initializeCharacterSet($characterSet);
 
         // We only support LDAP v3 from now on
-        $protocol = 3;
         @ldap_set_option($this->connection, LDAP_OPT_PROTOCOL_VERSION, $protocol);
 
         // Active Directory (User@Domain) configuration
@@ -517,32 +524,20 @@ class LdapUtility
      * @param string $toCharacterSet Target character set
      * @return array|mixed
      */
-    protected function convertCharacterSetForArray($arr, $fromCharacterSet, $toCharacterSet)
+    protected function convertCharacterSetForArray($arr, string $fromCharacterSet, string $toCharacterSet)
     {
-        /** @var \TYPO3\CMS\Core\Charset\CharsetConverter $csObj */
-        static $csObj = null;
-
         if (!is_array($arr)) {
             return $arr;
-        }
-
-        if ($csObj === null) {
-            if ((isset($GLOBALS['TSFE'])) && (isset($GLOBALS['TSFE']->csConvObj))) {
-                $csObj = $GLOBALS['TSFE']->csConvObj;
-            } else {
-                $csObj = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class);
-            }
         }
 
         foreach ($arr as $k => $val) {
             if (is_array($val)) {
                 $arr[$k] = $this->convertCharacterSetForArray($val, $fromCharacterSet, $toCharacterSet);
             } else {
-                $arr[$k] = $csObj->conv($val, $fromCharacterSet, $toCharacterSet);
+                $arr[$k] = $this->charsetConverter->conv($val, $fromCharacterSet, $toCharacterSet);
             }
         }
 
         return $arr;
     }
-
 }

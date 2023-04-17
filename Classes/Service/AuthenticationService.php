@@ -140,24 +140,6 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
 
             // Authenticate user from LDAP
             if (!$userRecordOrIsValid && $this->login['status'] === 'login' && $this->login['uident']) {
-
-                // Configuration of authentication service.
-                $typo3Branch = (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch();
-                $loginSecurityLevel = version_compare($typo3Branch, '11.0', '>')
-                    ? 'normal'
-                    : $GLOBALS['TYPO3_CONF_VARS'][\Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode()]['loginSecurityLevel'];
-                // normal case
-                // Check if $loginSecurityLevel is set to "challenged" or "superchallenged" and throw an error if the configuration allows it
-                // By default, it will not throw an exception
-                if (isset($this->config['throwExceptionAtLogin']) && $this->config['throwExceptionAtLogin'] == 1) {
-                    if ($loginSecurityLevel === 'challenged' || $loginSecurityLevel === 'superchallenged') {
-                        $message = "ig_ldap_sso_auth error: current login security level '" . $loginSecurityLevel . "' is not supported.";
-                        $message .= " Try to use 'normal' or 'rsa' (highly recommended): ";
-                        $message .= "\$GLOBALS['TYPO3_CONF_VARS']['" . \Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode() . "']['loginSecurityLevel'] = 'rsa';";
-                        throw new UnsupportedLoginSecurityLevelException($message, 1324313489);
-                    }
-                }
-
                 // normal case
                 $password = isset($this->login['uident_text']) ? $this->login['uident_text'] : $this->login['uident'];
 

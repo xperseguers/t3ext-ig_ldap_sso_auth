@@ -2,37 +2,34 @@
       xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<f:be.container>
-    <div class="module" data-module-id data-module-name>
-        <div class="module-loading-indicator"></div>
-        <div class="module-docheader t3js-module-docheader" style="height: auto;">
-            <div class="module-docheader-bar module-docheader-bar-navigation t3js-module-docheader-bar t3js-module-docheader-bar-navigation row">
-                <div class="module-docheader-bar-column-left col-xs-12 col-sm-3">
-                    <div class="form-inline">
-                        <div class="form-group form-group-sm">
-                            <f:render section="iconButtons"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="module-docheader-bar-column-right col-xs-12 col-sm-9 text-right">
+<div class="module" data-module-id data-module-name>
+	<div class="module-loading-indicator"></div>
+	<div class="module-docheader t3js-module-docheader" style="height: auto;">
+		<div class="module-docheader-bar module-docheader-bar-navigation t3js-module-docheader-bar t3js-module-docheader-bar-navigation row">
+			<div class="module-docheader-bar-column-left col-xs-12 col-sm-3">
+				<div class="form-inline">
+					<div class="form-group form-group-sm">
+						<f:render section="iconButtons"/>
+					</div>
+				</div>
+			</div>
+			<div class="module-docheader-bar-column-right col-xs-12 col-sm-9 text-right">
 
-                </div>
-            </div>
-            <div class="module-docheader-bar module-docheader-bar-buttons t3js-module-docheader-bar t3js-module-docheader-bar-buttons" style="height: auto;">
-                <div class="module-docheader-bar-column-left">
-                    <f:render section="configuration"/>
-                </div>
-                <div class="module-docheader-bar-column-right">
-                    <div class="btn-toolbar" role="toolbar">
-                        <f:be.buttons.shortcut/>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="module-body t3js-module-body" style="padding-top: 89px;">
-            <f:render section="content"/>
-        </div>
-    </div>
-</f:be.container>
+			</div>
+		</div>
+		<div class="module-docheader-bar module-docheader-bar-buttons t3js-module-docheader-bar t3js-module-docheader-bar-buttons" style="height: auto;">
+			<div class="module-docheader-bar-column-left">
+				<f:render section="configuration"/>
+			</div>
+			<div class="module-docheader-bar-column-right">
+				<div class="btn-toolbar" role="toolbar">
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="module-body t3js-module-body" style="padding-top: 89px;">
+		<f:render section="content"/>
+	</div>
+</div>
 
 </html>

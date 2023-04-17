@@ -185,7 +185,7 @@ class ConfigurationRepository
 
         foreach ($groupsMapping as $fieldName => $propertyName) {
             $groups = [];
-            $groupUids = GeneralUtility::intExplode(',', $row[$fieldName], true);
+            $groupUids = GeneralUtility::intExplode(',', $row[$fieldName] ?? '', true);
             if (count($groupUids) > 0) {
                 $repository = substr($fieldName, 0, 3) === 'be_'
                     ? static::getBackendUserGroupRepository()

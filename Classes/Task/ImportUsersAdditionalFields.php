@@ -162,7 +162,7 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
             if ((string)$taskInfo[$fieldName] === (string)$optionKey) {
                 $selected = ' selected="selected"';
             }
-            if (strpos($label, 'LLL:') === 0) {
+            if (str_starts_with($label, 'LLL:')) {
                 $optionLabel = htmlspecialchars($languageService->sL($localizationPrefix . substr($label, 4)));
             } else {
                 $optionLabel = htmlspecialchars($label);

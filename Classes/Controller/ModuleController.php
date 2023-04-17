@@ -694,9 +694,8 @@ class ModuleController extends ActionController
 			$mode
 		);
 
-		$ldapInstance = GeneralUtility::makeInstance(Ldap::class);
-		$ldapInstance->connect(Configuration::getLdapConfiguration());
-		$ldapUsers = $importUtility->fetchLdapUsers(false, $ldapInstance);
+		$this->ldap->connect(Configuration::getLdapConfiguration());
+		$ldapUsers = $importUtility->fetchLdapUsers(false, $this->ldap);
 
 		$users = [];
 		$config = ($mode === 'be')
@@ -734,12 +733,13 @@ class ModuleController extends ActionController
 				break;
 			}
 
-			$ldapUsers = $importUtility->hasMoreLdapUsers($ldapInstance)
-				? $importUtility->fetchLdapUsers(true, $ldapInstance)
+			$ldapUsers = $importUtility->hasMoreLdapUsers($this->ldap)
+				? $importUtility->fetchLdapUsers(true, $this->ldap)
 				: [];
 		} while (count($ldapUsers) > 0);
 
-		$ldapInstance->disconnect();
+		// @todo Is this necessary?
+		$this->ldap->disconnect();
 
 		return $users;
 	}

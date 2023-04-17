@@ -491,7 +491,7 @@ class Configuration
      */
     public function __toString()
     {
-        return get_class($this) . ':' . (string)$this->uid;
+        return get_class($this) . ':' . $this->uid;
     }
 
 }

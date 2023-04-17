@@ -75,7 +75,7 @@ class ConfigurationRepository
             )
             ->fetchAllAssociative();
 
-        if (!empty($this->config) && (bool)$this->config['useExtConfConfiguration']) {
+        if (!empty($this->config) && $this->config['useExtConfConfiguration']) {
             $rows[] = $this->config['configuration'];
         }
 

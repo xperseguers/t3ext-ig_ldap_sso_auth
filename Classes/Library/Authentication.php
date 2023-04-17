@@ -266,7 +266,7 @@ class Authentication
 
                 $typo3_user['tx_igldapssoauth_from'] = 'LDAP';
 
-                if ((bool)$typo3_user['deleted']
+                if ($typo3_user['deleted']
                     || ($typo3_user['starttime'] > 0 && $typo3_user['starttime'] > $GLOBALS['EXEC_TIME'])
                     || ($typo3_user['endtime'] > 0 && $typo3_user['endtime'] <= $GLOBALS['EXEC_TIME'])) {
                     // User has been updated in TYPO3, but it should not be granted to get an actual session
@@ -483,7 +483,7 @@ class Authentication
                     // the baseDN for groups, because LDAP groups not existing locally will simply be
                     // skipped and not automatically created. This allows groups to be available on a
                     // different LDAP server (see https://forge.typo3.org/issues/64141):
-                    !(bool)static::$config['GroupsNotSynchronize'],
+                    !static::$config['GroupsNotSynchronize'],
                     $ldapInstance
                 );
             }

@@ -77,8 +77,8 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
         $user = false;
         $userRecordOrIsValid = false;
         $remoteUser = $this->getRemoteUser();
-        $enableFrontendSso = \Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode() === 'FE' && (bool)$this->config['enableFESSO'] && $remoteUser;
-        $enableBackendSso = \Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode() === 'BE' && (bool)$this->config['enableBESSO'] && $remoteUser;
+        $enableFrontendSso = \Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode() === 'FE' && $this->config['enableFESSO'] && $remoteUser;
+        $enableBackendSso = \Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode() === 'BE' && $this->config['enableBESSO'] && $remoteUser;
 
         // This simple check is the key to prevent your log being filled up with warnings
         // due to the AJAX calls to maintain the session active if your configuration forces
@@ -213,8 +213,8 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
         }
 
         $remoteUser = $this->getRemoteUser();
-        $enableFrontendSso = \Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode() === 'FE' && (bool)$this->config['enableFESSO'] && $remoteUser;
-        $enableBackendSso = \Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode() === 'BE' && (bool)$this->config['enableBESSO'] && $remoteUser;
+        $enableFrontendSso = \Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode() === 'FE' && $this->config['enableFESSO'] && $remoteUser;
+        $enableBackendSso = \Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode() === 'BE' && $this->config['enableBESSO'] && $remoteUser;
 
         if ((($this->login['uident'] && $this->login['uname']) || $enableFrontendSso || $enableBackendSso) && !empty($user['tx_igldapssoauth_dn'])) {
             if (isset($user['tx_igldapssoauth_from'])) {

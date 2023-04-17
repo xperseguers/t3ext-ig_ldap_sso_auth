@@ -365,7 +365,7 @@ class ModuleController extends ActionController
         $view->setFormat('html');
         $view->setTemplatePathAndFilename($template);
 
-        if ((bool)($params['showStatus'] ?? false)) {
+        if ($params['showStatus'] ?? false) {
             $view->assign('status', $ldap->getStatus());
         }
 

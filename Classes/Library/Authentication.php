@@ -365,7 +365,7 @@ class Authentication
                 $hasRequired = false;
                 $groupUids = [];
                 foreach ($typo3GroupsTemp as $typo3Group) {
-                    $groupUids[] = $typo3Group['uid'];
+                    $groupUids[] = $typo3Group['uid'] ?? 0; // 0 happens for groups to be created
                 }
                 foreach ($requiredLDAPGroups as $group) {
                     if (in_array($group->getUid(), $groupUids)) {
@@ -584,7 +584,6 @@ class Authentication
                 $groupName = static::replaceLdapMarkers($mapping['title'], $ldapGroup);
             }
             $existingTypo3Groups = Typo3GroupRepository::fetch($table, 0, $pid, $ldapGroup['dn'], $groupName);
-
 
             if (count($existingTypo3Groups) > 0) {
                 $typo3Group = $existingTypo3Groups[0];

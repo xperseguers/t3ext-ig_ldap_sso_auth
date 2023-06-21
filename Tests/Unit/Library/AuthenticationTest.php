@@ -20,7 +20,7 @@ use Causal\IgLdapSsoAuth\Library\Configuration;
 /**
  * Test cases for class \Causal\IgLdapSsoAuth\Library\Authentication.
  */
-class AuthenticationTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
+class AuthenticationTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
 {
 
     /** @var array */

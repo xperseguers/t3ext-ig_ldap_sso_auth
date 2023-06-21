@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,47 +22,21 @@ use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
 /**
  * Converter which transforms simple types to \Causal\IgLdapSsoAuth\Domain\Model\Configuration.
  */
-class ConfigurationConverter extends \TYPO3\CMS\Extbase\Property\TypeConverter\AbstractTypeConverter implements \TYPO3\CMS\Core\SingletonInterface
+class ConfigurationConverter extends \TYPO3\CMS\Extbase\Property\TypeConverter\AbstractTypeConverter
 {
+	/**
+	 * ConfigurationConverter constructor.
+	 *
+	 * @param \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository
+	 */
+	public function __construct(protected ConfigurationRepository $configurationRepository)
+	{}
 
     /**
-     * @var array<string>
+     * @inheritDoc
      */
-    protected $sourceTypes = ['integer', 'string'];
-
-    /**
-     * @var string
-     */
-    protected $targetType = 'Causal\\IgLdapSsoAuth\\Domain\\Model\\Configuration';
-
-    /**
-     * @var int
-     */
-    protected $priority = 10;
-
-    /**
-     * @var ConfigurationRepository
-     */
-    protected $configurationRepository;
-
-    /**
-     * @param ConfigurationRepository $configurationRepository
-     */
-    public function injectConfigurationRepository(\Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository)
-    {
-        $this->configurationRepository = $configurationRepository;
-    }
-
-    /**
-     * @param string|int $source
-     * @param string $targetType
-     * @param array $convertedChildProperties
-     * @param \TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationInterface $configuration
-     * @return \Causal\IgLdapSsoAuth\Domain\Model\Configuration
-     */
-    public function convertFrom($source, $targetType, array $convertedChildProperties = [], \TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationInterface $configuration = null)
+    public function convertFrom($source, $targetType, array $convertedChildProperties = [], \TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationInterface $configuration = null): ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration
     {
         return $this->configurationRepository->findByUid((int)$source);
     }
-
 }

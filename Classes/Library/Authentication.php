@@ -17,9 +17,7 @@ namespace Causal\IgLdapSsoAuth\Library;
 use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Routing\PageArguments;
-use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3GroupRepository;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3UserRepository;
@@ -98,7 +96,7 @@ class Authentication
             $username = strtolower($username);
         }
 
-        $ldapInstance = Ldap::getInstance();
+        $ldapInstance = GeneralUtility::makeInstance(Ldap::class);
 
         // Valid user only if username and connect to LDAP server.
         if ($username && $ldapInstance->connect(Configuration::getLdapConfiguration())) {
@@ -111,7 +109,7 @@ class Authentication
             );
             if (!empty($domain) && $numberOfConfigurationRecords > 1) {
                 // Domain is set, so check it
-                if (strpos($domain, '.') !== false) {
+                if (str_contains($domain, '.')) {
                     $domain = 'DC=' . implode(',DC=', explode('.', $domain));
                 }
                 $domain = strtolower($domain);
@@ -266,7 +264,7 @@ class Authentication
 
                 $typo3_user['tx_igldapssoauth_from'] = 'LDAP';
 
-                if ((bool)$typo3_user['deleted']
+                if ($typo3_user['deleted']
                     || ($typo3_user['starttime'] > 0 && $typo3_user['starttime'] > $GLOBALS['EXEC_TIME'])
                     || ($typo3_user['endtime'] > 0 && $typo3_user['endtime'] <= $GLOBALS['EXEC_TIME'])) {
                     // User has been updated in TYPO3, but it should not be granted to get an actual session
@@ -296,13 +294,13 @@ class Authentication
             $attributes = [];
         } else {
             $attributes = Configuration::getLdapAttributes(static::$config['users']['mapping']);
-            if (strpos(static::$config['groups']['filter'], '{USERUID}') !== false) {
+            if (str_contains(static::$config['groups']['filter'], '{USERUID}')) {
                 $attributes[] = 'uid';
                 $attributes = array_unique($attributes);
             }
         }
 
-        $ldapInstance = Ldap::getInstance();
+        $ldapInstance = GeneralUtility::makeInstance(Ldap::class);
         $ldapInstance->connect(Configuration::getLdapConfiguration());
 
         $users = $ldapInstance->search(
@@ -343,7 +341,7 @@ class Authentication
         $ldapGroups = static::getLdapGroups($ldapUser);
         unset($ldapGroups['count']);
 
-        /** @var \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]|\TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup[] $requiredLDAPGroups */
+        /** @var \Causal\IgLdapSsoAuth\Domain\Model\BackendUserGroup[]|\Causal\IgLdapSsoAuth\Domain\Model\FrontendUserGroup[] $requiredLDAPGroups */
         $requiredLDAPGroups = Configuration::getValue('requiredLDAPGroups');
 
         if (count($ldapGroups) === 0) {
@@ -467,7 +465,7 @@ class Authentication
         $ldapGroupAttributes = Configuration::getLdapAttributes(static::$config['groups']['mapping']);
         $ldapGroups = ['count' => 0];
 
-        $ldapInstance = Ldap::getInstance();
+        $ldapInstance = GeneralUtility::makeInstance(Ldap::class);
         $ldapInstance->connect(Configuration::getLdapConfiguration());
 
         if (Configuration::getValue('evaluateGroupsFromMembership')) {
@@ -483,7 +481,7 @@ class Authentication
                     // the baseDN for groups, because LDAP groups not existing locally will simply be
                     // skipped and not automatically created. This allows groups to be available on a
                     // different LDAP server (see https://forge.typo3.org/issues/64141):
-                    !(bool)static::$config['GroupsNotSynchronize'],
+                    !static::$config['GroupsNotSynchronize'],
                     $ldapInstance
                 );
             }
@@ -660,7 +658,7 @@ class Authentication
 
         // Process every field (except "usergroup" and "parentGroup") which is not a TypoScript definition
         foreach ($mapping as $field => $value) {
-            if (substr($field, -1) !== '.') {
+            if (!str_ends_with($field, '.')) {
                 if ($field !== 'usergroup' && $field !== 'parentGroup') {
                     try {
                         $out = static::mergeSimple($ldap, $out, $field, $value);
@@ -690,56 +688,41 @@ class Authentication
             $backupTSFE = $GLOBALS['TSFE'] ?? null;
 
             // Advanced stdWrap methods require a valid $GLOBALS['TSFE'] => create the most lightweight one
-            $typoBranch = (new Typo3Version())->getBranch();
-            if (version_compare($typoBranch, '10.0', '>')) {
-                $pageId = $typo3['pid'];
-                // Use SiteFinder to get a Site object for the current page tree
-                $siteFinder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Site\SiteFinder::class);
-                try {
-                    $currentSite = $siteFinder->getSiteByPageId($pageId);
-                } catch (SiteNotFoundException $e) {
-                    $allSites = $siteFinder->getAllSites();
-                    $currentSite = reset($allSites);
-                    $pageId = $currentSite->getRootPageId();
-                }
+			$pageId = $typo3['pid'];
+			// Use SiteFinder to get a Site object for the current page tree
+			$siteFinder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Site\SiteFinder::class);
+			try {
+				$currentSite = $siteFinder->getSiteByPageId($pageId);
+			} catch (SiteNotFoundException $e) {
+				$allSites = $siteFinder->getAllSites();
+				$currentSite = reset($allSites);
+				$pageId = $currentSite->getRootPageId();
+			}
 
-                // Context is a singleton, so we can get the current Context by instantiation
-                $currentContext = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class);
+			// Context is a singleton, so we can get the current Context by instantiation
+			$currentContext = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class);
 
-                if (version_compare($typoBranch, '11.5', '>=')) {
-                    $pageArguments = GeneralUtility::makeInstance(PageArguments::class, $pageId, PageRepository::DOKTYPE_SYSFOLDER, []);
-                    $frontendUserAuthentication = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
-                } else {
-                    $pageArguments = null;
-                    $frontendUserAuthentication = null;
-                }
+			$pageArguments = GeneralUtility::makeInstance(PageArguments::class, $pageId, PageRepository::DOKTYPE_SYSFOLDER, []);
+			$frontendUserAuthentication = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
 
-                // Use Site & Context to instantiate TSFE properly for TYPO3 v10+
-                $GLOBALS['TSFE'] = GeneralUtility::makeInstance(
-                    TypoScriptFrontendController::class,
-                    $currentContext,
-                    $currentSite,
-                    $currentSite->getDefaultLanguage(),
-                    $pageArguments,
-                    $frontendUserAuthentication
-                );
+			// Use Site & Context to instantiate TSFE properly for TYPO3 v10+
+			$GLOBALS['TSFE'] = GeneralUtility::makeInstance(
+				TypoScriptFrontendController::class,
+				$currentContext,
+				$currentSite,
+				$currentSite->getDefaultLanguage(),
+				$pageArguments,
+				$frontendUserAuthentication
+			);
 
-                // initTemplate() has been removed. The deprecation notice suggests setting the property directly
-                $GLOBALS['TSFE']->tmpl = GeneralUtility::makeInstance(
-                    TemplateService::class,
-                    $currentContext
-                );
-            } else {
-                // Backward compatibility with TYPO3 v9
-                $GLOBALS['TSFE'] = GeneralUtility::makeInstance(
-                    TypoScriptFrontendController::class,
-                    $GLOBALS['TYPO3_CONF_VARS'],
-                    0,
-                    ''
-                );
-                $GLOBALS['TSFE']->initTemplate();
-            }
-            $GLOBALS['TSFE']->renderCharset = 'utf-8';
+			// @todo Is this necessary?
+			/*
+			// initTemplate() has been removed. The deprecation notice suggests setting the property directly
+			$GLOBALS['TSFE']->tmpl = GeneralUtility::makeInstance(
+				TemplateService::class,
+				$currentContext
+			);
+			*/
 
             /** @var $contentObj ContentObjectRenderer */
             $contentObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
@@ -749,7 +732,7 @@ class Authentication
             foreach ($typoScriptKeys as $typoScriptKey) {
                 // Remove the trailing period to get corresponding field name
                 $field = substr($typoScriptKey, 0, -1);
-                $value = isset($out[$field]) ? $out[$field] : '';
+                $value = $out[$field] ?? '';
                 $value = $contentObj->stdWrap($value, $mapping[$typoScriptKey]);
                 $out = static::mergeSimple([$field => $value], $out, $field, $value);
             }
@@ -896,7 +879,7 @@ class Authentication
      */
     protected static function getCreationUserId(): int
     {
-        $cruserId = (TYPO3_MODE === 'BE' ? ($GLOBALS['BE_USER']->user['uid'] ?? null) : null);
+        $cruserId = (\Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode() === 'BE' ? ($GLOBALS['BE_USER']->user['uid'] ?? null) : null);
         return $cruserId ?? 0;
     }
 
@@ -908,7 +891,7 @@ class Authentication
         if (isset(static::$authenticationService) && !empty(static::$authenticationService->authInfo['db_groups']['table'])) {
             $groupTable = static::$authenticationService->authInfo['db_groups']['table'];
         } else {
-            if (TYPO3_MODE === 'BE') {
+            if (\Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode() === 'BE') {
                 $groupTable = 'be_groups';
             } else {
                 $groupTable = 'fe_groups';

@@ -30,7 +30,7 @@ class BackendUserGroupRepository extends AbstractUserGroupRepository
     /**
      * @var string
      */
-    protected $className = 'TYPO3\\CMS\\Extbase\\Domain\\Model\\BackendUserGroup';
+    protected $className = \Causal\IgLdapSsoAuth\Domain\Model\BackendUserGroup::class;
 
     /**
      * @var string

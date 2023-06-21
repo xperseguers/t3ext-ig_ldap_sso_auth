@@ -17,7 +17,7 @@ namespace Causal\IgLdapSsoAuth\Tests\Unit\Library;
 /**
  * Test cases for class \Causal\IgLdapSsoAuth\Library\Ldap.
  */
-class LdapTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
+class LdapTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
 {
 
     /**

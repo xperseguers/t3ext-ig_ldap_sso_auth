@@ -25,52 +25,42 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class TypoScriptUtility
 {
-
-    /**
-     * Loads and parses TypoScript from a file.
-     *
-     * @param string $filePath
-     * @return array
-     */
-    public static function loadTypoScriptFromFile($filePath)
-    {
-        $fileName = GeneralUtility::getFileAbsFileName($filePath);
-        $typoScript = file_get_contents($fileName);
-        return static::loadTypoScript($typoScript);
-    }
+	/**
+	 * Tool for TypoScript parsing
+	 *
+	 * @var \TYPO3\CMS\Core\TypoScript\TypoScriptStringFactory|null
+	 */
+	protected static ?\TYPO3\CMS\Core\TypoScript\TypoScriptStringFactory $typoScriptStringFactory = null;
 
     /**
      * Loads and parses TypoScript from a string.
      *
-     * @param string $typoScript
+     * @param string|null $typoScript
      * @return array
      */
-    public static function loadTypoScript($typoScript)
+    public static function loadTypoScript(?string $typoScript = null): array
     {
-        $typoScriptParser = static::getTypoScriptParser();
-        $typoScriptParser->parse($typoScript);
-        $setup = $typoScriptParser->setup;
-        return $setup;
+		if ($typoScript === null) {
+			return [];
+		}
+
+        $typoScriptStringFactory = static::getTypoScriptStringFactory();
+        $rootNode = $typoScriptStringFactory->parseFromStringWithIncludes(md5($typoScript), $typoScript);
+
+		return $rootNode->toArray();
     }
 
     /**
-     * Returns a clean TypoScript parser.
+     * Get the TypoScript parsing tool.
      *
-     * @return \TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser
+     * @return \TYPO3\CMS\Core\TypoScript\TypoScriptStringFactory
      */
-    protected static function getTypoScriptParser()
+    protected static function getTypoScriptStringFactory(): \TYPO3\CMS\Core\TypoScript\TypoScriptStringFactory
     {
-        /** @var \TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser $typoScriptParser */
-        static $typoScriptParser = null;
+		if (static::$typoScriptStringFactory === null) {
+			static::$typoScriptStringFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\TypoScript\TypoScriptStringFactory::class);
+		}
 
-        if ($typoScriptParser === null) {
-            $typoScriptParser = GeneralUtility::makeInstance(\TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser::class);
-        }
-
-        // Reset the parser state
-        $typoScriptParser->setup = [];
-
-        return $typoScriptParser;
+		return static::$typoScriptStringFactory;
     }
-
 }

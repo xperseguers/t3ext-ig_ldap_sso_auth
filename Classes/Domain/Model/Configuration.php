@@ -397,7 +397,7 @@ class Configuration
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]
+     * @return \Causal\IgLdapSsoAuth\Domain\Model\BackendUserGroup[]
      */
     public function getBackendGroupsRequired()
     {
@@ -405,7 +405,7 @@ class Configuration
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]
+     * @return \Causal\IgLdapSsoAuth\Domain\Model\BackendUserGroup[]
      */
     public function getBackendGroupsAssigned()
     {
@@ -413,7 +413,7 @@ class Configuration
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]
+     * @return \Causal\IgLdapSsoAuth\Domain\Model\BackendUserGroup[]
      */
     public function getBackendGroupsAdministrator()
     {
@@ -469,7 +469,7 @@ class Configuration
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup[]
+     * @return \Causal\IgLdapSsoAuth\Domain\Model\FrontendUserGroup[]
      */
     public function getFrontendGroupsRequired()
     {
@@ -477,7 +477,7 @@ class Configuration
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup[]
+     * @return \Causal\IgLdapSsoAuth\Domain\Model\FrontendUserGroup[]
      */
     public function getFrontendGroupsAssigned()
     {
@@ -491,7 +491,7 @@ class Configuration
      */
     public function __toString()
     {
-        return get_class($this) . ':' . (string)$this->uid;
+        return get_class($this) . ':' . $this->uid;
     }
 
 }

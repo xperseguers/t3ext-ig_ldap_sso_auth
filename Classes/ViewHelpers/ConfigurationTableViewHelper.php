@@ -48,8 +48,7 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
     public function render(): string
     {
         $hasError = false;
-        $content = $this->renderTable($this->arguments['data'], $this->arguments['humanKeyNames'], 1, $hasError);
-        return $content;
+		return $this->renderTable($this->arguments['data'], $this->arguments['humanKeyNames'], 1, $hasError);
     }
 
     /**
@@ -141,7 +140,7 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
             $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
             $value .=  ' ' . htmlspecialchars($label);
         } elseif ($value instanceof \TYPO3\CMS\Extbase\DomainObject\AbstractEntity) {
-            if ($value instanceof \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup) {
+            if ($value instanceof \Causal\IgLdapSsoAuth\Domain\Model\BackendUserGroup) {
                 $icon = 'status-user-group-backend';
                 $table = 'be_groups';
             } else {

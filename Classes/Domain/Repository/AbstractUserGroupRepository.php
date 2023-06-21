@@ -63,7 +63,7 @@ abstract class AbstractUserGroupRepository
      * Returns a single backend/frontend user group.
      *
      * @param int $uid
-     * @return \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup|\TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup|null
+     * @return \Causal\IgLdapSsoAuth\Domain\Model\BackendUserGroup|\Causal\IgLdapSsoAuth\Domain\Model\FrontendUserGroup|null
      */
     public function findByUid($uid)
     {
@@ -76,7 +76,7 @@ abstract class AbstractUserGroupRepository
                     'uid' => (int)$uid,
                 ]
             )
-            ->fetch();
+            ->fetchAssociative();
 
         if (!empty($row)) {
             $userGroup = GeneralUtility::makeInstance($this->className);

@@ -17,7 +17,7 @@ namespace Causal\IgLdapSsoAuth\Tests\Functional\Library;
 /**
  * Test cases for class \Causal\IgLdapSsoAuth\Library\Ldap.
  */
-class LdapTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
+class LdapTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
 {
 
     /**
@@ -94,9 +94,9 @@ class LdapTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
      */
     public function validateUserSupportsSSO($filter, $username, $expected)
     {
-        $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth'] = serialize([
-            'enableFESSO' => 1,
-        ]);
+		$config = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class);
+		$config->set('ig_ldap_sso_auth', 'enableFESSO', 1);
+
         \Causal\IgLdapSsoAuth\Library\Configuration::initialize('fe', new \Causal\IgLdapSsoAuth\Domain\Model\Configuration());
 
         $result = $this->fixture->validateUser($username, null, 'cn=read-only-admin,dc=example,dc=com', $filter);
@@ -261,8 +261,7 @@ class LdapTest extends \TYPO3\CMS\Core\Tests\UnitTestCase
     {
         $extPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('ig_ldap_sso_auth');
         $json = file_get_contents($extPath . 'Tests/Functional/Fixtures/' . $file);
-        $data = json_decode($json, true);
-        return $data;
-    }
 
+		return json_decode($json, true);
+    }
 }

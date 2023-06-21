@@ -25,39 +25,37 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class NotificationUtility
 {
+	protected static $instance;
 
-    /**
-     * Dispatches a signal by calling the registered slot methods.
-     *
-     * @param string $signalClassName
-     * @param string $signalName
-     * @param array $signalArguments
-     * @return mixed
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
-     */
-    public static function dispatch($signalClassName, $signalName, array $signalArguments = [])
+	/**
+	 * NotificationUtility constructor.
+	 *
+	 * @param \Psr\EventDispatcher\EventDispatcherInterface $
+	 */
+	public function __construct(protected \Psr\EventDispatcher\EventDispatcherInterface $eventDispatcher)
+	{}
+
+	/**
+	 * Dispatches a signal by calling the registered slot methods.
+	 *
+	 * @param \Causal\IgLdapSsoAuth\Event\LdapEvent $event
+	 */
+    public static function dispatch(\Causal\IgLdapSsoAuth\Event\LdapEvent $event): void
     {
-        return static::getSignalSlotDispatcher()->dispatch($signalClassName, $signalName, $signalArguments);
+        self::getInstance()->eventDispatcher->dispatch($event);
     }
 
-    /**
-     * Returns the signal slot dispatcher.
-     *
-     * @return \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
-     */
-    protected static function getSignalSlotDispatcher()
-    {
-        /** @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher $signalSlotDispatcher */
-        static $signalSlotDispatcher = null;
+	/**
+	 * Get instance.
+	 *
+	 * @return \Causal\IgLdapSsoAuth\Utility\NotificationUtility
+	 */
+	protected static function getInstance(): self
+	{
+		if (self::$instance === null) {
+			self::$instance = GeneralUtility::makeInstance(self::class, GeneralUtility::makeInstance(\Psr\EventDispatcher\EventDispatcherInterface::class));
+		}
 
-        if ($signalSlotDispatcher === null) {
-            /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-            $objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
-            $signalSlotDispatcher = $objectManager->get(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class);
-        }
-
-        return $signalSlotDispatcher;
-    }
-
+		return self::$instance;
+	}
 }

@@ -124,7 +124,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
                 }
 
                 // Start by connecting to the designated LDAP/AD server
-                $ldapInstance = Ldap::getInstance();
+                $ldapInstance = GeneralUtility::makeInstance(Ldap::class);
                 $success = $ldapInstance->connect(Configuration::getLdapConfiguration());
                 // Proceed with import if successful
                 if (!$success) {
@@ -137,6 +137,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 
                 // Consider that fetching no users from LDAP is an error
                 if (count($ldapUsers) === 0) {
+					// @extensionScannerIgnoreLine
                     $this->getLogger()->error(sprintf(
                         'No users (%s) found for configuration record %s', $aContext, $configuration->getUid()
                     ));
@@ -197,9 +198,6 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
                             'Configuration record %s: processed %s LDAP users (%s)', $configuration->getUid(), count($ldapUsers), $aContext
                         ));
 
-                        // Free memory before going on
-                        $typo3Users = null;
-                        $ldapUsers = null;
                         $ldapUsers = $importUtility->hasMoreLdapUsers($ldapInstance)
                             ? $importUtility->fetchLdapUsers(true, $ldapInstance)
                             : [];
@@ -216,6 +214,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
         if ($failures > 0) {
             $tableConnection->rollBack();
             $message = 'Some or all imports failed. Synchronisation was aborted. Check your settings or your network connection';
+			// @extensionScannerIgnoreLine
             $this->getLogger()->error($message);
             throw new ImportUsersException($message, 1410774015);
 
@@ -240,13 +239,13 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
         } else {
             $configurationName = $this->getConfigurationName();
         }
-        $info = sprintf(
-            $languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.additionalinformation'),
-            $languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.mode.' . $this->getMode() . '.short'),
-            $languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.context.' . strtolower($this->getContext())),
-            $configurationName
-        );
-        return $info;
+
+		return sprintf(
+			$languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.additionalinformation'),
+			$languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.mode.' . $this->getMode() . '.short'),
+			$languageService->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang.xlf:task.import_users.field.context.' . strtolower($this->getContext())),
+			$configurationName
+		);
     }
 
     /**
@@ -373,7 +372,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
     /**
      * Returns the LanguageService.
      *
-     * @return \TYPO3\CMS\Lang\LanguageService|\TYPO3\CMS\Core\Localization\LanguageService
+     * @return \TYPO3\CMS\Core\Localization\LanguageService
      */
     protected function getLanguageServiceForLdap()
     {

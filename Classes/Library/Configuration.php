@@ -64,31 +64,11 @@ class Configuration
         static::$configuration = $configuration;
 
         // Default TYPO3_MODE is BE
-        static::setMode($mode ?: TYPO3_MODE);
+        static::setMode($mode ?: \Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode());
 
         // Select configuration from database, merge with extension configuration template and initialise class attributes.
 
         static::$domains = [];
-        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
-            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
-            : TYPO3_branch;
-        if (version_compare($typo3Branch, '10.0', '<')) {
-            $domainUids = GeneralUtility::intExplode(',', $configuration->getDomains(), true);
-            foreach ($domainUids as $domainUid) {
-                $row = GeneralUtility::makeInstance(ConnectionPool::class)
-                    ->getConnectionForTable('sys_domain')
-                    ->select(
-                        ['domainName'],
-                        'sys_domain',
-                        [
-                            'uid' => $domainUid,
-                        ]
-                    )
-                    ->fetch();
-                static::$domains[] = $row['domainName'];
-            }
-        }
-
         if (!empty(static::$domains)) {
             trigger_error(
                 'LDAP configuration record uid=' . $configuration->getUid() . ' uses associated domains which are deprecated since TYPO3 v9.',
@@ -121,9 +101,9 @@ class Configuration
         static::$be['DeleteUserIfNoLDAPGroups'] = false;
         static::$be['DeleteUserIfNoTYPO3Groups'] = false;
         static::$be['GroupsNotSynchronize'] = (bool)$globalConfiguration['TYPO3BEGroupsNotSynchronize'];
-        static::$be['requiredLDAPGroups'] = $configuration->getBackendGroupsRequired() ? $configuration->getBackendGroupsRequired() : [];
-        static::$be['updateAdminAttribForGroups'] = $configuration->getBackendGroupsAdministrator() ? $configuration->getBackendGroupsAdministrator() : [];
-        static::$be['assignGroups'] = $configuration->getBackendGroupsAssigned() ? $configuration->getBackendGroupsAssigned() : [];
+        static::$be['requiredLDAPGroups'] = $configuration->getBackendGroupsRequired() ?: [];
+        static::$be['updateAdminAttribForGroups'] = $configuration->getBackendGroupsAdministrator() ?: [];
+        static::$be['assignGroups'] = $configuration->getBackendGroupsAssigned() ?: [];
         static::$be['keepTYPO3Groups'] = (bool)$globalConfiguration['keepBEGroups'];
         static::$be['users']['basedn'] = $configuration->getBackendUsersBaseDn();
         static::$be['users']['filter'] = $configuration->getBackendUsersFilter();
@@ -144,9 +124,9 @@ class Configuration
         static::$fe['DeleteUserIfNoTYPO3Groups'] = (bool)$globalConfiguration['TYPO3FEDeleteUserIfNoTYPO3Groups'];
         static::$fe['DeleteUserIfNoLDAPGroups'] = (bool)$globalConfiguration['TYPO3FEDeleteUserIfNoLDAPGroups'];
         static::$fe['GroupsNotSynchronize'] = (bool)$globalConfiguration['TYPO3FEGroupsNotSynchronize'];
-        static::$fe['assignGroups'] = $configuration->getFrontendGroupsAssigned() ? $configuration->getFrontendGroupsAssigned() : [];
+        static::$fe['assignGroups'] = $configuration->getFrontendGroupsAssigned() ?: [];
         static::$fe['keepTYPO3Groups'] = (bool)$globalConfiguration['keepFEGroups'];
-        static::$fe['requiredLDAPGroups'] = $configuration->getFrontendGroupsRequired() ? $configuration->getFrontendGroupsRequired() : [];
+        static::$fe['requiredLDAPGroups'] = $configuration->getFrontendGroupsRequired() ?: [];
         static::$fe['users']['basedn'] = $configuration->getFrontendUsersBaseDn();
         static::$fe['users']['filter'] = $configuration->getFrontendUsersFilter();
         static::$fe['users']['mapping'] = static::makeUserMapping($configuration->getFrontendUsersMapping(), $configuration->getFrontendUsersFilter());
@@ -155,7 +135,7 @@ class Configuration
         static::$fe['groups']['mapping'] = static::makeGroupMapping($configuration->getFrontendGroupsMapping());
 
         static::$ldap['server'] = $configuration->getLdapServer();
-        static::$ldap['charset'] = $configuration->getLdapCharset() ? $configuration->getLdapCharset() : 'utf-8';
+        static::$ldap['charset'] = $configuration->getLdapCharset() ?: 'utf-8';
         static::$ldap['host'] = $configuration->getLdapHost();
         static::$ldap['port'] = $configuration->getLdapPort();
         static::$ldap['tls'] = $configuration->isLdapTls();
@@ -251,7 +231,7 @@ class Configuration
         // Remove partial definitions
         $keys = array_keys($setup);
         foreach ($keys as $key) {
-            if (substr($key, -1) !== '.') {
+            if (!str_ends_with($key, '.')) {
                 if ($setup[$key] === '') {
                     unset($setup[$key]);
                 }
@@ -372,7 +352,7 @@ class Configuration
             ? static::getBackendConfiguration()
             : static::getFrontendConfiguration();
 
-        return (isset($config[$feature]) ? $config[$feature] : false);
+        return $config[$feature] ?? false;
     }
 
     /**
@@ -386,7 +366,7 @@ class Configuration
         $ldapAttributes = [];
         if (is_array($mapping)) {
             foreach ($mapping as $field => $attribute) {
-                if (substr($field, -1) === '.') {
+                if (str_ends_with($field, '.')) {
                     // This is a TypoScript configuration
                     continue;
                 }
@@ -424,7 +404,7 @@ class Configuration
 
         if (is_array($mapping) && !$extended) {
             foreach ($mapping as $field => $attribute) {
-                if (substr($field, -1) === '.') {
+                if (str_ends_with($field, '.')) {
                     $extended = true;
                     break;
                 }
@@ -468,8 +448,7 @@ class Configuration
      */
     public static function replaceFilterMarkers($filter)
     {
-        $filter = str_replace(['{USERNAME}', '{USERDN}', '{USERUID}'], '*', $filter);
-        return $filter;
+		return str_replace(['{USERNAME}', '{USERDN}', '{USERUID}'], '*', $filter);
     }
 
     /**
@@ -489,7 +468,7 @@ class Configuration
                     'uid' => $uid,
                 ]
             )
-            ->fetch();
+            ->fetchAssociative();
 
         return !empty($config) ? $config : [];
     }

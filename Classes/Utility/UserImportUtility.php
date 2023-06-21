@@ -19,7 +19,6 @@ use Causal\IgLdapSsoAuth\Exception\ImportUsersException;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3UserRepository;
 use Causal\IgLdapSsoAuth\Library\Authentication;
 use Causal\IgLdapSsoAuth\Library\Configuration;
-use Causal\IgLdapSsoAuth\Library\Ldap;
 
 /**
  * Centralizes the code for importing users from LDAP/AD sources.
@@ -181,18 +180,17 @@ class UserImportUtility
      */
     public function fetchTypo3Users($ldapUsers)
     {
-
         // Populate an array of TYPO3 users records corresponding to the LDAP users
         // If a given LDAP user has no associated user in TYPO3, a fresh record
         // will be created so that $ldapUsers[i] <=> $typo3Users[i]
         $typo3UserPid = Configuration::getPid($this->configuration['users']['mapping']);
-        $typo3Users = Authentication::getTypo3Users(
-            $ldapUsers,
-            $this->configuration['users']['mapping'],
-            $this->userTable,
-            $typo3UserPid
-        );
-        return $typo3Users;
+
+		return Authentication::getTypo3Users(
+			$ldapUsers,
+			$this->configuration['users']['mapping'],
+			$this->userTable,
+			$typo3UserPid
+		);
     }
 
     /**

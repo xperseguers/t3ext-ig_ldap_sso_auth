@@ -105,6 +105,14 @@ class LdapUtility
      */
     protected $paginationCookie = null;
 
+	/**
+	 * LdapUtility constructor.
+	 *
+	 * @param \TYPO3\CMS\Core\Charset\CharsetConverter $charsetConverter
+	 */
+	public function __construct(protected \TYPO3\CMS\Core\Charset\CharsetConverter $charsetConverter)
+	{}
+
     /**
      * Connects to an LDAP server.
      *
@@ -119,7 +127,7 @@ class LdapUtility
      * @return bool true if connection succeeded.
      * @throws UnresolvedPhpDependencyException when LDAP extension for PHP is not available
      */
-    public function connect($host = null, $port = null, $protocol = null, $characterSet = null, $serverType = 'OpenLDAP', $tls = false, $ssl = false, $tlsReqcert = false)
+    public function connect($host = null, $port = null, $protocol = 3, $characterSet = null, $serverType = 'OpenLDAP', $tls = false, $ssl = false, $tlsReqcert = false)
     {
         if ($tlsReqcert === false) {
             putenv('LDAPTLS_REQCERT=never');
@@ -164,7 +172,6 @@ class LdapUtility
         $this->initializeCharacterSet($characterSet);
 
         // We only support LDAP v3 from now on
-        $protocol = 3;
         @ldap_set_option($this->connection, LDAP_OPT_PROTOCOL_VERSION, $protocol);
 
         // Active Directory (User@Domain) configuration
@@ -204,7 +211,8 @@ class LdapUtility
     public function disconnect()
     {
         if ($this->connection) {
-            @ldap_close($this->connection);
+            @ldap_unbind($this->connection);
+			unset($this->connection);
         }
     }
 
@@ -320,28 +328,14 @@ class LdapUtility
                 $this->paginationCookie = null;
             }
 
-            // It was reported that ldap_control_paged_result() may not be available;
-            // we thus check for existence before proceeding
-            // ldap_control_paged_result() has been removed in PHP8
-            if (version_compare(PHP_VERSION, '7.4.0', '<')) {
-                $this->hasPagination = function_exists('ldap_control_paged_result') &&
-                    @ldap_control_paged_result(
-                        $this->connection,
-                        static::PAGE_SIZE,
-                        false,  // Pagination is not critical for search to work anyway
-                        $this->paginationCookie
-                    );
-                $this->searchResult = @ldap_search($this->connection, $baseDn, $filter, $attributes, $attributesOnly, $sizeLimit, $timeLimit, $dereferenceAliases);
-            } else {
-                $ldapControls = ldap_read($this->connection, '', '(objectClass=*)', ['supportedControl']);
-                $ldapEntries = ldap_get_entries($this->connection, $ldapControls);
-                if (isset($ldapEntries[0]['supportedcontrol']) && in_array(LDAP_CONTROL_PAGEDRESULTS, $ldapEntries[0]['supportedcontrol'])) {
-                  $this->hasPagination = true;
-                }
+			$ldapControls = ldap_read($this->connection, '', '(objectClass=*)', ['supportedControl']);
+			$ldapEntries = ldap_get_entries($this->connection, $ldapControls);
+			if (isset($ldapEntries[0]['supportedcontrol']) && in_array(LDAP_CONTROL_PAGEDRESULTS, $ldapEntries[0]['supportedcontrol'])) {
+			  $this->hasPagination = true;
+			}
 
-                $controls = [['oid' => LDAP_CONTROL_PAGEDRESULTS, 'value' => ['size' => static::MAX_ENTRIES, 'cookie' => $this->paginationCookie]]];
-                $this->searchResult = @ldap_search($this->connection, $baseDn, $filter, $attributes, $attributesOnly, $sizeLimit, $timeLimit, $dereferenceAliases, $controls);
-            }
+			$controls = [['oid' => LDAP_CONTROL_PAGEDRESULTS, 'value' => ['size' => static::MAX_ENTRIES, 'cookie' => $this->paginationCookie]]];
+			$this->searchResult = @ldap_search($this->connection, $baseDn, $filter, $attributes, $attributesOnly, $sizeLimit, $timeLimit, $dereferenceAliases, $controls);
 
             if (!$this->searchResult) {
                 // Search failed.
@@ -407,17 +401,13 @@ class LdapUtility
         } while ($entry = @ldap_next_entry($this->connection, $entry));
 
         if ($this->hasPagination) {
-            if (version_compare(PHP_VERSION, '7.4.0', '<')) {
-                @ldap_control_paged_result_response($this->connection, $this->searchResult, $this->paginationCookie);
-            } else {
-                ldap_parse_result($this->connection, $this->searchResult, $errcode, $matcheddn, $errmsg, $referrals, $controls);
-                if (isset($controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'])) {
-                    // You need to pass the cookie from the last call to the next one
-                    $this->paginationCookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'];
-                } else {
-                    $this->paginationCookie = null;
-                }
-            }
+			ldap_parse_result($this->connection, $this->searchResult, $errcode, $matcheddn, $errmsg, $referrals, $controls);
+			if (isset($controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'])) {
+				// You need to pass the cookie from the last call to the next one
+				$this->paginationCookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'];
+			} else {
+				$this->paginationCookie = null;
+			}
         }
 
         $this->status['get_entries']['status'] = ldap_error($this->connection);
@@ -452,8 +442,8 @@ class LdapUtility
         foreach ($attributes as $key => $value) {
             $tempEntry[strtolower($key)] = $value;
         }
-        $entry = $this->convertCharacterSetForArray($tempEntry, $this->ldapCharacterSet, $this->typo3CharacterSet);
-        return $entry;
+
+		return $this->convertCharacterSetForArray($tempEntry, $this->ldapCharacterSet, $this->typo3CharacterSet);
     }
 
     /**
@@ -517,32 +507,20 @@ class LdapUtility
      * @param string $toCharacterSet Target character set
      * @return array|mixed
      */
-    protected function convertCharacterSetForArray($arr, $fromCharacterSet, $toCharacterSet)
+    protected function convertCharacterSetForArray($arr, string $fromCharacterSet, string $toCharacterSet)
     {
-        /** @var \TYPO3\CMS\Core\Charset\CharsetConverter $csObj */
-        static $csObj = null;
-
         if (!is_array($arr)) {
             return $arr;
-        }
-
-        if ($csObj === null) {
-            if ((isset($GLOBALS['TSFE'])) && (isset($GLOBALS['TSFE']->csConvObj))) {
-                $csObj = $GLOBALS['TSFE']->csConvObj;
-            } else {
-                $csObj = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class);
-            }
         }
 
         foreach ($arr as $k => $val) {
             if (is_array($val)) {
                 $arr[$k] = $this->convertCharacterSetForArray($val, $fromCharacterSet, $toCharacterSet);
             } else {
-                $arr[$k] = $csObj->conv($val, $fromCharacterSet, $toCharacterSet);
+                $arr[$k] = $this->charsetConverter->conv($val, $fromCharacterSet, $toCharacterSet);
             }
         }
 
         return $arr;
     }
-
 }

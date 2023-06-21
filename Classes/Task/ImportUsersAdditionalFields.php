@@ -150,10 +150,7 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
 
         // Write the code for the field
         $fieldID = 'task_' . $fieldName;
-        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
-            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
-            : TYPO3_branch;
-        $cssClass = version_compare($typo3Branch, '11.0', '<') ? 'form-control' : 'form-select';
+        $cssClass = 'form-select';
         if (isset($parameters['css'])) {
             $cssClass .= ' ' . $parameters['css'];
         }
@@ -165,7 +162,7 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
             if ((string)$taskInfo[$fieldName] === (string)$optionKey) {
                 $selected = ' selected="selected"';
             }
-            if (strpos($label, 'LLL:') === 0) {
+            if (str_starts_with($label, 'LLL:')) {
                 $optionLabel = htmlspecialchars($languageService->sL($localizationPrefix . substr($label, 4)));
             } else {
                 $optionLabel = htmlspecialchars($label);
@@ -216,7 +213,7 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
     /**
      * Returns the LanguageService.
      *
-     * @return \TYPO3\CMS\Lang\LanguageService
+     * @return \TYPO3\CMS\Core\Localization\LanguageService
      */
     protected function getLanguageService()
     {

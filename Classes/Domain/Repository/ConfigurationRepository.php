@@ -73,9 +73,9 @@ class ConfigurationRepository
                     'sorting' => 'ASC',
                 ]
             )
-            ->fetchAll();
+            ->fetchAllAssociative();
 
-        if (!empty($this->config) && (bool)$this->config['useExtConfConfiguration']) {
+        if (!empty($this->config) && $this->config['useExtConfConfiguration']) {
             $rows[] = $this->config['configuration'];
         }
 
@@ -110,7 +110,7 @@ class ConfigurationRepository
                         'uid' => $uid,
                     ]
                 )
-                ->fetch();
+                ->fetchAssociative();
         }
 
         if (!empty($row)) {
@@ -185,9 +185,9 @@ class ConfigurationRepository
 
         foreach ($groupsMapping as $fieldName => $propertyName) {
             $groups = [];
-            $groupUids = GeneralUtility::intExplode(',', $row[$fieldName], true);
+            $groupUids = GeneralUtility::intExplode(',', $row[$fieldName] ?? '', true);
             if (count($groupUids) > 0) {
-                $repository = substr($fieldName, 0, 3) === 'be_'
+                $repository = str_starts_with($fieldName, 'be_')
                     ? static::getBackendUserGroupRepository()
                     : static::getFrontendUserGroupRepository();
                 foreach ($groupUids as $groupUid) {

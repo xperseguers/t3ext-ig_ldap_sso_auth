@@ -474,9 +474,9 @@ class Authentication
             // Get LDAP groups from membership attribute
             if ($membership = LdapGroup::getMembership($ldapUser, static::$config['users']['mapping'])) {
                 $ldapGroups = LdapGroup::selectFromMembership(
-                    $membership,
                     static::$config['groups']['basedn'],
                     static::$config['groups']['filter'],
+                    $membership,
                     $ldapGroupAttributes,
                     // If groups should not get synchronized, there is no need to actively check them
                     // against the LDAP server, simply accept every groups from $membership matching

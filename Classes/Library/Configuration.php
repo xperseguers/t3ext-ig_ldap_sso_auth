@@ -84,7 +84,7 @@ class Configuration
                             'uid' => $domainUid,
                         ]
                     )
-                    ->fetch();
+                    ->fetchAssociative();
                 static::$domains[] = $row['domainName'];
             }
         }
@@ -489,7 +489,7 @@ class Configuration
                     'uid' => $uid,
                 ]
             )
-            ->fetch();
+            ->fetchAssociative();
 
         return !empty($config) ? $config : [];
     }

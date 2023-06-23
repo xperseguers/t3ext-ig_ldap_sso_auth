@@ -73,7 +73,7 @@ class ConfigurationRepository
                     'sorting' => 'ASC',
                 ]
             )
-            ->fetchAll();
+            ->fetchAllAssociative();
 
         if (!empty($this->config) && (bool)$this->config['useExtConfConfiguration']) {
             $rows[] = $this->config['configuration'];
@@ -110,7 +110,7 @@ class ConfigurationRepository
                         'uid' => $uid,
                     ]
                 )
-                ->fetch();
+                ->fetchAssociative();
         }
 
         if (!empty($row)) {

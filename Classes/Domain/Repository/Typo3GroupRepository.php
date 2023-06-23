@@ -103,7 +103,7 @@ class Typo3GroupRepository
             ->from($table)
             ->where($where)
             ->execute()
-            ->fetchAll();
+            ->fetchAllAssociative();
 
         // Return TYPO3 groups
         return $groups;
@@ -140,7 +140,7 @@ class Typo3GroupRepository
                     'uid' => (int)$uid,
                 ]
             )
-            ->fetch();
+            ->fetchAssociative();
 
         NotificationUtility::dispatch(
             __CLASS__,

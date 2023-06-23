@@ -41,7 +41,7 @@ class DomainItemsProcFunc
                     'domainName' => 'ASC',
                 ]
             )
-            ->fetchAll();
+            ->fetchAllAssociative();
 
         $config['items'] = array_map(
             static function (array $row) {

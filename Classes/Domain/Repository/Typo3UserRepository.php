@@ -108,7 +108,7 @@ class Typo3UserRepository
                     $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT))
                 )
                 ->execute()
-                ->fetchAll();
+                ->fetchAllAssociative();
         } elseif (!empty($dn)) {
             // Search with DN (or fall back to username) and pid
             $where = $queryBuilder->expr()->eq('tx_igldapssoauth_dn', $queryBuilder->createNamedParameter($dn, \PDO::PARAM_STR));
@@ -134,7 +134,7 @@ class Typo3UserRepository
                 ->orderBy('tx_igldapssoauth_dn', 'DESC')    // rows from LDAP first...
                 ->addOrderBy('deleted', 'ASC')              // ... then privilege active records
                 ->execute()
-                ->fetchAll();
+                ->fetchAllAssociative();
         } elseif (!empty($username)) {
             // Search with username and pid
             $where = $queryBuilder->expr()->eq('username', $queryBuilder->createNamedParameter($username, \PDO::PARAM_STR));
@@ -149,7 +149,7 @@ class Typo3UserRepository
                 ->from($table)
                 ->where($where)
                 ->execute()
-                ->fetchAll();
+                ->fetchAllAssociative();
         }
 
         // Return TYPO3 users
@@ -192,7 +192,7 @@ class Typo3UserRepository
                 $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT))
             )
             ->execute()
-            ->fetch();
+            ->fetchAssociative();
 
         NotificationUtility::dispatch(
             __CLASS__,
@@ -399,7 +399,7 @@ class Typo3UserRepository
                         $queryBuilder->expr()->eq('tx_igldapssoauth_dn', $queryBuilder->createNamedParameter('', \PDO::PARAM_STR))
                     )
                     ->execute()
-                    ->fetchAll();
+                    ->fetchAllAssociative();
                 foreach ($rows as $row) {
                     $localUserGroups[] = $row['uid'];
                 }

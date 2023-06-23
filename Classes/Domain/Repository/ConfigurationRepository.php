@@ -33,7 +33,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ConfigurationRepository
 {
-
     /** @var string */
     protected $table = 'tx_igldapssoauth_config';
 
@@ -128,11 +127,12 @@ class ConfigurationRepository
      * Sets the flag for fetching disabled records or not.
      *
      * @param bool $flag Set to true to enable fetching of disabled record
-     * @return void
+     * @return $this
      */
-    public function setFetchDisabledRecords(bool $flag): void
+    public function setFetchDisabledRecords(bool $flag): self
     {
         $this->fetchDisabledRecords = $flag;
+        return $this;
     }
 
     /**
@@ -140,9 +140,9 @@ class ConfigurationRepository
      *
      * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $object The object to set properties on
      * @param array $row
-     * @return void
+     * @return $this
      */
-    protected function thawProperties(Configuration $object, array $row): void
+    protected function thawProperties(Configuration $object, array $row): self
     {
         $object->_setProperty('uid', (int)$row['uid']);
 
@@ -207,18 +207,20 @@ class ConfigurationRepository
         $object->_setProperty('ldapTlsReqcert', (bool)$row['ldap_tls_reqcert']);
         $object->_setProperty('ldapSsl', (bool)$row['ldap_ssl']);
         $object->_setProperty('groupMembership', (int)$row['group_membership']);
+
+        return $this;
     }
 
     /**
      * Returns a BackendUserGroupRepository.
      *
-     * @return \Causal\IgLdapSsoAuth\Domain\Repository\BackendUserGroupRepository
+     * @return BackendUserGroupRepository
      */
-    protected static function getBackendUserGroupRepository()
+    protected static function getBackendUserGroupRepository(): BackendUserGroupRepository
     {
         static $backendUserGroupRepository = null;
-        if ($backendUserGroupRepository == null) {
-            $backendUserGroupRepository = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Domain\Repository\BackendUserGroupRepository::class);
+        if ($backendUserGroupRepository === null) {
+            $backendUserGroupRepository = GeneralUtility::makeInstance(BackendUserGroupRepository::class);
         }
         return $backendUserGroupRepository;
     }
@@ -226,15 +228,14 @@ class ConfigurationRepository
     /**
      * Returns a FrontendUserGroupRepository.
      *
-     * @return \Causal\IgLdapSsoAuth\Domain\Repository\FrontendUserGroupRepository
+     * @return FrontendUserGroupRepository
      */
-    protected static function getFrontendUserGroupRepository()
+    protected static function getFrontendUserGroupRepository(): FrontendUserGroupRepository
     {
         static $frontendUserGroupRepository = null;
-        if ($frontendUserGroupRepository == null) {
-            $frontendUserGroupRepository = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Domain\Repository\FrontendUserGroupRepository::class);
+        if ($frontendUserGroupRepository === null) {
+            $frontendUserGroupRepository = GeneralUtility::makeInstance(FrontendUserGroupRepository::class);
         }
         return $frontendUserGroupRepository;
     }
-
 }

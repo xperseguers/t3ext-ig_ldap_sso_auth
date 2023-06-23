@@ -14,6 +14,7 @@
 
 namespace Causal\IgLdapSsoAuth\Hooks;
 
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -28,7 +29,6 @@ use Causal\IgLdapSsoAuth\Library\Configuration;
  */
 class DataHandler
 {
-
     /**
      * Hooks into \TYPO3\CMS\Core\DataHandling\DataHandler after records have been saved to the database.
      *
@@ -39,7 +39,13 @@ class DataHandler
      * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj
      * @return void
      */
-    public function processDatamap_afterDatabaseOperations($operation, $table, $id, array $fieldArray, \TYPO3\CMS\Core\DataHandling\DataHandler $pObj)
+    public function processDatamap_afterDatabaseOperations(
+        $operation,
+        $table,
+        $id,
+        array $fieldArray,
+        \TYPO3\CMS\Core\DataHandling\DataHandler $pObj
+    )
     {
         if ($table !== 'tx_igldapssoauth_config') {
             // Early return
@@ -88,11 +94,10 @@ class DataHandler
     /**
      * Returns the LanguageService.
      *
-     * @return \TYPO3\CMS\Core\Localization\LanguageService
+     * @return LanguageService
      */
-    protected function getLanguageService()
+    protected function getLanguageService(): LanguageService
     {
         return $GLOBALS['LANG'];
     }
-
 }

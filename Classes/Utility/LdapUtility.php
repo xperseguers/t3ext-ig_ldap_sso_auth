@@ -45,7 +45,6 @@ use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
  */
 class LdapUtility
 {
-
     const PAGE_SIZE = 100;
 
     /**
@@ -108,10 +107,10 @@ class LdapUtility
     /**
      * Connects to an LDAP server.
      *
-     * @param string $host
-     * @param int $port
-     * @param int $protocol 3 for LDAP v3
-     * @param string $characterSet
+     * @param string|null $host
+     * @param int|null $port
+     * @param int|null $protocol Not used anymore, always 3 for LDAP v3
+     * @param string|null $characterSet
      * @param string $serverType Either 'OpenLDAP' or 'Active Directory'
      * @param bool $tls
      * @param bool $ssl
@@ -119,7 +118,16 @@ class LdapUtility
      * @return bool true if connection succeeded.
      * @throws UnresolvedPhpDependencyException when LDAP extension for PHP is not available
      */
-    public function connect($host = null, $port = null, $protocol = null, $characterSet = null, $serverType = 'OpenLDAP', $tls = false, $ssl = false, $tlsReqcert = false)
+    public function connect(
+        ?string $host = null,
+        ?int $port = null,
+        ?int $protocol = null,
+        ?string $characterSet = null,
+        string $serverType = 'OpenLDAP',
+        bool $tls = false,
+        bool $ssl = false,
+        bool $tlsReqcert = false
+    ): bool
     {
         if ($tlsReqcert === false) {
             putenv('LDAPTLS_REQCERT=never');
@@ -191,17 +199,15 @@ class LdapUtility
      *
      * @return bool
      */
-    public function isConnected()
+    public function isConnected(): bool
     {
         return (bool)$this->connection;
     }
 
     /**
      * Disconnects from the LDAP server.
-     *
-     * @return void
      */
-    public function disconnect()
+    public function disconnect(): void
     {
         if ($this->connection) {
             @ldap_close($this->connection);
@@ -211,11 +217,11 @@ class LdapUtility
     /**
      * Binds to the LDAP server.
      *
-     * @param string $dn
-     * @param string $password
+     * @param string|null $dn
+     * @param string|nul $password
      * @return bool true if bind succeeded
      */
-    public function bind($dn = null, $password = null)
+    public function bind(?string $dn = null, ?string $password = null): bool
     {
         // LDAP_OPT_DIAGNOSTIC_MESSAGE gets the extended error output
         // from the ldap_get_option() function
@@ -262,7 +268,7 @@ class LdapUtility
      * @return string Diagnostic message, in English
      * @see http://www-01.ibm.com/support/docview.wss?uid=swg21290631
      */
-    protected function extractDiagnosticMessage($message)
+    protected function extractDiagnosticMessage(string $message): string
     {
         $diagnostic = '';
         $codeMessages = [
@@ -292,8 +298,8 @@ class LdapUtility
     /**
      * Performs a search on the LDAP server.
      *
-     * @param string $baseDn
-     * @param string $filter
+     * @param string|null $baseDn
+     * @param string|null $filter
      * @param array $attributes
      * @param bool $attributesOnly
      * @param int $sizeLimit
@@ -303,7 +309,16 @@ class LdapUtility
      * @return bool
      * @see http://ca3.php.net/manual/fr/function.ldap-search.php
      */
-    public function search($baseDn = null, $filter = null, $attributes = [], $attributesOnly = false, $sizeLimit = 0, $timeLimit = 0, $dereferenceAliases = LDAP_DEREF_NEVER, $continueLastSearch = false)
+    public function search(
+        ?string $baseDn = null,
+        ?string $filter = null,
+        array $attributes = [],
+        bool $attributesOnly = false,
+        int $sizeLimit = 0,
+        int $timeLimit = 0,
+        int $dereferenceAliases = LDAP_DEREF_NEVER,
+        bool $continueLastSearch = false
+    ): bool
     {
         if (!$baseDn) {
             $this->status['search']['basedn'] = 'No valid base DN';
@@ -352,7 +367,7 @@ class LdapUtility
      * @return array
      * @throws \RuntimeException
      */
-    public function getEntries()
+    public function getEntries(): array
     {
         $entries = ['count' => 0];
         $entry = @ldap_first_entry($this->connection, $this->searchResult);
@@ -416,7 +431,7 @@ class LdapUtility
      *
      * @return bool
      */
-    public function hasMoreEntries()
+    public function hasMoreEntries(): bool
     {
         return $this->paginationCookie !== null && $this->paginationCookie !== '';
     }
@@ -424,7 +439,7 @@ class LdapUtility
     /**
      * Returns the first entry.
      *
-     * @return array
+     * @return array|mixed
      */
     public function getFirstEntry()
     {
@@ -434,8 +449,7 @@ class LdapUtility
         foreach ($attributes as $key => $value) {
             $tempEntry[strtolower($key)] = $value;
         }
-        $entry = $this->convertCharacterSetForArray($tempEntry, $this->ldapCharacterSet, $this->typo3CharacterSet);
-        return $entry;
+        return $this->convertCharacterSetForArray($tempEntry, $this->ldapCharacterSet, $this->typo3CharacterSet);
     }
 
     /**
@@ -443,7 +457,7 @@ class LdapUtility
      *
      * @return string
      */
-    public function getDn()
+    public function getDn(): string
     {
         $dn = ''; // TODO: better return null?
         if (is_resource($this->firstResultEntry) || is_object($this->firstResultEntry) /* PHP 8.1 */) {
@@ -457,7 +471,7 @@ class LdapUtility
      *
      * @return array
      */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         $attributes = [];
         if (is_resource($this->firstResultEntry) || is_object($this->firstResultEntry) /* PHP 8.1 */) {
@@ -471,7 +485,7 @@ class LdapUtility
      *
      * @return array
      */
-    public function getStatus()
+    public function getStatus(): array
     {
         return $this->status;
     }
@@ -479,10 +493,9 @@ class LdapUtility
     /**
      * Initializes the character set.
      *
-     * @param string $characterSet
-     * @return void
+     * @param string|null $characterSet
      */
-    protected function initializeCharacterSet($characterSet = null)
+    protected function initializeCharacterSet(?string $characterSet = null): void
     {
         // LDAP server charset
         $this->ldapCharacterSet = !empty($characterSet) ? trim(strtolower($characterSet)) : 'utf-8';
@@ -499,7 +512,7 @@ class LdapUtility
      * @param string $toCharacterSet Target character set
      * @return array|mixed
      */
-    protected function convertCharacterSetForArray($arr, $fromCharacterSet, $toCharacterSet)
+    protected function convertCharacterSetForArray($arr, string $fromCharacterSet, string $toCharacterSet)
     {
         /** @var \TYPO3\CMS\Core\Charset\CharsetConverter $csObj */
         static $csObj = null;
@@ -526,5 +539,4 @@ class LdapUtility
 
         return $arr;
     }
-
 }

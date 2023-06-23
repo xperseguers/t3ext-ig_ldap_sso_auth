@@ -30,7 +30,6 @@ use Causal\IgLdapSsoAuth\Library\Ldap;
  */
 class UserImportUtility
 {
-
     /**
      * Synchronization context (may be FE, BE or both).
      *
@@ -128,10 +127,10 @@ class UserImportUtility
      * Fetches all possible LDAP/AD users for a given configuration and context.
      *
      * @param bool $continueLastSearch
-     * @param \Causal\IgLdapSsoAuth\Library\Ldap $ldaInstance
+     * @param Ldap|null $ldapInstance
      * @return array
      */
-    public function fetchLdapUsers($continueLastSearch = false, \Causal\IgLdapSsoAuth\Library\Ldap $ldapInstance = null)
+    public function fetchLdapUsers(bool $continueLastSearch = false, ?Ldap $ldapInstance = null): array
     {
         // Get the users from LDAP/AD server
         $ldapUsers = [];
@@ -148,7 +147,14 @@ class UserImportUtility
                 // Optimize the LDAP call by retrieving only attributes in use for the mapping
                 $attributes = Configuration::getLdapAttributes($this->configuration['users']['mapping']);
             }
-            $ldapUsers = $ldapInstance->search($this->configuration['users']['basedn'], $filter, $attributes, false, 0, $continueLastSearch);
+            $ldapUsers = $ldapInstance->search(
+                $this->configuration['users']['basedn'],
+                $filter,
+                $attributes,
+                false,
+                0,
+                $continueLastSearch
+            );
             unset($ldapUsers['count']);
         }
 
@@ -156,13 +162,13 @@ class UserImportUtility
     }
 
     /**
-     * Returns true is a previous call to @see fetchLdapUsers() returned
-     * a partial result set.
+     * Returns true is a previous call to.
      *
-     * @param \Causal\IgLdapSsoAuth\Library\Ldap $ldapInstance
+     * @param Ldap|null $ldapInstance
      * @return bool
+     * @see fetchLdapUsers() returned a partial result set
      */
-    public function hasMoreLdapUsers(\Causal\IgLdapSsoAuth\Library\Ldap $ldapInstance = null)
+    public function hasMoreLdapUsers(?Ldap $ldapInstance = null): bool
     {
         $hasMoreLdapUsers = false;
 
@@ -179,9 +185,8 @@ class UserImportUtility
      * @param array $ldapUsers List of LDAP/AD users
      * @return array
      */
-    public function fetchTypo3Users($ldapUsers)
+    public function fetchTypo3Users(array $ldapUsers): array
     {
-
         // Populate an array of TYPO3 users records corresponding to the LDAP users
         // If a given LDAP user has no associated user in TYPO3, a fresh record
         // will be created so that $ldapUsers[i] <=> $typo3Users[i]
@@ -204,7 +209,7 @@ class UserImportUtility
      * @return array Modified user data
      * @throws ImportUsersException
      */
-    public function import($user, $ldapUser, $restoreBehavior = 'both')
+    public function import(array $user, array $ldapUser, string $restoreBehavior = 'both'): array
     {
         // Store the extra data for later restore and remove it
         if (isset($user['__extraData'])) {
@@ -282,7 +287,7 @@ class UserImportUtility
      *
      * @return array
      */
-    public function getConfiguration()
+    public function getConfiguration(): array
     {
         return $this->configuration;
     }
@@ -292,7 +297,7 @@ class UserImportUtility
      *
      * @return int
      */
-    public function getUsersAdded()
+    public function getUsersAdded(): int
     {
         return $this->usersAdded;
     }
@@ -302,7 +307,7 @@ class UserImportUtility
      *
      * @return int
      */
-    public function getUsersUpdated()
+    public function getUsersUpdated(): int
     {
         return $this->usersUpdated;
     }

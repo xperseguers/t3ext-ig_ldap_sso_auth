@@ -15,6 +15,7 @@
 namespace Causal\IgLdapSsoAuth\ViewHelpers;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Fluid\ViewHelpers\Be\AbstractBackendViewHelper;
 
 /**
  * Displays sprite icon identified by iconName key
@@ -23,9 +24,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class SpriteManagerIconViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Be\AbstractBackendViewHelper
+class SpriteManagerIconViewHelper extends AbstractBackendViewHelper
 {
-
     /**
      * @var bool
      */
@@ -64,5 +64,4 @@ class SpriteManagerIconViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Be\Abstra
 
         return $html;
     }
-
 }

@@ -23,7 +23,6 @@ namespace Causal\IgLdapSsoAuth\Utility;
  */
 interface AttributesProcessorInterface
 {
-
     /**
      * Post-processes the attributes of an LDAP entry.
      *
@@ -33,5 +32,4 @@ interface AttributesProcessorInterface
      * @return void
      */
     public function processAttributes($link, $entry, array &$attributes);
-
 }

@@ -23,7 +23,6 @@ namespace Causal\IgLdapSsoAuth\Utility;
  */
 interface GetGroupsProcessorInterface
 {
-
     /**
      * Post-processes the groups of a user
      *
@@ -32,6 +31,5 @@ interface GetGroupsProcessorInterface
      * @param array $userGroups User groups as they have been determined before hitting this function
      * @return void
      */
-    public function getUserGroups($groupTable, array $ldapUser, array &$userGroups);
-
+    public function getUserGroups(string $groupTable, array $ldapUser, array &$userGroups): void;
 }

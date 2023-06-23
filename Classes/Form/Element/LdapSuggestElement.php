@@ -16,6 +16,8 @@ namespace Causal\IgLdapSsoAuth\Form\Element;
 
 use Causal\IgLdapSsoAuth\Library\Configuration;
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
+use TYPO3\CMS\Backend\Form\Element\InputTextElement;
+use TYPO3\CMS\Backend\Form\Element\TextElement;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -27,7 +29,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class LdapSuggestElement extends AbstractFormElement
 {
-
     /**
      * Renders a suggestion for the mapping.
      *
@@ -38,10 +39,10 @@ class LdapSuggestElement extends AbstractFormElement
         $elementType = $this->data['parameterArray']['fieldConf']['config']['type'];
         switch ($elementType) {
             case 'input':
-                $baseElement = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Form\Element\InputTextElement::class, $this->nodeFactory, $this->data);
+                $baseElement = GeneralUtility::makeInstance(InputTextElement::class, $this->nodeFactory, $this->data);
                 break;
             case 'text':
-                $baseElement = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Form\Element\TextElement::class, $this->nodeFactory, $this->data);
+                $baseElement = GeneralUtility::makeInstance(TextElement::class, $this->nodeFactory, $this->data);
                 break;
             default:
                 throw new \RuntimeException('Suggest wizard is not configured for type "' . $elementType . '"', 1553522818);
@@ -131,5 +132,4 @@ class LdapSuggestElement extends AbstractFormElement
         $content = file_get_contents($templateFileName);
         return trim($content);
     }
-
 }

@@ -14,7 +14,11 @@
 
 namespace Causal\IgLdapSsoAuth\Task;
 
+use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
+use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Exception\ImportUsersException;
 use Causal\IgLdapSsoAuth\Library\Authentication;
@@ -32,7 +36,6 @@ use Causal\IgLdapSsoAuth\Library\Ldap;
  */
 class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 {
-
     /**
      * Synchronization context (may be FE, BE or both).
      *
@@ -80,8 +83,8 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
     public function execute()
     {
         // Assemble a list of configuration and contexts for import
-        /** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
-        $configurationRepository = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository::class);
+        /** @var ConfigurationRepository $configurationRepository */
+        $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
         if (empty($this->configuration)) {
             $ldapConfigurations = $configurationRepository->findAll();
         } else {
@@ -229,9 +232,9 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
     /**
      * This method returns the context and configuration as additional information.
      *
-     * @return    string    Information to display
+     * @return string Information to display
      */
-    public function getAdditionalInformation()
+    public function getAdditionalInformation(): string
     {
         $languageService = $this->getLanguageServiceForLdap();
 
@@ -253,10 +256,12 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
      * Sets the mode.
      *
      * @param string $mode
+     * @return $this
      */
-    public function setMode($mode)
+    public function setMode(string $mode): self
     {
         $this->mode = $mode;
+        return $this;
     }
 
     /**
@@ -264,7 +269,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
      *
      * @return string
      */
-    public function getMode()
+    public function getMode(): string
     {
         return $this->mode;
     }
@@ -273,10 +278,12 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
      * Sets the context parameter.
      *
      * @param string $context
+     * @return $this
      */
-    public function setContext($context)
+    public function setContext(string $context): self
     {
         $this->context = $context;
+        return $this;
     }
 
     /**
@@ -284,7 +291,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
      *
      * @return string
      */
-    public function getContext()
+    public function getContext(): string
     {
         return $this->context;
     }
@@ -293,10 +300,11 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
      * Sets the configuration.
      *
      * @param int $configuration
+     * @return $this
      */
-    public function setConfiguration($configuration)
+    public function setConfiguration(int $configuration): self
     {
-        $this->configuration = (int)$configuration;
+        $this->configuration = $configuration;
     }
 
     /**
@@ -304,7 +312,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
      *
      * @return int
      */
-    public function getConfiguration()
+    public function getConfiguration(): int
     {
         return $this->configuration;
     }
@@ -314,11 +322,13 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
      *
      * NOTE: behavior defaults to "nothing".
      *
-     * @param string $missingUsersHandling Can be "disable", "delete" or "nothing".
+     * @param string $missingUsersHandling Can be "disable", "delete" or "nothing"
+     * @return $this
      */
-    public function setMissingUsersHandling($missingUsersHandling)
+    public function setMissingUsersHandling(string $missingUsersHandling): self
     {
         $this->missingUsersHandling = $missingUsersHandling;
+        return $this;
     }
 
     /**
@@ -326,7 +336,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
      *
      * @return string
      */
-    public function getMissingUsersHandling()
+    public function getMissingUsersHandling(): string
     {
         return $this->missingUsersHandling;
     }
@@ -336,11 +346,13 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
      *
      * NOTE: behavior defaults to "nothing".
      *
-     * @param string $restoredUsersHandling Can be "enable", "undelete", "both" or "nothing".
+     * @param string $restoredUsersHandling Can be "enable", "undelete", "both" or "nothing"
+     * @return $this
      */
-    public function setRestoredUsersHandling($restoredUsersHandling)
+    public function setRestoredUsersHandling(string $restoredUsersHandling): self
     {
         $this->restoredUsersHandling = $restoredUsersHandling;
+        return $this;
     }
 
     /**
@@ -348,7 +360,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
      *
      * @return string
      */
-    public function getRestoredUsersHandling()
+    public function getRestoredUsersHandling(): string
     {
         return $this->restoredUsersHandling;
     }
@@ -358,10 +370,10 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
      *
      * @return string
      */
-    public function getConfigurationName()
+    public function getConfigurationName(): string
     {
-        /** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
-        $configurationRepository = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository::class);
+        /** @var ConfigurationRepository $configurationRepository */
+        $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
         $ldapConfiguration = $configurationRepository->findByUid($this->configuration);
         if ($ldapConfiguration === null) {
             return '';
@@ -373,9 +385,9 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
     /**
      * Returns the LanguageService.
      *
-     * @return \TYPO3\CMS\Lang\LanguageService|\TYPO3\CMS\Core\Localization\LanguageService
+     * @return LanguageService
      */
-    protected function getLanguageServiceForLdap()
+    protected function getLanguageServiceForLdap(): LanguageService
     {
         return $GLOBALS['LANG'];
     }
@@ -383,16 +395,15 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
     /**
      * Returns a logger.
      *
-     * @return \TYPO3\CMS\Core\Log\Logger
+     * @return LoggerInterface
      */
-    protected function getLogger()
+    protected function getLogger(): LoggerInterface
     {
         /** @var \TYPO3\CMS\Core\Log\Logger $logger */
         static $logger = null;
         if ($logger === null) {
-            $logger = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Log\LogManager::class)->getLogger(__CLASS__);
+            $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
         }
         return $logger;
     }
-
 }

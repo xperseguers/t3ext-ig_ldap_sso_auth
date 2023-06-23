@@ -23,7 +23,6 @@ namespace Causal\IgLdapSsoAuth\Domain\Model;
  */
 class Configuration
 {
-
     /**
      * @var int The uid of the record. The uid is only unique in the context of the database table.
      */
@@ -188,9 +187,9 @@ class Configuration
     /**
      * Getter for uid.
      *
-     * @return int the uid or null if none set yet.
+     * @return int|null the uid or null if none set yet.
      */
-    public function getUid()
+    public function getUid(): ?int
     {
         if ($this->uid !== null) {
             return (int)$this->uid;
@@ -205,8 +204,9 @@ class Configuration
      * @param string $propertyName
      * @param mixed $propertyValue
      * @return bool
+     * @internal
      */
-    public function _setProperty($propertyName, $propertyValue)
+    public function _setProperty(string $propertyName, $propertyValue): bool
     {
         if ($this->_hasProperty($propertyName)) {
             $this->{$propertyName} = $propertyValue;
@@ -220,8 +220,9 @@ class Configuration
      *
      * @param string $propertyName
      * @return bool true bool true if the property exists, false  if it doesn't exist or null in case of an error.
+     * @internal
      */
-    public function _hasProperty($propertyName)
+    public function _hasProperty(string $propertyName): bool
     {
         return property_exists($this, $propertyName);
     }
@@ -229,7 +230,7 @@ class Configuration
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -238,7 +239,7 @@ class Configuration
      * @return string
      * @deprecated since TYPO3 v10
      */
-    public function getDomains()
+    public function getDomains(): string
     {
         return $this->domains;
     }
@@ -246,7 +247,7 @@ class Configuration
     /**
      * @return string
      */
-    public function getSites()
+    public function getSites(): string
     {
         return $this->sites;
     }
@@ -254,7 +255,7 @@ class Configuration
     /**
      * @return int
      */
-    public function getLdapServer()
+    public function getLdapServer(): int
     {
         return $this->ldapServer;
     }
@@ -262,7 +263,7 @@ class Configuration
     /**
      * @return string
      */
-    public function getLdapCharset()
+    public function getLdapCharset(): string
     {
         return $this->ldapCharset;
     }
@@ -271,7 +272,7 @@ class Configuration
      * @return int
      * @deprecated
      */
-    public function getLdapProtocol()
+    public function getLdapProtocol(): int
     {
         return $this->ldapProtocol;
     }
@@ -279,7 +280,7 @@ class Configuration
     /**
      * @return string
      */
-    public function getLdapHost()
+    public function getLdapHost(): string
     {
         return $this->ldapHost;
     }
@@ -287,7 +288,7 @@ class Configuration
     /**
      * @return int
      */
-    public function getLdapPort()
+    public function getLdapPort(): int
     {
         return $this->ldapPort;
     }
@@ -295,7 +296,7 @@ class Configuration
     /**
      * @return bool
      */
-    public function isLdapTls()
+    public function isLdapTls(): bool
     {
         return $this->ldapTls;
     }
@@ -303,7 +304,7 @@ class Configuration
     /**
      * @return bool
      */
-    public function isLdapSsl()
+    public function isLdapSsl(): bool
     {
         return $this->ldapSsl;
     }
@@ -318,16 +319,18 @@ class Configuration
 
     /**
      * @param bool $ldapTlsReqcert
+     * @return $this
      */
-    public function setLdapTlsReqcert(bool $ldapTlsReqcert): void
+    public function setLdapTlsReqcert(bool $ldapTlsReqcert): self
     {
         $this->ldapTlsReqcert = $ldapTlsReqcert;
+        return $this;
     }
 
     /**
      * @return string
      */
-    public function getLdapBindDn()
+    public function getLdapBindDn(): string
     {
         return $this->ldapBindDn;
     }
@@ -335,7 +338,7 @@ class Configuration
     /**
      * @return string
      */
-    public function getLdapPassword()
+    public function getLdapPassword(): string
     {
         return $this->ldapPassword;
     }
@@ -343,7 +346,7 @@ class Configuration
     /**
      * @return int
      */
-    public function getGroupMembership()
+    public function getGroupMembership(): int
     {
         return $this->groupMembership;
     }
@@ -351,7 +354,7 @@ class Configuration
     /**
      * @return string
      */
-    public function getBackendUsersBaseDn()
+    public function getBackendUsersBaseDn(): string
     {
         return $this->backendUsersBaseDn;
     }
@@ -359,7 +362,7 @@ class Configuration
     /**
      * @return string
      */
-    public function getBackendUsersFilter()
+    public function getBackendUsersFilter(): string
     {
         return $this->backendUsersFilter;
     }
@@ -367,7 +370,7 @@ class Configuration
     /**
      * @return string
      */
-    public function getBackendUsersMapping()
+    public function getBackendUsersMapping(): string
     {
         return $this->backendUsersMapping;
     }
@@ -375,7 +378,7 @@ class Configuration
     /**
      * @return string
      */
-    public function getBackendGroupsBaseDn()
+    public function getBackendGroupsBaseDn(): string
     {
         return $this->backendGroupsBaseDn;
     }
@@ -383,7 +386,7 @@ class Configuration
     /**
      * @return string
      */
-    public function getBackendGroupsFilter()
+    public function getBackendGroupsFilter(): string
     {
         return $this->backendGroupsFilter;
     }
@@ -391,7 +394,7 @@ class Configuration
     /**
      * @return string
      */
-    public function getBackendGroupsMapping()
+    public function getBackendGroupsMapping(): string
     {
         return $this->backendGroupsMapping;
     }
@@ -399,7 +402,7 @@ class Configuration
     /**
      * @return \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]
      */
-    public function getBackendGroupsRequired()
+    public function getBackendGroupsRequired(): array
     {
         return $this->backendGroupsRequired;
     }
@@ -407,7 +410,7 @@ class Configuration
     /**
      * @return \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]
      */
-    public function getBackendGroupsAssigned()
+    public function getBackendGroupsAssigned(): array
     {
         return $this->backendGroupsAssigned;
     }
@@ -415,7 +418,7 @@ class Configuration
     /**
      * @return \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]
      */
-    public function getBackendGroupsAdministrator()
+    public function getBackendGroupsAdministrator(): array
     {
         return $this->backendGroupsAdministrator;
     }
@@ -423,7 +426,7 @@ class Configuration
     /**
      * @return string
      */
-    public function getFrontendUsersBaseDn()
+    public function getFrontendUsersBaseDn(): string
     {
         return $this->frontendUsersBaseDn;
     }
@@ -431,7 +434,7 @@ class Configuration
     /**
      * @return string
      */
-    public function getFrontendUsersFilter()
+    public function getFrontendUsersFilter(): string
     {
         return $this->frontendUsersFilter;
     }
@@ -439,7 +442,7 @@ class Configuration
     /**
      * @return string
      */
-    public function getFrontendUsersMapping()
+    public function getFrontendUsersMapping(): string
     {
         return $this->frontendUsersMapping;
     }
@@ -447,7 +450,7 @@ class Configuration
     /**
      * @return string
      */
-    public function getFrontendGroupsBaseDn()
+    public function getFrontendGroupsBaseDn(): string
     {
         return $this->frontendGroupsBaseDn;
     }
@@ -455,7 +458,7 @@ class Configuration
     /**
      * @return string
      */
-    public function getFrontendGroupsFilter()
+    public function getFrontendGroupsFilter(): string
     {
         return $this->frontendGroupsFilter;
     }
@@ -463,7 +466,7 @@ class Configuration
     /**
      * @return string
      */
-    public function getFrontendGroupsMapping()
+    public function getFrontendGroupsMapping(): string
     {
         return $this->frontendGroupsMapping;
     }
@@ -471,7 +474,7 @@ class Configuration
     /**
      * @return \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup[]
      */
-    public function getFrontendGroupsRequired()
+    public function getFrontendGroupsRequired(): array
     {
         return $this->frontendGroupsRequired;
     }
@@ -479,7 +482,7 @@ class Configuration
     /**
      * @return \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup[]
      */
-    public function getFrontendGroupsAssigned()
+    public function getFrontendGroupsAssigned(): array
     {
         return $this->frontendGroupsAssigned;
     }
@@ -493,5 +496,4 @@ class Configuration
     {
         return get_class($this) . ':' . (string)$this->uid;
     }
-
 }

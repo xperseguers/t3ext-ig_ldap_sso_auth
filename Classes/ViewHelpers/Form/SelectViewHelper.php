@@ -19,7 +19,6 @@ namespace Causal\IgLdapSsoAuth\ViewHelpers\Form;
  */
 class SelectViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Form\SelectViewHelper
 {
-
     /**
      * @var string
      */
@@ -33,7 +32,6 @@ class SelectViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Form\SelectViewHelpe
     /**
      * Initialize arguments.
      *
-     * @return void
      * @api
      */
     public function initializeArguments()
@@ -41,5 +39,4 @@ class SelectViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Form\SelectViewHelpe
         parent::initializeArguments();
         $this->registerTagAttribute('onchange', 'string', 'Event when selection is changed');
     }
-
 }

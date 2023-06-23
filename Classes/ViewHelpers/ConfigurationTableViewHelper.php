@@ -15,6 +15,7 @@
 namespace Causal\IgLdapSsoAuth\ViewHelpers;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * Render a configuration table
@@ -25,7 +26,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper
 {
-
     /**
      * @var bool
      */
@@ -61,7 +61,7 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
      * @param bool &$hasError
      * @return string
      */
-    protected function renderTable($data, $humanKeyNames, $depth, &$hasError)
+    protected function renderTable($data, string $humanKeyNames, int $depth, bool &$hasError): string
     {
         if (!is_array($data)) {
             return htmlspecialchars($data);
@@ -99,7 +99,7 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
      * @param bool &$hasError
      * @return string
      */
-    protected function renderValueCell($value, $key, $depth, &$hasError)
+    protected function renderValueCell($value, string $key, int $depth, bool &$hasError): string
     {
         if ($key === '__errors') {
             $hasError = true;
@@ -172,12 +172,12 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
     }
 
     /**
-     * Returns an meaningful description out of a configuration array key.
+     * Returns a meaningful description out of a configuration array key.
      *
      * @param string $key
      * @return string
      */
-    protected function processKey($key)
+    protected function processKey(string $key): string
     {
         return $this->translate('module_status.configuration.' . $key);
     }
@@ -186,13 +186,12 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
      * Translates a label.
      *
      * @param string $id
-     * @param array $arguments
+     * @param array|null $arguments
      * @return string|null
      */
-    protected function translate($id, array $arguments = null)
+    protected function translate(string $id, ?array $arguments = null): ?string
     {
-        $value = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate($id, 'ig_ldap_sso_auth', $arguments);
+        $value = LocalizationUtility::translate($id, 'ig_ldap_sso_auth', $arguments);
         return $value !== null ? $value : $id;
     }
-
 }

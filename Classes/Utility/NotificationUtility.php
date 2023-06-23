@@ -15,6 +15,7 @@
 namespace Causal\IgLdapSsoAuth\Utility;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * Notification class.
@@ -25,7 +26,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class NotificationUtility
 {
-
     /**
      * Dispatches a signal by calling the registered slot methods.
      *
@@ -36,7 +36,7 @@ class NotificationUtility
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
      * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
      */
-    public static function dispatch($signalClassName, $signalName, array $signalArguments = [])
+    public static function dispatch(string $signalClassName, string $signalName, array $signalArguments = [])
     {
         return static::getSignalSlotDispatcher()->dispatch($signalClassName, $signalName, $signalArguments);
     }
@@ -44,20 +44,19 @@ class NotificationUtility
     /**
      * Returns the signal slot dispatcher.
      *
-     * @return \TYPO3\CMS\Extbase\SignalSlot\Dispatcher
+     * @return Dispatcher
      */
-    protected static function getSignalSlotDispatcher()
+    protected static function getSignalSlotDispatcher(): Dispatcher
     {
-        /** @var \TYPO3\CMS\Extbase\SignalSlot\Dispatcher $signalSlotDispatcher */
+        /** @var Dispatcher $signalSlotDispatcher */
         static $signalSlotDispatcher = null;
 
         if ($signalSlotDispatcher === null) {
             /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
             $objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
-            $signalSlotDispatcher = $objectManager->get(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class);
+            $signalSlotDispatcher = $objectManager->get(Dispatcher::class);
         }
 
         return $signalSlotDispatcher;
     }
-
 }

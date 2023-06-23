@@ -14,8 +14,6 @@
 
 namespace Causal\IgLdapSsoAuth\Library;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 /**
  * Class tx_igldapssoauth_typo3_group for the 'ig_ldap_sso_auth' extension.
  *
@@ -25,7 +23,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class LdapGroup
 {
-
     /**
      * Returns LDAP group records based on a list of DNs provided as $membership,
      * taking group's baseDN and filter into consideration.
@@ -35,14 +32,21 @@ class LdapGroup
      * @param array $membership
      * @param array $attributes
      * @param bool $extendedCheck true if groups should be actively checked against LDAP server, false to check against baseDN solely
-     * @param \Causal\IgLdapSsoAuth\Library\Ldap $ldapInstance
+     * @param Ldap|null $ldapInstance
      * @return array
      */
-    public static function selectFromMembership($baseDn, $filter, array $membership = [], array $attributes = [], $extendedCheck = true, \Causal\IgLdapSsoAuth\Library\Ldap $ldapInstance = null)
+    public static function selectFromMembership(
+        string $baseDn,
+        string $filter,
+        array $membership = [],
+        array $attributes = [],
+        bool $extendedCheck = true,
+        ?Ldap $ldapInstance = null
+    )
     {
         $ldapGroups['count'] = 0;
 
-        if (count($membership) === 0 || empty($filter) || $ldapInstance === null) {
+        if (empty($membership) || empty($filter) || $ldapInstance === null) {
             return $ldapGroups;
         }
 
@@ -90,10 +94,17 @@ class LdapGroup
      * @param string $userDn
      * @param string $userUid
      * @param array $attributes
-     * @param \Causal\IgLdapSsoAuth\Library\Ldap $ldapInstance
+     * @param Ldap|null $ldapInstance
      * @return array
      */
-    public static function selectFromUser($baseDn, $filter = '', $userDn = '', $userUid = '', array $attributes = [], \Causal\IgLdapSsoAuth\Library\Ldap $ldapInstance = null)
+    public static function selectFromUser(
+        string $baseDn,
+        string $filter = '',
+        string $userDn = '',
+        string $userUid = '',
+        array $attributes = [],
+        ?Ldap $ldapInstance = null
+    )
     {
         if ($ldapInstance === null) {
             return [];
@@ -121,5 +132,4 @@ class LdapGroup
 
         return false;
     }
-
 }

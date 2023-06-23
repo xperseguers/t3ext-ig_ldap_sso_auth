@@ -14,6 +14,8 @@
 
 namespace Causal\IgLdapSsoAuth\Library;
 
+use Psr\Log\LoggerInterface;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Utility\LdapUtility;
 
@@ -27,7 +29,6 @@ use Causal\IgLdapSsoAuth\Utility\LdapUtility;
  */
 class Ldap
 {
-
     /**
      * @var string
      */
@@ -41,7 +42,7 @@ class Ldap
     /**
      * @param LdapUtility $ldapUtility
      */
-    public function injectLdapUtility(\Causal\IgLdapSsoAuth\Utility\LdapUtility $ldapUtility)
+    public function injectLdapUtility(LdapUtility $ldapUtility): void
     {
         $this->ldapUtility = $ldapUtility;
     }
@@ -52,7 +53,7 @@ class Ldap
      * @return Ldap
      * @throws \TYPO3\CMS\Extbase\Object\Exception
      */
-    public static function getInstance()
+    public static function getInstance(): self
     {
         /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
         static $objectManager = null;
@@ -69,7 +70,7 @@ class Ldap
      * @return bool
      * @throws \Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException when LDAP extension for PHP is not available
      */
-    public function connect(array $config = [])
+    public function connect(array $config = []): bool
     {
         $debugConfiguration = [
             'host' => $config['host'],
@@ -115,7 +116,7 @@ class Ldap
      *
      * @return void
      */
-    public function disconnect()
+    public function disconnect(): void
     {
         $this->ldapUtility->disconnect();
     }
@@ -123,20 +124,27 @@ class Ldap
     /**
      * Returns the corresponding DN if a given user is provided, otherwise false.
      *
-     * @param string $username
-     * @param string $password User's password. If null password will not be checked
-     * @param string $baseDn
-     * @param string $filter
+     * @param string|null $username
+     * @param string|null $password User's password. If null password will not be checked
+     * @param string|null $baseDn
+     * @param string|null $filter
      * @return bool|string
      */
-    public function validateUser($username = null, $password = null, $baseDn = null, $filter = null)
+    public function validateUser(
+        ?string $username = null,
+        ?string $password = null,
+        ?string $baseDn = null,
+        ?string $filter = null
+    )
     {
         // If user found on ldap server.
-        if ($this->ldapUtility->search($baseDn, str_replace('{USERNAME}', ldap_escape($username, '', LDAP_ESCAPE_FILTER), $filter), ['dn'])) {
-
+        if ($this->ldapUtility->search(
+            $baseDn,
+            str_replace('{USERNAME}', ldap_escape($username, '', LDAP_ESCAPE_FILTER), $filter),
+            ['dn']
+        )) {
             // Validate with password.
             if ($password !== null) {
-
                 // Bind DN of user with password.
                 if (empty($password)) {
                     $this->lastBindDiagnostic = 'Empty password provided!';
@@ -158,7 +166,7 @@ class Ldap
                     return false;    // Password does not match
                 }
 
-                // If enable, SSO authentication without password
+                // If enabled, SSO authentication without password
             } elseif ($password === null && Configuration::getValue('SSOAuthentication')) {
 
                 return $this->ldapUtility->getDn();
@@ -177,21 +185,37 @@ class Ldap
     /**
      * Searches LDAP entries satisfying some filter.
      *
-     * @param string $baseDn
-     * @param string $filter
+     * @param string|null $baseDn
+     * @param string|null $filter
      * @param array $attributes
      * @param bool $firstEntry
      * @param int $limit
      * @param bool $continueLastSearch
      * @return array
      */
-    public function search($baseDn = null, $filter = null, $attributes = [], $firstEntry = false, $limit = 0, $continueLastSearch = false)
+    public function search(
+        ?string $baseDn = null,
+        ?string $filter = null,
+        array $attributes = [],
+        bool $firstEntry = false,
+        int $limit = 0,
+        bool $continueLastSearch = false
+    ): array
     {
         $result = [];
         $timeLimit = 0;
         $dereferenceAliases = LDAP_DEREF_NEVER;
 
-        if ($this->ldapUtility->search($baseDn, $filter, $attributes, false, $firstEntry ? 1 : $limit, $timeLimit, $dereferenceAliases, $continueLastSearch)) {
+        if ($this->ldapUtility->search(
+            $baseDn,
+            $filter,
+            $attributes,
+            false,
+            $firstEntry ? 1 : $limit,
+            $timeLimit,
+            $dereferenceAliases,
+            $continueLastSearch
+        )) {
             if ($firstEntry) {
                 $result = $this->ldapUtility->getFirstEntry();
                 $result['dn'] = $this->ldapUtility->getDn();
@@ -210,7 +234,7 @@ class Ldap
      *
      * @return bool
      */
-    public function isPartialSearchResult()
+    public function isPartialSearchResult(): bool
     {
         return $this->ldapUtility->hasMoreEntries();
     }
@@ -220,7 +244,7 @@ class Ldap
      *
      * @return array
      */
-    public function getStatus()
+    public function getStatus(): array
     {
         return $this->ldapUtility->getStatus();
     }
@@ -230,7 +254,7 @@ class Ldap
      *
      * @return string
      */
-    public function getLastBindDiagnostic()
+    public function getLastBindDiagnostic(): string
     {
         return $this->lastBindDiagnostic;
     }
@@ -255,7 +279,7 @@ class Ldap
      * @param string $dn
      * @return string Escaped $dn
      */
-    public function escapeDnForFilter($dn)
+    public function escapeDnForFilter(string $dn): string
     {
         $escapeCharacters = ['\\', '(', ')'];
         foreach ($escapeCharacters as $escapeCharacter) {
@@ -267,17 +291,17 @@ class Ldap
     /**
      * Returns a logger.
      *
-     * @return \TYPO3\CMS\Core\Log\Logger
+     * @return LoggerInterface
      */
-    protected static function getLogger()
+    protected static function getLogger(): LoggerInterface
     {
         /** @var \TYPO3\CMS\Core\Log\Logger $logger */
         static $logger = null;
+
         if ($logger === null) {
-            $logger = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Log\LogManager::class)->getLogger(__CLASS__);
+            $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
         }
 
         return $logger;
     }
-
 }

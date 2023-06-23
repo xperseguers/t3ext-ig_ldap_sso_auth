@@ -86,10 +86,10 @@ class FlashMessagesViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FlashMessages
     }
 
     /**
-     * @param \TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage
+     * @param FlashMessage $flashMessage
      * @return string
      */
-    protected static function renderFlashMessage(\TYPO3\CMS\Core\Messaging\FlashMessage $flashMessage)
+    protected static function renderFlashMessage(FlashMessage $flashMessage): string
     {
         $className = 'alert-' . static::$classes[$flashMessage->getSeverity()];
         $iconName = 'fa-' . static::$icons[$flashMessage->getSeverity()];
@@ -114,5 +114,4 @@ class FlashMessagesViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FlashMessages
         $markup[] = '</div>';
         return implode('', $markup);
     }
-
 }

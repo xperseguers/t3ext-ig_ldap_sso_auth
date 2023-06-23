@@ -23,7 +23,6 @@ namespace Causal\IgLdapSsoAuth\Utility;
  */
 interface ExtraDataProcessorInterface
 {
-
     /**
      * Processes the extra data associated with the user record.
      *
@@ -31,6 +30,5 @@ interface ExtraDataProcessorInterface
      * @param array $user User record with merged TYPO3/LDAP data
      * @return void
      */
-    public function processExtraData($table, array $user);
-
+    public function processExtraData(string $table, array $user);
 }

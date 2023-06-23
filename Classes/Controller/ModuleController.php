@@ -30,6 +30,7 @@ use Causal\IgLdapSsoAuth\Library\Configuration;
 use Causal\IgLdapSsoAuth\Library\Ldap;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * Module controller.
@@ -54,7 +55,7 @@ class ModuleController extends ActionController
     /**
      * @param ConfigurationRepository $configurationRepository
      */
-    public function injectConfigurationRepository(ConfigurationRepository $configurationRepository)
+    public function injectConfigurationRepository(ConfigurationRepository $configurationRepository): void
     {
         $this->configurationRepository = $configurationRepository;
     }
@@ -62,7 +63,7 @@ class ModuleController extends ActionController
     /**
      * @param Ldap $ldap
      */
-    public function injectLdap(Ldap $ldap)
+    public function injectLdap(Ldap $ldap): void
     {
         $this->ldap = $ldap;
     }
@@ -97,7 +98,6 @@ class ModuleController extends ActionController
      * Index action.
      *
      * @param int $configuration
-     * @return void
      */
     public function indexAction(int $configuration = 0)
     {
@@ -910,12 +910,10 @@ class ModuleController extends ActionController
      * @param array $arguments
      * @return string
      */
-    protected function translate($id, array $arguments = null): string
+    protected function translate(string $id, array $arguments = null): string
     {
-        $request = $this->controllerContext->getRequest();
-        $extensionName = $request->getControllerExtensionName();
-        $value = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate($id, $extensionName, $arguments);
-        return $value !== null ? $value : $id;
+        $value = LocalizationUtility::translate($id, 'ig_ldap_sso_auth', $arguments);
+        return $value ?? $id;
     }
 
     /**
@@ -939,7 +937,7 @@ class ModuleController extends ActionController
      * @param callable $key_compare_func The comparison function must return an integer less than, equal to, or greater than zero if the first argument is considered to be respectively less than, equal to, or greater than the second
      * @return bool Returns true on success or false on failure
      */
-    protected function uksort_recursive(array &$array, $key_compare_func)
+    protected function uksort_recursive(array &$array, $key_compare_func): bool
     {
         $ret = uksort($array, $key_compare_func);
         if ($ret) {
@@ -951,5 +949,4 @@ class ModuleController extends ActionController
         }
         return $ret;
     }
-
 }

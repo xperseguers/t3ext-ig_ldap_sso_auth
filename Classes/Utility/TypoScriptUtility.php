@@ -14,6 +14,7 @@
 
 namespace Causal\IgLdapSsoAuth\Utility;
 
+use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -25,14 +26,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class TypoScriptUtility
 {
-
     /**
      * Loads and parses TypoScript from a file.
      *
      * @param string $filePath
      * @return array
      */
-    public static function loadTypoScriptFromFile($filePath)
+    public static function loadTypoScriptFromFile(string $filePath): array
     {
         $fileName = GeneralUtility::getFileAbsFileName($filePath);
         $typoScript = file_get_contents($fileName);
@@ -45,26 +45,25 @@ class TypoScriptUtility
      * @param string $typoScript
      * @return array
      */
-    public static function loadTypoScript($typoScript)
+    public static function loadTypoScript(string $typoScript): array
     {
         $typoScriptParser = static::getTypoScriptParser();
         $typoScriptParser->parse($typoScript);
-        $setup = $typoScriptParser->setup;
-        return $setup;
+        return $typoScriptParser->setup;
     }
 
     /**
      * Returns a clean TypoScript parser.
      *
-     * @return \TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser
+     * @return TypoScriptParser
      */
-    protected static function getTypoScriptParser()
+    protected static function getTypoScriptParser(): TypoScriptParser
     {
-        /** @var \TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser $typoScriptParser */
+        /** @var TypoScriptParser $typoScriptParser */
         static $typoScriptParser = null;
 
         if ($typoScriptParser === null) {
-            $typoScriptParser = GeneralUtility::makeInstance(\TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser::class);
+            $typoScriptParser = GeneralUtility::makeInstance(TypoScriptParser::class);
         }
 
         // Reset the parser state
@@ -72,5 +71,4 @@ class TypoScriptUtility
 
         return $typoScriptParser;
     }
-
 }

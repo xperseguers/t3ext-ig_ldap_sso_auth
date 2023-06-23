@@ -15,9 +15,12 @@
 namespace Causal\IgLdapSsoAuth\Library;
 
 use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
+use Causal\IgLdapSsoAuth\Service\AuthenticationService;
+use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -36,9 +39,8 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 class Authentication
 {
-
     protected static $config;
-    protected static $lastAuthenticationDiagnostic;
+    protected static $lastAuthenticationDiagnostic = '';
 
     /**
      * Temporary storage for LDAP groups (should be removed after some refactoring).
@@ -48,17 +50,17 @@ class Authentication
     protected static $ldapGroups = null;
 
     /**
-     * @var \Causal\IgLdapSsoAuth\Service\AuthenticationService
+     * @var AuthenticationService
      */
     protected static $authenticationService;
 
     /**
      * Sets the authentication service.
      *
-     * @param \Causal\IgLdapSsoAuth\Service\AuthenticationService $authenticationService
+     * @param AuthenticationService $authenticationService
      * @return void
      */
-    public static function setAuthenticationService(\Causal\IgLdapSsoAuth\Service\AuthenticationService $authenticationService)
+    public static function setAuthenticationService(AuthenticationService $authenticationService)
     {
         static::$authenticationService = $authenticationService;
     }
@@ -84,12 +86,12 @@ class Authentication
      * if operation fails.
      *
      * @param string $username
-     * @param string $password
-     * @param string $domain
+     * @param string|null $password
+     * @param string|null $domain
      * @return bool|array true or array of user info on success, otherwise false
      * @throws \Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException when LDAP extension for PHP is not available
      */
-    public static function ldapAuthenticate($username, $password = null, $domain = null)
+    public static function ldapAuthenticate(string $username, ?string $password = null, ?string $domain = null)
     {
         static::$lastAuthenticationDiagnostic = '';
 
@@ -161,7 +163,7 @@ class Authentication
      *
      * @return string
      */
-    public static function getLastAuthenticationDiagnostic()
+    public static function getLastAuthenticationDiagnostic(): string
     {
         return static::$lastAuthenticationDiagnostic;
     }
@@ -170,10 +172,10 @@ class Authentication
      * Synchronizes a user.
      *
      * @param string $userdn
-     * @param $username
+     * @param string|null $username
      * @return array|false
      */
-    public static function synchroniseUser($userdn, $username = null)
+    public static function synchroniseUser(string $userdn, ?string $username = null)
     {
         // User is valid. Get it from DN.
         $ldapUser = static::getLdapUser($userdn);
@@ -280,12 +282,12 @@ class Authentication
     }
 
     /**
-     * Returns a LDAP user.
+     * Returns an LDAP user.
      *
-     * @param string $dn
-     * @return array
+     * @param string|null $dn
+     * @return array|null
      */
-    protected static function getLdapUser($dn = null)
+    protected static function getLdapUser(?string $dn = null): ?array
     {
         // Restricting the list of returned attributes sometimes makes the
         // ldap_search() method issue a PHP warning:
@@ -323,12 +325,12 @@ class Authentication
      * Gets the LDAP and TYPO3 user groups for a given user.
      *
      * @param array $ldapUser LDAP user data
-     * @param array $configuration LDAP configuration
+     * @param array|null $configuration LDAP configuration
      * @param string $groupTable Name of the group table (should normally be either "be_groups" or "fe_groups")
      * @return array|null Array of groups or null if required LDAP groups are missing
      * @throws \Causal\IgLdapSsoAuth\Exception\InvalidUserGroupTableException
      */
-    public static function getUserGroups(array $ldapUser, array $configuration = null, $groupTable = '')
+    public static function getUserGroups(array $ldapUser, array $configuration = null, string $groupTable = ''): ?array
     {
         if ($configuration === null) {
             $configuration = static::$config;
@@ -346,7 +348,7 @@ class Authentication
         /** @var \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]|\TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup[] $requiredLDAPGroups */
         $requiredLDAPGroups = Configuration::getValue('requiredLDAPGroups');
 
-        if (count($ldapGroups) === 0) {
+        if (empty($ldapGroups)) {
             if (count($requiredLDAPGroups) > 0) {
                 return null;
             }
@@ -361,7 +363,7 @@ class Authentication
                 $configuration['groups']['mapping']
             );
 
-            if (count($requiredLDAPGroups) > 0) {
+            if (!empty($requiredLDAPGroups)) {
                 $hasRequired = false;
                 $groupUids = [];
                 foreach ($typo3GroupsTemp as $typo3Group) {
@@ -378,7 +380,7 @@ class Authentication
                 }
             }
 
-            if (Configuration::getValue('IfGroupExist') && count($typo3GroupsTemp) === 0) {
+            if (Configuration::getValue('IfGroupExist') && empty($typo3GroupsTemp)) {
                 return [];
             }
 
@@ -457,7 +459,7 @@ class Authentication
      * @param array $ldapUser
      * @return array
      */
-    protected static function getLdapGroups(array $ldapUser = [])
+    protected static function getLdapGroups(array $ldapUser = []): array
     {
         // Make sure configuration is properly initialized, there could be a change of context
         // (Backend/Frontend) between calls
@@ -514,9 +516,9 @@ class Authentication
      * @param string $username
      * @param string $userDn
      * @param int|null $pid
-     * @return array
+     * @return array|null
      */
-    protected static function getTypo3User($username, $userDn, $pid = null)
+    protected static function getTypo3User(string $username, string $userDn, ?int $pid = null): ?array
     {
         $user = null;
 
@@ -564,12 +566,17 @@ class Authentication
      * fresh records if they don't exist yet.
      *
      * @param array $ldapGroups
-     * @param string $table
+     * @param string|null $table
      * @param int|null $pid
      * @param array $mapping
      * @return array
      */
-    public static function getTypo3Groups(array $ldapGroups = [], $table = null, $pid = null, array $mapping = [])
+    public static function getTypo3Groups(
+        array $ldapGroups = [],
+        ?string $table = null,
+        ?int $pid = null,
+        array $mapping = []
+    ): array
     {
         if (count($ldapGroups) === 0) {
             // Early return
@@ -585,7 +592,7 @@ class Authentication
             }
             $existingTypo3Groups = Typo3GroupRepository::fetch($table, 0, $pid, $ldapGroup['dn'], $groupName);
 
-            if (count($existingTypo3Groups) > 0) {
+            if (!empty($existingTypo3Groups)) {
                 $typo3Group = $existingTypo3Groups[0];
             } else {
                 $typo3Group = Typo3GroupRepository::create($table);
@@ -611,7 +618,12 @@ class Authentication
      * @param int|null $pid
      * @return array
      */
-    public static function getTypo3Users(array $ldapUsers = [], array $mapping = [], $table = null, $pid = null)
+    public static function getTypo3Users(
+        array $ldapUsers = [],
+        array $mapping = [],
+        ?string $table = null,
+        ?int $pid = null
+    ): array
     {
         if (count($ldapUsers) === 0) {
             // Early return
@@ -653,7 +665,12 @@ class Authentication
      * @return array
      * @see \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping()
      */
-    public static function merge(array $ldap = [], array $typo3 = [], array $mapping = [], $reportErrors = false)
+    public static function merge(
+        array $ldap = [],
+        array $typo3 = [],
+        array $mapping = [],
+        bool $reportErrors = false
+    ): array
     {
         $out = $typo3;
         $typoScriptKeys = [];
@@ -675,7 +692,7 @@ class Authentication
             }
         }
 
-        if (count($typoScriptKeys) > 0) {
+        if (!empty($typoScriptKeys)) {
             $flattenedLdap = [];
             foreach ($ldap as $key => $value) {
                 if (!is_numeric($key)) {
@@ -706,7 +723,12 @@ class Authentication
 
             $typoBranch = (new Typo3Version())->getBranch();
             if (version_compare($typoBranch, '11.5', '>=')) {
-                $pageArguments = GeneralUtility::makeInstance(PageArguments::class, $pageId, PageRepository::DOKTYPE_SYSFOLDER, []);
+                $pageArguments = GeneralUtility::makeInstance(
+                    PageArguments::class,
+                    $pageId,
+                    PageRepository::DOKTYPE_SYSFOLDER,
+                    []
+                );
                 $frontendUserAuthentication = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
             } else {
                 $pageArguments = null;
@@ -738,7 +760,7 @@ class Authentication
             foreach ($typoScriptKeys as $typoScriptKey) {
                 // Remove the trailing period to get corresponding field name
                 $field = substr($typoScriptKey, 0, -1);
-                $value = isset($out[$field]) ? $out[$field] : '';
+                $value = $out[$field] ?? '';
                 $value = $contentObj->stdWrap($value, $mapping[$typoScriptKey]);
                 $out = static::mergeSimple([$field => $value], $out, $field, $value);
             }
@@ -759,7 +781,7 @@ class Authentication
      * @return array Modified $typo3 array
      * @throws \UnexpectedValueException
      */
-    protected static function mergeSimple(array $ldap, array $typo3, $field, $value)
+    protected static function mergeSimple(array $ldap, array $typo3, string $field, string $value): array
     {
         // Standard marker or custom function
         if (preg_match("`{([^$]*)}`", $value, $matches)) {
@@ -836,9 +858,8 @@ class Authentication
      * @param string $markerString The string containing the markers that should be replaced
      * @param array $ldapData Array containing the LDAP data that should be used for replacement
      * @return string The string with the replaced / removed markers
-     * @author Alexander Stehlik <alexander.stehlik.deleteme@gmail.com>
      */
-    public static function replaceLdapMarkers($markerString, $ldapData)
+    public static function replaceLdapMarkers(string $markerString, array $ldapData): string
     {
         preg_match_all('/<(.+?)>/', $markerString, $matches);
 
@@ -860,15 +881,15 @@ class Authentication
     }
 
     /**
-     * Returns an array of RDN's from a given DN.
+     * Returns an array of RDNs from a given DN.
      *
      * @param string $dn
      * @param int $limit
      * @return array
      */
-    public static function getRelativeDistinguishedNames($dn, $limit = null)
+    public static function getRelativeDistinguishedNames(string $dn, ?int $limit = null): array
     {
-        // We want to extract RDN's by splitting on comma but we
+        // We want to extract RDNs by splitting on comma, but we
         // make sure that any escaped comma (\,) will NOT be taken
         // into account thanks to a look-behind assertion in pattern
         $pattern = '#(?<!\\\\),#';
@@ -909,16 +930,17 @@ class Authentication
     /**
      * Returns a logger.
      *
-     * @return \TYPO3\CMS\Core\Log\Logger
+     * @return LoggerInterface
      */
-    protected static function getLogger()
+    protected static function getLogger(): LoggerInterface
     {
         /** @var \TYPO3\CMS\Core\Log\Logger $logger */
         static $logger = null;
+
         if ($logger === null) {
-            $logger = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Log\LogManager::class)->getLogger(__CLASS__);
+            $logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
         }
+
         return $logger;
     }
-
 }

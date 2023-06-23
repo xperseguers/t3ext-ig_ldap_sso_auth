@@ -29,7 +29,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class DatabaseRecordListIconUtility implements RecordListGetTableHookInterface
 {
-
     /**
      * Modifies the DB list query.
      *
@@ -47,5 +46,4 @@ class DatabaseRecordListIconUtility implements RecordListGetTableHookInterface
             $selectedFieldsList .= ',tx_igldapssoauth_dn';
         }
     }
-
 }

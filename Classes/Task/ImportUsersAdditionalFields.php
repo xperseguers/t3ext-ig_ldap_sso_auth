@@ -14,7 +14,11 @@
 
 namespace Causal\IgLdapSsoAuth\Task;
 
+use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
+use TYPO3\CMS\Scheduler\Task\AbstractTask;
 use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
 
 /**
@@ -24,7 +28,7 @@ use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface
+class ImportUsersAdditionalFields implements AdditionalFieldProviderInterface
 {
 
     /**
@@ -34,11 +38,15 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
      * and one to select a LDAP configuration (or all).
      *
      * @param array $taskInfo Values of the fields from the add/edit task form
-     * @param \TYPO3\CMS\Scheduler\Task\AbstractTask $task The task object being edited. Null when adding a task!
+     * @param AbstractTask $task The task object being edited. Null when adding a task!
      * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule Reference to the scheduler backend module
      * @return array A two dimensional array, array('Identifier' => array('fieldId' => array('code' => '', 'label' => '', 'cshKey' => '', 'cshLabel' => ''))
      */
-    public function getAdditionalFields(array &$taskInfo, $task, \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule)
+    public function getAdditionalFields(
+        array &$taskInfo,
+        $task,
+        \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule
+    )
     {
         /** @var \Causal\IgLdapSsoAuth\Task\ImportUsers $task */
         $additionalFields = [];
@@ -81,8 +89,8 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
             'value' => $task ? $task->getConfiguration() : null,
         ];
         // Get the existing LDAP configurations
-        /** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
-        $configurationRepository = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository::class);
+        /** @var ConfigurationRepository $configurationRepository */
+        $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
         $ldapConfigurations = $configurationRepository->findAll();
         foreach ($ldapConfigurations as $configuration) {
             $uid = $configuration->getUid();
@@ -129,7 +137,12 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
      * @param array $additionalFields
      * @return void
      */
-    protected function registerSelect(array &$taskInfo, bool $isEdit, array $parameters, array &$additionalFields)
+    protected function registerSelect(
+        array &$taskInfo,
+        bool $isEdit,
+        array $parameters,
+        array &$additionalFields
+    ): void
     {
         $languageService = $this->getLanguageService();
         $extensionKey = 'ig_ldap_sso_auth';
@@ -190,7 +203,10 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
      * @param \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule Reference to the scheduler backend module
      * @return bool true if validation was ok (or selected class is not relevant), false otherwise
      */
-    public function validateAdditionalFields(array &$submittedData, \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule)
+    public function validateAdditionalFields(
+        array &$submittedData,
+        \TYPO3\CMS\Scheduler\Controller\SchedulerModuleController $schedulerModule
+    )
     {
         // Since only valid values could be chosen from the selectors, always return true
         return true;
@@ -200,10 +216,10 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
      * Takes care of saving the additional fields' values in the task's object.
      *
      * @param array $submittedData An array containing the data submitted by the add/edit task form
-     * @param \TYPO3\CMS\Scheduler\Task\AbstractTask $task Reference to the scheduler backend module
+     * @param AbstractTask $task Reference to the scheduler backend module
      * @return void
      */
-    public function saveAdditionalFields(array $submittedData, \TYPO3\CMS\Scheduler\Task\AbstractTask $task)
+    public function saveAdditionalFields(array $submittedData, AbstractTask $task)
     {
         /** @var \Causal\IgLdapSsoAuth\Task\ImportUsers $task */
         $task->setMode($submittedData['tx_igldapssoauth_mode']);
@@ -216,11 +232,10 @@ class ImportUsersAdditionalFields implements \TYPO3\CMS\Scheduler\AdditionalFiel
     /**
      * Returns the LanguageService.
      *
-     * @return \TYPO3\CMS\Lang\LanguageService
+     * @return LanguageService
      */
-    protected function getLanguageService()
+    protected function getLanguageService(): LanguageService
     {
         return $GLOBALS['LANG'];
     }
-
 }

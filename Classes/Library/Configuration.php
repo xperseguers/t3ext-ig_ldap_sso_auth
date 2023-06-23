@@ -14,6 +14,7 @@
 
 namespace Causal\IgLdapSsoAuth\Library;
 
+use Causal\IgLdapSsoAuth\Utility\TypoScriptUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\Entity\Site;
@@ -30,7 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Configuration
 {
-
     const GROUP_MEMBERSHIP_FROM_GROUP = 1;
     const GROUP_MEMBERSHIP_FROM_MEMBER = 2;
 
@@ -54,7 +54,10 @@ class Configuration
      * @param string $mode TYPO3 mode, either 'be' or 'fe'
      * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
      */
-    public static function initialize($mode, \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration)
+    public static function initialize(
+        string $mode,
+        \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
+    ): void
     {
         $globalConfiguration = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['ig_ldap_sso_auth'] ?? [];
 
@@ -143,7 +146,7 @@ class Configuration
      *
      * @return bool
      */
-    public static function isInitialized()
+    public static function isInitialized(): bool
     {
         return static::$mode !== null;
     }
@@ -153,13 +156,15 @@ class Configuration
      *
      * @return bool
      */
-    public static function isEnabledForCurrentHost()
+    public static function isEnabledForCurrentHost(): bool
     {
         static $host = null;
-        if ($host === null && count(static::$domains) > 0) {
+
+        if ($host === null && !empty(static::$domains)) {
             $host = GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY');
         }
-        return count(static::$domains) === 0 || in_array($host, static::$domains);
+
+        return empty(static::$domains) || in_array($host, static::$domains);
     }
 
     /**
@@ -168,7 +173,7 @@ class Configuration
      * @return array
      * @deprecated since TYPO3 v10
      */
-    public static function getDomains()
+    public static function getDomains(): array
     {
         return static::$domains;
     }
@@ -180,7 +185,7 @@ class Configuration
      * @param string $filter
      * @return array
      */
-    protected static function makeUserMapping($mapping = '', $filter = '')
+    protected static function makeUserMapping(string $mapping = '', string $filter = ''): array
     {
         // Default fields : username, tx_igldapssoauth_dn
 
@@ -198,7 +203,7 @@ class Configuration
      * @param string $mapping
      * @return array
      */
-    protected static function makeGroupMapping($mapping = '')
+    protected static function makeGroupMapping(string $mapping = ''): array
     {
         // Default fields : title, tx_igldapssoauth_dn
 
@@ -217,9 +222,9 @@ class Configuration
      * @param string $mapping
      * @return array
      */
-    public static function parseMapping($mapping = '')
+    public static function parseMapping(string $mapping = ''): array
     {
-        $setup = \Causal\IgLdapSsoAuth\Utility\TypoScriptUtility::loadTypoScript($mapping);
+        $setup = TypoScriptUtility::loadTypoScript($mapping);
 
         // Remove partial definitions
         $keys = array_keys($setup);
@@ -240,7 +245,7 @@ class Configuration
      * @param array $mapping
      * @return int|null
      */
-    public static function getPid($mapping = [])
+    public static function getPid(array $mapping = []): ?int
     {
         if (!$mapping) {
             return null;
@@ -254,10 +259,10 @@ class Configuration
     /**
      * Returns the LDAP attribute holding the username.
      *
-     * @param string $filter
+     * @param string|null $filter
      * @return string
      */
-    public static function getUsernameAttribute($filter = null)
+    public static function getUsernameAttribute(?string $filter = null): string
     {
         if ($filter && preg_match('/(\\w*)=\\{USERNAME\\}/', $filter, $matches)) {
             return $matches[1];
@@ -271,7 +276,7 @@ class Configuration
      *
      * @return array
      */
-    public static function getLdapConfiguration()
+    public static function getLdapConfiguration(): array
     {
         return static::$ldap;
     }
@@ -281,7 +286,7 @@ class Configuration
      *
      * @return array
      */
-    public static function getFrontendConfiguration()
+    public static function getFrontendConfiguration(): array
     {
         return static::$fe;
     }
@@ -291,7 +296,7 @@ class Configuration
      *
      * @return array
      */
-    public static function getBackendConfiguration()
+    public static function getBackendConfiguration(): array
     {
         return static::$be;
     }
@@ -301,7 +306,7 @@ class Configuration
      *
      * @return string Either 'be' or 'fe'
      */
-    public static function getMode()
+    public static function getMode(): string
     {
         return static::$mode;
     }
@@ -313,7 +318,7 @@ class Configuration
      * @return void
      * @throws \UnexpectedValueException
      */
-    public static function setMode($mode)
+    public static function setMode(string $mode): void
     {
         $mode = strtolower($mode);
         if (!GeneralUtility::inList('be,fe', $mode)) {
@@ -327,7 +332,7 @@ class Configuration
      *
      * @return int
      */
-    public static function getUid()
+    public static function getUid(): int
     {
         return static::$configuration->getUid();
     }
@@ -339,7 +344,7 @@ class Configuration
      * @param string $feature
      * @return mixed|false
      */
-    public static function getValue($feature)
+    public static function getValue(string $feature)
     {
         $config = (static::$mode === 'be')
             ? static::getBackendConfiguration()
@@ -354,7 +359,7 @@ class Configuration
      * @param array|string $mapping
      * @return array
      */
-    public static function getLdapAttributes($mapping = [])
+    public static function getLdapAttributes($mapping = []): array
     {
         $ldapAttributes = [];
         if (is_array($mapping)) {
@@ -381,7 +386,7 @@ class Configuration
      * @param array|string $mapping
      * @return bool
      */
-    public static function hasExtendedMapping($mapping = [])
+    public static function hasExtendedMapping($mapping = []): bool
     {
         if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth'] ?? null)) {
             return false;
@@ -410,10 +415,10 @@ class Configuration
     /**
      * Returns the type of server.
      *
-     * @param int $type
+     * @param int|null $type
      * @return string
      */
-    public static function getServerType($type = null)
+    public static function getServerType(?int $type = null): string
     {
         switch ($type) {
             case static::SERVER_OPENLDAP:
@@ -439,7 +444,7 @@ class Configuration
      * @param string $filter
      * @return string
      */
-    public static function replaceFilterMarkers($filter)
+    public static function replaceFilterMarkers(string $filter): string
     {
         $filter = str_replace(['{USERNAME}', '{USERDN}', '{USERUID}'], '*', $filter);
         return $filter;
@@ -493,5 +498,4 @@ class Configuration
 
         return $hosts;
     }
-
 }

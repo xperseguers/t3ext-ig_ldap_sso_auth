@@ -24,7 +24,6 @@ namespace Causal\IgLdapSsoAuth\Hooks;
  */
 class SetupModuleController
 {
-
     /**
      * Pre-processes the submitted data.
      *

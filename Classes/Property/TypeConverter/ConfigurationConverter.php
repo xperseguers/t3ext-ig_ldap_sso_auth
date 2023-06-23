@@ -14,12 +14,16 @@
 
 namespace Causal\IgLdapSsoAuth\Property\TypeConverter;
 
+use Causal\IgLdapSsoAuth\Domain\Model\Configuration;
 use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
+use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationInterface;
+use TYPO3\CMS\Extbase\Property\TypeConverter\AbstractTypeConverter;
 
 /**
  * Converter which transforms simple types to \Causal\IgLdapSsoAuth\Domain\Model\Configuration.
  */
-class ConfigurationConverter extends \TYPO3\CMS\Extbase\Property\TypeConverter\AbstractTypeConverter implements \TYPO3\CMS\Core\SingletonInterface
+class ConfigurationConverter extends AbstractTypeConverter implements SingletonInterface
 {
 
     /**
@@ -30,7 +34,7 @@ class ConfigurationConverter extends \TYPO3\CMS\Extbase\Property\TypeConverter\A
     /**
      * @var string
      */
-    protected $targetType = 'Causal\\IgLdapSsoAuth\\Domain\\Model\\Configuration';
+    protected $targetType = Configuration::class;
 
     /**
      * @var int
@@ -45,21 +49,25 @@ class ConfigurationConverter extends \TYPO3\CMS\Extbase\Property\TypeConverter\A
     /**
      * @param ConfigurationRepository $configurationRepository
      */
-    public function injectConfigurationRepository(\Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository)
+    public function injectConfigurationRepository(ConfigurationRepository $configurationRepository): void
     {
         $this->configurationRepository = $configurationRepository;
     }
 
     /**
-     * @param string|int $source
+     * @param string|int $source TODO: should actually be type-hinted as int
      * @param string $targetType
      * @param array $convertedChildProperties
-     * @param \TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationInterface $configuration
-     * @return \Causal\IgLdapSsoAuth\Domain\Model\Configuration
+     * @param PropertyMappingConfigurationInterface|null $configuration
+     * @return Configuration|null
      */
-    public function convertFrom($source, $targetType, array $convertedChildProperties = [], \TYPO3\CMS\Extbase\Property\PropertyMappingConfigurationInterface $configuration = null)
+    public function convertFrom(
+        $source,
+        string $targetType,
+        array $convertedChildProperties = [],
+        ?PropertyMappingConfigurationInterface $configuration = null
+    ): ?Configuration
     {
         return $this->configurationRepository->findByUid((int)$source);
     }
-
 }

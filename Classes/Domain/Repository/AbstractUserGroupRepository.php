@@ -30,7 +30,6 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  */
 abstract class AbstractUserGroupRepository
 {
-
     /**
      * @var string
      */
@@ -49,7 +48,7 @@ abstract class AbstractUserGroupRepository
     /**
      * Default constructor enforcing properties has been defined in derived classes.
      */
-    public final function __construct()
+    final public function __construct()
     {
         if (empty($this->className)) {
             throw new \LogicException(get_class($this) . ' must have a property $className', 1449144226);
@@ -65,7 +64,7 @@ abstract class AbstractUserGroupRepository
      * @param int $uid
      * @return \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup|\TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup|null
      */
-    public function findByUid($uid)
+    public function findByUid(int $uid)
     {
         $row = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getConnectionForTable($this->tableName)
@@ -93,14 +92,13 @@ abstract class AbstractUserGroupRepository
      *
      * @param AbstractEntity $object The object to set properties on
      * @param array $row
-     * @return void
+     * @return $this
      */
-    protected function thawProperties(AbstractEntity $object, array $row)
+    protected function thawProperties(AbstractEntity $object, array $row): self
     {
         foreach ($row as $field => $value) {
             $propertyName = GeneralUtility::underscoredToLowerCamelCase($field);
             $object->_setProperty($propertyName, $value);
         }
     }
-
 }

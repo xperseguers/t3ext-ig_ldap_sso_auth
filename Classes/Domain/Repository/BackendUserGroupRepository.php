@@ -26,15 +26,13 @@ namespace Causal\IgLdapSsoAuth\Domain\Repository;
  */
 class BackendUserGroupRepository extends AbstractUserGroupRepository
 {
-
     /**
      * @var string
      */
-    protected $className = 'TYPO3\\CMS\\Extbase\\Domain\\Model\\BackendUserGroup';
+    protected $className = \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup::class;
 
     /**
      * @var string
      */
     protected $tableName = 'be_groups';
-
 }

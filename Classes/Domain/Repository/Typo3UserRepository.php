@@ -32,7 +32,6 @@ use Causal\IgLdapSsoAuth\Utility\NotificationUtility;
  */
 class Typo3UserRepository
 {
-
     /**
      * Creates a fresh BE/FE user record.
      *
@@ -40,7 +39,7 @@ class Typo3UserRepository
      * @return array
      * @throws InvalidUserTableException
      */
-    public static function create($table)
+    public static function create(string $table): array
     {
         if (!GeneralUtility::inList('be_users,fe_users', $table)) {
             throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891582);
@@ -87,7 +86,13 @@ class Typo3UserRepository
      * @return array Array of user records
      * @throws InvalidUserTableException
      */
-    public static function fetch(string $table, int $uid = 0, ?int $pid = null, ?string $username = null, ?string $dn = null): array
+    public static function fetch(
+        string $table,
+        int $uid = 0,
+        ?int $pid = null,
+        ?string $username = null,
+        ?string $dn = null
+    ): array
     {
         if (!GeneralUtility::inList('be_users,fe_users', $table)) {
             throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891636);
@@ -165,7 +170,7 @@ class Typo3UserRepository
      * @return array The new record
      * @throws InvalidUserTableException
      */
-    public static function add(string $table, array $data = [])
+    public static function add(string $table, array $data = []): array
     {
         if (!GeneralUtility::inList('be_users,fe_users', $table)) {
             throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891712);
@@ -214,7 +219,7 @@ class Typo3UserRepository
      * @return bool true on success, otherwise false
      * @throws InvalidUserTableException
      */
-    public static function update(string $table, array $data = [])
+    public static function update(string $table, array $data = []): bool
     {
         if (!GeneralUtility::inList('be_users,fe_users', $table)) {
             throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891732);
@@ -460,5 +465,4 @@ class Typo3UserRepository
         $password = $instance ? $instance->getHashedPassword($password) : md5($password);
         return $password;
     }
-
 }

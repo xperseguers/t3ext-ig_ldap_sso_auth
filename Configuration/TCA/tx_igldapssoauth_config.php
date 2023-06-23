@@ -1,9 +1,4 @@
 <?php
-$typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
-    ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
-    : TYPO3_branch;
-$domainsField = version_compare($typo3Branch, '10.4', '<') ? 'domains,' : '';
-
 return [
     'ctrl' => [
         'title' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config',
@@ -25,7 +20,7 @@ return [
         '1' => [
             'showitem' => '
                     --div--;GENERAL,
-                        hidden, name, ' . $domainsField . 'sites,
+                        hidden, name, sites,
                     --div--;LDAP,
                         ldap_server, ldap_charset,
                     --palette--;LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:palette.connection;connection,

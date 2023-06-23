@@ -690,55 +690,44 @@ class Authentication
             $backupTSFE = $GLOBALS['TSFE'] ?? null;
 
             // Advanced stdWrap methods require a valid $GLOBALS['TSFE'] => create the most lightweight one
-            $typoBranch = (new Typo3Version())->getBranch();
-            if (version_compare($typoBranch, '10.0', '>')) {
-                $pageId = $typo3['pid'];
-                // Use SiteFinder to get a Site object for the current page tree
-                $siteFinder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Site\SiteFinder::class);
-                try {
-                    $currentSite = $siteFinder->getSiteByPageId($pageId);
-                } catch (SiteNotFoundException $e) {
-                    $allSites = $siteFinder->getAllSites();
-                    $currentSite = reset($allSites);
-                    $pageId = $currentSite->getRootPageId();
-                }
-
-                // Context is a singleton, so we can get the current Context by instantiation
-                $currentContext = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class);
-
-                if (version_compare($typoBranch, '11.5', '>=')) {
-                    $pageArguments = GeneralUtility::makeInstance(PageArguments::class, $pageId, PageRepository::DOKTYPE_SYSFOLDER, []);
-                    $frontendUserAuthentication = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
-                } else {
-                    $pageArguments = null;
-                    $frontendUserAuthentication = null;
-                }
-
-                // Use Site & Context to instantiate TSFE properly for TYPO3 v10+
-                $GLOBALS['TSFE'] = GeneralUtility::makeInstance(
-                    TypoScriptFrontendController::class,
-                    $currentContext,
-                    $currentSite,
-                    $currentSite->getDefaultLanguage(),
-                    $pageArguments,
-                    $frontendUserAuthentication
-                );
-
-                // initTemplate() has been removed. The deprecation notice suggests setting the property directly
-                $GLOBALS['TSFE']->tmpl = GeneralUtility::makeInstance(
-                    TemplateService::class,
-                    $currentContext
-                );
-            } else {
-                // Backward compatibility with TYPO3 v9
-                $GLOBALS['TSFE'] = GeneralUtility::makeInstance(
-                    TypoScriptFrontendController::class,
-                    $GLOBALS['TYPO3_CONF_VARS'],
-                    0,
-                    ''
-                );
-                $GLOBALS['TSFE']->initTemplate();
+            $pageId = $typo3['pid'];
+            // Use SiteFinder to get a Site object for the current page tree
+            $siteFinder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Site\SiteFinder::class);
+            try {
+                $currentSite = $siteFinder->getSiteByPageId($pageId);
+            } catch (SiteNotFoundException $e) {
+                $allSites = $siteFinder->getAllSites();
+                $currentSite = reset($allSites);
+                $pageId = $currentSite->getRootPageId();
             }
+
+            // Context is a singleton, so we can get the current Context by instantiation
+            $currentContext = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class);
+
+            $typoBranch = (new Typo3Version())->getBranch();
+            if (version_compare($typoBranch, '11.5', '>=')) {
+                $pageArguments = GeneralUtility::makeInstance(PageArguments::class, $pageId, PageRepository::DOKTYPE_SYSFOLDER, []);
+                $frontendUserAuthentication = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
+            } else {
+                $pageArguments = null;
+                $frontendUserAuthentication = null;
+            }
+
+            // Use Site & Context to instantiate TSFE properly for TYPO3 v10+
+            $GLOBALS['TSFE'] = GeneralUtility::makeInstance(
+                TypoScriptFrontendController::class,
+                $currentContext,
+                $currentSite,
+                $currentSite->getDefaultLanguage(),
+                $pageArguments,
+                $frontendUserAuthentication
+            );
+
+            // initTemplate() has been removed. The deprecation notice suggests setting the property directly
+            $GLOBALS['TSFE']->tmpl = GeneralUtility::makeInstance(
+                TemplateService::class,
+                $currentContext
+            );
             $GLOBALS['TSFE']->renderCharset = 'utf-8';
 
             /** @var $contentObj ContentObjectRenderer */

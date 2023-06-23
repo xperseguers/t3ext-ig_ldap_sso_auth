@@ -69,33 +69,6 @@ class Configuration
         // Select configuration from database, merge with extension configuration template and initialise class attributes.
 
         static::$domains = [];
-        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
-            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
-            : TYPO3_branch;
-        if (version_compare($typo3Branch, '10.0', '<')) {
-            $domainUids = GeneralUtility::intExplode(',', $configuration->getDomains(), true);
-            foreach ($domainUids as $domainUid) {
-                $row = GeneralUtility::makeInstance(ConnectionPool::class)
-                    ->getConnectionForTable('sys_domain')
-                    ->select(
-                        ['domainName'],
-                        'sys_domain',
-                        [
-                            'uid' => $domainUid,
-                        ]
-                    )
-                    ->fetchAssociative();
-                static::$domains[] = $row['domainName'];
-            }
-        }
-
-        if (!empty(static::$domains)) {
-            trigger_error(
-                'LDAP configuration record uid=' . $configuration->getUid() . ' uses associated domains which are deprecated since TYPO3 v9.',
-                E_USER_DEPRECATED
-            );
-        }
-
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
         $siteIdentifiers = GeneralUtility::trimExplode(',', $configuration->getSites(), true);
         foreach ($siteIdentifiers as $siteIdentifier) {

@@ -165,7 +165,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 
                         // Loop on all users and import them
                         foreach ($ldapUsers as $index => $aUser) {
-                            if ($mode === 'sync' && empty($typo3Users[$index]['uid'])) {
+                            if ($mode === 'sync' && empty($typo3Users[$index]['uid'] ?? 0)) {
                                 // New LDAP user => skip it since only existing TYPO3 users should get synchronized
                                 continue;
                             }
@@ -175,7 +175,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 
                             // Import the user using information from LDAP
                             $restoreBehaviour = $this->restoredUsersHandling;
-                            if (in_array($user['uid'], $disabledOrDeletedUserUids, true)) {
+                            if (in_array($user['uid'] ?? 0, $disabledOrDeletedUserUids, true)) {
                                 // We disabled this user ourselves
                                 if ($this->missingUsersHandling === 'disable') {
                                     if ($restoreBehaviour === 'nothing') {

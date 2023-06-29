@@ -100,5 +100,6 @@ abstract class AbstractUserGroupRepository
             $propertyName = GeneralUtility::underscoredToLowerCamelCase($field);
             $object->_setProperty($propertyName, $value);
         }
+        return $this;
     }
 }

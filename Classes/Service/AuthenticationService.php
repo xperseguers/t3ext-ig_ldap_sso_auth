@@ -265,9 +265,9 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
     /**
      * Returns the remote user ($_SERVER['REMOTE_USER']).
      *
-     * @return string
+     * @return string|null
      */
-    protected function getRemoteUser(): string
+    protected function getRemoteUser(): ?string
     {
         $remoteUser = !empty($_SERVER['REMOTE_USER'])
             ? $_SERVER['REMOTE_USER']

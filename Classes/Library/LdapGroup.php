@@ -37,7 +37,7 @@ class LdapGroup
 	 * @return array
 	 */
 	public static function selectFromMembership(
-		array $membership = [],
+		array $membership,
 		$baseDn,
 		$filter,
 		array $attributes = [],

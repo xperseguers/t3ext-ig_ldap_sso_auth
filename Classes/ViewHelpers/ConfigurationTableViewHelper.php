@@ -164,7 +164,7 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
             $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL, $overlay)->render() . ' ' . htmlspecialchars($value->getTitle());
             $value = str_replace('<img src=', '<img title="' . htmlspecialchars($options['title']) . '" src=', $value);
         } else {
-            $value = htmlspecialchars($value);
+            $value = htmlspecialchars((string)$value);
         }
 
         return sprintf('<td class="%s">%s</td>', $class, $value);

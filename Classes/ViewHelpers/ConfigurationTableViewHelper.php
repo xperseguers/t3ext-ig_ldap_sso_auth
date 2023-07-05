@@ -65,7 +65,7 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
     {
         if (!is_array($data)) {
             return htmlspecialchars($data);
-        } elseif (count($data) === 0) {
+        } elseif (empty($data)) {
             return '<em>' . htmlspecialchars($this->translate('module_status.messages.empty')) . '</em>';
         }
 

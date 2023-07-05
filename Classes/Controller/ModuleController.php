@@ -623,7 +623,7 @@ class ModuleController extends ActionController
                 $ldapInstance->disconnect();
                 unset($ldapGroups['count']);
 
-                if (count($ldapGroups) > 0) {
+                if (!empty($ldapGroups)) {
                     $pid = Configuration::getPid($config['groups']['mapping']);
 
                     // Populate an array of TYPO3 group records corresponding to the LDAP groups
@@ -718,7 +718,7 @@ class ModuleController extends ActionController
             $ldapUsers = $importUtility->hasMoreLdapUsers($ldapInstance)
                 ? $importUtility->fetchLdapUsers(true, $ldapInstance)
                 : [];
-        } while (count($ldapUsers) > 0);
+        } while (!empty($ldapUsers));
 
         $ldapInstance->disconnect();
 
@@ -795,7 +795,7 @@ class ModuleController extends ActionController
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         $editRecordModuleUrl = $uriBuilder->buildUriFromRoute('record_edit');
 
-        if (count($configurationRecords) === 0) {
+        if (empty($configurationRecords)) {
             $newRecordUri = $editRecordModuleUrl . '&returnUrl=' . urlencode($thisUri) . '&edit[tx_igldapssoauth_config][0]=new';
 
             $message = $this->translate(

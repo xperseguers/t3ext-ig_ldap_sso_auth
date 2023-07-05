@@ -349,7 +349,7 @@ class Authentication
         $requiredLDAPGroups = Configuration::getValue('requiredLDAPGroups');
 
         if (empty($ldapGroups)) {
-            if (count($requiredLDAPGroups) > 0) {
+            if (!empty($requiredLDAPGroups)) {
                 return null;
             }
         } else {
@@ -578,7 +578,7 @@ class Authentication
         array $mapping = []
     ): array
     {
-        if (count($ldapGroups) === 0) {
+        if (empty($ldapGroups)) {
             // Early return
             return [];
         }
@@ -625,7 +625,7 @@ class Authentication
         ?int $pid = null
     ): array
     {
-        if (count($ldapUsers) === 0) {
+        if (empty($ldapUsers)) {
             // Early return
             return [];
         }
@@ -639,7 +639,7 @@ class Authentication
             }
             $existingTypo3Users = Typo3UserRepository::fetch($table, 0, $pid, $username, $ldapUser['dn']);
 
-            if (count($existingTypo3Users) > 0) {
+            if (!empty($existingTypo3Users)) {
                 $typo3User = $existingTypo3Users[0];
             } else {
                 $typo3User = Typo3UserRepository::create($table);

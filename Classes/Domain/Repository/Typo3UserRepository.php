@@ -419,7 +419,7 @@ class Typo3UserRepository
 
         /** @var \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]|\TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup[] $administratorGroups */
         $administratorGroups = Configuration::getValue('updateAdminAttribForGroups');
-        if (count($administratorGroups) > 0) {
+        if (!empty($administratorGroups)) {
             $typo3User['admin'] = 0;
             foreach ($administratorGroups as $administratorGroup) {
                 if (in_array($administratorGroup->getUid(), $groupUid)) {

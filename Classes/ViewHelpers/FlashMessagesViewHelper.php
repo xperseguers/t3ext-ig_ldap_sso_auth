@@ -66,7 +66,7 @@ class FlashMessagesViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FlashMessages
         $queueIdentifier = isset($arguments['queueIdentifier']) ? $arguments['queueIdentifier'] : null;
         $flashMessages = $renderingContext->getControllerContext()
             ->getFlashMessageQueue($queueIdentifier)->getAllMessagesAndFlush();
-        if ($flashMessages === null || count($flashMessages) === 0) {
+        if ($flashMessages === null || empty($flashMessages)) {
             return '';
         }
 

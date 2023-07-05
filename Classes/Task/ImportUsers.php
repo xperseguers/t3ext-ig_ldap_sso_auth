@@ -139,7 +139,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
                 $ldapUsers = $importUtility->fetchLdapUsers(false, $ldapInstance);
 
                 // Consider that fetching no users from LDAP is an error
-                if (count($ldapUsers) === 0) {
+                if (empty($ldapUsers)) {
                     $this->getLogger()->error(sprintf(
                         'No users (%s) found for configuration record %s', $aContext, $configuration->getUid()
                     ));
@@ -206,7 +206,7 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
                         $ldapUsers = $importUtility->hasMoreLdapUsers($ldapInstance)
                             ? $importUtility->fetchLdapUsers(true, $ldapInstance)
                             : [];
-                    } while (count($ldapUsers) > 0);
+                    } while (!empty($ldapUsers));
                 }
 
                 // Clean up

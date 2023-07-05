@@ -94,7 +94,7 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
         $configurationRepository = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository::class);
         $configurationRecords = $configurationRepository->findAll();
 
-        if (count($configurationRecords) === 0) {
+        if (empty($configurationRecords)) {
             // Early return since LDAP is not configured
             static::getLogger()->warning('Skipping LDAP authentication as extension is not yet configured');
             return false;

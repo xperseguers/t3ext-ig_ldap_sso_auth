@@ -42,7 +42,7 @@ class Configuration
      */
     protected static $configuration;
 
-    protected static $mode;
+    protected static $mode = 'be';
     protected static $be = [];
     protected static $fe = [];
     protected static $ldap = [];

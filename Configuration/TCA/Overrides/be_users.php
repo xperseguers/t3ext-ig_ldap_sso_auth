@@ -1,5 +1,5 @@
 <?php
-defined('TYPO3_MODE') || die();
+defined('TYPO3_MODE') || defined('TYPO3') || die();
 
 $tempColumns = [
     'tx_igldapssoauth_dn' => [

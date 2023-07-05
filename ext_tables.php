@@ -13,7 +13,9 @@ defined('TYPO3_MODE') || die();
     );
     unset($iconRegistry);
 
-    if (TYPO3_MODE === 'BE') {
+    // Hopefully CompatUtility::getTypo3Mode() will never be null in TYPO3 v12
+    $typo3Mode = \Causal\IgLdapSsoAuth\Utility\CompatUtility::getTypo3Mode() ?? TYPO3_MODE;
+    if ($typo3Mode === 'BE') {
         // Add BE module on top of system main module
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
             $_EXTKEY,

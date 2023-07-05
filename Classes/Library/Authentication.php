@@ -16,6 +16,7 @@ namespace Causal\IgLdapSsoAuth\Library;
 
 use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
 use Causal\IgLdapSsoAuth\Service\AuthenticationService;
+use Causal\IgLdapSsoAuth\Utility\CompatUtility;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
@@ -906,7 +907,7 @@ class Authentication
      */
     protected static function getCreationUserId(): int
     {
-        $cruserId = (TYPO3_MODE === 'BE' ? ($GLOBALS['BE_USER']->user['uid'] ?? null) : null);
+        $cruserId = (CompatUtility::getTypo3Mode() === 'BE' ? ($GLOBALS['BE_USER']->user['uid'] ?? null) : null);
         return $cruserId ?? 0;
     }
 
@@ -918,7 +919,7 @@ class Authentication
         if (isset(static::$authenticationService) && !empty(static::$authenticationService->authInfo['db_groups']['table'])) {
             $groupTable = static::$authenticationService->authInfo['db_groups']['table'];
         } else {
-            if (TYPO3_MODE === 'BE') {
+            if (CompatUtility::getTypo3Mode() === 'BE') {
                 $groupTable = 'be_groups';
             } else {
                 $groupTable = 'fe_groups';

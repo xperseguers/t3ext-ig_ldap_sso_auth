@@ -14,6 +14,7 @@
 
 namespace Causal\IgLdapSsoAuth\Service;
 
+use Causal\IgLdapSsoAuth\Utility\CompatUtility;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -78,8 +79,10 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
         $user = false;
         $userRecordOrIsValid = false;
         $remoteUser = $this->getRemoteUser();
-        $enableFrontendSso = TYPO3_MODE === 'FE' && (bool)$this->config['enableFESSO'] && $remoteUser;
-        $enableBackendSso = TYPO3_MODE === 'BE' && (bool)$this->config['enableBESSO'] && $remoteUser;
+        // Hopefully CompatUtility::getTypo3Mode() will never be null in TYPO3 v12
+        $typo3Mode = CompatUtility::getTypo3Mode() ?? $this->authInfo['loginType'];
+        $enableFrontendSso = $typo3Mode === 'FE' && (bool)$this->config['enableFESSO'] && $remoteUser;
+        $enableBackendSso = $typo3Mode === 'BE' && (bool)$this->config['enableBESSO'] && $remoteUser;
 
         // This simple check is the key to prevent your log being filled up with warnings
         // due to the AJAX calls to maintain the session active if your configuration forces
@@ -101,7 +104,7 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
         }
 
         foreach ($configurationRecords as $configurationRecord) {
-            Configuration::initialize(TYPO3_MODE, $configurationRecord);
+            Configuration::initialize($typo3Mode, $configurationRecord);
             if (!Configuration::isEnabledForCurrentHost()) {
                 $msg = sprintf(
                     'Configuration record #%s is not enabled for domain %s',
@@ -146,7 +149,7 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
                 $typo3Branch = (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch();
                 $loginSecurityLevel = version_compare($typo3Branch, '11.0', '>')
                     ? 'normal'
-                    : $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['loginSecurityLevel'];
+                    : $GLOBALS['TYPO3_CONF_VARS'][$typo3Mode]['loginSecurityLevel'];
                 // normal case
                 // Check if $loginSecurityLevel is set to "challenged" or "superchallenged" and throw an error if the configuration allows it
                 // By default, it will not throw an exception
@@ -154,7 +157,7 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
                     if ($loginSecurityLevel === 'challenged' || $loginSecurityLevel === 'superchallenged') {
                         $message = "ig_ldap_sso_auth error: current login security level '" . $loginSecurityLevel . "' is not supported.";
                         $message .= " Try to use 'normal' or 'rsa' (highly recommended): ";
-                        $message .= "\$GLOBALS['TYPO3_CONF_VARS']['" . TYPO3_MODE . "']['loginSecurityLevel'] = 'rsa';";
+                        $message .= "\$GLOBALS['TYPO3_CONF_VARS']['" . $typo3Mode . "']['loginSecurityLevel'] = 'rsa';";
                         throw new UnsupportedLoginSecurityLevelException($message, 1324313489);
                     }
                 }
@@ -220,7 +223,9 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
             return static::STATUS_AUTHENTICATION_FAILURE_CONTINUE;
         }
 
-        if (TYPO3_MODE === 'BE') {
+        // Hopefully CompatUtility::getTypo3Mode() will never be null in TYPO3 v12
+        $typo3Mode = CompatUtility::getTypo3Mode() ?? $this->authInfo['loginType'];
+        if ($typo3Mode === 'BE') {
             $status = Configuration::getValue('BEfailsafe')
                 ? static::STATUS_AUTHENTICATION_FAILURE_CONTINUE
                 : static::STATUS_AUTHENTICATION_FAILURE_BREAK;
@@ -229,13 +234,13 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
         }
 
         $remoteUser = $this->getRemoteUser();
-        $enableFrontendSso = TYPO3_MODE === 'FE' && (bool)$this->config['enableFESSO'] && $remoteUser;
-        $enableBackendSso = TYPO3_MODE === 'BE' && (bool)$this->config['enableBESSO'] && $remoteUser;
+        $enableFrontendSso = $typo3Mode === 'FE' && (bool)$this->config['enableFESSO'] && $remoteUser;
+        $enableBackendSso = $typo3Mode === 'BE' && (bool)$this->config['enableBESSO'] && $remoteUser;
 
         if ((($this->login['uident'] && $this->login['uname']) || $enableFrontendSso || $enableBackendSso) && !empty($user['tx_igldapssoauth_dn'])) {
             if (isset($user['tx_igldapssoauth_from'])) {
                 $status = static::STATUS_AUTHENTICATION_SUCCESS_BREAK;
-            } elseif (TYPO3_MODE === 'BE' && Configuration::getValue('BEfailsafe')) {
+            } elseif ($typo3Mode === 'BE' && Configuration::getValue('BEfailsafe')) {
                 return static::STATUS_AUTHENTICATION_FAILURE_CONTINUE;
             } else {
                 // Failed login attempt (wrong password) - write that to the log!

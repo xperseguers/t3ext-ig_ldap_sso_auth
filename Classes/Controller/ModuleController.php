@@ -16,6 +16,7 @@ namespace Causal\IgLdapSsoAuth\Controller;
 
 use Causal\IgLdapSsoAuth\Exception\InvalidHostnameException;
 use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
+use Causal\IgLdapSsoAuth\Utility\CompatUtility;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
@@ -119,7 +120,7 @@ class ModuleController extends ActionController
         }
         $this->saveState($configuration);
 
-        Configuration::initialize(TYPO3_MODE, $configuration);
+        Configuration::initialize(CompatUtility::getTypo3Mode(), $configuration);
         $this->populateView($configuration);
 
         $ldapConfiguration = Configuration::getLdapConfiguration();
@@ -180,7 +181,7 @@ class ModuleController extends ActionController
         }
         $this->saveState($configuration);
 
-        Configuration::initialize(TYPO3_MODE, $configuration);
+        Configuration::initialize(CompatUtility::getTypo3Mode(), $configuration);
         $this->populateView($configuration);
 
         /** @var PageRenderer $pageRenderer */

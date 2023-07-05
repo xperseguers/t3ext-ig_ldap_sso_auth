@@ -14,6 +14,7 @@
 
 namespace Causal\IgLdapSsoAuth\Library;
 
+use Causal\IgLdapSsoAuth\Utility\CompatUtility;
 use Causal\IgLdapSsoAuth\Utility\TypoScriptUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
@@ -67,7 +68,7 @@ class Configuration
         static::$configuration = $configuration;
 
         // Default TYPO3_MODE is BE
-        static::setMode($mode ?: TYPO3_MODE);
+        static::setMode($mode ?: CompatUtility::getTypo3Mode());
 
         // Select configuration from database, merge with extension configuration template and initialise class attributes.
 

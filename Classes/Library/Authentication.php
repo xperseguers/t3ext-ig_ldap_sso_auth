@@ -873,15 +873,6 @@ class Authentication
     }
 
     /**
-     * @return int
-     */
-    protected static function getCreationUserId(): int
-    {
-        $cruserId = (\Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode() === 'BE' ? ($GLOBALS['BE_USER']->user['uid'] ?? null) : null);
-        return $cruserId ?? 0;
-    }
-
-    /**
      * @return string
      */
     protected static function getGroupTable(): string

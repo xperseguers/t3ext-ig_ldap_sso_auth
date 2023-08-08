@@ -5,7 +5,7 @@
 
 <f:if condition="{status}">
     <h2>
-        <f:translate key="module_search_status"/>
+        <f:translate key="module_search_status" extensionName="ig_ldap_sso_auth"/>
     </h2>
     <ldap:configurationTable data="{status}" humanKeyNames="1"/>
 </f:if>
@@ -13,14 +13,14 @@
 <f:if condition="{preview}">
     <f:then>
         <h2>
-            <f:translate key="module_search_preview"/>
+            <f:translate key="module_search_preview" extensionName="ig_ldap_sso_auth"/>
         </h2>
         <ldap:configurationTable data="{preview}"/>
     </f:then>
 </f:if>
 
 <h2>
-    <f:translate key="module_search_result"/>
+    <f:translate key="module_search_result" extensionName="ig_ldap_sso_auth" />
 </h2>
 <f:if condition="{resultset}">
     <f:then>
@@ -28,7 +28,7 @@
     </f:then>
     <f:else>
         <em>
-            <f:translate key="module_search_noResult"/>
+            <f:translate key="module_search_noResult" extensionName="ig_ldap_sso_auth"/>
         </em>
     </f:else>
 </f:if>

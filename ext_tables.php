@@ -1,4 +1,7 @@
 <?php
+
+use TYPO3\CMS\Core\Information\Typo3Version;
+
 defined('TYPO3_MODE') || defined('TYPO3') || die();
 
 (static function (string $_EXTKEY) {
@@ -13,9 +16,8 @@ defined('TYPO3_MODE') || defined('TYPO3') || die();
     );
     unset($iconRegistry);
 
-    // Hopefully CompatUtility::getTypo3Mode() will never be null in TYPO3 v12
-    $typo3Mode = \Causal\IgLdapSsoAuth\Utility\CompatUtility::getTypo3Mode() ?? TYPO3_MODE;
-    if ($typo3Mode === 'BE') {
+    $typoBranch = (new Typo3Version())->getBranch();
+    if (version_compare($typoBranch, '12.4', '<')) {
         // Add BE module on top of system main module
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
             $_EXTKEY,

@@ -14,6 +14,7 @@
 
 namespace Causal\IgLdapSsoAuth\Utility;
 
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
@@ -38,7 +39,11 @@ class NotificationUtility
      */
     public static function dispatch(string $signalClassName, string $signalName, array $signalArguments = [])
     {
-        return static::getSignalSlotDispatcher()->dispatch($signalClassName, $signalName, $signalArguments);
+        $typoBranch = (new Typo3Version())->getBranch();
+        // TODO: Implement something similar for TYPO3 v12
+        if (version_compare($typoBranch, '11.5', '<')) {
+            return static::getSignalSlotDispatcher()->dispatch($signalClassName, $signalName, $signalArguments);
+        }
     }
 
     /**

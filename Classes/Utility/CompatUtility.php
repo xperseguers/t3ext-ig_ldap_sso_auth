@@ -17,27 +17,26 @@ declare(strict_types=1);
 namespace Causal\IgLdapSsoAuth\Utility;
 
 use TYPO3\CMS\Core\Http\ApplicationType;
-use TYPO3\CMS\Core\Information\Typo3Version;
 
 final class CompatUtility
 {
     public static function getTypo3Mode(): ?string
     {
-        $typoBranch = (new Typo3Version())->getBranch();
-        if (version_compare($typoBranch, '11.5', '>=')) {
-            $request = $GLOBALS['TYPO3_REQUEST'] ?? null;
-            if ($request !== null) {
-                // At least in TYPO3 v11 the request is not always available, although in
-                // an actual BE/FE context...
-                return ApplicationType::fromRequest($request)->isFrontend()
-                    ? 'FE'
-                    : 'BE';
-            }
-            // Hopefully TYPO3 v12 will always provide a valid TYPO3_REQUEST, and we
-            // won't have to have some magic in the calling method
-            return null;
+        if (defined('TYPO3_MODE')) {
+            return TYPO3_MODE;
         }
 
-        return TYPO3_MODE;
+        $request = $GLOBALS['TYPO3_REQUEST'] ?? null;
+        if ($request !== null) {
+            // At least in TYPO3 v11 the request is not always available, although in
+            // an actual BE/FE context...
+            return ApplicationType::fromRequest($request)->isFrontend()
+                ? 'FE'
+                : 'BE';
+        }
+
+        // Hopefully TYPO3 v12 will always provide a valid TYPO3_REQUEST, and we
+        // won't have to have some magic in the calling method
+        return null;
     }
 }

@@ -9,9 +9,10 @@
     "LDAP",
     "Authentication"
   ],
-  "homepage": "https://github.com/xperseguers/t3ext-ig_ldap_sso_auth",
   "support": {
-    "issues": "https://github.com/xperseguers/t3ext-ig_ldap_sso_auth/issues"
+    "docs": "https://docs.typo3.org/p/causal/ig_ldap_sso_auth/main/en-us/",
+    "issues": "https://github.com/xperseguers/t3ext-ig_ldap_sso_auth/issues",
+    "source": "https://github.com/xperseguers/t3ext-ig_ldap_sso_auth"
   },
   "authors": [
     {

@@ -186,7 +186,7 @@ class Typo3UserRepository
             $data
         );
 
-        $uid = $tableConnection->lastInsertId();
+        $uid = $tableConnection->lastInsertId($table);
 
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable($table);

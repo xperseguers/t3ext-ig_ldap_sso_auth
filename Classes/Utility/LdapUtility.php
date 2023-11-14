@@ -287,7 +287,7 @@ class LdapUtility
         ];
 
         $parts = explode(',', $message);
-        if (preg_match('/data ([0-9a-f]+)/i', trim($parts[2]), $matches)) {
+        if (preg_match('/data ([0-9a-f]+)/i', trim($parts[2] ?? ''), $matches)) {
             $code = $matches[1];
             $diagnostic = isset($codeMessages[$code])
                 ? sprintf('%s (%s)', $codeMessages[$code], $code)

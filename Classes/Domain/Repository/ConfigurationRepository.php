@@ -75,7 +75,10 @@ class ConfigurationRepository
             )
             ->fetchAllAssociative();
 
-        if (!empty($this->config) && $this->config['useExtConfConfiguration']) {
+        if (
+            !empty($this->config)
+            && ($this->config['useExtConfConfiguration'] ?? false)
+        ) {
             $rows[] = $this->config['configuration'];
         }
 
@@ -98,7 +101,11 @@ class ConfigurationRepository
      */
     public function findByUid(int $uid): ?Configuration
     {
-        if (!empty($this->config) && $this->config['useExtConfConfiguration'] && intval($this->config['configuration']['uid']) === $uid) {
+        if (
+            !empty($this->config)
+            && ($this->config['useExtConfConfiguration'] ?? false)
+            && intval($this->config['configuration']['uid']) === $uid
+        ) {
             $row = $this->config['configuration'];
         } else {
             $row = GeneralUtility::makeInstance(ConnectionPool::class)

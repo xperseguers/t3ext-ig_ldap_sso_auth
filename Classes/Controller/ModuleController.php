@@ -67,6 +67,9 @@ class ModuleController extends ActionController
 	 */
 	public function initializeAction()
 	{
+        // Set up module template.
+        $this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+
 		$vars = GeneralUtility::_GET('tx_igldapssoauth_system_igldapssoauthtxigldapssoauthm1');
 		if (
 			!isset($vars['redirect'])
@@ -76,19 +79,16 @@ class ModuleController extends ActionController
 		) {
 			$previousSelection = $GLOBALS['BE_USER']->uc['ig_ldap_sso_auth']['selection'];
 			if (!empty($previousSelection['action']) && !empty($previousSelection['configuration'])) {
-				$this->redirect(
+				return $this->redirect(
 					$previousSelection['action'],
 					'Module',
 					null,
 					['configuration' => $previousSelection['configuration'], 'redirect' => 1]
 				);
 			} else {
-				$this->redirect('index');
+				return $this->redirect('index');
 			}
 		}
-
-		// Set up module template.
-		$this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
 
 		// Add CSS.
 		$assetCollector = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\AssetCollector::class);
@@ -126,7 +126,7 @@ class ModuleController extends ActionController
 	): ResponseInterface {
 		// If configuration has been deleted
 		if ($configuration === null) {
-			$this->redirect('index');
+			return $this->redirect('index');
 		}
 		$this->saveState($configuration);
 
@@ -189,7 +189,7 @@ class ModuleController extends ActionController
 	): ResponseInterface {
 		// If configuration has been deleted
 		if ($configuration === null) {
-			$this->redirect('index');
+			return $this->redirect('index');
 		}
 		$this->saveState($configuration);
 
@@ -218,7 +218,7 @@ class ModuleController extends ActionController
 	): ResponseInterface {
 		// If configuration has been deleted
 		if ($configuration === null) {
-			$this->redirect('index');
+			return $this->redirect('index');
 		}
 		$this->saveState($configuration);
 
@@ -248,7 +248,7 @@ class ModuleController extends ActionController
 	): ResponseInterface {
 		// If configuration has been deleted
 		if ($configuration === null) {
-			$this->redirect('index');
+			return $this->redirect('index');
 		}
 		$this->saveState($configuration);
 
@@ -279,7 +279,7 @@ class ModuleController extends ActionController
 	): ResponseInterface {
 		// If configuration has been deleted
 		if ($configuration === null) {
-			$this->redirect('index');
+			return $this->redirect('index');
 		}
 		$this->saveState($configuration);
 
@@ -309,7 +309,7 @@ class ModuleController extends ActionController
 	): ResponseInterface {
 		// If configuration has been deleted
 		if ($configuration === null) {
-			$this->redirect('index');
+			return $this->redirect('index');
 		}
 		$this->saveState($configuration);
 
@@ -884,17 +884,17 @@ class ModuleController extends ActionController
 		$trClass = '';
 
 		$this->moduleTemplate->assignMultiple([
-										'action' => $this->request->getControllerActionName(),
-										'configurationRecords' => $configurationRecords,
-										'currentConfiguration' => $configuration,
-										'mode' => Configuration::getMode(),
-										'editLink' => $editLink,
-										'menu' => $menu,
-										'classes' => [
-											'table' => $tableClass,
-											'tableRow' => $trClass,
-										]
-									]);
+            'action' => $this->request->getControllerActionName(),
+            'configurationRecords' => $configurationRecords,
+            'currentConfiguration' => $configuration,
+            'mode' => Configuration::getMode(),
+            'editLink' => $editLink,
+            'menu' => $menu,
+            'classes' => [
+                'table' => $tableClass,
+                'tableRow' => $trClass,
+            ]
+        ]);
 	}
 
 	/**

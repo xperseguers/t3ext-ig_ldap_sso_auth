@@ -3,12 +3,20 @@
       data-namespace-typo3-fluid="true">
 
 <f:be.menus.actionMenu additionalAttributes="{'class':'form-select form-select-sm form-control t3-js-jumpMenuBox'}">
+    <f:variable name="additionalAttributes" value="{}" />
+    <f:if condition="{action} == 'index'">
+        <f:variable name="additionalAttributes" value="{selected: 1}" />
+    </f:if>
     <f:be.menus.actionMenuItem label="{f:translate(key:'module_overview')}" controller="Module" action="index"
-                               arguments="{configuration:currentConfiguration.uid}"/>
+                               arguments="{configuration:currentConfiguration.uid}" additionalAttributes="{additionalAttributes}"/>
     <f:if condition="{currentConfiguration}">
         <f:for each="{menu}" as="item">
+            <f:variable name="additionalAttributes" value="{}" />
+            <f:if condition="{action} == {item.action}">
+                <f:variable name="additionalAttributes" value="{selected: 1}" />
+            </f:if>
             <f:be.menus.actionMenuItem label="{f:translate(key:item.titleKey)}" controller="Module" action="{item.action}"
-                                       arguments="{configuration:currentConfiguration.uid}"/>
+                                       arguments="{configuration:currentConfiguration.uid}" additionalAttributes="{additionalAttributes}"/>
         </f:for>
     </f:if>
 </f:be.menus.actionMenu>

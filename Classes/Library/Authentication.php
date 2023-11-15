@@ -542,7 +542,7 @@ class Authentication
 
             // We want to return only first user in any case, if more than one are returned (e.g.,
             // same username/DN twice) actual authentication will fail anyway later on
-            $user = is_array($typo3_users[0]) ? $typo3_users[0] : null;
+            $user = is_array($typo3_users[0] ?? null) ? $typo3_users[0] : null;
         } elseif (!Configuration::getValue('IfUserExist')) {
             $user = Typo3UserRepository::create(static::$authenticationService->authInfo['db_user']['table']);
 

@@ -422,7 +422,9 @@ class Typo3UserRepository
     public static function setRandomPassword(): string
     {
 		$factory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Crypto\PasswordHashing\PasswordHashFactory::class);
-		$instance = $factory->getDefaultHashInstance(\Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode());
+		// falls back to `BE`, because there is no info about the TYPO3 mode
+        // does not harm, because it is a random password, which is never needed
+        $instance = $factory->getDefaultHashInstance(\Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode());
         $password = GeneralUtility::makeInstance(Random::class)->generateRandomBytes(16);
 
         return $instance->getHashedPassword($password);

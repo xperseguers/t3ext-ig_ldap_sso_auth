@@ -69,7 +69,7 @@ class Authentication
      */
     public static function initializeConfiguration()
     {
-        if (Configuration::getMode() === 'be') {
+        if (Configuration::getMode() === 'BE') {
             static::$config = Configuration::getBackendConfiguration();
         } else {
             static::$config = Configuration::getFrontendConfiguration();
@@ -880,7 +880,7 @@ class Authentication
         if (isset(static::$authenticationService) && !empty(static::$authenticationService->authInfo['db_groups']['table'])) {
             $groupTable = static::$authenticationService->authInfo['db_groups']['table'];
         } else {
-            if (\Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode() === 'BE') {
+            if (\Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode(static::$authenticationService->authInfo['loginType']) === 'BE') {
                 $groupTable = 'be_groups';
             } else {
                 $groupTable = 'fe_groups';
@@ -903,5 +903,4 @@ class Authentication
         }
         return $logger;
     }
-
 }

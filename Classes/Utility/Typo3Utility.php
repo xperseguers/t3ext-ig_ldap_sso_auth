@@ -17,14 +17,21 @@ class Typo3Utility
 	 *
 	 * @return string
 	 */
-	public static function getTypo3Mode(): string
+	public static function getTypo3Mode(string $mode = ''): string
 	{
-		if (($GLOBALS['TYPO3_REQUEST'] ?? null) instanceof \Psr\Http\Message\ServerRequestInterface
+
+        if ($mode !== '') {
+            if (str_ends_with($mode, self::FE)) {
+                return self::FE;
+            }
+            return self::BE;
+        }
+
+        if (($GLOBALS['TYPO3_REQUEST'] ?? null) instanceof \Psr\Http\Message\ServerRequestInterface
 			&& \TYPO3\CMS\Core\Http\ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()
 		) {
 			return self::FE;
 		}
-
 		return self::BE;
 	}
 }

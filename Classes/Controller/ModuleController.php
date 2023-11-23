@@ -129,6 +129,7 @@ class ModuleController extends ActionController
 		}
 		$this->saveState($configuration);
 
+        // Falls back to the default `BE value` ... because a module can only be loaded in BE - context
 		Configuration::initialize(\Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode(), $configuration);
 		$this->populateView($configuration);
 
@@ -192,6 +193,7 @@ class ModuleController extends ActionController
 		}
 		$this->saveState($configuration);
 
+        // Falls back to the default `BE value` ... because a module can only be loaded in BE - context
 		Configuration::initialize(\Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode(), $configuration);
 		$this->populateView($configuration);
 

@@ -77,8 +77,8 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
         $user = false;
         $userRecordOrIsValid = false;
         $remoteUser = $this->getRemoteUser();
-        $enableFrontendSso = \Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode() === 'FE' && $this->config['enableFESSO'] && $remoteUser;
-        $enableBackendSso = \Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode() === 'BE' && $this->config['enableBESSO'] && $remoteUser;
+        $enableFrontendSso = \Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode($this->mode) === 'FE' && $this->config['enableFESSO'] && $remoteUser;
+        $enableBackendSso = \Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode($this->mode) === 'BE' && $this->config['enableBESSO'] && $remoteUser;
 
         // This simple check is the key to prevent your log being filled up with warnings
         // due to the AJAX calls to maintain the session active if your configuration forces
@@ -100,7 +100,7 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
         }
 
         foreach ($configurationRecords as $configurationRecord) {
-            Configuration::initialize(\Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode(), $configurationRecord);
+            Configuration::initialize(\Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode($this->mode), $configurationRecord);
             if (!Configuration::isEnabledForCurrentHost()) {
                 $msg = sprintf(
                     'Configuration record #%s is not enabled for domain %s',
@@ -204,7 +204,7 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
             return static::STATUS_AUTHENTICATION_FAILURE_CONTINUE;
         }
 
-        if (\Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode() === 'BE') {
+        if (\Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode($this->mode) === 'BE') {
             $status = Configuration::getValue('BEfailsafe')
                 ? static::STATUS_AUTHENTICATION_FAILURE_CONTINUE
                 : static::STATUS_AUTHENTICATION_FAILURE_BREAK;
@@ -213,13 +213,13 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
         }
 
         $remoteUser = $this->getRemoteUser();
-        $enableFrontendSso = \Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode() === 'FE' && $this->config['enableFESSO'] && $remoteUser;
-        $enableBackendSso = \Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode() === 'BE' && $this->config['enableBESSO'] && $remoteUser;
+        $enableFrontendSso = \Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode($this->mode) === 'FE' && $this->config['enableFESSO'] && $remoteUser;
+        $enableBackendSso = \Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode($this->mode) === 'BE' && $this->config['enableBESSO'] && $remoteUser;
 
         if ((($this->login['uident'] && $this->login['uname']) || $enableFrontendSso || $enableBackendSso) && !empty($user['tx_igldapssoauth_dn'])) {
             if (isset($user['tx_igldapssoauth_from'])) {
                 $status = static::STATUS_AUTHENTICATION_SUCCESS_BREAK;
-            } elseif (\Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode() === 'BE' && Configuration::getValue('BEfailsafe')) {
+            } elseif (\Causal\IgLdapSsoAuth\Utility\Typo3Utility::getTypo3Mode($this->mode) === 'BE' && Configuration::getValue('BEfailsafe')) {
                 return static::STATUS_AUTHENTICATION_FAILURE_CONTINUE;
             } else {
                 // Failed login attempt (wrong password) - write that to the log!

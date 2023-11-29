@@ -69,7 +69,7 @@ class Authentication
      */
     public static function initializeConfiguration()
     {
-        if (Configuration::getMode() === 'BE') {
+        if (Configuration::getMode() === 'be') {
             static::$config = Configuration::getBackendConfiguration();
         } else {
             static::$config = Configuration::getFrontendConfiguration();

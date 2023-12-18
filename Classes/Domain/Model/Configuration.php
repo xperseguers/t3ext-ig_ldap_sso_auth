@@ -400,7 +400,7 @@ class Configuration
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]
+     * @return \Causal\IgLdapSsoAuth\Domain\Model\BackendUserGroup[]
      */
     public function getBackendGroupsRequired(): array
     {
@@ -408,7 +408,7 @@ class Configuration
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]
+     * @return \Causal\IgLdapSsoAuth\Domain\Model\BackendUserGroup[]
      */
     public function getBackendGroupsAssigned(): array
     {
@@ -416,7 +416,7 @@ class Configuration
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]
+     * @return \Causal\IgLdapSsoAuth\Domain\Model\BackendUserGroup[]
      */
     public function getBackendGroupsAdministrator(): array
     {
@@ -472,7 +472,7 @@ class Configuration
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup[]
+     * @return \Causal\IgLdapSsoAuth\Domain\Model\FrontendUserGroup[]
      */
     public function getFrontendGroupsRequired(): array
     {
@@ -480,7 +480,7 @@ class Configuration
     }
 
     /**
-     * @return \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup[]
+     * @return \Causal\IgLdapSsoAuth\Domain\Model\FrontendUserGroup[]
      */
     public function getFrontendGroupsAssigned(): array
     {

@@ -346,7 +346,7 @@ class Authentication
         $ldapGroups = static::getLdapGroups($ldapUser);
         unset($ldapGroups['count']);
 
-        /** @var \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]|\TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup[] $requiredLDAPGroups */
+        /** @var \Causal\IgLdapSsoAuth\Domain\Model\BackendUserGroup[]|\Causal\IgLdapSsoAuth\Domain\Model\FrontendUserGroup[] $requiredLDAPGroups */
         $requiredLDAPGroups = Configuration::getValue('requiredLDAPGroups');
 
         if (empty($ldapGroups)) {

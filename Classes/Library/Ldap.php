@@ -40,12 +40,10 @@ class Ldap
      */
     protected $ldapUtility;
 
-    /**
-     * @param LdapUtility $ldapUtility
-     */
-    public function injectLdapUtility(LdapUtility $ldapUtility): void
+
+    public function __construct()
     {
-        $this->ldapUtility = $ldapUtility;
+        $this->ldapUtility = GeneralUtility::makeInstance(LdapUtility::class);
     }
 
     /**

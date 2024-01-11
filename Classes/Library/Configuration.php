@@ -16,6 +16,7 @@ namespace Causal\IgLdapSsoAuth\Library;
 
 use Causal\IgLdapSsoAuth\Utility\CompatUtility;
 use Causal\IgLdapSsoAuth\Utility\TypoScriptUtility;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\Entity\Site;
@@ -60,7 +61,9 @@ class Configuration
         \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
     ): void
     {
-        $globalConfiguration = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['ig_ldap_sso_auth'] ?? [];
+
+        $globalConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)
+            ->get('ig_ldap_sso_auth');
 
         // Legacy configuration options
         unset($globalConfiguration['evaluateGroupsFromMembership']);

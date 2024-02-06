@@ -40,7 +40,6 @@ through the following code either in :file:`AdditionalConfiguration.php` or in
        'pid' => '0',
        'tstamp' => '1521027046',
        'crdate' => '1521027046',
-       'cruser_id' => '1',
        'deleted' => '0',
        'hidden' => '0',
        'name' => 'Some Name',

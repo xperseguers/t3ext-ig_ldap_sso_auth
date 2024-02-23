@@ -15,7 +15,7 @@ $EM_CONF[$_EXTKEY] = [
     'description' => 'This extension provides LDAP support for TYPO3 by delegating the authentication of frontend and/or backend users to the centrally-managed directory of your organization. It fully supports OpenLDAP and Active Directory and is capable of connecting securely to the authentication server using either TLS or SSL (ldaps://).
 In case of use in an intranet environment, this extension is a perfect match since it natively brings Single Sign-On (SSO) capability to TYPO3 without any complex configuration.',
     'category' => 'services',
-    'version' => '3.8.0-dev',
+    'version' => '3.8.0',
     'state' => 'stable',
     'uploadfolder' => 0,
     'createDirs' => '',
@@ -25,7 +25,7 @@ In case of use in an intranet environment, this extension is a perfect match sin
     'author_company' => '',
     'constraints' => [
         'depends' => [
-            'php' => '7.4.0-8.2.99',
+            'php' => '7.4.0-8.3.99',
             'typo3' => '10.4.0-11.5.99',
         ],
         'conflicts' => [],

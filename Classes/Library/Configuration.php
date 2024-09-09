@@ -209,11 +209,19 @@ class Configuration
         // Default fields : title, tx_igldapssoauth_dn
 
         $groupMapping = static::parseMapping($mapping);
-        if (!isset($groupMapping['title'])) {
+        if (
+          !isset($groupMapping['title'])
+          && !isset($groupMapping['title.'])
+        ) {
             $groupMapping['title'] = '<dn>';
         }
-        $groupMapping['tx_igldapssoauth_dn'] = '<dn>';
 
+        if (
+          !isset($groupMapping['tx_igldapssoauth_dn'])
+          && !isset($groupMapping['tx_igldapssoauth_dn.'])
+        ) {
+          $groupMapping['tx_igldapssoauth_dn'] = '<dn>';
+        }
         return $groupMapping;
     }
 

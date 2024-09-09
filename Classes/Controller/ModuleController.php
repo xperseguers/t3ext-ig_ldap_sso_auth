@@ -538,7 +538,8 @@ class ModuleController extends ActionController
             $typo3Groups = Authentication::getOrCreateTypo3Groups(
                 [$ldapGroup],
                 $table,
-                $pid
+                $pid,
+                $config['groups']['mapping']
             );
 
             // Merge LDAP and TYPO3 information
@@ -633,7 +634,8 @@ class ModuleController extends ActionController
                     $typo3Groups = Authentication::getOrCreateTypo3Groups(
                         $ldapGroups,
                         $table,
-                        $pid
+                        $pid,
+                        $config['groups']['mapping']
                     );
 
                     foreach ($ldapGroups as $index => $ldapGroup) {
@@ -759,7 +761,8 @@ class ModuleController extends ActionController
         $typo3Groups = Authentication::getOrCreateTypo3Groups(
             $ldapGroups,
             $table,
-            $typo3GroupPid
+            $typo3GroupPid,
+            $config['groups']['mapping']
         );
 
         foreach ($ldapGroups as $index => $ldapGroup) {

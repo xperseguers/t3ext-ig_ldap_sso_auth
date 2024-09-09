@@ -358,12 +358,14 @@ class Authentication
         } else {
             // Get pid from group mapping
             $typo3GroupPid = Configuration::getPid($configuration['groups']['mapping']);
+            $contentObj = static::initialiseContentObjectRenderer(0);
 
             $typo3GroupsTemp = static::getOrCreateTypo3Groups(
                 $ldapGroups,
                 $groupTable,
                 $typo3GroupPid,
-                $configuration['groups']['mapping']
+                $configuration['groups']['mapping'],
+                $contentObj
             );
 
             if (!empty($requiredLDAPGroups)) {
@@ -395,28 +397,22 @@ class Authentication
                 }
                 if (Configuration::getValue('GroupsNotSynchronize')) {
                     $typo3_groups[] = $typo3Group;
-                } elseif (empty($typo3Group['uid'])) {
-                    $newGroup = Typo3GroupRepository::add(
-                        $groupTable,
-                        $typo3Group
-                    );
-
+                    $i++;
+                    continue;
+                }
+                if (empty($typo3Group['uid'])) {
                     $typo3_group_merged = static::merge(
                         $ldapGroups[$i],
-                        $newGroup,
+                        $typo3Group,
                         $configuration['groups']['mapping']
                     );
 
-                    Typo3GroupRepository::update(
+                    $typo3Group = Typo3GroupRepository::add(
                         $groupTable,
                         $typo3_group_merged
                     );
 
-                    $typo3Group = Typo3GroupRepository::fetch(
-                        $groupTable,
-                        $typo3_group_merged['uid']
-                    );
-                    $typo3_groups[] = $typo3Group[0];
+                    $typo3_groups[] = $typo3Group;
                 } else {
                     // Restore group that may have been previously deleted
                     $typo3Group['deleted'] = 0;
@@ -431,11 +427,7 @@ class Authentication
                         $typo3_group_merged
                     );
 
-                    $typo3Group = Typo3GroupRepository::fetch(
-                        $groupTable,
-                        $typo3_group_merged['uid']
-                    );
-                    $typo3_groups[] = $typo3Group[0];
+                    $typo3_groups[] = $typo3_group_merged;
                 }
 
                 $i++;
@@ -578,7 +570,8 @@ class Authentication
         array $ldapGroups = [],
         ?string $table = null,
         ?int $pid = null,
-        array $mapping = []
+        array $mapping = [],
+        ContentObjectRenderer $contentObj = null
     ): array
     {
         if (empty($ldapGroups)) {
@@ -589,10 +582,9 @@ class Authentication
         $typo3Groups = [];
 
         foreach ($ldapGroups as $ldapGroup) {
-            $groupName = null;
-            if (isset($mapping['title']) &&  preg_match("`<([^$]*)>`", $mapping['title'])) {
-                $groupName = static::replaceLdapMarkers($mapping['title'], $ldapGroup);
-            }
+            $ldapGroup = static::processTypoScript($contentObj, $mapping, $ldapGroup);
+            $groupName = $ldapGroup['__extraData']['title'] ?? null;
+
             $existingTypo3Groups = Typo3GroupRepository::fetch($table, 0, $pid, $ldapGroup['dn'], $groupName);
 
             if (!empty($existingTypo3Groups)) {
@@ -707,56 +699,7 @@ class Authentication
                 }
             }
 
-            $backupTSFE = $GLOBALS['TSFE'] ?? null;
-
-            // Advanced stdWrap methods require a valid $GLOBALS['TSFE'] => create the most lightweight one
-            $pageId = $typo3['pid'];
-            // Use SiteFinder to get a Site object for the current page tree
-            $siteFinder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Site\SiteFinder::class);
-            try {
-                $currentSite = $siteFinder->getSiteByPageId($pageId);
-            } catch (SiteNotFoundException $e) {
-                $allSites = $siteFinder->getAllSites();
-                $currentSite = reset($allSites);
-                $pageId = $currentSite->getRootPageId();
-            }
-
-            // Context is a singleton, so we can get the current Context by instantiation
-            $currentContext = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class);
-
-            $typoBranch = (new Typo3Version())->getBranch();
-            if (version_compare($typoBranch, '11.5', '>=')) {
-                $pageArguments = GeneralUtility::makeInstance(
-                    PageArguments::class,
-                    $pageId,
-                    PageRepository::DOKTYPE_SYSFOLDER,
-                    []
-                );
-                $frontendUserAuthentication = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
-            } else {
-                $pageArguments = null;
-                $frontendUserAuthentication = null;
-            }
-
-            // Use Site & Context to instantiate TSFE properly for TYPO3 v10+
-            $GLOBALS['TSFE'] = GeneralUtility::makeInstance(
-                TypoScriptFrontendController::class,
-                $currentContext,
-                $currentSite,
-                $currentSite->getDefaultLanguage(),
-                $pageArguments,
-                $frontendUserAuthentication
-            );
-
-            // initTemplate() has been removed. The deprecation notice suggests setting the property directly
-            $GLOBALS['TSFE']->tmpl = GeneralUtility::makeInstance(
-                TemplateService::class,
-                $currentContext
-            );
-            $GLOBALS['TSFE']->renderCharset = 'utf-8';
-
-            /** @var $contentObj ContentObjectRenderer */
-            $contentObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
+            $contentObj = static::initialiseContentObjectRenderer($out['pid']);
             $contentObj->start($flattenedLdap, '');
 
             // Process every TypoScript definition
@@ -767,11 +710,100 @@ class Authentication
                 $value = $contentObj->stdWrap($value, $mapping[$typoScriptKey]);
                 $out = static::mergeSimple([$field => $value], $out, $field, $value);
             }
-
-            $GLOBALS['TSFE'] = $backupTSFE;
         }
 
         return $out;
+    }
+
+    public static function processTypoScript($contentObj, $typoScript = [], $data = []) {
+
+      $out = $data;
+      $typoScriptKeys = [];
+      foreach($typoScript as $field => $value) {
+        if(str_ends_with($field, '.')) {
+          $typoScriptKeys[] = $field;
+        }
+      }
+
+      if(count($typoScriptKeys) > 0) {
+        $flattenedData = [];
+        foreach ($data as $key => $value) {
+          if (!is_numeric($key)) {
+            if (is_array($value)) {
+              unset($value['count']);
+              $value = implode(LF, $value);
+            }
+            $flattenedData[$key] = $value;
+          }
+        }
+        unset($flattenedData['count']);
+
+        $contentObj = static::initialiseContentObjectRenderer($out['pid'] ?? 0);
+        $contentObj->start($flattenedData, '');
+
+        // Process every TypoScript definition
+        foreach ($typoScriptKeys as $typoScriptKey) {
+          // Remove the trailing period to get corresponding field name
+          $field = substr($typoScriptKey, 0, -1);
+          $value = $out[$field] ?? '';
+          $value = $contentObj->stdWrap($value, $typoScript[$typoScriptKey]);
+          $out = static::mergeSimple([$field => $value], $out, $field, $value);
+        }
+      }
+
+      return $out;
+    }
+
+    protected static function initialiseContentObjectRenderer($pid = 0) {
+      // Advanced stdWrap methods require a valid $GLOBALS['TSFE'] => create the most lightweight one
+      $pageId = $pid;
+      // Use SiteFinder to get a Site object for the current page tree
+      $siteFinder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Site\SiteFinder::class);
+      try {
+          $currentSite = $siteFinder->getSiteByPageId($pageId);
+      } catch (SiteNotFoundException $e) {
+          $allSites = $siteFinder->getAllSites();
+          $currentSite = reset($allSites);
+          $pageId = $currentSite->getRootPageId();
+      }
+
+      // Context is a singleton, so we can get the current Context by instantiation
+      $currentContext = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class);
+
+      $typoBranch = (new Typo3Version())->getBranch();
+      if (version_compare($typoBranch, '11.5', '>=')) {
+          $pageArguments = GeneralUtility::makeInstance(
+              PageArguments::class,
+              $pageId,
+              PageRepository::DOKTYPE_SYSFOLDER,
+              []
+          );
+          $frontendUserAuthentication = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
+      } else {
+          $pageArguments = null;
+          $frontendUserAuthentication = null;
+      }
+
+      // Use Site & Context to instantiate TSFE properly for TYPO3 v10+
+      $frontendController = GeneralUtility::makeInstance(
+          TypoScriptFrontendController::class,
+          $currentContext,
+          $currentSite,
+          $currentSite->getDefaultLanguage(),
+          $pageArguments,
+          $frontendUserAuthentication
+      );
+
+      // initTemplate() has been removed. The deprecation notice suggests setting the property directly
+      $frontendController->tmpl = GeneralUtility::makeInstance(
+          TemplateService::class,
+          $currentContext
+      );
+
+      /** @var $contentObj ContentObjectRenderer */
+      $contentObj = GeneralUtility::makeInstance(ContentObjectRenderer::class, $frontendController);
+
+      return $contentObj;
     }
 
     /**

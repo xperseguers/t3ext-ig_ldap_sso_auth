@@ -193,7 +193,7 @@ class Authentication
         $typo3_users_pid = Configuration::getPid(static::$config['users']['mapping']);
 
         // Get TYPO3 user from username, DN and pid.
-        $typo3_user = static::getTypo3User($username, $userdn, $typo3_users_pid);
+        $typo3_user = static::getOrCreateTypo3User($username, $userdn, $typo3_users_pid);
         if ($typo3_user === null) {
             // Non-existing local users are not allowed to authenticate
             return false;
@@ -202,7 +202,7 @@ class Authentication
         // Get LDAP and TYPO3 user groups for user
         // First reset the LDAP groups
         static::$ldapGroups = null;
-        $typo3_groups = static::getUserGroups($ldapUser);
+        $typo3_groups = static::getOrCreateUserGroups($ldapUser);
         if ($typo3_groups === null) {
             // Required LDAP groups are missing
             static::$lastAuthenticationDiagnostic = 'Missing required LDAP groups.';
@@ -333,7 +333,7 @@ class Authentication
      * @return array|null Array of groups or null if required LDAP groups are missing
      * @throws \Causal\IgLdapSsoAuth\Exception\InvalidUserGroupTableException
      */
-    public static function getUserGroups(array $ldapUser, array $configuration = null, string $groupTable = ''): ?array
+    public static function getOrCreateUserGroups(array $ldapUser, array $configuration = null, string $groupTable = ''): ?array
     {
         if ($configuration === null) {
             $configuration = static::$config;
@@ -359,7 +359,7 @@ class Authentication
             // Get pid from group mapping
             $typo3GroupPid = Configuration::getPid($configuration['groups']['mapping']);
 
-            $typo3GroupsTemp = static::getTypo3Groups(
+            $typo3GroupsTemp = static::getOrCreateTypo3Groups(
                 $ldapGroups,
                 $groupTable,
                 $typo3GroupPid,
@@ -521,7 +521,7 @@ class Authentication
      * @param int|null $pid
      * @return array|null
      */
-    protected static function getTypo3User(string $username, string $userDn, ?int $pid = null): ?array
+    protected static function getOrCreateTypo3User(string $username, string $userDn, ?int $pid = null): ?array
     {
         $user = null;
 
@@ -574,7 +574,7 @@ class Authentication
      * @param array $mapping
      * @return array
      */
-    public static function getTypo3Groups(
+    public static function getOrCreateTypo3Groups(
         array $ldapGroups = [],
         ?string $table = null,
         ?int $pid = null,
@@ -621,7 +621,7 @@ class Authentication
      * @param int|null $pid
      * @return array
      */
-    public static function getTypo3Users(
+    public static function getOrCreateTypo3Users(
         array $ldapUsers = [],
         array $mapping = [],
         ?string $table = null,

@@ -535,7 +535,7 @@ class ModuleController extends ActionController
 
             $pid = Configuration::getPid($config['groups']['mapping']);
             $table = $params['mode'] === 'be' ? 'be_groups' : 'fe_groups';
-            $typo3Groups = Authentication::getTypo3Groups(
+            $typo3Groups = Authentication::getOrCreateTypo3Groups(
                 [$ldapGroup],
                 $table,
                 $pid
@@ -630,7 +630,7 @@ class ModuleController extends ActionController
                     // Populate an array of TYPO3 group records corresponding to the LDAP groups
                     // If a given LDAP group has no associated group in TYPO3, a fresh record
                     // will be created so that $ldapGroups[i] <=> $typo3Groups[i]
-                    $typo3Groups = Authentication::getTypo3Groups(
+                    $typo3Groups = Authentication::getOrCreateTypo3Groups(
                         $ldapGroups,
                         $table,
                         $pid
@@ -756,7 +756,7 @@ class ModuleController extends ActionController
         // will be created so that $ldapGroups[i] <=> $typo3Groups[i]
         $typo3GroupPid = Configuration::getPid($config['groups']['mapping']);
         $table = ($mode === 'be') ? 'be_groups' : 'fe_groups';
-        $typo3Groups = Authentication::getTypo3Groups(
+        $typo3Groups = Authentication::getOrCreateTypo3Groups(
             $ldapGroups,
             $table,
             $typo3GroupPid

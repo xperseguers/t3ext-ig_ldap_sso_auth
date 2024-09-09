@@ -544,7 +544,7 @@ class ModuleController extends ActionController
             // Merge LDAP and TYPO3 information
             $group = Authentication::merge($ldapGroup, $typo3Groups[0], $config['groups']['mapping']);
 
-            if ((int)$group['uid'] === 0) {
+            if (!isset($group['uid']) || (int)$group['uid'] === 0) {
                 $group = Typo3GroupRepository::add($table, $group);
             } else {
                 // Restore group that may have been previously deleted
@@ -552,7 +552,7 @@ class ModuleController extends ActionController
                 $success = Typo3GroupRepository::update($table, $group);
             }
 
-            if (!empty($config['groups']['mapping']['parentGroup'])) {
+            if (isset($config['groups']['mapping']['parentGroup'])) {
                 $fieldParent = $config['groups']['mapping']['parentGroup'];
                 if (preg_match("`<([^$]*)>`", $fieldParent, $attribute)) {
                     $fieldParent = $attribute[1];

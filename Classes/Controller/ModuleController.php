@@ -304,7 +304,18 @@ class ModuleController extends ActionController
         $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
 
         $groups = $this->getAvailableUserGroups($configuration, 'be');
-        $this->view->assign('groups', $groups);
+        $titles = [];
+        $uniqueGroups = array_filter($groups, function($group) use (&$titles) {
+            if (in_array($group['title'], $titles)) {
+                return false;
+            }
+            $titles[] = $group['title'];
+            return true;
+        });
+        usort($uniqueGroups, function($a, $b) {
+            return strnatcmp($a['title'], $b['title']);
+        });
+        $this->view->assign('groups', $uniqueGroups);
     }
 
     /**

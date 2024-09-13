@@ -43,11 +43,12 @@ class Configuration
      */
     protected static $configuration;
 
-    protected static $mode = null;
+    protected static $mode = 'be';
     protected static $be = [];
     protected static $fe = [];
     protected static $ldap = [];
     protected static $domains = [];
+    protected static $initialized = false;
 
     /**
      * Initializes the configuration class.
@@ -140,6 +141,8 @@ class Configuration
         static::$ldap['ssl'] = $configuration->isLdapSsl();
         static::$ldap['binddn'] = $configuration->getLdapBindDn();
         static::$ldap['password'] = $configuration->getLdapPassword();
+
+        static::$initialized = true;
     }
 
     /**
@@ -149,7 +152,7 @@ class Configuration
      */
     public static function isInitialized(): bool
     {
-        return static::$mode !== null;
+        return static::$initialized !== false;
     }
 
     /**

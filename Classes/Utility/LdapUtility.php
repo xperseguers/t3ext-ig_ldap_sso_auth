@@ -25,7 +25,7 @@ use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
  * @subpackage  ig_ldap_sso_auth
  * @author      Xavier Perseguers <xavier@causal.ch>
  * @author      Michael Gagnon <mgagnon@infoglobe.ca>
- * @copyright    (c) 2011-2018 Xavier Perseguers <xavier@causal.ch>
+ * @copyright    (c) 2011-2024 Xavier Perseguers <xavier@causal.ch>
  * @copyright    (c) 2007-2010 Michael Gagnon <mgagnon@infoglobe.ca>
  * @see http://www-sop.inria.fr/semir/personnel/Laurent.Mirtain/ldap-livre.html
  *

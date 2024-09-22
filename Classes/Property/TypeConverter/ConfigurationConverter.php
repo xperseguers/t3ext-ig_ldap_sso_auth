@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -25,31 +27,15 @@ use TYPO3\CMS\Extbase\Property\TypeConverter\AbstractTypeConverter;
  */
 class ConfigurationConverter extends AbstractTypeConverter implements SingletonInterface
 {
+    protected array $sourceTypes = ['integer', 'string'];
 
-    /**
-     * @var array<string>
-     */
-    protected $sourceTypes = ['integer', 'string'];
+    protected string $targetType = Configuration::class;
 
-    /**
-     * @var string
-     */
-    protected $targetType = Configuration::class;
+    protected int $priority = 10;
 
-    /**
-     * @var int
-     */
-    protected $priority = 10;
+    protected ConfigurationRepository $configurationRepository;
 
-    /**
-     * @var ConfigurationRepository
-     */
-    protected $configurationRepository;
-
-    /**
-     * @param ConfigurationRepository $configurationRepository
-     */
-    public function injectConfigurationRepository(ConfigurationRepository $configurationRepository): void
+    public function __construct(ConfigurationRepository $configurationRepository)
     {
         $this->configurationRepository = $configurationRepository;
     }

@@ -75,8 +75,11 @@ defined('TYPO3') || die();
         'class' => \Causal\IgLdapSsoAuth\Form\Element\LdapSuggestElement::class,
     ];
 
-    // Register type converters
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerTypeConverter(\Causal\IgLdapSsoAuth\Property\TypeConverter\ConfigurationConverter::class);
+    $typo3Version = (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
+    if ($typo3Version < 12) {
+        // Register type converters
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerTypeConverter(\Causal\IgLdapSsoAuth\Property\TypeConverter\ConfigurationConverter::class);    
+    }
 
     // User have save doc new button
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('options.saveDocNew.tx_igldapssoauth_config=1');

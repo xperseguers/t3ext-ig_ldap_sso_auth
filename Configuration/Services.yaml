@@ -1,0 +1,15 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Causal\IgLdapSsoAuth\:
+    resource: '../Classes/*'
+
+  Causal\IgLdapSsoAuth\Property\TypeConverter\ConfigurationConverter:
+    tags:
+      - name: extbase.type_converter
+        priority: 10
+        target: \Causal\IgLdapSsoAuth\Domain\Model\Configuration
+        sources: int,string

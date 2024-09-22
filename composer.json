@@ -24,27 +24,24 @@
   ],
   "license": "GPL-2.0-or-later",
   "require": {
-    "php": ">=7.4.0 <=7.4.99 || >=8.0.0 <=8.2.99",
+    "php": ">=7.4.0 <=7.4.99 || >=8.0.0 <=8.3.99",
     "ext-ldap": "*",
     "ext-json": "*",
-    "typo3/cms-core": "^10 || ^11 || ^12"
+    "typo3/cms-core": "^11 || ^12 || ^13"
   },
   "autoload": {
     "psr-4": {
       "Causal\\IgLdapSsoAuth\\": "Classes/"
     }
   },
-  "replace": {
-    "typo3-ter/ig-ldap-sso-auth": "self.version"
-  },
   "extra": {
     "branch-alias": {
       "dev-master": "3.8.x-dev",
+      "dev-faeture/TYPO3v12": "4.0.x-dev",
       "dev-3-3": "3.3.x-dev"
     },
     "typo3/cms": {
-      "extension-key": "ig_ldap_sso_auth",
-      "cms-package-dir": "{$vendor-dir}/typo3/cms"
+      "extension-key": "ig_ldap_sso_auth"
     }
   }
 }

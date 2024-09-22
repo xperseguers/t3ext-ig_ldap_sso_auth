@@ -1,8 +1,5 @@
 <?php
-
-use TYPO3\CMS\Core\Information\Typo3Version;
-
-defined('TYPO3_MODE') || defined('TYPO3') || die();
+defined('TYPO3') || die();
 
 (static function (string $_EXTKEY) {
     // Register additional sprite icons
@@ -16,8 +13,8 @@ defined('TYPO3_MODE') || defined('TYPO3') || die();
     );
     unset($iconRegistry);
 
-    $typoBranch = (new Typo3Version())->getBranch();
-    if (version_compare($typoBranch, '12.4', '<')) {
+    $typo3Version (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
+    if ($typo3Version < 12) {
         // Add BE module on top of system main module
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
             $_EXTKEY,

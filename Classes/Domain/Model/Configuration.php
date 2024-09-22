@@ -36,11 +36,6 @@ class Configuration
     /**
      * @var string
      */
-    protected $domains;
-
-    /**
-     * @var string
-     */
     protected $sites;
 
     /**
@@ -233,15 +228,6 @@ class Configuration
     public function getName(): string
     {
         return $this->name;
-    }
-
-    /**
-     * @return string
-     * @deprecated since TYPO3 v10
-     */
-    public function getDomains(): string
-    {
-        return $this->domains;
     }
 
     /**

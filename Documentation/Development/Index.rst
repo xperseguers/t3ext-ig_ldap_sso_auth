@@ -44,7 +44,7 @@ through the following code either in :file:`AdditionalConfiguration.php` or in
        'deleted' => '0',
        'hidden' => '0',
        'name' => 'Some Name',
-       'domains' => '',
+       'sites' => '',
        'ldap_server' => '0',
        'ldap_charset' => 'utf-8',
        'ldap_host' => 'ldap.some.domain',

@@ -66,20 +66,6 @@ return [
                 'eval' => 'required,trim',
             ]
         ],
-        /* TODO: drop altogether
-        'domains' => [
-            'exclude' => 1,
-            'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.domains',
-            'description' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.domains.v9_description',
-            'config' => [
-                'type' => 'select',
-                'renderType' => 'selectMultipleSideBySide',
-                'itemsProcFunc' => \Causal\IgLdapSsoAuth\Tca\DomainItemsProcFunc::class . '->getDomains',
-                'size' => 10,
-                'default' => '',
-            ]
-        ],
-        */
         'sites' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.sites',

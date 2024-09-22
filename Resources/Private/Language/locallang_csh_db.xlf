@@ -6,18 +6,12 @@
 			<trans-unit id="name.description">
 				<source>Name used to distinguish each configuration.</source>
 			</trans-unit>
-			<trans-unit id="domains.description">
-				<source>Domains for which this configuration should be used. Leave empty to use it with any domain.</source>
-			</trans-unit>
 
 			<trans-unit id="ldap_server.description">
 				<source>Type of LDAP server used by the authentication (OpenLDAP, Active Directory).</source>
 			</trans-unit>
 			<trans-unit id="ldap_charset.description">
 				<source>Character set used by the LDAP server. Usually: utf-8.</source>
-			</trans-unit>
-			<trans-unit id="ldap_host.description">
-				<source>Address of the LDAP server.</source>
 			</trans-unit>
 			<trans-unit id="ldap_port.description">
 				<source>Port used by the LDAP server. Default: 389.</source>
@@ -28,9 +22,6 @@
 			</trans-unit>
 			<trans-unit id="ldap_binddn.syntax">
 				<source>E.g., cn=admin,dc=example,dc=com</source>
-			</trans-unit>
-			<trans-unit id="ldap_password.description">
-				<source>Password used to bind to the server.</source>
 			</trans-unit>
 
 			<trans-unit id="be_users_basedn.description">

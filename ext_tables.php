@@ -13,7 +13,7 @@ defined('TYPO3') || die();
     );
     unset($iconRegistry);
 
-    $typo3Version (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
+    $typo3Version = (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
     if ($typo3Version < 12) {
         // Add BE module on top of system main module
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(

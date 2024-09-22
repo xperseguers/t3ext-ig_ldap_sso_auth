@@ -21,7 +21,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Http\JsonResponse;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
@@ -318,13 +317,7 @@ class ModuleController extends ActionController
     {
         $params = $request->getQueryParams();
 
-        $typoBranch = (new Typo3Version())->getBranch();
-        if (version_compare($typoBranch, '11.5', '>=')) {
-            $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
-        } else {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            $configurationRepository = $objectManager->get(ConfigurationRepository::class);
-        }
+        $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
 
         $configuration = $configurationRepository->findByUid($params['configuration']);
         list($mode, $key) = explode('_', $params['type'], 2);
@@ -354,15 +347,8 @@ class ModuleController extends ActionController
     {
         $params = $request->getQueryParams();
 
-        $typoBranch = (new Typo3Version())->getBranch();
-        if (version_compare($typoBranch, '11.5', '>=')) {
-            $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
-            $ldap = GeneralUtility::makeInstance(Ldap::class);
-        } else {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            $configurationRepository = $objectManager->get(ConfigurationRepository::class);
-            $ldap = $objectManager->get(Ldap::class);
-        }
+        $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
+        $ldap = GeneralUtility::makeInstance(Ldap::class);
 
         $configuration = $configurationRepository->findByUid($params['configuration']);
         list($mode, $key) = explode('_', $params['type'], 2);
@@ -379,12 +365,7 @@ class ModuleController extends ActionController
         }
 
         $template = GeneralUtility::getFileAbsFileName('EXT:ig_ldap_sso_auth/Resources/Private/Templates/Ajax/Search.html');
-        $typoBranch = (new Typo3Version())->getBranch();
-        if (version_compare($typoBranch, '11.5', '>=')) {
-            $view = GeneralUtility::makeInstance(\TYPO3\CMS\Fluid\View\StandaloneView::class);
-        } else {
-            $view = $objectManager->get(\TYPO3\CMS\Fluid\View\StandaloneView::class);
-        }
+        $view = GeneralUtility::makeInstance(\TYPO3\CMS\Fluid\View\StandaloneView::class);
         $view->getRequest()->setControllerExtensionName('ig_ldap_sso_auth');
         $view->setFormat('html');
         $view->setTemplatePathAndFilename($template);
@@ -459,15 +440,8 @@ class ModuleController extends ActionController
     {
         $params = $request->getQueryParams();
 
-        $typoBranch = (new Typo3Version())->getBranch();
-        if (version_compare($typoBranch, '11.5', '>=')) {
-            $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
-            $ldap = GeneralUtility::makeInstance(Ldap::class);
-        } else {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            $configurationRepository = $objectManager->get(ConfigurationRepository::class);
-            $ldap = $objectManager->get(Ldap::class);
-        }
+        $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
+        $ldap = GeneralUtility::makeInstance(Ldap::class);
 
         $configuration = $configurationRepository->findByUid($params['configuration']);
 
@@ -531,15 +505,8 @@ class ModuleController extends ActionController
     {
         $params = $request->getQueryParams();
 
-        $typoBranch = (new Typo3Version())->getBranch();
-        if (version_compare($typoBranch, '11.5', '>=')) {
-            $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
-            $ldap = GeneralUtility::makeInstance(Ldap::class);
-        } else {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-            $configurationRepository = $objectManager->get(ConfigurationRepository::class);
-            $ldap = $objectManager->get(Ldap::class);
-        }
+        $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
+        $ldap = GeneralUtility::makeInstance(Ldap::class);
 
         $configuration = $configurationRepository->findByUid($params['configuration']);
 

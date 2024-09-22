@@ -16,6 +16,7 @@ namespace Causal\IgLdapSsoAuth\Service;
 
 use Causal\IgLdapSsoAuth\Utility\CompatUtility;
 use Psr\Log\LoggerInterface;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Exception\UnsupportedLoginSecurityLevelException;
@@ -146,8 +147,7 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
             if (!$userRecordOrIsValid && $this->login['status'] === 'login' && $this->login['uident']) {
 
                 // Configuration of authentication service.
-                $typo3Branch = (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch();
-                $loginSecurityLevel = version_compare($typo3Branch, '11.0', '>')
+                $loginSecurityLevel = (new Typo3Version())->getMajorVersion() > 11
                     ? 'normal'
                     : $GLOBALS['TYPO3_CONF_VARS'][$typo3Mode]['loginSecurityLevel'];
                 // normal case

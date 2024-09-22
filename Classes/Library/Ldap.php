@@ -15,7 +15,6 @@
 namespace Causal\IgLdapSsoAuth\Library;
 
 use Psr\Log\LoggerInterface;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Utility\LdapUtility;
@@ -54,16 +53,7 @@ class Ldap
      */
     public static function getInstance(): self
     {
-        static $objectManager = null;
-        $typoBranch = (new Typo3Version())->getBranch();
-        if (version_compare($typoBranch, '11.5', '>=')) {
-            return GeneralUtility::makeInstance(__CLASS__);
-        } else {
-            if ($objectManager === null) {
-                $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
-            }
-            return $objectManager->get(__CLASS__);
-        }
+        return GeneralUtility::makeInstance(__CLASS__);
     }
 
     /**

@@ -18,9 +18,9 @@ use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
 use Causal\IgLdapSsoAuth\Service\AuthenticationService;
 use Causal\IgLdapSsoAuth\Utility\CompatUtility;
 use Psr\Log\LoggerInterface;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
@@ -717,21 +717,15 @@ class Authentication
             }
 
             // Context is a singleton, so we can get the current Context by instantiation
-            $currentContext = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class);
+            $currentContext = GeneralUtility::makeInstance(Context::class);
 
-            $typoBranch = (new Typo3Version())->getBranch();
-            if (version_compare($typoBranch, '11.5', '>=')) {
-                $pageArguments = GeneralUtility::makeInstance(
-                    PageArguments::class,
-                    $pageId,
-                    PageRepository::DOKTYPE_SYSFOLDER,
-                    []
-                );
-                $frontendUserAuthentication = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
-            } else {
-                $pageArguments = null;
-                $frontendUserAuthentication = null;
-            }
+            $pageArguments = GeneralUtility::makeInstance(
+                PageArguments::class,
+                $pageId,
+                PageRepository::DOKTYPE_SYSFOLDER,
+                []
+            );
+            $frontendUserAuthentication = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
 
             // Use Site & Context to instantiate TSFE properly for TYPO3 v10+
             $GLOBALS['TSFE'] = GeneralUtility::makeInstance(

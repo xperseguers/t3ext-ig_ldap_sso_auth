@@ -175,7 +175,6 @@ class Configuration
      * Returns the list of domains.
      *
      * @return array
-     * @deprecated since TYPO3 v10
      */
     public static function getDomains(): array
     {

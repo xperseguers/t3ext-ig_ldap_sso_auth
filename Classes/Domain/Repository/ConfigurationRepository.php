@@ -148,7 +148,6 @@ class ConfigurationRepository
         // Mapping for properties to be set without any transformation
         $mapping = [
             'name' => 'name',
-            'domains' => 'domains',
             'sites' => 'sites',
             'ldap_charset' => 'ldapCharset',
             'ldap_host' => 'ldapHost',

@@ -29,7 +29,7 @@ class FrontendUserGroupRepository extends AbstractUserGroupRepository
     /**
      * @var string
      */
-    protected $className = \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup::class;
+    protected $className = \Causal\IgLdapSsoAuth\Domain\Model\FrontendUserGroup::class;
 
     /**
      * @var string

@@ -304,7 +304,18 @@ class ModuleController extends ActionController
         $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
 
         $groups = $this->getAvailableUserGroups($configuration, 'be');
-        $this->view->assign('groups', $groups);
+        $titles = [];
+        $uniqueGroups = array_filter($groups, function($group) use (&$titles) {
+            if (in_array($group['title'], $titles)) {
+                return false;
+            }
+            $titles[] = $group['title'];
+            return true;
+        });
+        usort($uniqueGroups, function($a, $b) {
+            return strnatcmp($a['title'], $b['title']);
+        });
+        $this->view->assign('groups', $uniqueGroups);
     }
 
     /**
@@ -535,16 +546,17 @@ class ModuleController extends ActionController
 
             $pid = Configuration::getPid($config['groups']['mapping']);
             $table = $params['mode'] === 'be' ? 'be_groups' : 'fe_groups';
-            $typo3Groups = Authentication::getTypo3Groups(
+            $typo3Groups = Authentication::getOrCreateTypo3Groups(
                 [$ldapGroup],
                 $table,
-                $pid
+                $pid,
+                $config['groups']['mapping']
             );
 
             // Merge LDAP and TYPO3 information
             $group = Authentication::merge($ldapGroup, $typo3Groups[0], $config['groups']['mapping']);
 
-            if ((int)$group['uid'] === 0) {
+            if (!isset($group['uid']) || (int)$group['uid'] === 0) {
                 $group = Typo3GroupRepository::add($table, $group);
             } else {
                 // Restore group that may have been previously deleted
@@ -552,7 +564,7 @@ class ModuleController extends ActionController
                 $success = Typo3GroupRepository::update($table, $group);
             }
 
-            if (!empty($config['groups']['mapping']['parentGroup'])) {
+            if (isset($config['groups']['mapping']['parentGroup'])) {
                 $fieldParent = $config['groups']['mapping']['parentGroup'];
                 if (preg_match("`<([^$]*)>`", $fieldParent, $attribute)) {
                     $fieldParent = $attribute[1];
@@ -630,10 +642,11 @@ class ModuleController extends ActionController
                     // Populate an array of TYPO3 group records corresponding to the LDAP groups
                     // If a given LDAP group has no associated group in TYPO3, a fresh record
                     // will be created so that $ldapGroups[i] <=> $typo3Groups[i]
-                    $typo3Groups = Authentication::getTypo3Groups(
+                    $typo3Groups = Authentication::getOrCreateTypo3Groups(
                         $ldapGroups,
                         $table,
-                        $pid
+                        $pid,
+                        $config['groups']['mapping']
                     );
 
                     foreach ($ldapGroups as $index => $ldapGroup) {
@@ -756,10 +769,11 @@ class ModuleController extends ActionController
         // will be created so that $ldapGroups[i] <=> $typo3Groups[i]
         $typo3GroupPid = Configuration::getPid($config['groups']['mapping']);
         $table = ($mode === 'be') ? 'be_groups' : 'fe_groups';
-        $typo3Groups = Authentication::getTypo3Groups(
+        $typo3Groups = Authentication::getOrCreateTypo3Groups(
             $ldapGroups,
             $table,
-            $typo3GroupPid
+            $typo3GroupPid,
+            $config['groups']['mapping']
         );
 
         foreach ($ldapGroups as $index => $ldapGroup) {

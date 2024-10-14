@@ -835,7 +835,7 @@ class ModuleController extends ActionController
             $message = $this->translate(
                 'configuration_missing.message',
                 [
-                    'https://docs.typo3.org/typo3cms/extensions/ig_ldap_sso_auth/AdministratorManual/Index.html',
+                    'https://docs.typo3.org/p/causal/ig_ldap_sso_auth/main/en-us/AdministratorManual/Index.html',
                     $newRecordUri,
                 ]
             );

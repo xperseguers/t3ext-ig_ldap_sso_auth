@@ -25,10 +25,7 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
  */
 class FrontendUserGroup extends AbstractEntity
 {
-    /**
-     * @var string
-     */
-    protected $description = '';
+    protected string $description = '';
 
     /**
      * @var ObjectStorage<FrontendUserGroup>
@@ -51,10 +48,12 @@ class FrontendUserGroup extends AbstractEntity
      * Sets the title value
      *
      * @param string $title
+     * @return $this
      */
-    public function setTitle($title)
+    public function setTitle(string $title): self
     {
         $this->title = $title;
+        return $this;
     }
 
     /**
@@ -62,7 +61,7 @@ class FrontendUserGroup extends AbstractEntity
      *
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -71,10 +70,12 @@ class FrontendUserGroup extends AbstractEntity
      * Sets the description value
      *
      * @param string $description
+     * @return $this
      */
-    public function setDescription($description)
+    public function setDescription(string $description): self
     {
         $this->description = $description;
+        return $this;
     }
 
     /**
@@ -82,7 +83,7 @@ class FrontendUserGroup extends AbstractEntity
      *
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -92,30 +93,36 @@ class FrontendUserGroup extends AbstractEntity
      * although it can hold several subgroups.
      *
      * @param ObjectStorage<FrontendUserGroup> $subgroup An object storage containing the subgroups to add
+     * @return $this
      */
-    public function setSubgroup(ObjectStorage $subgroup)
+    public function setSubgroup(ObjectStorage $subgroup): self
     {
         $this->subgroup = $subgroup;
+        return $this;
     }
 
     /**
      * Adds a subgroup to the frontend user
      *
      * @param FrontendUserGroup $subgroup
+     * @return $this
      */
-    public function addSubgroup(FrontendUserGroup $subgroup)
+    public function addSubgroup(FrontendUserGroup $subgroup): self
     {
         $this->subgroup->attach($subgroup);
+        return $this;
     }
 
     /**
      * Removes a subgroup from the frontend user group
      *
      * @param FrontendUserGroup $subgroup
+     * @return $this
      */
-    public function removeSubgroup(FrontendUserGroup $subgroup)
+    public function removeSubgroup(FrontendUserGroup $subgroup): self
     {
         $this->subgroup->detach($subgroup);
+        return $this;
     }
 
     /**
@@ -124,7 +131,7 @@ class FrontendUserGroup extends AbstractEntity
      *
      * @return ObjectStorage<FrontendUserGroup> An object storage containing the subgroups
      */
-    public function getSubgroup()
+    public function getSubgroup(): ObjectStorage
     {
         return $this->subgroup;
     }

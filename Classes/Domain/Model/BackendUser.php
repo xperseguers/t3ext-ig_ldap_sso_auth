@@ -26,57 +26,32 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 class BackendUser extends AbstractEntity
 {
     /**
-     * @var string
      * @Extbase\Validate("NotEmpty")
      */
-    protected $userName = '';
+    protected string $userName = '';
 
-    /**
-     * @var string
-     */
-    protected $description = '';
+    protected string $description = '';
 
-    /**
-     * @var bool
-     */
-    protected $isAdministrator = false;
+    protected bool $isAdministrator = false;
 
-    /**
-     * @var bool
-     */
-    protected $isDisabled = false;
+    protected bool $isDisabled = false;
 
-    /**
-     * @var \DateTime|null
-     */
-    protected $startDateAndTime;
+    protected ?\DateTime $startDateAndTime;
 
-    /**
-     * @var \DateTime|null
-     */
-    protected $endDateAndTime;
+    protected ?\DateTime $endDateAndTime;
 
-    /**
-     * @var string
-     */
-    protected $email = '';
+    protected string $email = '';
 
-    /**
-     * @var string
-     */
-    protected $realName = '';
+    protected string $realName = '';
 
-    /**
-     * @var \DateTime|null
-     */
-    protected $lastLoginDateAndTime;
+    protected ?\DateTime $lastLoginDateAndTime;
 
     /**
      * Gets the user name.
      *
      * @return string the user name, will not be empty
      */
-    public function getUserName()
+    public function getUserName(): string
     {
         return $this->userName;
     }
@@ -85,26 +60,30 @@ class BackendUser extends AbstractEntity
      * Sets the user name.
      *
      * @param string $userName the user name to set, must not be empty
+     * @return $this
      */
-    public function setUserName($userName)
+    public function setUserName(string $userName): self
     {
         $this->userName = $userName;
+        return $this;
     }
 
     /**
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
 
     /**
      * @param string $description
+     * @return $this
      */
-    public function setDescription($description)
+    public function setDescription(string $description): self
     {
         $this->description = $description;
+        return $this;
     }
 
     /**
@@ -112,7 +91,7 @@ class BackendUser extends AbstractEntity
      *
      * @return bool whether this user is an administrator
      */
-    public function getIsAdministrator()
+    public function getIsAdministrator(): bool
     {
         return $this->isAdministrator;
     }
@@ -121,10 +100,12 @@ class BackendUser extends AbstractEntity
      * Sets whether this user should be an administrator.
      *
      * @param bool $isAdministrator whether this user should be an administrator
+     * @return $this
      */
-    public function setIsAdministrator($isAdministrator)
+    public function setIsAdministrator(bool $isAdministrator): self
     {
         $this->isAdministrator = $isAdministrator;
+        return $this;
     }
 
     /**
@@ -132,7 +113,17 @@ class BackendUser extends AbstractEntity
      *
      * @return bool whether this user is disabled
      */
-    public function getIsDisabled()
+    public function getIsDisabled(): bool
+    {
+        return $this->isDisabled;
+    }
+
+    /**
+     * Checks whether this user is disabled.
+     *
+     * @return bool whether this user is disabled
+     */
+    public function isDisabled(): bool
     {
         return $this->isDisabled;
     }
@@ -141,10 +132,12 @@ class BackendUser extends AbstractEntity
      * Sets whether this user is disabled.
      *
      * @param bool $isDisabled whether this user is disabled
+     * @return $this
      */
-    public function setIsDisabled($isDisabled)
+    public function setIsDisabled(bool $isDisabled): self
     {
         $this->isDisabled = $isDisabled;
+        return $this;
     }
 
     /**
@@ -152,7 +145,7 @@ class BackendUser extends AbstractEntity
      *
      * @return \DateTime|null the start date and time
      */
-    public function getStartDateAndTime()
+    public function getStartDateAndTime(): ?\DateTime
     {
         return $this->startDateAndTime;
     }
@@ -161,10 +154,12 @@ class BackendUser extends AbstractEntity
      * Sets the point in time from which this user is enabled.
      *
      * @param \DateTime|null $dateAndTime the start date and time
+     * @return $this
      */
-    public function setStartDateAndTime(\DateTime $dateAndTime = null)
+    public function setStartDateAndTime(?\DateTime $dateAndTime = null): self
     {
         $this->startDateAndTime = $dateAndTime;
+        return $this;
     }
 
     /**
@@ -172,7 +167,7 @@ class BackendUser extends AbstractEntity
      *
      * @return \DateTime|null the end date and time
      */
-    public function getEndDateAndTime()
+    public function getEndDateAndTime(): ?\DateTime
     {
         return $this->endDateAndTime;
     }
@@ -181,10 +176,12 @@ class BackendUser extends AbstractEntity
      * Sets the point in time before which this user is enabled.
      *
      * @param \DateTime|null $dateAndTime the end date and time
+     * @return $this
      */
-    public function setEndDateAndTime(\DateTime $dateAndTime = null)
+    public function setEndDateAndTime(?\DateTime $dateAndTime = null): self
     {
         $this->endDateAndTime = $dateAndTime;
+        return $this;
     }
 
     /**
@@ -192,7 +189,7 @@ class BackendUser extends AbstractEntity
      *
      * @return string the e-mail address, might be empty
      */
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -201,10 +198,12 @@ class BackendUser extends AbstractEntity
      * Sets the e-mail address of this user.
      *
      * @param string $email the e-mail address, may be empty
+     * @return $this
      */
-    public function setEmail($email)
+    public function setEmail(string $email): self
     {
         $this->email = $email;
+        return $this;
     }
 
     /**
@@ -212,7 +211,7 @@ class BackendUser extends AbstractEntity
      *
      * @return string the real name. might be empty
      */
-    public function getRealName()
+    public function getRealName(): string
     {
         return $this->realName;
     }
@@ -220,11 +219,13 @@ class BackendUser extends AbstractEntity
     /**
      * Sets this user's real name.
      *
-     * @param string $name the user's real name, may be empty.
+     * @param string $name the user's real name, may be empty
+     * @return $this
      */
-    public function setRealName($name)
+    public function setRealName(string $name): self
     {
         $this->realName = $name;
+        return $this;
     }
 
     /**
@@ -234,9 +235,11 @@ class BackendUser extends AbstractEntity
      *
      * @return bool whether this user is currently activated
      */
-    public function isActivated()
+    public function isActivated(): bool
     {
-        return !$this->getIsDisabled() && $this->isActivatedViaStartDateAndTime() && $this->isActivatedViaEndDateAndTime();
+        return !$this->getIsDisabled()
+            && $this->isActivatedViaStartDateAndTime()
+            && $this->isActivatedViaEndDateAndTime();
     }
 
     /**
@@ -244,7 +247,7 @@ class BackendUser extends AbstractEntity
      *
      * @return bool whether this user is activated as far as the start date and time is concerned
      */
-    protected function isActivatedViaStartDateAndTime()
+    protected function isActivatedViaStartDateAndTime(): bool
     {
         if ($this->getStartDateAndTime() === null) {
             return true;
@@ -258,7 +261,7 @@ class BackendUser extends AbstractEntity
      *
      * @return bool whether this user is activated as far as the end date and time is concerned
      */
-    protected function isActivatedViaEndDateAndTime()
+    protected function isActivatedViaEndDateAndTime(): bool
     {
         if ($this->getEndDateAndTime() === null) {
             return true;
@@ -272,7 +275,7 @@ class BackendUser extends AbstractEntity
      *
      * @return \DateTime|null this user's last login date and time, will be NULL if this user has never logged in before
      */
-    public function getLastLoginDateAndTime()
+    public function getLastLoginDateAndTime(): ?\DateTime
     {
         return $this->lastLoginDateAndTime;
     }
@@ -281,9 +284,11 @@ class BackendUser extends AbstractEntity
      * Sets this user's last login date and time.
      *
      * @param \DateTime|null $dateAndTime this user's last login date and time
+     * @return $this
      */
-    public function setLastLoginDateAndTime(\DateTime $dateAndTime = null)
+    public function setLastLoginDateAndTime(?\DateTime $dateAndTime = null): self
     {
         $this->lastLoginDateAndTime = $dateAndTime;
+        return $this;
     }
 }

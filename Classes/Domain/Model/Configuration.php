@@ -31,158 +31,70 @@ class Configuration
     /**
      * @var int The uid of the record. The uid is only unique in the context of the database table.
      */
-    protected $uid;
+    protected ?int $uid = null;
+
+    protected string $name = '';
+
+    protected string $sites = '';
+
+    protected int $ldapServer = \Causal\IgLdapSsoAuth\Library\Configuration::SERVER_OPENLDAP;
+
+    protected string $ldapCharset = '';
 
     /**
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * @var string
-     */
-    protected $sites;
-
-    /**
-     * @var int
-     */
-    protected $ldapServer;
-
-    /**
-     * @var string
-     */
-    protected $ldapCharset;
-
-    /**
-     * @var int
      * @deprecated
      */
-    protected $ldapProtocol;
+    protected int $ldapProtocol = 3;
 
-    /**
-     * @var string
-     */
-    protected $ldapHost;
+    protected string $ldapHost = '';
 
-    /**
-     * @var int
-     */
-    protected $ldapPort;
+    protected int $ldapPort = 389;
 
-    /**
-     * @var bool
-     */
-    protected $ldapTls;
+    protected bool $ldapTls = false;
 
-    /**
-     * @var bool
-     */
-    protected $ldapTlsReqcert;
+    protected bool $ldapTlsReqcert = false;
 
-    /**
-     * @var bool
-     */
-    protected $ldapSsl;
+    protected bool $ldapSsl = false;
 
-    /**
-     * @var string
-     */
-    protected $ldapBindDn;
+    protected string $ldapBindDn = '';
 
-    /**
-     * @var string
-     */
-    protected $ldapPassword;
+    protected string $ldapPassword = '';
 
-    /**
-     * @var int
-     */
-    protected $groupMembership;
+    protected int $groupMembership = \Causal\IgLdapSsoAuth\Library\Configuration::GROUP_MEMBERSHIP_FROM_GROUP;
 
-    /**
-     * @var string
-     */
-    protected $backendUsersBaseDn;
+    protected string $backendUsersBaseDn = '';
 
-    /**
-     * @var string
-     */
-    protected $backendUsersFilter;
+    protected ?string $backendUsersFilter = null;
 
-    /**
-     * @var string
-     */
-    protected $backendUsersMapping;
+    protected ?string $backendUsersMapping = null;
 
-    /**
-     * @var string
-     */
-    protected $backendGroupsBaseDn;
+    protected string $backendGroupsBaseDn = '';
 
-    /**
-     * @var string
-     */
-    protected $backendGroupsFilter;
+    protected ?string $backendGroupsFilter = null;
 
-    /**
-     * @var string
-     */
-    protected $backendGroupsMapping;
+    protected ?string $backendGroupsMapping = null;
 
-    /**
-     * @var array
-     */
-    protected $backendGroupsRequired;
+    protected array $backendGroupsRequired = [];
 
-    /**
-     * @var array
-     */
-    protected $backendGroupsAssigned;
+    protected array $backendGroupsAssigned = [];
 
-    /**
-     * @var array
-     */
-    protected $backendGroupsAdministrator;
+    protected array $backendGroupsAdministrator = [];
 
-    /**
-     * @var string
-     */
-    protected $frontendUsersBaseDn;
+    protected string $frontendUsersBaseDn = '';
 
-    /**
-     * @var string
-     */
-    protected $frontendUsersFilter;
+    protected ?string $frontendUsersFilter = null;
 
-    /**
-     * @var string
-     */
-    protected $frontendUsersMapping;
+    protected ?string $frontendUsersMapping = null;
 
-    /**
-     * @var string
-     */
-    protected $frontendGroupsBaseDn;
+    protected string $frontendGroupsBaseDn = '';
 
-    /**
-     * @var string
-     */
-    protected $frontendGroupsFilter;
+    protected ?string $frontendGroupsFilter = null;
 
-    /**
-     * @var string
-     */
-    protected $frontendGroupsMapping;
+    protected ?string $frontendGroupsMapping = null;
 
-    /**
-     * @var array
-     */
-    protected $frontendGroupsRequired;
+    protected array $frontendGroupsRequired = [];
 
-    /**
-     * @var array
-     */
-    protected $frontendGroupsAssigned;
+    protected array $frontendGroupsAssigned = [];
 
     /**
      * Getter for uid.
@@ -191,11 +103,7 @@ class Configuration
      */
     public function getUid(): ?int
     {
-        if ($this->uid !== null) {
-            return (int)$this->uid;
-        } else {
-            return null;
-        }
+        return $this->uid;
     }
 
     /**

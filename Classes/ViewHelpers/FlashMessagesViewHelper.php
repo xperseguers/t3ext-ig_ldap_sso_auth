@@ -16,16 +16,28 @@ namespace Causal\IgLdapSsoAuth\ViewHelpers;
 
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Render a conf* View helper which renders the flash messages (if there are any).
+ *
+ * Largely inspired by @see \TYPO3\CMS\Fluid\ViewHelpers\FlashMessagesViewHelper
  *
  * @author     Xavier Perseguers <xavier@causal.ch>
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class FlashMessagesViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FlashMessagesViewHelper
+class FlashMessagesViewHelper extends AbstractViewHelper
 {
+    use CompileWithRenderStatic;
+
+    /**
+     * ViewHelper outputs HTML therefore output escaping has to be disabled
+     *
+     * @var bool
+     */
+    protected $escapeOutput = false;
 
     /**
      * @var string The message severity class names
@@ -48,6 +60,15 @@ class FlashMessagesViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FlashMessages
         FlashMessage::WARNING => 'exclamation',
         FlashMessage::ERROR => 'times'
     ];
+
+    /**
+     * Initialize arguments
+     */
+    public function initializeArguments()
+    {
+        $this->registerArgument('queueIdentifier', 'string', 'Flash-message queue to use');
+        $this->registerArgument('as', 'string', 'The name of the current flashMessage variable for rendering inside');
+    }
 
     /**
      * Renders FlashMessages and flushes the FlashMessage queue

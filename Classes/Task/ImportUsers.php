@@ -305,6 +305,8 @@ class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
     public function setConfiguration(int $configuration): self
     {
         $this->configuration = $configuration;
+
+        return $this;
     }
 
     /**

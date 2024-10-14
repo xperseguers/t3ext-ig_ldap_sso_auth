@@ -29,7 +29,6 @@ interface GetGroupsProcessorInterface
      * @param string $groupTable Table name of the group table
      * @param array $ldapUser Full ldap data of the currently processed user
      * @param array $userGroups User groups as they have been determined before hitting this function
-     * @return void
      */
     public function getUserGroups(string $groupTable, array $ldapUser, array &$userGroups): void;
 }

@@ -58,7 +58,6 @@ class Configuration
 
     protected string $ldapBindDn = '';
 
-    #[\SensitiveParameter]
     protected string $ldapPassword = '';
 
     protected int $groupMembership = \Causal\IgLdapSsoAuth\Library\Configuration::GROUP_MEMBERSHIP_FROM_GROUP;

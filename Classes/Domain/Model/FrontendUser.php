@@ -74,7 +74,7 @@ class FrontendUser extends AbstractEntity
      */
     public function __construct(
         protected string $username = '',
-        protected string $password = ''
+        #[\SensitiveParameter] protected string $password = ''
     )
     {
         $this->usergroup = new ObjectStorage();
@@ -118,7 +118,7 @@ class FrontendUser extends AbstractEntity
      * @param string $password
      * @return $this
      */
-    public function setPassword(string $password): self
+    public function setPassword(#[\SensitiveParameter] string $password): self
     {
         $this->password = $password;
         return $this;

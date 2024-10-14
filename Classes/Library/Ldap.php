@@ -136,7 +136,7 @@ class Ldap
      */
     public function validateUser(
         ?string $username = null,
-        ?string $password = null,
+        #[\SensitiveParameter] ?string $password = null,
         ?string $baseDn = null,
         ?string $filter = null
     )

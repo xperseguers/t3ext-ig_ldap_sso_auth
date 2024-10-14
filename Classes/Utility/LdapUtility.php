@@ -228,7 +228,10 @@ class LdapUtility
      * @param string|nul $password
      * @return bool true if bind succeeded
      */
-    public function bind(?string $dn = null, ?string $password = null): bool
+    public function bind(
+        ?string $dn = null,
+        #[\SensitiveParameter] ?string $password = null
+    ): bool
     {
         // LDAP_OPT_DIAGNOSTIC_MESSAGE gets the extended error output
         // from the ldap_get_option() function

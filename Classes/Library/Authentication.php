@@ -94,7 +94,11 @@ class Authentication
      * @return bool|array true or array of user info on success, otherwise false
      * @throws \Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException when LDAP extension for PHP is not available
      */
-    public static function ldapAuthenticate(string $username, ?string $password = null, ?string $domain = null)
+    public static function ldapAuthenticate(
+        string $username,
+        #[\SensitiveParameter] ?string $password = null,
+        ?string $domain = null
+    )
     {
         static::$lastAuthenticationDiagnostic = '';
 

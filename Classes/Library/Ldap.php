@@ -82,7 +82,7 @@ class Ldap
             $config['port'],
             3,
             $config['charset'],
-            $config['server'],
+            Configuration::getServerType($config['server']),
             $config['tls'],
             $config['ssl'],
             $config['tlsReqcert']

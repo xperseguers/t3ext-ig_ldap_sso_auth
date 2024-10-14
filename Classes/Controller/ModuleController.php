@@ -43,25 +43,17 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class ModuleController extends ActionController
 {
-    protected ModuleTemplateFactory $moduleTemplateFactory;
-
-    protected ConfigurationRepository $configurationRepository;
-
-    protected Ldap $ldap;
-
     /**
+     * @param ModuleTemplateFactory $moduleTemplateFactory
      * @param ConfigurationRepository $configurationRepository
      * @param Ldap $ldap
      */
     public function __construct(
-        ModuleTemplateFactory $moduleTemplateFactory,
-        ConfigurationRepository $configurationRepository,
-        Ldap $ldap
+        private readonly ModuleTemplateFactory $moduleTemplateFactory,
+        private readonly ConfigurationRepository $configurationRepository,
+        private readonly Ldap $ldap
     )
     {
-        $this->moduleTemplateFactory = $moduleTemplateFactory;
-        $this->configurationRepository = $configurationRepository;
-        $this->ldap = $ldap;
     }
 
     /**

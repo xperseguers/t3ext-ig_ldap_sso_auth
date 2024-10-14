@@ -25,16 +25,6 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 class FrontendUser extends AbstractEntity
 {
     /**
-     * @var string
-     */
-    protected $username = '';
-
-    /**
-     * @var string
-     */
-    protected $password = '';
-
-    /**
      * @var ObjectStorage<FrontendUserGroup>
      */
     protected $usergroup;
@@ -125,10 +115,11 @@ class FrontendUser extends AbstractEntity
      * @param string $username
      * @param string $password
      */
-    public function __construct($username = '', $password = '')
+    public function __construct(
+        protected string $username = '',
+        protected string $password = ''
+    )
     {
-        $this->username = $username;
-        $this->password = $password;
         $this->usergroup = new ObjectStorage();
         $this->image = new ObjectStorage();
     }

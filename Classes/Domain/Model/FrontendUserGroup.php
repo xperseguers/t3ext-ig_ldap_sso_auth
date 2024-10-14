@@ -27,11 +27,6 @@ class FrontendUserGroup extends AbstractEntity
     /**
      * @var string
      */
-    protected $title = '';
-
-    /**
-     * @var string
-     */
     protected $description = '';
 
     /**
@@ -44,9 +39,10 @@ class FrontendUserGroup extends AbstractEntity
      *
      * @param string $title
      */
-    public function __construct($title = '')
+    public function __construct(
+        protected string $title = ''
+    )
     {
-        $this->setTitle($title);
         $this->subgroup = new ObjectStorage();
     }
 

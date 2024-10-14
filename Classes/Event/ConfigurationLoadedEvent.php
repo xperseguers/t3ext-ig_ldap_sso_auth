@@ -20,11 +20,10 @@ use Causal\IgLdapSsoAuth\Domain\Model\Configuration;
 
 final class ConfigurationLoadedEvent
 {
-    private array $configurationRecords;
-    
-    public function __construct(array $configurationRecords)
+    public function __construct(
+        private array $configurationRecords
+    )
     {
-        $this->configurationRecords = $configurationRecords;
     }
 
     /**

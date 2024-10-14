@@ -48,17 +48,14 @@ class ConfigurationRepository
      */
     protected $config = [];
 
-    protected EventDispatcherInterface $eventDispatcher;
-
     /**
      * ConfigurationRepository constructor.
      */
     public function __construct(
-        EventDispatcherInterface $eventDispatcher
+        protected readonly EventDispatcherInterface $eventDispatcher
     )
     {
         $this->config = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['ig_ldap_sso_auth'] ?? [];
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**

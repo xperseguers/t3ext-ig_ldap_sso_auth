@@ -20,13 +20,11 @@ use Causal\IgLdapSsoAuth\Domain\Model\Configuration;
 
 final class CustomConfigurationEvent
 {
-    private int $configurationUid;
-    private ?Configuration $configurationRecord;
-    
-    public function __construct(int $configurationUid, ?Configuration $configurationRecord)
+    public function __construct(
+        private readonly int $configurationUid,
+        private ?Configuration $configurationRecord
+    )
     {
-        $this->configurationUid = $configurationUid;
-        $this->configurationRecord = $configurationRecord;
     }
 
     /**

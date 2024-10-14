@@ -31,13 +31,6 @@ use Causal\IgLdapSsoAuth\Library\Ldap;
 class UserImportUtility
 {
     /**
-     * Synchronization context (may be FE, BE or both).
-     *
-     * @var string
-     */
-    protected $context;
-
-    /**
      * Selected LDAP configuration.
      *
      * @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration
@@ -78,17 +71,20 @@ class UserImportUtility
      * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
      * @param string $context
      */
-    public function __construct(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration, $context)
+    public function __construct(
+        \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration,
+        protected readonly string $context
+    )
     {
         // Load the configuration
         Configuration::initialize($context, $configuration);
         // Store current context and get related configuration
-        $this->context = $context;
-        $this->configuration = (strtolower($context) === 'fe')
+        $this->context = strtolower($context);
+        $this->configuration = $this->context === 'fe'
             ? Configuration::getFrontendConfiguration()
             : Configuration::getBackendConfiguration();
         // Define related tables
-        if (strtolower($context) === 'be') {
+        if ($this->context === 'be') {
             $this->userTable = 'be_users';
             $this->groupTable = 'be_groups';
         } else {

@@ -27,17 +27,15 @@ use TYPO3\CMS\Extbase\Property\TypeConverter\AbstractTypeConverter;
  */
 class ConfigurationConverter extends AbstractTypeConverter implements SingletonInterface
 {
-    protected ConfigurationRepository $configurationRepository;
-
-    public function __construct(ConfigurationRepository $configurationRepository)
+    public function __construct(
+        private readonly ConfigurationRepository $configurationRepository
+    )
     {
         if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() < 12) {
             $this->sourceTypes = ['integer', 'string'];
             $this->targetType = Configuration::class;
             $this->priority = 10;
         }
-
-        $this->configurationRepository = $configurationRepository;
     }
 
     /**

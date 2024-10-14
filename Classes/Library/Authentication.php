@@ -750,7 +750,6 @@ class Authentication
                 TemplateService::class,
                 $currentContext
             );
-            $GLOBALS['TSFE']->renderCharset = 'utf-8';
 
             /** @var $contentObj ContentObjectRenderer */
             $contentObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);

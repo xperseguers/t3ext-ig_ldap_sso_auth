@@ -115,7 +115,7 @@ class Typo3UserRepository
                 ->where(
                     $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT))
                 )
-                ->execute()
+                ->executeQuery()
                 ->fetchAllAssociative();
         } elseif (!empty($dn)) {
             // Search with DN (or fall back to username) and pid
@@ -141,7 +141,7 @@ class Typo3UserRepository
                 ->where($where)
                 ->orderBy('tx_igldapssoauth_dn', 'DESC')    // rows from LDAP first...
                 ->addOrderBy('deleted', 'ASC')              // ... then privilege active records
-                ->execute()
+                ->executeQuery()
                 ->fetchAllAssociative();
         } elseif (!empty($username)) {
             // Search with username and pid
@@ -156,7 +156,7 @@ class Typo3UserRepository
                 ->select('*')
                 ->from($table)
                 ->where($where)
-                ->execute()
+                ->executeQuery()
                 ->fetchAllAssociative();
         }
 
@@ -201,7 +201,7 @@ class Typo3UserRepository
             ->where(
                 $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT))
             )
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
 
         NotificationUtility::dispatch(
@@ -287,7 +287,7 @@ class Typo3UserRepository
                     $queryBuilder->expr()->eq('tx_igldapssoauth_id', $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)),
                     $queryBuilder->expr()->eq($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled'], 0)
                 )
-                ->execute()
+                ->executeQuery()
                 ->fetchFirstColumn();
 
             $queryBuilder
@@ -302,7 +302,7 @@ class Typo3UserRepository
                 $queryBuilder->set($GLOBALS['TCA'][$table]['ctrl']['tstamp'], $GLOBALS['EXEC_TIME']);
             }
 
-            $queryBuilder->execute();
+            $queryBuilder->executeStatement();
 
             NotificationUtility::dispatch(
                 __CLASS__,
@@ -341,7 +341,7 @@ class Typo3UserRepository
                     $queryBuilder->expr()->eq('tx_igldapssoauth_id', $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)),
                     $queryBuilder->expr()->eq($GLOBALS['TCA'][$table]['ctrl']['delete'], 0)
                 )
-                ->execute()
+                ->executeQuery()
                 ->fetchFirstColumn();
 
             $queryBuilder
@@ -356,7 +356,7 @@ class Typo3UserRepository
                 $queryBuilder->set($GLOBALS['TCA'][$table]['ctrl']['tstamp'], $GLOBALS['EXEC_TIME']);
             }
 
-            $queryBuilder->execute();
+            $queryBuilder->executeStatement();
 
             NotificationUtility::dispatch(
                 __CLASS__,
@@ -409,7 +409,7 @@ class Typo3UserRepository
                         $queryBuilder->expr()->in('uid', $usergroup),
                         $queryBuilder->expr()->eq('tx_igldapssoauth_dn', $queryBuilder->createNamedParameter('', \PDO::PARAM_STR))
                     )
-                    ->execute()
+                    ->executeQuery()
                     ->fetchAllAssociative();
                 foreach ($rows as $row) {
                     $localUserGroups[] = $row['uid'];

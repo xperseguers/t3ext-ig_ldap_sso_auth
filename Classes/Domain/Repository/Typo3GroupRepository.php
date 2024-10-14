@@ -109,7 +109,7 @@ class Typo3GroupRepository
             ->select('*')
             ->from($table)
             ->where($where)
-            ->execute()
+            ->executeQuery()
             ->fetchAllAssociative();
 
         // Return TYPO3 groups

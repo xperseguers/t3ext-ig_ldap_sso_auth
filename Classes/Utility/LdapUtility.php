@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Causal\IgLdapSsoAuth\Utility;
 
 use LDAP\Connection;
+use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Exception\InvalidHostnameException;
 use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
@@ -106,6 +107,15 @@ class LdapUtility
      * @var string
      */
     protected $paginationCookie = null;
+
+    /**
+     * @param CharsetConverter $charsetConverter
+     */
+    public function __construct(
+        protected readonly CharsetConverter $charsetConverter
+    )
+    {
+    }
 
     /**
      * Connects to an LDAP server.
@@ -522,28 +532,21 @@ class LdapUtility
      * @param string $toCharacterSet Target character set
      * @return array|mixed
      */
-    protected function convertCharacterSetForArray($arr, string $fromCharacterSet, string $toCharacterSet)
+    protected function convertCharacterSetForArray(
+        $arr,
+        string $fromCharacterSet,
+        string $toCharacterSet
+    )
     {
-        /** @var \TYPO3\CMS\Core\Charset\CharsetConverter $csObj */
-        static $csObj = null;
-
         if (!is_array($arr)) {
             return $arr;
-        }
-
-        if ($csObj === null) {
-            if ((isset($GLOBALS['TSFE'])) && (isset($GLOBALS['TSFE']->csConvObj))) {
-                $csObj = $GLOBALS['TSFE']->csConvObj;
-            } else {
-                $csObj = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class);
-            }
         }
 
         foreach ($arr as $k => $val) {
             if (is_array($val)) {
                 $arr[$k] = $this->convertCharacterSetForArray($val, $fromCharacterSet, $toCharacterSet);
             } else {
-                $arr[$k] = $csObj->conv($val, $fromCharacterSet, $toCharacterSet);
+                $arr[$k] = $this->charsetConverter->conv($val, $fromCharacterSet, $toCharacterSet);
             }
         }
 

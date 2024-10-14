@@ -15,6 +15,11 @@
 namespace Causal\IgLdapSsoAuth\ViewHelpers;
 
 use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\RequestInterface;
+use TYPO3\CMS\Extbase\Service\ExtensionService;
+use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
@@ -41,6 +46,7 @@ class FlashMessagesViewHelper extends AbstractViewHelper
 
     /**
      * @var string The message severity class names
+     * @todo Switch to ContextualFeedbackSeverity when not targeting TYPO3 v11 anymore
      */
     protected static $classes = [
         FlashMessage::NOTICE => 'notice',
@@ -52,6 +58,7 @@ class FlashMessagesViewHelper extends AbstractViewHelper
 
     /**
      * @var string The message severity icon names
+     * @todo Switch to ContextualFeedbackSeverity when not targeting TYPO3 v11 anymore
      */
     protected static $icons = [
         FlashMessage::NOTICE => 'lightbulb-o',
@@ -84,10 +91,29 @@ class FlashMessagesViewHelper extends AbstractViewHelper
     public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
         $as = $arguments['as'];
-        $queueIdentifier = isset($arguments['queueIdentifier']) ? $arguments['queueIdentifier'] : null;
-        $flashMessages = $renderingContext->getControllerContext()
-            ->getFlashMessageQueue($queueIdentifier)->getAllMessagesAndFlush();
-        if ($flashMessages === null || empty($flashMessages)) {
+        $queueIdentifier = $arguments['queueIdentifier'] ?? null;
+
+        if ($queueIdentifier === null) {
+            /** @var RenderingContext $renderingContext */
+            $request = $renderingContext->getRequest();
+            if (!$request instanceof RequestInterface) {
+                // Throw if not an extbase request
+                throw new \RuntimeException(
+                    'ViewHelper f:flashMessages needs an extbase Request object to resolve the Queue identifier magically.'
+                    . ' When not in extbase context, set attribute "queueIdentifier".',
+                    1639821269
+                );
+            }
+            $extensionService = GeneralUtility::makeInstance(ExtensionService::class);
+            $pluginNamespace = $extensionService->getPluginNamespace($request->getControllerExtensionName(), $request->getPluginName());
+            $queueIdentifier = 'extbase.flashmessages.' . $pluginNamespace;
+        }
+
+        $flashMessageQueue = GeneralUtility::makeInstance(FlashMessageService::class)
+            ->getMessageQueueByIdentifier($queueIdentifier);
+
+        $flashMessages = $flashMessageQueue->getAllMessagesAndFlush();
+        if (count($flashMessages) === 0) {
             return '';
         }
 
@@ -112,8 +138,14 @@ class FlashMessagesViewHelper extends AbstractViewHelper
      */
     protected static function renderFlashMessage(FlashMessage $flashMessage): string
     {
-        $className = 'alert-' . static::$classes[$flashMessage->getSeverity()];
-        $iconName = 'fa-' . static::$icons[$flashMessage->getSeverity()];
+        if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12) {
+            $severity = $flashMessage->getSeverity()->value;
+        } else {
+            $severity = $flashMessage->getSeverity();
+        }
+
+        $className = 'alert-' . static::$classes[$severity];
+        $iconName = 'fa-' . static::$icons[$severity];
 
         $messageTitle = $flashMessage->getTitle();
         $markup = [];

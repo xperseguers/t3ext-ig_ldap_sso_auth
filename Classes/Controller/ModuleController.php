@@ -20,6 +20,7 @@ use Causal\IgLdapSsoAuth\Utility\CompatUtility;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
+use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -42,29 +43,24 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class ModuleController extends ActionController
 {
-    /**
-     * @var ConfigurationRepository
-     */
-    protected $configurationRepository;
+    protected ModuleTemplateFactory $moduleTemplateFactory;
 
-    /**
-     * @var Ldap
-     */
-    protected $ldap;
+    protected ConfigurationRepository $configurationRepository;
+
+    protected Ldap $ldap;
 
     /**
      * @param ConfigurationRepository $configurationRepository
-     */
-    public function injectConfigurationRepository(ConfigurationRepository $configurationRepository): void
-    {
-        $this->configurationRepository = $configurationRepository;
-    }
-
-    /**
      * @param Ldap $ldap
      */
-    public function injectLdap(Ldap $ldap): void
+    public function __construct(
+        ModuleTemplateFactory $moduleTemplateFactory,
+        ConfigurationRepository $configurationRepository,
+        Ldap $ldap
+    )
     {
+        $this->moduleTemplateFactory = $moduleTemplateFactory;
+        $this->configurationRepository = $configurationRepository;
         $this->ldap = $ldap;
     }
 

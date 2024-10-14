@@ -20,6 +20,7 @@ use Causal\IgLdapSsoAuth\Domain\Model\Configuration;
 use Causal\IgLdapSsoAuth\Event\ConfigurationLoadedEvent;
 use Causal\IgLdapSsoAuth\Event\CustomConfigurationEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -55,7 +56,7 @@ class ConfigurationRepository
         protected readonly EventDispatcherInterface $eventDispatcher
     )
     {
-        $this->config = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['ig_ldap_sso_auth'] ?? [];
+        $this->config = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('ig_ldap_sso_auth') ?? [];
     }
 
     /**

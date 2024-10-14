@@ -218,6 +218,23 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
      */
     public function authUser(array $user): int
     {
+
+        $typo3Mode = CompatUtility::getTypo3Mode() ?? $this->authInfo['loginType'];
+
+        /** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
+        $configurationRepository = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository::class);
+        $configurationRecords = $configurationRepository->findAll();
+
+        if (empty($configurationRecords)) {
+            // Early return since LDAP is not configured
+            static::getLogger()->warning('Skipping LDAP authentication as extension is not yet configured');
+            return false;
+        }
+
+        foreach ($configurationRecords as $configurationRecord) {
+            Configuration::initialize($typo3Mode, $configurationRecord);
+        }
+
         if (!Configuration::isInitialized()) {
             // Early return since LDAP is not configured
             return static::STATUS_AUTHENTICATION_FAILURE_CONTINUE;

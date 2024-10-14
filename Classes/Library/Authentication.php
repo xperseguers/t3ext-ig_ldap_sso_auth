@@ -348,7 +348,7 @@ class Authentication
         $ldapGroups = static::getLdapGroups($ldapUser);
         unset($ldapGroups['count']);
 
-        /** @var \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]|\TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup[] $requiredLDAPGroups */
+        /** @var \Causal\IgLdapSsoAuth\Domain\Model\BackendUserGroup[]|\Causal\IgLdapSsoAuth\Domain\Model\FrontendUserGroup[] $requiredLDAPGroups */
         $requiredLDAPGroups = Configuration::getValue('requiredLDAPGroups');
 
         if (empty($ldapGroups)) {
@@ -554,7 +554,6 @@ class Authentication
             $user = Typo3UserRepository::create(static::$authenticationService->authInfo['db_user']['table']);
 
             $user['pid'] = (int)$pid;
-            $user['cruser_id'] = static::getCreationUserId();
             $user['crdate'] = $GLOBALS['EXEC_TIME'];
             $user['tstamp'] = $GLOBALS['EXEC_TIME'];
             $user['username'] = $username;
@@ -600,7 +599,6 @@ class Authentication
             } else {
                 $typo3Group = Typo3GroupRepository::create($table);
                 $typo3Group['pid'] = (int)$pid;
-                $typo3Group['cruser_id'] = static::getCreationUserId();
                 $typo3Group['crdate'] = $GLOBALS['EXEC_TIME'];
                 $typo3Group['tstamp'] = $GLOBALS['EXEC_TIME'];
             }
@@ -647,7 +645,6 @@ class Authentication
             } else {
                 $typo3User = Typo3UserRepository::create($table);
                 $typo3User['pid'] = (int)$pid;
-                $user['cruser_id'] = static::getCreationUserId();
                 $typo3User['crdate'] = $GLOBALS['EXEC_TIME'];
                 $typo3User['tstamp'] = $GLOBALS['EXEC_TIME'];
             }

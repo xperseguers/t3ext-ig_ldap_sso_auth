@@ -350,7 +350,7 @@ class Configuration
      */
     public function getBackendUsersFilter(): string
     {
-        return $this->backendUsersFilter;
+        return $this->backendUsersFilter ?? '';
     }
 
     /**
@@ -358,7 +358,7 @@ class Configuration
      */
     public function getBackendUsersMapping(): string
     {
-        return $this->backendUsersMapping;
+        return $this->backendUsersMapping ?? '';
     }
 
     /**
@@ -374,7 +374,7 @@ class Configuration
      */
     public function getBackendGroupsFilter(): string
     {
-        return $this->backendGroupsFilter;
+        return $this->backendGroupsFilter ?? '';
     }
 
     /**
@@ -382,7 +382,7 @@ class Configuration
      */
     public function getBackendGroupsMapping(): string
     {
-        return $this->backendGroupsMapping;
+        return $this->backendGroupsMapping ?? '';
     }
 
     /**
@@ -422,7 +422,7 @@ class Configuration
      */
     public function getFrontendUsersFilter(): string
     {
-        return $this->frontendUsersFilter;
+        return $this->frontendUsersFilter ?? '';
     }
 
     /**
@@ -430,7 +430,7 @@ class Configuration
      */
     public function getFrontendUsersMapping(): string
     {
-        return $this->frontendUsersMapping;
+        return $this->frontendUsersMapping ?? '';
     }
 
     /**
@@ -446,7 +446,7 @@ class Configuration
      */
     public function getFrontendGroupsFilter(): string
     {
-        return $this->frontendGroupsFilter;
+        return $this->frontendGroupsFilter ?? '';
     }
 
     /**
@@ -454,7 +454,7 @@ class Configuration
      */
     public function getFrontendGroupsMapping(): string
     {
-        return $this->frontendGroupsMapping;
+        return $this->frontendGroupsMapping ?? '';
     }
 
     /**

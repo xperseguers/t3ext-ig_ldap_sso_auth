@@ -21,4 +21,8 @@ return [
         'provider' => BitmapIconProvider::class,
         'source' => 'EXT:ig_ldap_sso_auth/Resources/Public/Icons/overlay-ldap-record.png',
     ],
+    'extensions-ig_ldap_sso_auth-module' => [
+        'provider' => BitmapIconProvider::class,
+        'source' => 'EXT:ig_ldap_sso_auth/Resources/Public/Icons/module-ldap.png',
+    ]
 ];

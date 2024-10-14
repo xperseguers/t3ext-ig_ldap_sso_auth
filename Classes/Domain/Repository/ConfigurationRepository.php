@@ -17,6 +17,9 @@ declare(strict_types=1);
 namespace Causal\IgLdapSsoAuth\Domain\Repository;
 
 use Causal\IgLdapSsoAuth\Domain\Model\Configuration;
+use Causal\IgLdapSsoAuth\Event\ConfigurationLoadedEvent;
+use Causal\IgLdapSsoAuth\Event\CustomConfigurationEvent;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -45,12 +48,17 @@ class ConfigurationRepository
      */
     protected $config = [];
 
+    protected EventDispatcherInterface $eventDispatcher;
+
     /**
      * ConfigurationRepository constructor.
      */
-    public function __construct()
+    public function __construct(
+        EventDispatcherInterface $eventDispatcher
+    )
     {
         $this->config = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['ig_ldap_sso_auth'] ?? [];
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -73,19 +81,27 @@ class ConfigurationRepository
             )
             ->fetchAllAssociative();
 
+        // TODO: Drop "support" in version 4.2 or so
         if (!empty($this->config) && (bool)$this->config['useExtConfConfiguration']) {
-            $rows[] = $this->config['configuration'];
+            trigger_error(
+                'Using useExtConfConfiguration is not supported anymore since version 4.0. Please switch to PSR-14 ConfigurationLoadedEvent.',
+                E_USER_DEPRECATED
+            );
         }
 
         $configurations = [];
         foreach ($rows as $row) {
             /** @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration */
-            $configuration = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Domain\Model\Configuration::class);
+            $configuration = GeneralUtility::makeInstance(Configuration::class);
             $this->thawProperties($configuration, $row);
             $configurations[] = $configuration;
         }
 
-        return $configurations;
+        /** @var ConfigurationLoadedEvent $event */
+        $event = GeneralUtility::makeInstance(ConfigurationLoadedEvent::class, $configurations);
+        $this->eventDispatcher->dispatch($event);
+
+        return $event->getConfigurationRecords();
     }
 
     /**
@@ -96,20 +112,16 @@ class ConfigurationRepository
      */
     public function findByUid(int $uid): ?Configuration
     {
-        if (!empty($this->config) && $this->config['useExtConfConfiguration'] && intval($this->config['configuration']['uid']) === $uid) {
-            $row = $this->config['configuration'];
-        } else {
-            $row = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getConnectionForTable($this->table)
-                ->select(
-                    ['*'],
-                    $this->table,
-                    [
-                        'uid' => $uid,
-                    ]
-                )
-                ->fetchAssociative();
-        }
+        $row = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable($this->table)
+            ->select(
+                ['*'],
+                $this->table,
+                [
+                    'uid' => $uid,
+                ]
+            )
+            ->fetchAssociative();
 
         if (!empty($row)) {
             /** @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration */
@@ -119,7 +131,19 @@ class ConfigurationRepository
             $configuration = null;
         }
 
-        return $configuration;
+        // TODO: Drop "support" in version 4.2 or so
+        if (!empty($this->config) && (bool)$this->config['useExtConfConfiguration']) {
+            trigger_error(
+                'Using useExtConfConfiguration is not supported anymore since version 4.0. Please switch to PSR-14 CustomConfigurationEvent.',
+                E_USER_DEPRECATED
+            );
+        }
+
+        /** @var CustomConfigurationEvent $event */
+        $event = GeneralUtility::makeInstance(CustomConfigurationEvent::class, $uid, $configuration);
+        $this->eventDispatcher->dispatch($event);
+
+        return $event->getConfigurationRecord();
     }
 
     /**

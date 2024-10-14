@@ -17,6 +17,9 @@ namespace Causal\IgLdapSsoAuth\Domain\Model;
 /**
  * Domain model for configuration records.
  *
+ * TODO: Add setters for all properties as it may be used by PSR-14 events
+ *       and using _setProperty() is supposed to be internal-only.
+ *
  * @author     Xavier Perseguers <xavier@causal.ch>
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth

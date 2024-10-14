@@ -4,9 +4,6 @@ throwExceptionAtLogin = 1
 # cat=basic//2; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.forceLowerCaseUsername
 forceLowerCaseUsername = 0
 
-# cat=basic/3; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.useExtensionConfiguration
-useExtConfConfiguration = 0
-
 # cat=backend/enable/1; type=boolean; label=LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:settings.enableBELDAPAuthentication
 enableBELDAPAuthentication = 0
 

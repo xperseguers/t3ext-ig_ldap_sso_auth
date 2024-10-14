@@ -42,7 +42,6 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class ModuleController extends ActionController
 {
-
     /**
      * @var ConfigurationRepository
      */
@@ -99,24 +98,30 @@ class ModuleController extends ActionController
      * Index action.
      *
      * @param int $configuration
+     * @return ResponseInterface
      */
-    public function indexAction(int $configuration = 0)
+    public function indexAction(int $configuration = 0): ResponseInterface
     {
         $configuration = $this->configurationRepository->findByUid($configuration);
         $this->saveState($configuration);
         $this->populateView($configuration);
+
+        return $this->htmlResponse();
     }
 
     /**
      * Status action.
      *
-     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
+     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration|null $configuration
+     * @return ResponseInterface
      */
-    public function statusAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
+    public function statusAction(
+        ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
+    ): ResponseInterface
     {
         // If configuration has been deleted
         if ($configuration === null) {
-            $this->redirect('index');
+            return $this->redirect('index');
         }
         $this->saveState($configuration);
 
@@ -166,18 +171,23 @@ class ModuleController extends ActionController
             'frontend' => $frontendConfiguration,
             'backend' => $backendConfiguration,
         ]);
+
+        return $this->htmlResponse();
     }
 
     /**
      * Search action.
      *
-     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
+     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration|null $configuration
+     * @return ResponseInterface
      */
-    public function searchAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
+    public function searchAction(
+        ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
+    ): ResponseInterface
     {
         // If configuration has been deleted
         if ($configuration === null) {
-            $this->redirect('index');
+            return $this->redirect('index');
         }
         $this->saveState($configuration);
 
@@ -193,118 +203,132 @@ class ModuleController extends ActionController
             'baseDn' => $frontendConfiguration['users']['basedn'],
             'filter' => $frontendConfiguration['users']['filter'],
         ]);
+
+        return $this->htmlResponse();
     }
 
     /**
      * Import frontend users action.
      *
-     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
+     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration|null $configuration
+     * @return ResponseInterface
      */
-    public function importFrontendUsersAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
+    public function importFrontendUsersAction(
+        ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
+    ): ResponseInterface
     {
         // If configuration has been deleted
         if ($configuration === null) {
-            $this->redirect('index');
+            return $this->redirect('index');
         }
         $this->saveState($configuration);
 
         Configuration::initialize('fe', $configuration);
         $this->populateView($configuration);
 
-        if (!$this->checkLdapConnection()) {
-            return;
+        if ($this->checkLdapConnection()) {
+            /** @var PageRenderer $pageRenderer */
+            $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+            $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
+
+            $users = $this->getAvailableUsers($configuration, 'fe');
+            $this->view->assign('users', $users);
         }
 
-        /** @var PageRenderer $pageRenderer */
-        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-        $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
-
-        $users = $this->getAvailableUsers($configuration, 'fe');
-        $this->view->assign('users', $users);
+        return $this->htmlResponse();
     }
 
     /**
      * Import backend users action.
      *
-     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
+     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration|null $configuration
+     * @return ResponseInterface
      */
-    public function importBackendUsersAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
+    public function importBackendUsersAction(
+        ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
+    ): ResponseInterface
     {
         // If configuration has been deleted
         if ($configuration === null) {
-            $this->redirect('index');
+            return $this->redirect('index');
         }
         $this->saveState($configuration);
 
         Configuration::initialize('be', $configuration);
         $this->populateView($configuration);
 
-        if (!$this->checkLdapConnection()) {
-            return;
+        if ($this->checkLdapConnection()) {
+            /** @var PageRenderer $pageRenderer */
+            $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+            $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
+
+            $users = $this->getAvailableUsers($configuration, 'be');
+            $this->view->assign('users', $users);
         }
 
-        /** @var PageRenderer $pageRenderer */
-        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-        $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
-
-        $users = $this->getAvailableUsers($configuration, 'be');
-        $this->view->assign('users', $users);
+        return $this->htmlResponse();
     }
 
     /**
      * Import frontend user groups action.
      *
-     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
+     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration|null $configuration
+     * @return ResponseInterface
      */
-    public function importFrontendUserGroupsAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
+    public function importFrontendUserGroupsAction(
+        ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
+    ): ResponseInterface
     {
         // If configuration has been deleted
         if ($configuration === null) {
-            $this->redirect('index');
+            return $this->redirect('index');
         }
         $this->saveState($configuration);
 
         Configuration::initialize('fe', $configuration);
         $this->populateView($configuration);
 
-        if (!$this->checkLdapConnection()) {
-            return;
+        if ($this->checkLdapConnection()) {
+            /** @var PageRenderer $pageRenderer */
+            $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+            $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
+
+            $groups = $this->getAvailableUserGroups($configuration, 'fe');
+            $this->view->assign('groups', $groups);
         }
 
-        /** @var PageRenderer $pageRenderer */
-        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-        $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
-
-        $groups = $this->getAvailableUserGroups($configuration, 'fe');
-        $this->view->assign('groups', $groups);
+        return $this->htmlResponse();
     }
 
     /**
      * Import backend user groups action.
      *
-     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
+     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration|null $configuration
+     * @return ResponseInterface
      */
-    public function importBackendUserGroupsAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
+    public function importBackendUserGroupsAction(
+        ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
+    ): ResponseInterface
     {
         // If configuration has been deleted
         if ($configuration === null) {
-            $this->redirect('index');
+            return $this->redirect('index');
         }
         $this->saveState($configuration);
 
         Configuration::initialize('be', $configuration);
         $this->populateView($configuration);
 
-        if (!$this->checkLdapConnection()) {
-            return;
+        if ($this->checkLdapConnection()) {
+            /** @var PageRenderer $pageRenderer */
+            $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+            $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
+
+            $groups = $this->getAvailableUserGroups($configuration, 'be');
+            $this->view->assign('groups', $groups);
         }
 
-        /** @var PageRenderer $pageRenderer */
-        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-        $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
-
-        $groups = $this->getAvailableUserGroups($configuration, 'be');
-        $this->view->assign('groups', $groups);
+        return $this->htmlResponse();
     }
 
     /**
@@ -587,7 +611,13 @@ class ModuleController extends ActionController
      * @param string $mode
      * @throws \Causal\IgLdapSsoAuth\Exception\InvalidUserGroupTableException
      */
-    protected function setParentGroup(array $ldapParentGroups, string $fieldParent, int $childUid, int $pid, string $mode)
+    protected function setParentGroup(
+        array $ldapParentGroups,
+        string $fieldParent,
+        int $childUid,
+        int $pid,
+        string $mode
+    ): void
     {
         $subGroupList = [];
         if ($mode === 'be') {
@@ -661,7 +691,10 @@ class ModuleController extends ActionController
      * @param string $mode
      * @return array
      */
-    protected function getAvailableUsers(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration, string $mode): array
+    protected function getAvailableUsers(
+        \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration,
+        string $mode
+    ): array
     {
         /** @var \Causal\IgLdapSsoAuth\Utility\UserImportUtility $importUtility */
         $importUtility = GeneralUtility::makeInstance(
@@ -729,7 +762,10 @@ class ModuleController extends ActionController
      * @param string $mode
      * @return array
      */
-    protected function getAvailableUserGroups(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration, $mode): array
+    protected function getAvailableUserGroups(
+        \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration,
+        string $mode
+    ): array
     {
         $userGroups = [];
         $config = ($mode === 'be')
@@ -779,12 +815,13 @@ class ModuleController extends ActionController
     /**
      * Populates the view with general objects.
      *
-     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
+     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration|null $configuration
      */
-    protected function populateView(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null): void
+    protected function populateView(
+        ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
+    ): void
     {
-        $uriBuilder = $this->controllerContext->getUriBuilder();
-        $thisUri = $uriBuilder->reset()->uriFor(null, ['configuration' => $configuration]);
+        $thisUri = $this->uriBuilder->reset()->uriFor(null, ['configuration' => $configuration]);
         $editLink = '';
 
         $configurationRecords = $this->configurationRepository->findAll();
@@ -859,7 +896,7 @@ class ModuleController extends ActionController
         $trClass = '';
 
         $this->view->assignMultiple([
-            'action' => $this->getControllerContext()->getRequest()->getControllerActionName(),
+            'action' => $this->request->getControllerActionName(),
             'configurationRecords' => $configurationRecords,
             'currentConfiguration' => $configuration,
             'mode' => Configuration::getMode(),
@@ -904,10 +941,10 @@ class ModuleController extends ActionController
      * Translates a label.
      *
      * @param string $id
-     * @param array $arguments
+     * @param array|null $arguments
      * @return string
      */
-    protected function translate(string $id, array $arguments = null): string
+    protected function translate(string $id, ?array $arguments = null): string
     {
         $value = LocalizationUtility::translate($id, 'ig_ldap_sso_auth', $arguments);
         return $value ?? $id;
@@ -916,12 +953,14 @@ class ModuleController extends ActionController
     /**
      * Saves current state.
      *
-     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
+     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration|null $configuration
      */
-    protected function saveState(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
+    protected function saveState(
+        ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
+    ): void
     {
         $GLOBALS['BE_USER']->uc['ig_ldap_sso_auth']['selection'] = [
-            'action' => $this->getControllerContext()->getRequest()->getControllerActionName(),
+            'action' => $this->request->getControllerActionName(),
             'configuration' => $configuration !== null ? $configuration->getUid() : 0,
         ];
         $GLOBALS['BE_USER']->writeUC();

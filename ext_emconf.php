@@ -22,7 +22,7 @@ In case of use in an intranet environment, this extension is a perfect match sin
     'author_company' => 'Causal Sàrl',
     'constraints' => [
         'depends' => [
-            'php' => '7.4.0-8.3.99',
+            'php' => '8.1.0-8.3.99',
             'typo3' => '11.5.0-13.4.99',
         ],
         'conflicts' => [],

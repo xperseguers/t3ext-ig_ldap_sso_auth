@@ -16,6 +16,8 @@ declare(strict_types=1);
 
 namespace Causal\IgLdapSsoAuth\Utility;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
+
 /**
  * Notification class.
  *
@@ -25,20 +27,40 @@ namespace Causal\IgLdapSsoAuth\Utility;
  */
 class NotificationUtility
 {
+    private static NotificationUtility $instance;
+
     /**
-     * Dispatches a signal by calling the registered slot methods.
+     * NotificationUtility constructor.
      *
-     * @param string $signalClassName
-     * @param string $signalName
-     * @param array $signalArguments
-     * @return mixed
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
+     * @param EventDispatcherInterface $eventDispatcher
      */
-    public static function dispatch(string $signalClassName, string $signalName, array $signalArguments = [])
+    public function __construct(
+        private readonly EventDispatcherInterface $eventDispatcher
+    )
     {
-        // TODO: Reimplement without former SignalSlotDispatcher
-        //return static::getSignalSlotDispatcher()->dispatch($signalClassName, $signalName, $signalArguments);
-        return null;
+    }
+
+    /**
+     * Dispatches a PSR-14 event.
+     *
+     * @param LdapEventInterface $event
+     */
+    public static function dispatch(LdapEventInterface $event): void
+    {
+        self::getInstance()->eventDispatcher->dispatch($event);
+    }
+
+    /**
+     * Get instance.
+     *
+     * @return \Causal\IgLdapSsoAuth\Utility\NotificationUtility
+     */
+    protected static function getInstance(): self
+    {
+        if (self::$instance === null) {
+            self::$instance = GeneralUtility::makeInstance(self::class);
+        }
+
+        return self::$instance;
     }
 }

@@ -16,6 +16,8 @@ declare(strict_types=1);
 
 namespace Causal\IgLdapSsoAuth\Domain\Repository;
 
+use Causal\IgLdapSsoAuth\Event\GroupAddedEvent;
+use Causal\IgLdapSsoAuth\Event\GroupUpdatedEvent;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Exception\InvalidUserGroupTableException;
@@ -149,14 +151,7 @@ class Typo3GroupRepository
             )
             ->fetchAssociative();
 
-        NotificationUtility::dispatch(
-            __CLASS__,
-            'groupAdded',
-            [
-                'table' => $table,
-                'group' => $newRow,
-            ]
-        );
+        NotificationUtility::dispatch(new GroupAddedEvent($table, $newRow));
 
         return $newRow;
     }
@@ -187,14 +182,7 @@ class Typo3GroupRepository
         $success = $affectedRows === 1;
 
         if ($success) {
-            NotificationUtility::dispatch(
-                __CLASS__,
-                'groupUpdated',
-                [
-                    'table' => $table,
-                    'group' => $data,
-                ]
-            );
+            NotificationUtility::dispatch(new GroupUpdatedEvent($table, $data));
         }
 
         return $success;

@@ -16,6 +16,10 @@ declare(strict_types=1);
 
 namespace Causal\IgLdapSsoAuth\Domain\Repository;
 
+use Causal\IgLdapSsoAuth\Event\UserAddedEvent;
+use Causal\IgLdapSsoAuth\Event\UserDeletedEvent;
+use Causal\IgLdapSsoAuth\Event\UserDisabledEvent;
+use Causal\IgLdapSsoAuth\Event\UserUpdatedEvent;
 use Causal\IgLdapSsoAuth\Utility\CompatUtility;
 use TYPO3\CMS\Core\Crypto\Random;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -204,14 +208,7 @@ class Typo3UserRepository
             ->executeQuery()
             ->fetchAssociative();
 
-        NotificationUtility::dispatch(
-            __CLASS__,
-            'userAdded',
-            [
-                'table' => $table,
-                'user' => $newRow,
-            ]
-        );
+        NotificationUtility::dispatch(new UserAddedEvent($table, $newRow));
 
         return $newRow;
     }
@@ -249,14 +246,7 @@ class Typo3UserRepository
         $success = $affectedRows === 1;
 
         if ($success) {
-            NotificationUtility::dispatch(
-                __CLASS__,
-                'userUpdated',
-                [
-                    'table' => $table,
-                    'user' => $data,
-                ]
-            );
+            NotificationUtility::dispatch(new UserUpdatedEvent($table, $data));
         }
 
         return $success;
@@ -304,14 +294,7 @@ class Typo3UserRepository
 
             $queryBuilder->executeStatement();
 
-            NotificationUtility::dispatch(
-                __CLASS__,
-                'userDisabled',
-                [
-                    'table' => $table,
-                    'configuration' => $uid,
-                ]
-            );
+            NotificationUtility::dispatch(new UserDisabledEvent($table, $uid));
         }
         return $uids;
     }
@@ -358,14 +341,7 @@ class Typo3UserRepository
 
             $queryBuilder->executeStatement();
 
-            NotificationUtility::dispatch(
-                __CLASS__,
-                'userDeleted',
-                [
-                    'table' => $table,
-                    'configuration' => $uid,
-                ]
-            );
+            NotificationUtility::dispatch(new UserDeletedEvent($table, $uid));
         }
         return $uids;
     }

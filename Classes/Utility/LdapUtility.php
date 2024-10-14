@@ -172,6 +172,8 @@ class LdapUtility
         // Set configuration
         $this->initializeCharacterSet($characterSet);
 
+        // We only support LDAP v3 from now on
+        $protocol = 3;
         @ldap_set_option($this->connection, LDAP_OPT_PROTOCOL_VERSION, $protocol);
 
         // Active Directory (User@Domain) configuration

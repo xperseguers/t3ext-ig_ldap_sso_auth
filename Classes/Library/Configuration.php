@@ -234,7 +234,7 @@ class Configuration
         // Remove partial definitions
         $keys = array_keys($setup);
         foreach ($keys as $key) {
-            if (substr($key, -1) !== '.') {
+            if (!str_ends_with($key, '.')) {
                 if ($setup[$key] === '') {
                     unset($setup[$key]);
                 }
@@ -369,7 +369,7 @@ class Configuration
         $ldapAttributes = [];
         if (is_array($mapping)) {
             foreach ($mapping as $field => $attribute) {
-                if (substr($field, -1) === '.') {
+                if (str_ends_with($field, '.')) {
                     // This is a TypoScript configuration
                     continue;
                 }
@@ -407,7 +407,7 @@ class Configuration
 
         if (is_array($mapping) && !$extended) {
             foreach ($mapping as $field => $attribute) {
-                if (substr($field, -1) === '.') {
+                if (str_ends_with($field, '.')) {
                     $extended = true;
                     break;
                 }

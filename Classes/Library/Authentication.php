@@ -120,7 +120,7 @@ class Authentication
             );
             if (!empty($domain) && $numberOfConfigurationRecords > 1) {
                 // Domain is set, so check it
-                if (strpos($domain, '.') !== false) {
+                if (str_contains($domain, '.')) {
                     $domain = 'DC=' . implode(',DC=', explode('.', $domain));
                 }
                 $domain = strtolower($domain);
@@ -307,7 +307,7 @@ class Authentication
             $attributes = [];
         } else {
             $attributes = Configuration::getLdapAttributes(static::$config['users']['mapping']);
-            if (strpos(static::$config['groups']['filter'], '{USERUID}') !== false) {
+            if (str_contains(static::$config['groups']['filter'], '{USERUID}')) {
                 $attributes[] = 'uid';
                 $attributes = array_unique($attributes);
             }
@@ -683,7 +683,7 @@ class Authentication
 
         // Process every field (except "usergroup" and "parentGroup") which is not a TypoScript definition
         foreach ($mapping as $field => $value) {
-            if (substr($field, -1) !== '.') {
+            if (!str_ends_with($field, '.')) {
                 if ($field !== 'usergroup' && $field !== 'parentGroup') {
                     try {
                         $out = static::mergeSimple($ldap, $out, $field, $value);

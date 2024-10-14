@@ -207,7 +207,7 @@ class ConfigurationRepository
             $groups = [];
             $groupUids = GeneralUtility::intExplode(',', $row[$fieldName] ?? '', true);
             if (!empty($groupUids)) {
-                $repository = substr($fieldName, 0, 3) === 'be_'
+                $repository = str_starts_with($fieldName, 'be_')
                     ? static::getBackendUserGroupRepository()
                     : static::getFrontendUserGroupRepository();
                 foreach ($groupUids as $groupUid) {

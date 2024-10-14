@@ -395,7 +395,7 @@ class ModuleController extends ActionController
                 $attributes = [];
             } else {
                 $attributes = Configuration::getLdapAttributes($config[$key]['mapping']);
-                if (strpos($config[$key]['filter'], '{USERUID}') !== false) {
+                if (str_contains($config[$key]['filter'], '{USERUID}')) {
                     $attributes[] = 'uid';
                     $attributes = array_unique($attributes);
                 }

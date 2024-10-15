@@ -84,10 +84,10 @@ class TypoScriptUtility
         /** @var TypoScriptStringFactory $typoScriptStringFactory */
         static $typoScriptStringFactory = null;
 
-        if (static::$typoScriptStringFactory === null) {
-            static::$typoScriptStringFactory = GeneralUtility::makeInstance(TypoScriptStringFactory::class);
+        if ($typoScriptStringFactory === null) {
+            $typoScriptStringFactory = GeneralUtility::makeInstance(TypoScriptStringFactory::class);
         }
 
-        return static::$typoScriptStringFactory;
+        return $typoScriptStringFactory;
     }
 }

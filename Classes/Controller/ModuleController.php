@@ -457,7 +457,6 @@ class ModuleController extends ActionController
 
         $template = GeneralUtility::getFileAbsFileName('EXT:ig_ldap_sso_auth/Resources/Private/Templates/Ajax/Search.html');
         $view = GeneralUtility::makeInstance(\TYPO3\CMS\Fluid\View\StandaloneView::class);
-        $view->getRequest()->setControllerExtensionName('ig_ldap_sso_auth');
         $view->setFormat('html');
         $view->setTemplatePathAndFilename($template);
 

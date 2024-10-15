@@ -21,6 +21,7 @@ use Causal\IgLdapSsoAuth\Event\UserDeletedEvent;
 use Causal\IgLdapSsoAuth\Event\UserDisabledEvent;
 use Causal\IgLdapSsoAuth\Event\UserUpdatedEvent;
 use Causal\IgLdapSsoAuth\Utility\CompatUtility;
+use TYPO3\CMS\Core\Crypto\PasswordHashing\PasswordHashFactory;
 use TYPO3\CMS\Core\Crypto\Random;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -454,16 +455,13 @@ class Typo3UserRepository
      * Defines a random password.
      *
      * @return string
+     * @see \TYPO3\CMS\Core\Authentication\CommandLineUserAuthentication::generateHashedPassword()
      */
     public static function setRandomPassword(): string
     {
-        /** @var \TYPO3\CMS\Saltedpasswords\Salt\SaltInterface $instance */
-        $instance = null;
-        if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('saltedpasswords')) {
-            $instance = \TYPO3\CMS\Saltedpasswords\Salt\SaltFactory::getSaltingInstance(null, CompatUtility::getTypo3Mode());
-        }
-        $password = GeneralUtility::makeInstance(Random::class)->generateRandomBytes(16);
-        $password = $instance ? $instance->getHashedPassword($password) : md5($password);
-        return $password;
+        $cryptoService = GeneralUtility::makeInstance(Random::class);
+        $password = $cryptoService->generateRandomBytes(20);
+        $hashInstance = GeneralUtility::makeInstance(PasswordHashFactory::class)->getDefaultHashInstance('BE');
+        return $hashInstance->getHashedPassword($password);
     }
 }

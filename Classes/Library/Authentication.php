@@ -745,11 +745,14 @@ class Authentication
                 $frontendUserAuthentication
             );
 
+            // @todo Is this necessary?
+            /*
             // initTemplate() has been removed. The deprecation notice suggests setting the property directly
             $GLOBALS['TSFE']->tmpl = GeneralUtility::makeInstance(
                 TemplateService::class,
                 $currentContext
             );
+            */
 
             /** @var $contentObj ContentObjectRenderer */
             $contentObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);

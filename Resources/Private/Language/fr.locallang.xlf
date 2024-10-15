@@ -5,27 +5,35 @@
     <body>
       <trans-unit id="mlang_tabs_tab">
         <source>LDAP / SSO</source>
-        <target state="needs-translation">LDAP / SSO</target>
+        <target state="translated">LDAP / SSO</target>
       </trans-unit>
-      <trans-unit id="mlang_labels_tabdescr" approved="yes">
+      <trans-unit id="mlang_labels_tabdescr">
         <source>LDAP management and configuration module.</source>
-        <target state="final">Module de gestion et de configuration LDAP.</target>
+        <target state="translated">Module de gestion et de configuration LDAP.</target>
       </trans-unit>
-      <trans-unit id="mlang_labels_tablabel" approved="yes">
+      <trans-unit id="mlang_labels_tablabel">
         <source>LDAP management</source>
-        <target state="final">Gestion LDAP</target>
+        <target state="translated">Gestion LDAP</target>
       </trans-unit>
-      <trans-unit id="title" approved="yes">
+      <trans-unit id="title">
         <source>LDAP / SSO service management</source>
-        <target state="final">Gestion LDAP / service SSO</target>
+        <target state="translated">Gestion LDAP / service SSO</target>
       </trans-unit>
-      <trans-unit id="configuration_missing.title" approved="yes">
+      <trans-unit id="configuration_missing.title">
         <source>No Configuration Records</source>
-        <target state="final">Aucun enregistrement de configuration</target>
+        <target state="translated">Aucun enregistrement de configuration</target>
       </trans-unit>
       <trans-unit id="configuration_missing.message" approved="yes">
         <source><![CDATA[This module cannot be used until you create at least one configuration record. Please refer to the <a href="%s" target="_blank">administrator manual</a> for further information.<br /><br /><a href="%s">Click here</a> to create a configuration record.]]></source>
         <target state="final"><![CDATA[Ce module ne peut pas être utilisé tant que vous n'avez pas créé au moins un enregistrement de configuration. Veuillez pour référer au &lt;a href="%s" target="_blank"&gt;manual de l'administrateur&lt;/a&gt; pour de plus amples informations.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Cliquez ici&lt;/a&gt; pour créer un enregistrement de configuration.]]></target>
+      </trans-unit>
+      <trans-unit id="module_docheader.configurations.switch">
+        <source>Switch configuration</source>
+        <target state="needs-translation">Switch configuration</target>
+      </trans-unit>
+      <trans-unit id="module_docheader.configurations.edit">
+        <source>Edit current configuration</source>
+        <target state="needs-translation">Edit current configuration</target>
       </trans-unit>
       <trans-unit id="module_overview" approved="yes">
         <source>Overview</source>
@@ -45,7 +53,7 @@
       </trans-unit>
       <trans-unit id="module_status.title.ldap">
         <source>LDAP</source>
-        <target state="needs-translation">LDAP</target>
+        <target state="translated">LDAP</target>
       </trans-unit>
       <trans-unit id="module_status.messages.ldapDisable" approved="yes">
         <source>LDAP is disabled since the host name is undefined.</source>
@@ -89,7 +97,7 @@
       </trans-unit>
       <trans-unit id="module_status.configuration.port">
         <source>Port</source>
-        <target state="needs-translation">Port</target>
+        <target state="translated">Port</target>
       </trans-unit>
       <trans-unit id="module_status.configuration.tls" approved="yes">
         <source>Use TLS</source>
@@ -97,7 +105,7 @@
       </trans-unit>
       <trans-unit id="module_status.configuration.tlsReqcert">
         <source>TLS require cert</source>
-        <target state="needs-translation">TLS require cert</target>
+        <target state="translated">Certificat TLS requis</target>
       </trans-unit>
       <trans-unit id="module_status.configuration.ssl" approved="yes">
         <source>Use SSL</source>
@@ -189,7 +197,7 @@
       </trans-unit>
       <trans-unit id="module_search_type">
         <source>Type</source>
-        <target state="needs-translation">Type</target>
+        <target state="translated">Type</target>
       </trans-unit>
       <trans-unit id="module_search_type.frontendUsers" approved="yes">
         <source>Frontend users</source>
@@ -209,7 +217,7 @@
       </trans-unit>
       <trans-unit id="module_search_options">
         <source>Options</source>
-        <target state="needs-translation">Options</target>
+        <target state="translated">Options</target>
       </trans-unit>
       <trans-unit id="module_search_options.firstEntry" approved="yes">
         <source>First entry only</source>
@@ -313,7 +321,7 @@
       </trans-unit>
       <trans-unit id="task.import_users.field.mode">
         <source>Mode</source>
-        <target state="needs-translation">Mode</target>
+        <target state="translated">Mode</target>
       </trans-unit>
       <trans-unit id="task.import_users.field.mode.import" approved="yes">
         <source>Import missing LDAP users and synchronize existing TYPO3 users</source>
@@ -341,15 +349,15 @@
       </trans-unit>
       <trans-unit id="task.import_users.field.context.fe">
         <source>Frontend</source>
-        <target state="needs-translation">Frontend</target>
+        <target state="translated">Frontend</target>
       </trans-unit>
       <trans-unit id="task.import_users.field.context.be">
         <source>Backend</source>
-        <target state="needs-translation">Backend</target>
+        <target state="translated">Backend</target>
       </trans-unit>
       <trans-unit id="task.import_users.field.configuration">
         <source>Configuration</source>
-        <target state="needs-translation">Configuration</target>
+        <target state="translated">Configuration</target>
       </trans-unit>
       <trans-unit id="task.import_users.field.configuration.all" approved="yes">
         <source>All</source>

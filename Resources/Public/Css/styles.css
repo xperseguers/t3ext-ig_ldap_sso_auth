@@ -1,3 +1,19 @@
+/** [start] TYPO3 v11 Fix **/
+div.module[data-module-name="system_IgLdapSsoAuthTxigldapssoauthm1"] .module-docheader {
+    /** TYPO3 v11 Prevent too much space between the module header and the module body **/
+    position: fixed;
+}
+div.module[data-module-name="system_IgLdapSsoAuthTxigldapssoauthm1"] > .module-body {
+    padding: 0;
+}
+/** [end] **/
+
+/** TYPO3 v12 fix (same as v11 actually), weird! **/
+.module-docheader {
+    /** Prevent too much space between the module header and the module body **/
+    position: fixed;
+}
+
 table table.table {
     margin-bottom: 0;
 }

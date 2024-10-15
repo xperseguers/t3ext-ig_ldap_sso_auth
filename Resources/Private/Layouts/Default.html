@@ -4,10 +4,34 @@
 
 <f:asset.css identifier="ig_ldap_sso_auth_module" href="EXT:ig_ldap_sso_auth/Resources/Public/Css/styles.css"/>
 
-<div>
-    <f:render section="iconButtons"/>
-    <f:render section="configuration"/>
-    <f:render section="content" />
+<div class="module">
+    <div class="module-loading-indicator"></div>
+    <div class="module-docheader t3js-module-docheader" style="height: auto;">
+        <div class="module-docheader-bar module-docheader-bar-navigation t3js-module-docheader-bar t3js-module-docheader-bar-navigation row">
+            <div class="module-docheader-bar-column-left col-xs-12 col-sm-3">
+                <div class="form-inline">
+                    <div class="form-group form-group-sm">
+                        <f:render section="iconButtons"/>
+                    </div>
+                </div>
+            </div>
+            <div class="module-docheader-bar-column-right col-xs-12 col-sm-9 text-right">
+
+            </div>
+        </div>
+        <div class="module-docheader-bar module-docheader-bar-buttons t3js-module-docheader-bar t3js-module-docheader-bar-buttons" style="height: auto;">
+            <div class="module-docheader-bar-column-left">
+                <f:render section="configuration"/>
+            </div>
+            <div class="module-docheader-bar-column-right">
+                <div class="btn-toolbar" role="toolbar">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="module-body t3js-module-body" style="padding-top: 89px;">
+        <f:render section="content"/>
+    </div>
 </div>
 
 </html>

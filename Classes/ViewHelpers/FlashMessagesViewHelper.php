@@ -16,6 +16,7 @@ declare(strict_types=1);
 
 namespace Causal\IgLdapSsoAuth\ViewHelpers;
 
+use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -46,10 +47,6 @@ class FlashMessagesViewHelper extends AbstractViewHelper
      */
     protected $escapeOutput = false;
 
-    /**
-     * @var string The message severity class names
-     * @todo Switch to ContextualFeedbackSeverity when not targeting TYPO3 v11 anymore
-     */
     protected static $classes = [
         FlashMessage::NOTICE => 'notice',
         FlashMessage::INFO => 'info',
@@ -58,16 +55,20 @@ class FlashMessagesViewHelper extends AbstractViewHelper
         FlashMessage::ERROR => 'danger'
     ];
 
-    /**
-     * @var string The message severity icon names
-     * @todo Switch to ContextualFeedbackSeverity when not targeting TYPO3 v11 anymore
-     */
     protected static $icons = [
-        FlashMessage::NOTICE => 'lightbulb-o',
-        FlashMessage::INFO => 'info',
-        FlashMessage::OK => 'check',
-        FlashMessage::WARNING => 'exclamation',
-        FlashMessage::ERROR => 'times'
+        FlashMessage::NOTICE => 'actions-lightbulb',
+        FlashMessage::INFO => 'actions-info-circle',
+        FlashMessage::OK => 'actions-check-circle',
+        FlashMessage::WARNING => 'actions-exclamation-triangle',
+        FlashMessage::ERROR => 'actions-exclamation-circle'
+    ];
+
+    protected static $iconsV11 = [
+        FlashMessage::NOTICE => 'fa-lightbulb-o',
+        FlashMessage::INFO => 'fa-info',
+        FlashMessage::OK => 'fa-check',
+        FlashMessage::WARNING => 'fa-exclamation',
+        FlashMessage::ERROR => 'fa-times'
     ];
 
     /**
@@ -147,17 +148,31 @@ class FlashMessagesViewHelper extends AbstractViewHelper
         }
 
         $className = 'alert-' . static::$classes[$severity];
-        $iconName = 'fa-' . static::$icons[$severity];
 
         $messageTitle = $flashMessage->getTitle();
         $markup = [];
         $markup[] = '<div class="alert ' . $className . '">';
         $markup[] = '    <div class="media">';
         $markup[] = '        <div class="media-left">';
-        $markup[] = '            <span class="fa-stack fa-lg">';
-        $markup[] = '                <i class="fa fa-circle fa-stack-2x"></i>';
-        $markup[] = '                <i class="fa ' . $iconName . ' fa-stack-1x"></i>';
-        $markup[] = '            </span>';
+
+        $typo3Version = (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
+        if ($typo3Version >= 12) {
+            $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+            $icon = $iconFactory->getIcon(
+                static::$icons[$severity],
+                $typo3Version >= 13
+                    ? \TYPO3\CMS\Core\Imaging\IconSize::MEDIUM
+                    : \TYPO3\CMS\Core\Imaging\Icon::SIZE_MEDIUM
+            );
+            $markup[] = '            ' . $icon;
+        } else {
+            $iconName = static::$iconsV11[$severity];
+            $markup[] = '            <span class="fa-stack fa-lg">';
+            $markup[] = '                <i class="fa fa-circle fa-stack-2x"></i>';
+            $markup[] = '                <i class="fa ' . $iconName . ' fa-stack-1x"></i>';
+            $markup[] = '            </span>';
+        }
+
         $markup[] = '        </div>';
         $markup[] = '        <div class="media-body">';
         if (!empty($messageTitle)) {
@@ -167,6 +182,7 @@ class FlashMessagesViewHelper extends AbstractViewHelper
         $markup[] = '        </div>';
         $markup[] = '    </div>';
         $markup[] = '</div>';
+
         return implode('', $markup);
     }
 }

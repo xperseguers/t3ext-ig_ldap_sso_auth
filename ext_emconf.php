@@ -2,12 +2,6 @@
 
 /***************************************************************
  * Extension Manager/Repository config file for ext "ig_ldap_sso_auth".
- *
- * Auto generated 26-05-2015 09:00
- *
- * Manual updates:
- * Only the data in the array - everything else is removed by next
- * writing. "version" and "dependencies" must not be touched!
  ***************************************************************/
 
 $EM_CONF[$_EXTKEY] = [

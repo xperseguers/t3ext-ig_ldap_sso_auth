@@ -26,7 +26,6 @@ use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Information\Typo3Version;
-use TYPO3\CMS\Core\Page\AssetCollector;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -93,13 +92,6 @@ class ModuleController extends ActionController
                 return $this->redirect('index');
             }
         }
-
-        // Add CSS
-        $assetCollector = GeneralUtility::makeInstance(AssetCollector::class);
-        $assetCollector->addStyleSheet(
-            'ig_ldap_sso_auth_module',
-            'EXT:ig_ldap_sso_auth/Resources/Public/Css/styles.css'
-        );
 
         /** @var PageRenderer $pageRenderer */
         $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);

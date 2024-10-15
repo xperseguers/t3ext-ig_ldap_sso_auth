@@ -22,8 +22,10 @@ use Causal\IgLdapSsoAuth\Utility\CompatUtility;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Http\JsonResponse;
+use TYPO3\CMS\Core\Page\AssetCollector;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
@@ -45,6 +47,8 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class ModuleController extends ActionController
 {
+    protected ?ModuleTemplate $moduleTemplate = null;
+
     /**
      * @param ModuleTemplateFactory $moduleTemplateFactory
      * @param ConfigurationRepository $configurationRepository
@@ -63,6 +67,9 @@ class ModuleController extends ActionController
      */
     public function initializeAction()
     {
+        $this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+        $this->moduleTemplate->getDocHeaderComponent()->setMetaInformation([]);
+
         $vars = GeneralUtility::_GET('tx_igldapssoauth_system_igldapssoauthtxigldapssoauthm1');
         if (
             !isset($vars['redirect'])
@@ -78,9 +85,15 @@ class ModuleController extends ActionController
             }
         }
 
+        // Add CSS
+        $assetCollector = GeneralUtility::makeInstance(AssetCollector::class);
+        $assetCollector->addStyleSheet(
+            'ig_ldap_sso_auth_module',
+            'EXT:ig_ldap_sso_auth/Resources/Public/Css/styles.css'
+        );
+
         /** @var PageRenderer $pageRenderer */
         $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-        $pageRenderer->addCssFile('EXT:ig_ldap_sso_auth/Resources/Public/Css/styles.css');
         $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Search');
     }
 
@@ -96,7 +109,8 @@ class ModuleController extends ActionController
         $this->saveState($configuration);
         $this->populateView($configuration);
 
-        return $this->htmlResponse();
+        $this->moduleTemplate->setContent($this->view->render());
+        return $this->htmlResponse($this->moduleTemplate->renderContent());
     }
 
     /**
@@ -162,7 +176,8 @@ class ModuleController extends ActionController
             'backend' => $backendConfiguration,
         ]);
 
-        return $this->htmlResponse();
+        $this->moduleTemplate->setContent($this->view->render());
+        return $this->htmlResponse($this->moduleTemplate->renderContent());
     }
 
     /**
@@ -194,7 +209,8 @@ class ModuleController extends ActionController
             'filter' => $frontendConfiguration['users']['filter'],
         ]);
 
-        return $this->htmlResponse();
+        $this->moduleTemplate->setContent($this->view->render());
+        return $this->htmlResponse($this->moduleTemplate->renderContent());
     }
 
     /**
@@ -225,7 +241,8 @@ class ModuleController extends ActionController
             $this->view->assign('users', $users);
         }
 
-        return $this->htmlResponse();
+        $this->moduleTemplate->setContent($this->view->render());
+        return $this->htmlResponse($this->moduleTemplate->renderContent());
     }
 
     /**
@@ -256,7 +273,8 @@ class ModuleController extends ActionController
             $this->view->assign('users', $users);
         }
 
-        return $this->htmlResponse();
+        $this->moduleTemplate->setContent($this->view->render());
+        return $this->htmlResponse($this->moduleTemplate->renderContent());
     }
 
     /**
@@ -287,7 +305,8 @@ class ModuleController extends ActionController
             $this->view->assign('groups', $groups);
         }
 
-        return $this->htmlResponse();
+        $this->moduleTemplate->setContent($this->view->render());
+        return $this->htmlResponse($this->moduleTemplate->renderContent());
     }
 
     /**
@@ -318,7 +337,8 @@ class ModuleController extends ActionController
             $this->view->assign('groups', $groups);
         }
 
-        return $this->htmlResponse();
+        $this->moduleTemplate->setContent($this->view->render());
+        return $this->htmlResponse($this->moduleTemplate->renderContent());
     }
 
     /**

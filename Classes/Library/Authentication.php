@@ -908,7 +908,7 @@ class Authentication
         if (isset(static::$authenticationService) && !empty(static::$authenticationService->authInfo['db_groups']['table'])) {
             $groupTable = static::$authenticationService->authInfo['db_groups']['table'];
         } else {
-            if (CompatUtility::getTypo3Mode() === 'BE') {
+            if (CompatUtility::getTypo3Mode(static::$authenticationService->authInfo['loginType']) === 'BE') {
                 $groupTable = 'be_groups';
             } else {
                 $groupTable = 'fe_groups';

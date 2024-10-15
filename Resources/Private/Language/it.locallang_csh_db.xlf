@@ -7,10 +7,6 @@
         <source>Name used to distinguish each configuration.</source>
         <target state="final">Nome usato per distinguere ogni configurazione.</target>
       </trans-unit>
-      <trans-unit id="domains.description" approved="yes">
-        <source>Domains for which this configuration should be used. Leave empty to use it with any domain.</source>
-        <target state="final">Domini per i quali questa configurazione deve essere usata. Lascia vuoto questo campo per utilizzarla con qualsiasi dominio.</target>
-      </trans-unit>
       <trans-unit id="ldap_server.description" approved="yes">
         <source>Type of LDAP server used by the authentication (OpenLDAP, Active Directory).</source>
         <target state="final">Tipo di server LDAP usato per l'autenticazione (OpenLDAP, Active Directory).</target>
@@ -18,10 +14,6 @@
       <trans-unit id="ldap_charset.description" approved="yes">
         <source>Character set used by the LDAP server. Usually: utf-8.</source>
         <target state="final">Set di caratteri usato dal server LDAP. Di solito: utf-8.</target>
-      </trans-unit>
-      <trans-unit id="ldap_host.description" approved="yes">
-        <source>Address of the LDAP server.</source>
-        <target state="final">Indirizzo del server LDAP.</target>
       </trans-unit>
       <trans-unit id="ldap_port.description" approved="yes">
         <source>Port used by the LDAP server. Default: 389.</source>
@@ -34,10 +26,6 @@
       <trans-unit id="ldap_binddn.syntax" approved="yes">
         <source>E.g., cn=admin,dc=example,dc=com</source>
         <target state="final">Es. cn=admin,dc=example,dc=com</target>
-      </trans-unit>
-      <trans-unit id="ldap_password.description" approved="yes">
-        <source>Password used to bind to the server.</source>
-        <target state="final">Password utilizzata per il collegamento al server.</target>
       </trans-unit>
       <trans-unit id="be_users_basedn.description" approved="yes">
         <source>DN (Distinguished Name) to be used to look for BE users in the LDAP server.</source>

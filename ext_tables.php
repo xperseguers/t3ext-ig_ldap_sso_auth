@@ -15,8 +15,10 @@ defined('TYPO3') || die();
                     'index',
                     'status',
                     'search',
-                    'importFrontendUsers', 'importBackendUsers',
-                    'importFrontendUserGroups', 'importBackendUserGroups',
+                    'importFrontendUsers',
+                    'importBackendUsers',
+                    'importFrontendUserGroups',
+                    'importBackendUserGroups',
                 ]),
             ], [
                 'access' => 'admin',

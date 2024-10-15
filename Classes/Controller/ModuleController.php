@@ -25,8 +25,10 @@ use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Http\JsonResponse;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Page\AssetCollector;
 use TYPO3\CMS\Core\Page\PageRenderer;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3GroupRepository;
@@ -153,7 +155,9 @@ class ModuleController extends ActionController
                 $this->addFlashMessage(
                     $e->getMessage(),
                     'Error ' . $e->getCode(),
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
+                    (new Typo3Version())->getMajorVersion() >= 12
+                        ? ContextualFeedbackSeverity::ERROR
+                        : \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
             }
 
@@ -860,7 +864,9 @@ class ModuleController extends ActionController
             $this->addFlashMessage(
                 $message,
                 $this->translate('configuration_missing.title'),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
+                (new Typo3Version())->getMajorVersion() >= 12
+                    ? ContextualFeedbackSeverity::WARNING
+                    : \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
             );
         } else {
             if ($configuration == null) {
@@ -941,14 +947,18 @@ class ModuleController extends ActionController
             $this->addFlashMessage(
                 $e->getMessage(),
                 'Error ' . $e->getCode(),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
+                (new Typo3Version())->getMajorVersion() >= 12
+                    ? ContextualFeedbackSeverity::ERROR
+                    : \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
             );
             return false;
         } catch (InvalidHostnameException $e) {
             $this->addFlashMessage(
                 $e->getMessage(),
                 'Error ' . $e->getCode(),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
+                (new Typo3Version())->getMajorVersion() >= 12
+                    ? ContextualFeedbackSeverity::ERROR
+                    : \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
             );
             return false;
         }

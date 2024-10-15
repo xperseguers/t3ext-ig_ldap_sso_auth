@@ -19,6 +19,7 @@ namespace Causal\IgLdapSsoAuth\Hooks;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Library\Configuration;
 
@@ -82,7 +83,9 @@ class DataHandler
                     FlashMessage::class,
                     htmlspecialchars($this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:' . $key)),
                     '',
-                    FlashMessage::WARNING,
+                    (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12
+                        ? ContextualFeedbackSeverity::WARNING
+                        : FlashMessage::WARNING,
                     true
                 );
                 /** @var FlashMessageService $flashMessageService */

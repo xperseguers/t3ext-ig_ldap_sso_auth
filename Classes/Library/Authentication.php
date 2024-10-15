@@ -686,7 +686,7 @@ class Authentication
             if (!str_ends_with($field, '.')) {
                 if ($field !== 'usergroup' && $field !== 'parentGroup') {
                     try {
-                        $out = static::mergeSimple($ldap, $out, $field, $value);
+                        $out = static::mergeSimple($ldap, $out, $field, (string)$value);
                     } catch (\UnexpectedValueException $uve) {
                         if ($reportErrors) {
                             $out['__errors'][] = $uve->getMessage();

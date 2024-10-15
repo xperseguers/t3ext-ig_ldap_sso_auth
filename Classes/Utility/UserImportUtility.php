@@ -34,38 +34,36 @@ class UserImportUtility
 {
     /**
      * Selected LDAP configuration.
-     *
-     * @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration
      */
-    protected $configuration;
+    protected readonly array $configuration;
 
     /**
      * Which table to import users into.
      *
      * @var string
      */
-    protected $userTable;
+    protected readonly string $userTable;
 
     /**
      * Which table to import groups into.
      *
      * @var string
      */
-    protected $groupTable;
+    protected readonly string $groupTable;
 
     /**
      * Total users added (for reporting).
      *
      * @var int
      */
-    protected $usersAdded = 0;
+    protected int $usersAdded = 0;
 
     /**
      * Total users updated (for reporting).
      *
      * @var int
      */
-    protected $usersUpdated = 0;
+    protected int $usersUpdated = 0;
 
     /**
      * Default constructor.
@@ -75,7 +73,7 @@ class UserImportUtility
      */
     public function __construct(
         \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration,
-        protected readonly string $context
+        protected string $context
     )
     {
         // Load the configuration

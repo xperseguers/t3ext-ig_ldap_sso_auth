@@ -60,13 +60,13 @@ class LdapUtility
      * LDAP Server charset
      * @var string
      */
-    protected $ldapCharacterSet;
+    protected string $ldapCharacterSet;
 
     /**
      * Local character set (TYPO3)
      * @var string
      */
-    protected $typo3CharacterSet;
+    protected string $typo3CharacterSet;
 
     /**
      * LDAP Server Connection ID
@@ -90,23 +90,23 @@ class LdapUtility
      * LDAP server status
      * @var array
      */
-    protected $status;
+    protected array $status;
 
     /**
      * 'OpenLDAP' OR 'Active Directory'
      * @var string
      */
-    protected $serverType;
+    protected string $serverType;
 
     /**
      * @var bool
      */
-    protected $hasPagination;
+    protected bool $hasPagination;
 
     /**
      * @var string
      */
-    protected $paginationCookie = null;
+    protected ?string $paginationCookie = null;
 
     /**
      * @param CharsetConverter $charsetConverter
@@ -362,7 +362,17 @@ class LdapUtility
             }
 
             $controls = [['oid' => LDAP_CONTROL_PAGEDRESULTS, 'value' => ['size' => static::MAX_ENTRIES, 'cookie' => $this->paginationCookie]]];
-            $this->searchResult = @ldap_search($this->connection, $baseDn, $filter, $attributes, $attributesOnly, $sizeLimit, $timeLimit, $dereferenceAliases, $controls);
+            $this->searchResult = @ldap_search(
+                $this->connection,
+                $baseDn,
+                $filter,
+                $attributes,
+                $attributesOnly ? 1 : 0,
+                $sizeLimit,
+                $timeLimit,
+                $dereferenceAliases,
+                $controls
+            );
 
             if (!$this->searchResult) {
                 // Search failed.
@@ -415,7 +425,7 @@ class LdapUtility
 
             $tempEntry = [];
             foreach ($attributes as $key => $value) {
-                $tempEntry[strtolower($key)] = $value;
+                $tempEntry[strtolower((string)$key)] = $value;
             }
 
             $entries[] = $tempEntry;

@@ -76,10 +76,10 @@ class Ldap
             $config['port'],
             3,
             $config['charset'],
-            Configuration::getServerType($config['server']),
-            $config['tls'],
-            $config['ssl'],
-            $config['tlsReqcert']
+            Configuration::getServerType((int)$config['server']),
+            (bool)$config['tls'],
+            (bool)$config['ssl'],
+            (bool)$config['tlsReqcert']
         )) {
             static::getLogger()->error( 'Cannot connect', $debugConfiguration);
             return false;

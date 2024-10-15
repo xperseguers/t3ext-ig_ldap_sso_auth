@@ -373,7 +373,7 @@ class Configuration
                     // This is a TypoScript configuration
                     continue;
                 }
-                if (preg_match_all('/<(.+?)>/', $attribute, $matches)) {
+                if (preg_match_all('/<(.+?)>/', (string)$attribute, $matches)) {
                     foreach ($matches[1] as $matchedAttribute) {
                         $ldapAttributes[] = strtolower($matchedAttribute);
                     }

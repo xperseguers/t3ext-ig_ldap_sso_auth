@@ -63,11 +63,13 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
      * @param bool &$hasError
      * @return string
      */
-    protected function renderTable($data, string $humanKeyNames, int $depth, bool &$hasError): string
+    protected function renderTable(array|string $data, bool $humanKeyNames, int $depth, bool &$hasError): string
     {
         if (!is_array($data)) {
             return htmlspecialchars($data);
-        } elseif (empty($data)) {
+        }
+
+        if (empty($data)) {
             return '<em>' . htmlspecialchars($this->translate('module_status.messages.empty')) . '</em>';
         }
 
@@ -101,7 +103,7 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
      * @param bool &$hasError
      * @return string
      */
-    protected function renderValueCell($value, string $key, int $depth, bool &$hasError): string
+    protected function renderValueCell(mixed $value, string $key, int $depth, bool &$hasError): string
     {
         if ($key === '__errors') {
             $hasError = true;

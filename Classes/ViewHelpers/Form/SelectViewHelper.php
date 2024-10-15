@@ -154,7 +154,7 @@ class SelectViewHelper extends AbstractFormFieldViewHelper
         $output = '';
         foreach ($options as $value => $label) {
             $isSelected = $this->isSelected($value);
-            $output .= $this->renderOptionTag($value, $label, $isSelected) . LF;
+            $output .= $this->renderOptionTag((string)$value, $label, $isSelected) . LF;
         }
         return $output;
     }

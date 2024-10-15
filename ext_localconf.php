@@ -27,7 +27,6 @@ defined('TYPO3') || die();
     if ($EXT_CONFIG['enableFELDAPAuthentication'] ?? false) {
         $subTypesArr[] = 'getUserFE';
         $subTypesArr[] = 'authUserFE';
-        $subTypesArr[] = 'getGroupsFE';
     }
     if ($EXT_CONFIG['enableBELDAPAuthentication'] ?? false) {
         $subTypesArr[] = 'getUserBE';

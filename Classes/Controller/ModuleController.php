@@ -107,12 +107,13 @@ class ModuleController extends ActionController
     /**
      * Index action.
      *
-     * @param int $configuration
+     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration|null $configuration
      * @return ResponseInterface
      */
-    public function indexAction(int $configuration = 0): ResponseInterface
+    public function indexAction(
+        ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
+    ): ResponseInterface
     {
-        $configuration = $this->configurationRepository->findByUid($configuration);
         $this->saveState($configuration);
         $this->populateView($configuration);
 

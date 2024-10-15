@@ -16,9 +16,10 @@ services:
   Causal\IgLdapSsoAuth\Utility\LdapUtility:
     public: true
 
+  # Register type converter
   Causal\IgLdapSsoAuth\Property\TypeConverter\ConfigurationConverter:
     tags:
       - name: extbase.type_converter
         priority: 10
-        target: \Causal\IgLdapSsoAuth\Domain\Model\Configuration
+        target: Causal\IgLdapSsoAuth\Domain\Model\Configuration
         sources: int,string

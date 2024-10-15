@@ -27,6 +27,14 @@
         <source><![CDATA[This module cannot be used until you create at least one configuration record. Please refer to the <a href="%s" target="_blank">administrator manual</a> for further information.<br /><br /><a href="%s">Click here</a> to create a configuration record.]]></source>
         <target state="final"><![CDATA[Questo modulo non può essere utilizzato a meno che non venga creato un elemento di configurazione. Per ulteriori informazioni fai riferimento al &lt;a href="%s" target="_blank"&gt;manuale per l'amministratore&lt;/a&gt;.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Fai clic qui&lt;/a&gt; per creare un elemento di configurazione.]]></target>
       </trans-unit>
+      <trans-unit id="module_docheader.configurations.switch">
+        <source>Switch configuration</source>
+        <target state="needs-translation">Switch configuration</target>
+      </trans-unit>
+      <trans-unit id="module_docheader.configurations.edit">
+        <source>Edit current configuration</source>
+        <target state="needs-translation">Edit current configuration</target>
+      </trans-unit>
       <trans-unit id="module_overview" approved="yes">
         <source>Overview</source>
         <target state="final">Panoramica</target>

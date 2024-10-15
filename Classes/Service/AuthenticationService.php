@@ -83,8 +83,7 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
         $user = false;
         $userRecordOrIsValid = false;
         $remoteUser = $this->getRemoteUser();
-        // Hopefully CompatUtility::getTypo3Mode() will never be null in TYPO3 v12
-        $typo3Mode = CompatUtility::getTypo3Mode() ?? $this->authInfo['loginType'];
+        $typo3Mode = CompatUtility::getTypo3Mode($this->mode);
         $enableFrontendSso = $typo3Mode === 'FE' && (bool)$this->config['enableFESSO'] && $remoteUser;
         $enableBackendSso = $typo3Mode === 'BE' && (bool)$this->config['enableBESSO'] && $remoteUser;
 
@@ -203,9 +202,6 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
      */
     public function authUser(array $user): int
     {
-
-        $typo3Mode = CompatUtility::getTypo3Mode() ?? $this->authInfo['loginType'];
-
         /** @var ConfigurationRepository $configurationRepository */
         $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
         $configurationRecords = $configurationRepository->findAll();
@@ -217,6 +213,8 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
             return 100;
         }
 
+        $typo3Mode = CompatUtility::getTypo3Mode($this->mode);
+
         foreach ($configurationRecords as $configurationRecord) {
             Configuration::initialize($typo3Mode, $configurationRecord);
         }
@@ -226,8 +224,6 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
             return static::STATUS_AUTHENTICATION_FAILURE_CONTINUE;
         }
 
-        // Hopefully CompatUtility::getTypo3Mode() will never be null in TYPO3 v12
-        $typo3Mode = CompatUtility::getTypo3Mode() ?? $this->authInfo['loginType'];
         if ($typo3Mode === 'BE') {
             $status = Configuration::getValue('BEfailsafe')
                 ? static::STATUS_AUTHENTICATION_FAILURE_CONTINUE

@@ -119,8 +119,13 @@ class ModuleController extends ActionController
         $this->saveState($configuration);
         $this->populateView($configuration);
 
-        $this->moduleTemplate->setContent($this->view->render());
-        return $this->htmlResponse($this->moduleTemplate->renderContent());
+        $typo3Version = (new Typo3Version())->getMajorVersion();
+        if ($typo3Version < 12) {
+            $this->moduleTemplate->setContent($this->view->render());
+            return $this->htmlResponse($this->moduleTemplate->renderContent());
+        }
+
+        return $this->moduleTemplate->renderResponse('Module/Index');
     }
 
     /**
@@ -142,6 +147,7 @@ class ModuleController extends ActionController
         Configuration::initialize(CompatUtility::getTypo3Mode(), $configuration);
         $this->populateView($configuration);
 
+        $typo3Version = (new Typo3Version())->getMajorVersion();
         $ldapConfiguration = Configuration::getLdapConfiguration();
         $connectionStatus = [];
 
@@ -155,7 +161,7 @@ class ModuleController extends ActionController
                 $this->addFlashMessage(
                     $e->getMessage(),
                     'Error ' . $e->getCode(),
-                    (new Typo3Version())->getMajorVersion() >= 12
+                    $typo3Version >= 12
                         ? ContextualFeedbackSeverity::ERROR
                         : \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
@@ -180,16 +186,24 @@ class ModuleController extends ActionController
             $backendConfiguration = ['LDAPAuthentication' => false];
         }
 
-        $this->view->assign('configuration', [
-            'domains' => Configuration::getDomains(),
-            'ldap' => $ldapConfiguration,
-            'connection' => $connectionStatus,
-            'frontend' => $frontendConfiguration,
-            'backend' => $backendConfiguration,
-        ]);
+        $values = [
+            'configuration' => [
+                'domains' => Configuration::getDomains(),
+                'ldap' => $ldapConfiguration,
+                'connection' => $connectionStatus,
+                'frontend' => $frontendConfiguration,
+                'backend' => $backendConfiguration,
+            ],
+        ];
 
-        $this->moduleTemplate->setContent($this->view->render());
-        return $this->htmlResponse($this->moduleTemplate->renderContent());
+        if ($typo3Version < 12) {
+            $this->view->assignMultiple($values);
+            $this->moduleTemplate->setContent($this->view->render());
+            return $this->htmlResponse($this->moduleTemplate->renderContent());
+        }
+
+        $this->moduleTemplate->assignMultiple($values);
+        return $this->moduleTemplate->renderResponse('Module/Status');
     }
 
     /**
@@ -211,18 +225,25 @@ class ModuleController extends ActionController
         Configuration::initialize(CompatUtility::getTypo3Mode(), $configuration);
         $this->populateView($configuration);
 
+        $typo3Version = (new Typo3Version())->getMajorVersion();
         /** @var PageRenderer $pageRenderer */
         $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
         $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Search');
 
         $frontendConfiguration = Configuration::getFrontendConfiguration();
-        $this->view->assignMultiple([
+        $values = [
             'baseDn' => $frontendConfiguration['users']['basedn'],
             'filter' => $frontendConfiguration['users']['filter'],
-        ]);
+        ];
 
-        $this->moduleTemplate->setContent($this->view->render());
-        return $this->htmlResponse($this->moduleTemplate->renderContent());
+        if ($typo3Version < 12) {
+            $this->view->assignMultiple($values);
+            $this->moduleTemplate->setContent($this->view->render());
+            return $this->htmlResponse($this->moduleTemplate->renderContent());
+        }
+
+        $this->moduleTemplate->assignMultiple($values);
+        return $this->moduleTemplate->renderResponse('Module/Search');
     }
 
     /**
@@ -244,17 +265,25 @@ class ModuleController extends ActionController
         Configuration::initialize('fe', $configuration);
         $this->populateView($configuration);
 
+        $typo3Version = (new Typo3Version())->getMajorVersion();
+        $values = [];
         if ($this->checkLdapConnection()) {
             /** @var PageRenderer $pageRenderer */
             $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
             $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
 
             $users = $this->getAvailableUsers($configuration, 'fe');
-            $this->view->assign('users', $users);
+            $values['users'] = $users;
         }
 
-        $this->moduleTemplate->setContent($this->view->render());
-        return $this->htmlResponse($this->moduleTemplate->renderContent());
+        if ($typo3Version < 12) {
+            $this->view->assignMultiple($values);
+            $this->moduleTemplate->setContent($this->view->render());
+            return $this->htmlResponse($this->moduleTemplate->renderContent());
+        }
+
+        $this->moduleTemplate->assignMultiple($values);
+        return $this->moduleTemplate->renderResponse('Module/ImportFrontendUsers');
     }
 
     /**
@@ -276,17 +305,25 @@ class ModuleController extends ActionController
         Configuration::initialize('be', $configuration);
         $this->populateView($configuration);
 
+        $typo3Version = (new Typo3Version())->getMajorVersion();
+        $values = [];
         if ($this->checkLdapConnection()) {
             /** @var PageRenderer $pageRenderer */
             $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
             $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
 
             $users = $this->getAvailableUsers($configuration, 'be');
-            $this->view->assign('users', $users);
+            $values['users'] = $users;
         }
 
-        $this->moduleTemplate->setContent($this->view->render());
-        return $this->htmlResponse($this->moduleTemplate->renderContent());
+        if ($typo3Version < 12) {
+            $this->view->assignMultiple($values);
+            $this->moduleTemplate->setContent($this->view->render());
+            return $this->htmlResponse($this->moduleTemplate->renderContent());
+        }
+
+        $this->moduleTemplate->assignMultiple($values);
+        return $this->moduleTemplate->renderResponse('Module/ImportBackendUsers');
     }
 
     /**
@@ -308,17 +345,25 @@ class ModuleController extends ActionController
         Configuration::initialize('fe', $configuration);
         $this->populateView($configuration);
 
+        $typo3Version = (new Typo3Version())->getMajorVersion();
+        $values = [];
         if ($this->checkLdapConnection()) {
             /** @var PageRenderer $pageRenderer */
             $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
             $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
 
             $groups = $this->getAvailableUserGroups($configuration, 'fe');
-            $this->view->assign('groups', $groups);
+            $values['groups'] = $groups;
         }
 
-        $this->moduleTemplate->setContent($this->view->render());
-        return $this->htmlResponse($this->moduleTemplate->renderContent());
+        if ($typo3Version < 12) {
+            $this->view->assignMultiple($values);
+            $this->moduleTemplate->setContent($this->view->render());
+            return $this->htmlResponse($this->moduleTemplate->renderContent());
+        }
+
+        $this->moduleTemplate->assignMultiple($values);
+        return $this->moduleTemplate->renderResponse('Module/ImportFrontendUserGroups');
     }
 
     /**
@@ -340,17 +385,25 @@ class ModuleController extends ActionController
         Configuration::initialize('be', $configuration);
         $this->populateView($configuration);
 
+        $typo3Version = (new Typo3Version())->getMajorVersion();
+        $values = [];
         if ($this->checkLdapConnection()) {
             /** @var PageRenderer $pageRenderer */
             $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
             $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
 
             $groups = $this->getAvailableUserGroups($configuration, 'be');
-            $this->view->assign('groups', $groups);
+            $values['groups'] = $groups;
         }
 
-        $this->moduleTemplate->setContent($this->view->render());
-        return $this->htmlResponse($this->moduleTemplate->renderContent());
+        if ($typo3Version < 12) {
+            $this->view->assignMultiple($values);
+            $this->moduleTemplate->setContent($this->view->render());
+            return $this->htmlResponse($this->moduleTemplate->renderContent());
+        }
+
+        $this->moduleTemplate->assignMultiple($values);
+        return $this->moduleTemplate->renderResponse('Module/ImportBackendUserGroups');
     }
 
     /**
@@ -843,6 +896,7 @@ class ModuleController extends ActionController
         ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
     ): void
     {
+        $typo3Version = (new Typo3Version())->getMajorVersion();
         $thisUri = $this->uriBuilder->reset()->uriFor(null, ['configuration' => $configuration]);
         $editLink = '';
 
@@ -864,7 +918,7 @@ class ModuleController extends ActionController
             $this->addFlashMessage(
                 $message,
                 $this->translate('configuration_missing.title'),
-                (new Typo3Version())->getMajorVersion() >= 12
+                $typo3Version >= 12
                     ? ContextualFeedbackSeverity::WARNING
                     : \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
             );
@@ -919,7 +973,7 @@ class ModuleController extends ActionController
         $tableClass = 'table table-striped table-hover';
         $trClass = '';
 
-        $this->view->assignMultiple([
+        $values = [
             'action' => $this->request->getControllerActionName(),
             'configurationRecords' => $configurationRecords,
             'currentConfiguration' => $configuration,
@@ -930,7 +984,13 @@ class ModuleController extends ActionController
                 'table' => $tableClass,
                 'tableRow' => $trClass,
             ]
-        ]);
+        ];
+
+        if ($typo3Version >= 12) {
+            $this->moduleTemplate->assignMultiple($values);
+        } else {
+            $this->view->assignMultiple($values);
+        }
     }
 
     /**

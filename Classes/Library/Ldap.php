@@ -36,21 +36,16 @@ class Ldap
      */
     protected $lastBindDiagnostic = '';
 
-    /**
-     * @var LdapUtility
-     */
-    protected $ldapUtility;
-
-    public function __construct()
+    public function __construct(
+        protected readonly LdapUtility $ldapUtility
+    )
     {
-        $this->ldapUtility = GeneralUtility::makeInstance(LdapUtility::class);
     }
 
     /**
      * Returns an instance of this class.
      *
      * @return Ldap
-     * @throws \TYPO3\CMS\Extbase\Object\Exception
      */
     public static function getInstance(): self
     {

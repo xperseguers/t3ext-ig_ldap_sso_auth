@@ -41,7 +41,6 @@ class Ldap
      */
     protected $ldapUtility;
 
-
     public function __construct()
     {
         $this->ldapUtility = GeneralUtility::makeInstance(LdapUtility::class);

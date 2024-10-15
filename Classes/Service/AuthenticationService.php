@@ -16,6 +16,7 @@ declare(strict_types=1);
 
 namespace Causal\IgLdapSsoAuth\Service;
 
+use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
 use Causal\IgLdapSsoAuth\Event\AuthenticationFailedEvent;
 use Causal\IgLdapSsoAuth\Utility\CompatUtility;
 use Psr\Log\LoggerInterface;
@@ -98,8 +99,8 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
             return $user;
         }
 
-        /** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
-        $configurationRepository = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository::class);
+        /** @var ConfigurationRepository $configurationRepository */
+        $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
         $configurationRecords = $configurationRepository->findAll();
 
         if (empty($configurationRecords)) {
@@ -225,8 +226,8 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
 
         $typo3Mode = CompatUtility::getTypo3Mode() ?? $this->authInfo['loginType'];
 
-        /** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
-        $configurationRepository = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository::class);
+        /** @var ConfigurationRepository $configurationRepository */
+        $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
         $configurationRecords = $configurationRepository->findAll();
 
         if (empty($configurationRecords)) {

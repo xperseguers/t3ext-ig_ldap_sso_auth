@@ -26,6 +26,7 @@ use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -93,9 +94,7 @@ class ModuleController extends ActionController
             }
         }
 
-        /** @var PageRenderer $pageRenderer */
-        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-        $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Search');
+        $this->loadJavaScriptModule('search');
     }
 
     /**
@@ -216,13 +215,11 @@ class ModuleController extends ActionController
 
         Configuration::initialize(CompatUtility::getTypo3Mode(), $configuration);
         $this->populateView($configuration);
+        $this->loadJavaScriptModule('search');
 
         $typo3Version = (new Typo3Version())->getMajorVersion();
-        /** @var PageRenderer $pageRenderer */
-        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-        $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Search');
-
         $frontendConfiguration = Configuration::getFrontendConfiguration();
+
         $values = [
             'baseDn' => $frontendConfiguration['users']['basedn'],
             'filter' => $frontendConfiguration['users']['filter'],
@@ -260,9 +257,7 @@ class ModuleController extends ActionController
         $typo3Version = (new Typo3Version())->getMajorVersion();
         $values = [];
         if ($this->checkLdapConnection()) {
-            /** @var PageRenderer $pageRenderer */
-            $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-            $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
+            $this->loadJavaScriptModule('import');
 
             $users = $this->getAvailableUsers($configuration, 'fe');
             $values['users'] = $users;
@@ -300,9 +295,7 @@ class ModuleController extends ActionController
         $typo3Version = (new Typo3Version())->getMajorVersion();
         $values = [];
         if ($this->checkLdapConnection()) {
-            /** @var PageRenderer $pageRenderer */
-            $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-            $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
+            $this->loadJavaScriptModule('import');
 
             $users = $this->getAvailableUsers($configuration, 'be');
             $values['users'] = $users;
@@ -340,9 +333,7 @@ class ModuleController extends ActionController
         $typo3Version = (new Typo3Version())->getMajorVersion();
         $values = [];
         if ($this->checkLdapConnection()) {
-            /** @var PageRenderer $pageRenderer */
-            $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-            $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
+            $this->loadJavaScriptModule('import');
 
             $groups = $this->getAvailableUserGroups($configuration, 'fe');
             $values['groups'] = $groups;
@@ -380,9 +371,7 @@ class ModuleController extends ActionController
         $typo3Version = (new Typo3Version())->getMajorVersion();
         $values = [];
         if ($this->checkLdapConnection()) {
-            /** @var PageRenderer $pageRenderer */
-            $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-            $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
+            $this->loadJavaScriptModule('import');
 
             $groups = $this->getAvailableUserGroups($configuration, 'be');
             $values['groups'] = $groups;
@@ -1063,5 +1052,25 @@ class ModuleController extends ActionController
             }
         }
         return $ret;
+    }
+
+    /**
+     * @param string $module
+     */
+    private function loadJavaScriptModule(string $module): void
+    {
+        /** @var PageRenderer $pageRenderer */
+        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+
+        if ((new Typo3Version())->getMajorVersion() >= 12) {
+            $pageRenderer->getJavaScriptRenderer()->addJavaScriptModuleInstruction(
+                JavaScriptModuleInstruction::create('@causal/ig-ldap-sso-auth/' . $module . '.js')
+                    ->invoke('create', [
+                        // options go here...
+                    ])
+            );
+        } else {
+            $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/' . ucfirst($module));
+        }
     }
 }

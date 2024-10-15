@@ -713,7 +713,7 @@ class Authentication
             $backupTSFE = $GLOBALS['TSFE'] ?? null;
 
             // Advanced stdWrap methods require a valid $GLOBALS['TSFE'] => create the most lightweight one
-            $pageId = $typo3['pid'];
+            $pageId = (int)$typo3['pid'];
             // Use SiteFinder to get a Site object for the current page tree
             $siteFinder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Site\SiteFinder::class);
             try {

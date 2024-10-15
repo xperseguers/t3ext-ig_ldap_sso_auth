@@ -79,7 +79,7 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
         $content = [];
         foreach ($data as $key => $value) {
             $hasValueError = false;
-            $valueCell = $this->renderValueCell($value, $key, $depth, $hasValueError);
+            $valueCell = $this->renderValueCell($value, (string)$key, $depth, $hasValueError);
             $class = 'key';
             if ($hasValueError) {
                 $hasError = true;
@@ -88,7 +88,7 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
             if ($humanKeyNames) {
                 $key = $this->processKey($key);
             }
-            $content[] = sprintf('<tr class="' . $trClass . '"><td class="' . $class . '">%s</td>%s</tr>', htmlspecialchars($key), $valueCell);
+            $content[] = sprintf('<tr class="' . $trClass . '"><td class="' . $class . '">%s</td>%s</tr>', htmlspecialchars((string)$key), $valueCell);
         }
 
         return '<table class="' . $tableClass . '">' . implode(LF, $content) . '</table>';

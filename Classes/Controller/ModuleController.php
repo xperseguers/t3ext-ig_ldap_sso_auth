@@ -410,7 +410,7 @@ class ModuleController extends ActionController
 
         $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
 
-        $configuration = $configurationRepository->findByUid($params['configuration']);
+        $configuration = $configurationRepository->findByUid((int)$params['configuration']);
         list($mode, $key) = explode('_', $params['type'], 2);
 
         Configuration::initialize($mode, $configuration);
@@ -441,7 +441,7 @@ class ModuleController extends ActionController
         $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
         $ldap = GeneralUtility::makeInstance(Ldap::class);
 
-        $configuration = $configurationRepository->findByUid($params['configuration']);
+        $configuration = $configurationRepository->findByUid((int)$params['configuration']);
         list($mode, $key) = explode('_', $params['type'], 2);
 
         Configuration::initialize($mode, $configuration);

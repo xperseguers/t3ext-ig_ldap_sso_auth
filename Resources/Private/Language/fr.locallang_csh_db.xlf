@@ -7,21 +7,13 @@
         <source>Name used to distinguish each configuration.</source>
         <target state="final">Nom utilisé afin de distinguer chaque configuration.</target>
       </trans-unit>
-      <trans-unit id="domains.description" approved="yes">
-        <source>Domains for which this configuration should be used. Leave empty to use it with any domain.</source>
-        <target state="final">Domaines pour lesquels la configuration doit être utilisée. Laisser vide pour l'utiliser avec n'importe quel domaine.</target>
-      </trans-unit>
       <trans-unit id="ldap_server.description">
         <source>Type of LDAP server used by the authentication (OpenLDAP, Active Directory).</source>
-        <target state="needs-translation">Type of LDAP server used by the authentication (OpenLDAP, Active Directory).</target>
+        <target state="translated">Type de serveur LDAP utilisé par l'authentification (OpenLDAP, Active Directory).</target>
       </trans-unit>
       <trans-unit id="ldap_charset.description" approved="yes">
         <source>Character set used by the LDAP server. Usually: utf-8.</source>
         <target state="final">Jeu de caractères utilisé par le serveur LDAP. Par défaut : utf-8.</target>
-      </trans-unit>
-      <trans-unit id="ldap_host.description" approved="yes">
-        <source>Address of the LDAP server.</source>
-        <target state="final">Adresse du serveur LDAP.</target>
       </trans-unit>
       <trans-unit id="ldap_port.description" approved="yes">
         <source>Port used by the LDAP server. Default: 389.</source>
@@ -34,10 +26,6 @@
       <trans-unit id="ldap_binddn.syntax" approved="yes">
         <source>E.g., cn=admin,dc=example,dc=com</source>
         <target state="final">Ex.: cn=admin,dc=example,dc=com</target>
-      </trans-unit>
-      <trans-unit id="ldap_password.description" approved="yes">
-        <source>Password used to bind to the server.</source>
-        <target state="final">Mot de passe utilisé pour la connexion au serveur.</target>
       </trans-unit>
       <trans-unit id="be_users_basedn.description" approved="yes">
         <source>DN (Distinguished Name) to be used to look for BE users in the LDAP server.</source>

@@ -48,8 +48,8 @@
         <target state="needs-translation">Backend SSO: Enable Single Sign-On for Backend users.</target>
       </trans-unit>
       <trans-unit id="settings.keepBESSODomainName">
-        <source>Backend SSO: Keep the domain name after a successful login (for example on a CAS-Server), to continue the chain of authentication through LDAP.</source>
-        <target state="needs-translation">Backend SSO: Keep the domain name after a successful login (for example on a CAS-Server), to continue the chain of authentication through LDAP.</target>
+        <source>Keep Backend SSO Domain: Keep the domain name after a successful login (for example on a CAS-Server), to continue the chain of authentication through LDAP.</source>
+        <target state="needs-translation">Keep Backend SSO Domain: Keep the domain name after a successful login (for example on a CAS-Server), to continue the chain of authentication through LDAP.</target>
       </trans-unit>
       <trans-unit id="settings.enableFELDAPAuthentication">
         <source>Frontend LDAP authentication: Enable LDAP authentication for the frontend.</source>
@@ -92,24 +92,16 @@
         <target state="needs-translation">Configuration LDAP / SSO</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.name">
-        <source>Name:</source>
-        <target state="needs-translation">Name:</target>
-      </trans-unit>
-      <trans-unit id="tx_igldapssoauth_config.domains">
-        <source>Associated domains:</source>
-        <target state="needs-translation">Associated domains:</target>
-      </trans-unit>
-      <trans-unit id="tx_igldapssoauth_config.domains.v9_description">
-        <source>BEWARE: Usage of domains is deprecated since TYPO3 v9. Please migrate your configuration to site configurations.</source>
-        <target state="needs-translation">BEWARE: Usage of domains is deprecated since TYPO3 v9. Please migrate your configuration to site configurations.</target>
+        <source>Name</source>
+        <target state="needs-translation">Name</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.sites">
-        <source>Associated site configurations:</source>
-        <target state="needs-translation">Associated site configurations:</target>
+        <source>Associated site configurations</source>
+        <target state="needs-translation">Associated site configurations</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_server">
-        <source>Server Type:</source>
-        <target state="needs-translation">Server Type:</target>
+        <source>Server Type</source>
+        <target state="needs-translation">Server Type</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_server.I.0">
         <source>OpenLDAP</source>
@@ -120,40 +112,40 @@
         <target state="needs-translation">Active Directory</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_charset">
-        <source>Character set:</source>
-        <target state="needs-translation">Character set:</target>
+        <source>Character set</source>
+        <target state="needs-translation">Character set</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_host">
-        <source>Host:</source>
-        <target state="needs-translation">Host:</target>
+        <source>Host</source>
+        <target state="needs-translation">Host</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_port">
-        <source>Port:</source>
-        <target state="needs-translation">Port:</target>
+        <source>Port</source>
+        <target state="needs-translation">Port</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_tls">
-        <source>Use TLS:</source>
-        <target state="needs-translation">Use TLS:</target>
+        <source>Use TLS</source>
+        <target state="needs-translation">Use TLS</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_tls_reqcert">
-        <source>TLS require cert:</source>
-        <target state="needs-translation">TLS require cert:</target>
+        <source>TLS require cert</source>
+        <target state="needs-translation">TLS require cert</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_ssl">
-        <source>Use SSL:</source>
-        <target state="needs-translation">Use SSL:</target>
+        <source>Use SSL</source>
+        <target state="needs-translation">Use SSL</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_binddn">
-        <source>Bind DN:</source>
-        <target state="needs-translation">Bind DN:</target>
+        <source>Bind DN</source>
+        <target state="needs-translation">Bind DN</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_password">
-        <source>Password:</source>
-        <target state="needs-translation">Password:</target>
+        <source>Password</source>
+        <target state="needs-translation">Password</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.group_membership">
-        <source>Relation between groups and users:</source>
-        <target state="needs-translation">Relation between groups and users:</target>
+        <source>Relation between groups and users</source>
+        <target state="needs-translation">Relation between groups and users</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.group_membership.I.1">
         <source>Group contains the list of its members</source>
@@ -172,76 +164,76 @@
         <target state="needs-translation"><![CDATA[Mapping for field "usergroup" is missing in the configuration of backend users. You may end up importing ALL groups in LDAP into TYPO3 and get users associated to wrong groups. Suggestion: usergroup = <memberOf>]]></target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_users_basedn">
-        <source>Base DN:</source>
-        <target state="needs-translation">Base DN:</target>
+        <source>Base DN</source>
+        <target state="needs-translation">Base DN</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_users_filter">
-        <source>Filter:</source>
-        <target state="needs-translation">Filter:</target>
+        <source>Filter</source>
+        <target state="needs-translation">Filter</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_users_mapping">
-        <source>Mapping:</source>
-        <target state="needs-translation">Mapping:</target>
+        <source>Mapping</source>
+        <target state="needs-translation">Mapping</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_groups_basedn">
-        <source>Base DN:</source>
-        <target state="needs-translation">Base DN:</target>
+        <source>Base DN</source>
+        <target state="needs-translation">Base DN</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_groups_filter">
-        <source>Filter:</source>
-        <target state="needs-translation">Filter:</target>
+        <source>Filter</source>
+        <target state="needs-translation">Filter</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_groups_mapping">
-        <source>Mapping:</source>
-        <target state="needs-translation">Mapping:</target>
+        <source>Mapping</source>
+        <target state="needs-translation">Mapping</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_groups_required">
-        <source>Required LDAP groups:</source>
-        <target state="needs-translation">Required LDAP groups:</target>
+        <source>Required LDAP groups</source>
+        <target state="needs-translation">Required LDAP groups</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_groups_assigned">
-        <source>Local groups to be assigned:</source>
-        <target state="needs-translation">Local groups to be assigned:</target>
+        <source>Local groups to be assigned</source>
+        <target state="needs-translation">Local groups to be assigned</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_groups_admin">
-        <source>TYPO3 administrator groups:</source>
-        <target state="needs-translation">TYPO3 administrator groups:</target>
+        <source>TYPO3 administrator groups</source>
+        <target state="needs-translation">TYPO3 administrator groups</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_groups.tx_igldapssoauth_dn">
         <source>Groups DN (Distinguished Name)</source>
         <target state="needs-translation">Groups DN (Distinguished Name)</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.fe_users_basedn">
-        <source>Base DN:</source>
-        <target state="needs-translation">Base DN:</target>
+        <source>Base DN</source>
+        <target state="needs-translation">Base DN</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.fe_users_filter">
-        <source>Filter:</source>
-        <target state="needs-translation">Filter:</target>
+        <source>Filter</source>
+        <target state="needs-translation">Filter</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.fe_users_mapping">
-        <source>Mapping:</source>
-        <target state="needs-translation">Mapping:</target>
+        <source>Mapping</source>
+        <target state="needs-translation">Mapping</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.fe_groups_basedn">
-        <source>Base DN:</source>
-        <target state="needs-translation">Base DN:</target>
+        <source>Base DN</source>
+        <target state="needs-translation">Base DN</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.fe_groups_filter">
-        <source>Filter:</source>
-        <target state="needs-translation">Filter:</target>
+        <source>Filter</source>
+        <target state="needs-translation">Filter</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.fe_groups_mapping">
-        <source>Mapping:</source>
-        <target state="needs-translation">Mapping:</target>
+        <source>Mapping</source>
+        <target state="needs-translation">Mapping</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.fe_groups_required">
-        <source>Required LDAP groups:</source>
-        <target state="needs-translation">Required LDAP groups:</target>
+        <source>Required LDAP groups</source>
+        <target state="needs-translation">Required LDAP groups</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.fe_groups_assigned">
-        <source>Local groups to be assigned:</source>
-        <target state="needs-translation">Local groups to be assigned:</target>
+        <source>Local groups to be assigned</source>
+        <target state="needs-translation">Local groups to be assigned</target>
       </trans-unit>
       <trans-unit id="be_groups.tx_igldapssoauth_dn">
         <source>Group's DN (Distinguished Name)</source>
@@ -268,12 +260,12 @@
         <target state="needs-translation">Connection</target>
       </trans-unit>
       <trans-unit id="suggestion.server.0">
-        <source>Suggestion for OpenLDAP:</source>
-        <target state="needs-translation">Suggestion for OpenLDAP:</target>
+        <source>Suggestion for OpenLDAP</source>
+        <target state="needs-translation">Suggestion for OpenLDAP</target>
       </trans-unit>
       <trans-unit id="suggestion.server.1">
-        <source>Suggestion for Active Directory:</source>
-        <target state="needs-translation">Suggestion for Active Directory:</target>
+        <source>Suggestion for Active Directory</source>
+        <target state="needs-translation">Suggestion for Active Directory</target>
       </trans-unit>
       <trans-unit id="suggestion.copy">
         <source>copy and use</source>

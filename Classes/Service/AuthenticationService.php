@@ -233,7 +233,8 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
         if (empty($configurationRecords)) {
             // Early return since LDAP is not configured
             static::getLogger()->warning('Skipping LDAP authentication as extension is not yet configured');
-            return false;
+            // 100 = User not authenticated; this service is not responsible
+            return 100;
         }
 
         foreach ($configurationRecords as $configurationRecord) {

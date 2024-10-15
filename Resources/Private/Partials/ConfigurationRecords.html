@@ -8,7 +8,7 @@
         {configurationRecords.0.name}
     </f:then>
     <f:else>
-        <f:form action="{action}" method="post" class="form-inline">
+        <f:form action="{action}" method="post" class="form-inline col-sm-4">
             <div class="form-group" style="display: flex;">
                 <f:form.select
                         name="configuration"
@@ -17,7 +17,7 @@
                         optionValueField="uid"
                         optionLabelField="name"
                         onchange="this.form.submit();"
-                        class="form-select"
+                        class="form-select form-select-sm form-control"
                         style="display: inline-flex; width: 100%;"/>
 
                 <f:form.submit

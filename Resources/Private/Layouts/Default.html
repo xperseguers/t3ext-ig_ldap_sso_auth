@@ -19,17 +19,15 @@
 
             </div>
         </div>
-        <div class="module-docheader-bar module-docheader-bar-buttons t3js-module-docheader-bar t3js-module-docheader-bar-buttons" style="height: auto;">
-            <div class="module-docheader-bar-column-left">
-                <f:render section="configuration"/>
-            </div>
-            <div class="module-docheader-bar-column-right">
-                <div class="btn-toolbar" role="toolbar">
-                </div>
-            </div>
+        <div class="module-docheader-bar" style="height: auto;">
+            <f:render section="configuration"/>
         </div>
     </div>
-    <div class="module-body t3js-module-body" style="padding-top: 89px;">
+    <f:if condition="{configurationRecords -> f:count()}==1">
+        <f:then><f:variable name="paddingTop" value="89"/></f:then>
+        <f:else><f:variable name="paddingTop" value="125"/></f:else>
+    </f:if>
+    <div class="module-body t3js-module-body" style="padding-top: {paddingTop}px;">
         <f:render section="content"/>
     </div>
 </div>

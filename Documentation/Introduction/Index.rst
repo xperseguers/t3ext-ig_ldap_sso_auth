@@ -76,21 +76,19 @@ releases.
 We would like to thank:
 
 - Support for TYPO3 11 LTS has been sponsored by *TEC Competence UG*, Germany.
-- Support for TYPO3 9 LTS has been sponsored by *Plan.Net Suisse AG*,
-  Switzerland and *TEC Competence UG*, Germany.
 - All the various developers reportings bugs and providing patches in the
   bug tracker.
 
 .. tabularcolumns:: |p{7.53cm}|p{7.53cm}|
 
 +---------------------------------------------------+---------------------------------------------------+
-| .. image:: ../Images/logo-causal.png              | .. image:: ../Images/logo-plannet.png             |
-|     :alt: Causal Sàrl                             |     :alt: Plan.Net Suisse AG                      |
-|     :width: 200px                                 |     :width: 200px                                 |
+| .. image:: ../Images/logo-causal.png              |                                                   |
+|     :alt: Causal Sàrl                             |                                                   |
+|     :width: 200px                                 |                                                   |
 |                                                   |                                                   |
-| Causal Sàrl                                       | Plan.Net Suisse AG                                |
+| Causal Sàrl                                       |                                                   |
 |                                                   |                                                   |
-| https://www.causal.ch                             | https://www.plan-net.ch                           |
+| https://www.causal.ch                             |                                                   |
 +---------------------------------------------------+---------------------------------------------------+
 | .. image:: ../Images/logo-tec-competence.png      |                                                   |
 |     :alt: TEC Competence UG                       |                                                   |

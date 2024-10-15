@@ -7,6 +7,15 @@ services:
   Causal\IgLdapSsoAuth\:
     resource: '../Classes/*'
 
+  Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository:
+    public: true
+
+  Causal\IgLdapSsoAuth\Library\Ldap:
+    public: true
+
+  Causal\IgLdapSsoAuth\Utility\LdapUtility:
+    public: true
+
   Causal\IgLdapSsoAuth\Property\TypeConverter\ConfigurationConverter:
     tags:
       - name: extbase.type_converter

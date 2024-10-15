@@ -23,3 +23,10 @@ services:
         priority: 10
         target: Causal\IgLdapSsoAuth\Domain\Model\Configuration
         sources: int,string
+
+  # Register event listeners.
+  Causal\IgLdapSsoAuth\EventListener\ExtendUserGroupQueryListener:
+    tags:
+      - name: event.listener
+        identifier: 'causal.ig_ldap_sso_auth.extendUserGroupQueryListener'
+        event: TYPO3\CMS\Backend\View\Event\ModifyDatabaseQueryForRecordListingEvent

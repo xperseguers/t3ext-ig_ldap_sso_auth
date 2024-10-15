@@ -3,37 +3,37 @@
   <file source-language="en" datatype="plaintext" original="messages" date="2015-02-17T16:10:14Z" product-name="ig_ldap_sso_auth" target-language="fr">
     <header/>
     <body>
-      <trans-unit id="mlang_tabs_tab">
+      <trans-unit id="mlang_tabs_tab" approved="yes">
         <source>LDAP / SSO</source>
-        <target state="translated">LDAP / SSO</target>
+        <target state="final">LDAP / SSO</target>
       </trans-unit>
-      <trans-unit id="mlang_labels_tabdescr">
+      <trans-unit id="mlang_labels_tabdescr" approved="yes">
         <source>LDAP management and configuration module.</source>
-        <target state="translated">Module de gestion et de configuration LDAP.</target>
+        <target state="final">Module de gestion et de configuration LDAP.</target>
       </trans-unit>
-      <trans-unit id="mlang_labels_tablabel">
+      <trans-unit id="mlang_labels_tablabel" approved="yes">
         <source>LDAP management</source>
-        <target state="translated">Gestion LDAP</target>
+        <target state="final">Gestion LDAP</target>
       </trans-unit>
-      <trans-unit id="title">
+      <trans-unit id="title" approved="yes">
         <source>LDAP / SSO service management</source>
-        <target state="translated">Gestion LDAP / service SSO</target>
+        <target state="final">Gestion LDAP / service SSO</target>
       </trans-unit>
-      <trans-unit id="configuration_missing.title">
+      <trans-unit id="configuration_missing.title" approved="yes">
         <source>No Configuration Records</source>
-        <target state="translated">Aucun enregistrement de configuration</target>
+        <target state="final">Aucun enregistrement de configuration</target>
       </trans-unit>
       <trans-unit id="configuration_missing.message" approved="yes">
         <source><![CDATA[This module cannot be used until you create at least one configuration record. Please refer to the <a href="%s" target="_blank">administrator manual</a> for further information.<br /><br /><a href="%s">Click here</a> to create a configuration record.]]></source>
         <target state="final"><![CDATA[Ce module ne peut pas être utilisé tant que vous n'avez pas créé au moins un enregistrement de configuration. Veuillez pour référer au &lt;a href="%s" target="_blank"&gt;manual de l'administrateur&lt;/a&gt; pour de plus amples informations.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Cliquez ici&lt;/a&gt; pour créer un enregistrement de configuration.]]></target>
       </trans-unit>
-      <trans-unit id="module_docheader.configurations.switch">
+      <trans-unit id="module_docheader.configurations.switch" approved="yes">
         <source>Switch configuration</source>
-        <target state="needs-translation">Switch configuration</target>
+        <target state="final">Changer de configuration</target>
       </trans-unit>
-      <trans-unit id="module_docheader.configurations.edit">
+      <trans-unit id="module_docheader.configurations.edit" approved="yes">
         <source>Edit current configuration</source>
-        <target state="needs-translation">Edit current configuration</target>
+        <target state="final">Modifier la configuration actuelle</target>
       </trans-unit>
       <trans-unit id="module_overview" approved="yes">
         <source>Overview</source>
@@ -51,9 +51,9 @@
         <source>Current LDAP configuration is restricted to following domain(s):</source>
         <target state="final">La configuration LDAP actuelle est limitée au(x) domaine(s) suivant(s) :</target>
       </trans-unit>
-      <trans-unit id="module_status.title.ldap">
+      <trans-unit id="module_status.title.ldap" approved="yes">
         <source>LDAP</source>
-        <target state="translated">LDAP</target>
+        <target state="final">LDAP</target>
       </trans-unit>
       <trans-unit id="module_status.messages.ldapDisable" approved="yes">
         <source>LDAP is disabled since the host name is undefined.</source>
@@ -95,25 +95,25 @@
         <source>Host</source>
         <target state="final">Serveur</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.port">
+      <trans-unit id="module_status.configuration.port" approved="yes">
         <source>Port</source>
-        <target state="translated">Port</target>
+        <target state="final">Port</target>
       </trans-unit>
       <trans-unit id="module_status.configuration.tls" approved="yes">
         <source>Use TLS</source>
         <target state="final">Utiliser TLS</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.tlsReqcert">
+      <trans-unit id="module_status.configuration.tlsReqcert" approved="yes">
         <source>TLS require cert</source>
-        <target state="translated">Certificat TLS requis</target>
+        <target state="final">Certificat TLS requis</target>
       </trans-unit>
       <trans-unit id="module_status.configuration.ssl" approved="yes">
         <source>Use SSL</source>
         <target state="final">Utiliser SSL</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.binddn">
+      <trans-unit id="module_status.configuration.binddn" approved="yes">
         <source>Bind DN</source>
-        <target state="needs-translation">Bind DN</target>
+        <target state="final">Bind DN</target>
       </trans-unit>
       <trans-unit id="module_status.configuration.password" approved="yes">
         <source>Password</source>
@@ -195,9 +195,9 @@
         <source>Search wizard</source>
         <target state="final">Assistant de recherche</target>
       </trans-unit>
-      <trans-unit id="module_search_type">
+      <trans-unit id="module_search_type" approved="yes">
         <source>Type</source>
-        <target state="translated">Type</target>
+        <target state="final">Type</target>
       </trans-unit>
       <trans-unit id="module_search_type.frontendUsers" approved="yes">
         <source>Frontend users</source>
@@ -215,9 +215,9 @@
         <source>Backend user groups</source>
         <target state="final">Groupes d'utilisateurs backend</target>
       </trans-unit>
-      <trans-unit id="module_search_options">
+      <trans-unit id="module_search_options" approved="yes">
         <source>Options</source>
-        <target state="translated">Options</target>
+        <target state="final">Options</target>
       </trans-unit>
       <trans-unit id="module_search_options.firstEntry" approved="yes">
         <source>First entry only</source>
@@ -227,9 +227,9 @@
         <source>Show status</source>
         <target state="final">Afficher le statut</target>
       </trans-unit>
-      <trans-unit id="module_search_basedn">
+      <trans-unit id="module_search_basedn" approved="yes">
         <source>Base DN</source>
-        <target state="needs-translation">Base DN</target>
+        <target state="final">DN de base</target>
       </trans-unit>
       <trans-unit id="module_search_filter" approved="yes">
         <source>Filter</source>
@@ -319,9 +319,9 @@
         <source>Import LDAP for one or all configurations, for FE, BE or both. Users missing on the LDAP side will be disabled.</source>
         <target state="final">Importer des utilisateurs LDAP pour une ou plusieurs configurations, pour le frontend, le backend ou les deux. Les utilisateurs qui ne sont pas présents côté LDAP seront désactivés.</target>
       </trans-unit>
-      <trans-unit id="task.import_users.field.mode">
+      <trans-unit id="task.import_users.field.mode" approved="yes">
         <source>Mode</source>
-        <target state="translated">Mode</target>
+        <target state="final">Mode</target>
       </trans-unit>
       <trans-unit id="task.import_users.field.mode.import" approved="yes">
         <source>Import missing LDAP users and synchronize existing TYPO3 users</source>
@@ -347,17 +347,17 @@
         <source>Both</source>
         <target state="final">Les deux</target>
       </trans-unit>
-      <trans-unit id="task.import_users.field.context.fe">
+      <trans-unit id="task.import_users.field.context.fe" approved="yes">
         <source>Frontend</source>
-        <target state="translated">Frontend</target>
+        <target state="final">Frontend</target>
       </trans-unit>
-      <trans-unit id="task.import_users.field.context.be">
+      <trans-unit id="task.import_users.field.context.be" approved="yes">
         <source>Backend</source>
-        <target state="translated">Backend</target>
+        <target state="final">Backend</target>
       </trans-unit>
-      <trans-unit id="task.import_users.field.configuration">
+      <trans-unit id="task.import_users.field.configuration" approved="yes">
         <source>Configuration</source>
-        <target state="translated">Configuration</target>
+        <target state="final">Configuration</target>
       </trans-unit>
       <trans-unit id="task.import_users.field.configuration.all" approved="yes">
         <source>All</source>

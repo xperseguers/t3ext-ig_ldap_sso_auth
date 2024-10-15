@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -34,33 +36,20 @@ class Ldap
      */
     protected $lastBindDiagnostic = '';
 
-    /**
-     * @var LdapUtility
-     */
-    protected $ldapUtility;
-
-    /**
-     * @param LdapUtility $ldapUtility
-     */
-    public function injectLdapUtility(LdapUtility $ldapUtility): void
+    public function __construct(
+        protected readonly LdapUtility $ldapUtility
+    )
     {
-        $this->ldapUtility = $ldapUtility;
     }
 
     /**
      * Returns an instance of this class.
      *
      * @return Ldap
-     * @throws \TYPO3\CMS\Extbase\Object\Exception
      */
     public static function getInstance(): self
     {
-        /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-        static $objectManager = null;
-        if ($objectManager === null) {
-            $objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
-        }
-        return $objectManager->get(__CLASS__);
+        return GeneralUtility::makeInstance(__CLASS__);
     }
 
     /**
@@ -87,10 +76,10 @@ class Ldap
             $config['port'],
             3,
             $config['charset'],
-            Configuration::getServerType($config['server']),
-            $config['tls'],
-            $config['ssl'],
-            $config['tlsReqcert']
+            Configuration::getServerType((int)$config['server']),
+            (bool)$config['tls'],
+            (bool)$config['ssl'],
+            (bool)$config['tlsReqcert']
         )) {
             static::getLogger()->error( 'Cannot connect', $debugConfiguration);
             return false;
@@ -141,7 +130,7 @@ class Ldap
      */
     public function validateUser(
         ?string $username = null,
-        ?string $password = null,
+        #[\SensitiveParameter] ?string $password = null,
         ?string $baseDn = null,
         ?string $filter = null
     )

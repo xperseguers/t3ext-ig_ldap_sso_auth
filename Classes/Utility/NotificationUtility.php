@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,8 +16,9 @@
 
 namespace Causal\IgLdapSsoAuth\Utility;
 
+use Causal\IgLdapSsoAuth\Event\LdapEventInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 /**
  * Notification class.
@@ -26,37 +29,40 @@ use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
  */
 class NotificationUtility
 {
+    private static ?NotificationUtility $instance = null;
+
     /**
-     * Dispatches a signal by calling the registered slot methods.
+     * NotificationUtility constructor.
      *
-     * @param string $signalClassName
-     * @param string $signalName
-     * @param array $signalArguments
-     * @return mixed
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
-     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
+     * @param EventDispatcherInterface $eventDispatcher
      */
-    public static function dispatch(string $signalClassName, string $signalName, array $signalArguments = [])
+    public function __construct(
+        private readonly EventDispatcherInterface $eventDispatcher
+    )
     {
-        return static::getSignalSlotDispatcher()->dispatch($signalClassName, $signalName, $signalArguments);
     }
 
     /**
-     * Returns the signal slot dispatcher.
+     * Dispatches a PSR-14 event.
      *
-     * @return Dispatcher
+     * @param LdapEventInterface $event
      */
-    protected static function getSignalSlotDispatcher(): Dispatcher
+    public static function dispatch(LdapEventInterface $event): void
     {
-        /** @var Dispatcher $signalSlotDispatcher */
-        static $signalSlotDispatcher = null;
+        self::getInstance()->eventDispatcher->dispatch($event);
+    }
 
-        if ($signalSlotDispatcher === null) {
-            /** @var \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager */
-            $objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
-            $signalSlotDispatcher = $objectManager->get(Dispatcher::class);
+    /**
+     * Get instance.
+     *
+     * @return \Causal\IgLdapSsoAuth\Utility\NotificationUtility
+     */
+    protected static function getInstance(): self
+    {
+        if (self::$instance === null) {
+            self::$instance = GeneralUtility::makeInstance(self::class);
         }
 
-        return $signalSlotDispatcher;
+        return self::$instance;
     }
 }

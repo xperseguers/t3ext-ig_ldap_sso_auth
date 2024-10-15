@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -31,46 +33,37 @@ use Causal\IgLdapSsoAuth\Library\Ldap;
 class UserImportUtility
 {
     /**
-     * Synchronization context (may be FE, BE or both).
-     *
-     * @var string
-     */
-    protected $context;
-
-    /**
      * Selected LDAP configuration.
-     *
-     * @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration
      */
-    protected $configuration;
+    protected readonly array $configuration;
 
     /**
      * Which table to import users into.
      *
      * @var string
      */
-    protected $userTable;
+    protected readonly string $userTable;
 
     /**
      * Which table to import groups into.
      *
      * @var string
      */
-    protected $groupTable;
+    protected readonly string $groupTable;
 
     /**
      * Total users added (for reporting).
      *
      * @var int
      */
-    protected $usersAdded = 0;
+    protected int $usersAdded = 0;
 
     /**
      * Total users updated (for reporting).
      *
      * @var int
      */
-    protected $usersUpdated = 0;
+    protected int $usersUpdated = 0;
 
     /**
      * Default constructor.
@@ -78,17 +71,20 @@ class UserImportUtility
      * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
      * @param string $context
      */
-    public function __construct(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration, $context)
+    public function __construct(
+        \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration,
+        protected string $context
+    )
     {
         // Load the configuration
         Configuration::initialize($context, $configuration);
         // Store current context and get related configuration
-        $this->context = $context;
-        $this->configuration = (strtolower($context) === 'fe')
+        $this->context = strtolower($context);
+        $this->configuration = $this->context === 'fe'
             ? Configuration::getFrontendConfiguration()
             : Configuration::getBackendConfiguration();
         // Define related tables
-        if (strtolower($context) === 'be') {
+        if ($this->context === 'be') {
             $this->userTable = 'be_users';
             $this->groupTable = 'be_groups';
         } else {

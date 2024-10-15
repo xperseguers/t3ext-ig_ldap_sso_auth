@@ -1,9 +1,10 @@
 <?php
-defined('TYPO3_MODE') || defined('TYPO3') || die();
+defined('TYPO3') || die();
 
 (static function (string $_EXTKEY) {
     // Configuration of authentication service
     $EXT_CONFIG = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$_EXTKEY] ?? [];
+    $typo3Version = (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
 
     // SSO configuration
     if ($EXT_CONFIG['enableFESSO'] ?? false) {
@@ -16,7 +17,9 @@ defined('TYPO3_MODE') || defined('TYPO3') || die();
     // Visually change the record icon for FE/BE users and groups
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][\TYPO3\CMS\Core\Imaging\IconFactory::class]['overrideIconOverlay'][] = \Causal\IgLdapSsoAuth\Hooks\IconFactory::class;
 
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['getTable'][] = \Causal\IgLdapSsoAuth\Hooks\DatabaseRecordListIconUtility::class;
+    if ($typo3Version < 12) {
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['getTable'][] = \Causal\IgLdapSsoAuth\Hooks\DatabaseRecordListIconUtility::class;
+    }
 
     // Service configuration
     $subTypesArr = [];
@@ -75,8 +78,10 @@ defined('TYPO3_MODE') || defined('TYPO3') || die();
         'class' => \Causal\IgLdapSsoAuth\Form\Element\LdapSuggestElement::class,
     ];
 
-    // Register type converters
-    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerTypeConverter(\Causal\IgLdapSsoAuth\Property\TypeConverter\ConfigurationConverter::class);
+    if ($typo3Version < 12) {
+        // Register type converters
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerTypeConverter(\Causal\IgLdapSsoAuth\Property\TypeConverter\ConfigurationConverter::class);    
+    }
 
     // User have save doc new button
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('options.saveDocNew.tx_igldapssoauth_config=1');

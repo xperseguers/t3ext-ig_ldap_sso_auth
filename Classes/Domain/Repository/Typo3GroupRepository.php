@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,6 +16,8 @@
 
 namespace Causal\IgLdapSsoAuth\Domain\Repository;
 
+use Causal\IgLdapSsoAuth\Event\GroupAddedEvent;
+use Causal\IgLdapSsoAuth\Event\GroupUpdatedEvent;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Exception\InvalidUserGroupTableException;
@@ -43,10 +47,17 @@ class Typo3GroupRepository
         }
 
         $newGroup = [];
-        $fieldsConfiguration = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getConnectionForTable($table)
-            ->getSchemaManager()
-            ->listTableColumns($table);
+        if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12) {
+            $fieldsConfiguration = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionForTable($table)
+                ->createSchemaManager()
+                ->listTableColumns($table);
+        } else {
+            $fieldsConfiguration = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionForTable($table)
+                ->getSchemaManager()
+                ->listTableColumns($table);
+        }
 
         foreach ($fieldsConfiguration as $configuration) {
             $field = $configuration->getName();
@@ -90,16 +101,30 @@ class Typo3GroupRepository
         } else {
             $where = $queryBuilder->expr()->eq('tx_igldapssoauth_dn', $queryBuilder->createNamedParameter($dn, \PDO::PARAM_STR));
             if (!empty($groupName)) {
-                $where = $queryBuilder->expr()->orX(
-                    $where,
-                    $queryBuilder->expr()->eq('title', $queryBuilder->createNamedParameter($groupName, \PDO::PARAM_STR))
-                );
+                if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12) {
+                    $where = $queryBuilder->expr()->or(
+                        $where,
+                        $queryBuilder->expr()->eq('title', $queryBuilder->createNamedParameter($groupName, \PDO::PARAM_STR))
+                    );
+                } else {
+                    $where = $queryBuilder->expr()->orX(
+                        $where,
+                        $queryBuilder->expr()->eq('title', $queryBuilder->createNamedParameter($groupName, \PDO::PARAM_STR))
+                    );
+                }
             }
             if (!empty($pid)) {
-                $where = $queryBuilder->expr()->andX(
-                    $where,
-                    $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, \PDO::PARAM_INT))
-                );
+                if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12) {
+                    $where = $queryBuilder->expr()->and(
+                        $where,
+                        $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, \PDO::PARAM_INT))
+                    );
+                } else {
+                    $where = $queryBuilder->expr()->andX(
+                        $where,
+                        $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, \PDO::PARAM_INT))
+                    );
+                }
             }
         }
 
@@ -107,7 +132,7 @@ class Typo3GroupRepository
             ->select('*')
             ->from($table)
             ->where($where)
-            ->execute()
+            ->executeQuery()
             ->fetchAllAssociative();
 
         // Return TYPO3 groups
@@ -147,14 +172,7 @@ class Typo3GroupRepository
             )
             ->fetchAssociative();
 
-        NotificationUtility::dispatch(
-            __CLASS__,
-            'groupAdded',
-            [
-                'table' => $table,
-                'group' => $newRow,
-            ]
-        );
+        NotificationUtility::dispatch(new GroupAddedEvent($table, $newRow));
 
         return $newRow;
     }
@@ -185,14 +203,7 @@ class Typo3GroupRepository
         $success = $affectedRows === 1;
 
         if ($success) {
-            NotificationUtility::dispatch(
-                __CLASS__,
-                'groupUpdated',
-                [
-                    'table' => $table,
-                    'group' => $data,
-                ]
-            );
+            NotificationUtility::dispatch(new GroupUpdatedEvent($table, $data));
         }
 
         return $success;

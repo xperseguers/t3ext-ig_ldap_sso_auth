@@ -6,8 +6,8 @@
 conf.py:
   copyright: 2000-2024
   project: LDAP / SSO Authentication
-  version: 3.8
-  release: 3.8.0
+  version: 4.0
+  release: 4.0.0-dev
   latex_documents:
   - - Index
     - ig_ldap_sso_auth.tex

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -20,8 +22,13 @@ use Causal\IgLdapSsoAuth\Utility\CompatUtility;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
+use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Http\JsonResponse;
+use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Page\AssetCollector;
 use TYPO3\CMS\Core\Page\PageRenderer;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3GroupRepository;
@@ -30,7 +37,6 @@ use Causal\IgLdapSsoAuth\Library\Authentication;
 use Causal\IgLdapSsoAuth\Library\Configuration;
 use Causal\IgLdapSsoAuth\Library\Ldap;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
@@ -42,31 +48,19 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
  */
 class ModuleController extends ActionController
 {
+    protected ?ModuleTemplate $moduleTemplate = null;
 
     /**
-     * @var ConfigurationRepository
-     */
-    protected $configurationRepository;
-
-    /**
-     * @var Ldap
-     */
-    protected $ldap;
-
-    /**
+     * @param ModuleTemplateFactory $moduleTemplateFactory
      * @param ConfigurationRepository $configurationRepository
-     */
-    public function injectConfigurationRepository(ConfigurationRepository $configurationRepository): void
-    {
-        $this->configurationRepository = $configurationRepository;
-    }
-
-    /**
      * @param Ldap $ldap
      */
-    public function injectLdap(Ldap $ldap): void
+    public function __construct(
+        private readonly ModuleTemplateFactory $moduleTemplateFactory,
+        private readonly ConfigurationRepository $configurationRepository,
+        private readonly Ldap $ldap
+    )
     {
-        $this->ldap = $ldap;
     }
 
     /**
@@ -74,6 +68,9 @@ class ModuleController extends ActionController
      */
     public function initializeAction()
     {
+        $this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+        $this->moduleTemplate->getDocHeaderComponent()->setMetaInformation([]);
+
         $vars = GeneralUtility::_GET('tx_igldapssoauth_system_igldapssoauthtxigldapssoauthm1');
         if (
             !isset($vars['redirect'])
@@ -83,40 +80,62 @@ class ModuleController extends ActionController
         ) {
             $previousSelection = $GLOBALS['BE_USER']->uc['ig_ldap_sso_auth']['selection'];
             if (!empty($previousSelection['action']) && !empty($previousSelection['configuration'])) {
-                $this->redirect($previousSelection['action'], 'Module', null, ['configuration' => $previousSelection['configuration'], 'redirect' => 1]);
+                return $this->redirect(
+                    $previousSelection['action'],
+                    'Module',
+                    null,
+                    [
+                        'configuration' => $previousSelection['configuration'],
+                        'redirect' => 1
+                    ]
+                );
             } else {
-                $this->redirect('index');
+                return $this->redirect('index');
             }
         }
 
+        // Add CSS
+        $assetCollector = GeneralUtility::makeInstance(AssetCollector::class);
+        $assetCollector->addStyleSheet(
+            'ig_ldap_sso_auth_module',
+            'EXT:ig_ldap_sso_auth/Resources/Public/Css/styles.css'
+        );
+
         /** @var PageRenderer $pageRenderer */
         $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-        $pageRenderer->addCssFile('EXT:ig_ldap_sso_auth/Resources/Public/Css/styles.css');
         $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Search');
     }
 
     /**
      * Index action.
      *
-     * @param int $configuration
+     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration|null $configuration
+     * @return ResponseInterface
      */
-    public function indexAction(int $configuration = 0)
+    public function indexAction(
+        ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
+    ): ResponseInterface
     {
-        $configuration = $this->configurationRepository->findByUid($configuration);
         $this->saveState($configuration);
         $this->populateView($configuration);
+
+        $this->moduleTemplate->setContent($this->view->render());
+        return $this->htmlResponse($this->moduleTemplate->renderContent());
     }
 
     /**
      * Status action.
      *
-     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
+     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration|null $configuration
+     * @return ResponseInterface
      */
-    public function statusAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
+    public function statusAction(
+        ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
+    ): ResponseInterface
     {
         // If configuration has been deleted
         if ($configuration === null) {
-            $this->redirect('index');
+            return $this->redirect('index');
         }
         $this->saveState($configuration);
 
@@ -136,7 +155,9 @@ class ModuleController extends ActionController
                 $this->addFlashMessage(
                     $e->getMessage(),
                     'Error ' . $e->getCode(),
-                    \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
+                    (new Typo3Version())->getMajorVersion() >= 12
+                        ? ContextualFeedbackSeverity::ERROR
+                        : \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
             }
 
@@ -166,18 +187,24 @@ class ModuleController extends ActionController
             'frontend' => $frontendConfiguration,
             'backend' => $backendConfiguration,
         ]);
+
+        $this->moduleTemplate->setContent($this->view->render());
+        return $this->htmlResponse($this->moduleTemplate->renderContent());
     }
 
     /**
      * Search action.
      *
-     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
+     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration|null $configuration
+     * @return ResponseInterface
      */
-    public function searchAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
+    public function searchAction(
+        ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
+    ): ResponseInterface
     {
         // If configuration has been deleted
         if ($configuration === null) {
-            $this->redirect('index');
+            return $this->redirect('index');
         }
         $this->saveState($configuration);
 
@@ -193,118 +220,137 @@ class ModuleController extends ActionController
             'baseDn' => $frontendConfiguration['users']['basedn'],
             'filter' => $frontendConfiguration['users']['filter'],
         ]);
+
+        $this->moduleTemplate->setContent($this->view->render());
+        return $this->htmlResponse($this->moduleTemplate->renderContent());
     }
 
     /**
      * Import frontend users action.
      *
-     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
+     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration|null $configuration
+     * @return ResponseInterface
      */
-    public function importFrontendUsersAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
+    public function importFrontendUsersAction(
+        ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
+    ): ResponseInterface
     {
         // If configuration has been deleted
         if ($configuration === null) {
-            $this->redirect('index');
+            return $this->redirect('index');
         }
         $this->saveState($configuration);
 
         Configuration::initialize('fe', $configuration);
         $this->populateView($configuration);
 
-        if (!$this->checkLdapConnection()) {
-            return;
+        if ($this->checkLdapConnection()) {
+            /** @var PageRenderer $pageRenderer */
+            $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+            $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
+
+            $users = $this->getAvailableUsers($configuration, 'fe');
+            $this->view->assign('users', $users);
         }
 
-        /** @var PageRenderer $pageRenderer */
-        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-        $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
-
-        $users = $this->getAvailableUsers($configuration, 'fe');
-        $this->view->assign('users', $users);
+        $this->moduleTemplate->setContent($this->view->render());
+        return $this->htmlResponse($this->moduleTemplate->renderContent());
     }
 
     /**
      * Import backend users action.
      *
-     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
+     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration|null $configuration
+     * @return ResponseInterface
      */
-    public function importBackendUsersAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
+    public function importBackendUsersAction(
+        ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
+    ): ResponseInterface
     {
         // If configuration has been deleted
         if ($configuration === null) {
-            $this->redirect('index');
+            return $this->redirect('index');
         }
         $this->saveState($configuration);
 
         Configuration::initialize('be', $configuration);
         $this->populateView($configuration);
 
-        if (!$this->checkLdapConnection()) {
-            return;
+        if ($this->checkLdapConnection()) {
+            /** @var PageRenderer $pageRenderer */
+            $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+            $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
+
+            $users = $this->getAvailableUsers($configuration, 'be');
+            $this->view->assign('users', $users);
         }
 
-        /** @var PageRenderer $pageRenderer */
-        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-        $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
-
-        $users = $this->getAvailableUsers($configuration, 'be');
-        $this->view->assign('users', $users);
+        $this->moduleTemplate->setContent($this->view->render());
+        return $this->htmlResponse($this->moduleTemplate->renderContent());
     }
 
     /**
      * Import frontend user groups action.
      *
-     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
+     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration|null $configuration
+     * @return ResponseInterface
      */
-    public function importFrontendUserGroupsAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
+    public function importFrontendUserGroupsAction(
+        ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
+    ): ResponseInterface
     {
         // If configuration has been deleted
         if ($configuration === null) {
-            $this->redirect('index');
+            return $this->redirect('index');
         }
         $this->saveState($configuration);
 
         Configuration::initialize('fe', $configuration);
         $this->populateView($configuration);
 
-        if (!$this->checkLdapConnection()) {
-            return;
+        if ($this->checkLdapConnection()) {
+            /** @var PageRenderer $pageRenderer */
+            $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+            $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
+
+            $groups = $this->getAvailableUserGroups($configuration, 'fe');
+            $this->view->assign('groups', $groups);
         }
 
-        /** @var PageRenderer $pageRenderer */
-        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-        $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
-
-        $groups = $this->getAvailableUserGroups($configuration, 'fe');
-        $this->view->assign('groups', $groups);
+        $this->moduleTemplate->setContent($this->view->render());
+        return $this->htmlResponse($this->moduleTemplate->renderContent());
     }
 
     /**
      * Import backend user groups action.
      *
-     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
+     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration|null $configuration
+     * @return ResponseInterface
      */
-    public function importBackendUserGroupsAction(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
+    public function importBackendUserGroupsAction(
+        ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
+    ): ResponseInterface
     {
         // If configuration has been deleted
         if ($configuration === null) {
-            $this->redirect('index');
+            return $this->redirect('index');
         }
         $this->saveState($configuration);
 
         Configuration::initialize('be', $configuration);
         $this->populateView($configuration);
 
-        if (!$this->checkLdapConnection()) {
-            return;
+        if ($this->checkLdapConnection()) {
+            /** @var PageRenderer $pageRenderer */
+            $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+            $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
+
+            $groups = $this->getAvailableUserGroups($configuration, 'be');
+            $this->view->assign('groups', $groups);
         }
 
-        /** @var PageRenderer $pageRenderer */
-        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-        $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Import');
-
-        $groups = $this->getAvailableUserGroups($configuration, 'be');
-        $this->view->assign('groups', $groups);
+        $this->moduleTemplate->setContent($this->view->render());
+        return $this->htmlResponse($this->moduleTemplate->renderContent());
     }
 
     /**
@@ -317,8 +363,7 @@ class ModuleController extends ActionController
     {
         $params = $request->getQueryParams();
 
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $configurationRepository = $objectManager->get(ConfigurationRepository::class);
+        $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
 
         $configuration = $configurationRepository->findByUid($params['configuration']);
         list($mode, $key) = explode('_', $params['type'], 2);
@@ -348,9 +393,8 @@ class ModuleController extends ActionController
     {
         $params = $request->getQueryParams();
 
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $configurationRepository = $objectManager->get(ConfigurationRepository::class);
-        $ldap = $objectManager->get(Ldap::class);
+        $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
+        $ldap = GeneralUtility::makeInstance(Ldap::class);
 
         $configuration = $configurationRepository->findByUid($params['configuration']);
         list($mode, $key) = explode('_', $params['type'], 2);
@@ -367,7 +411,7 @@ class ModuleController extends ActionController
         }
 
         $template = GeneralUtility::getFileAbsFileName('EXT:ig_ldap_sso_auth/Resources/Private/Templates/Ajax/Search.html');
-        $view = $objectManager->get(\TYPO3\CMS\Fluid\View\StandaloneView::class);
+        $view = GeneralUtility::makeInstance(\TYPO3\CMS\Fluid\View\StandaloneView::class);
         $view->getRequest()->setControllerExtensionName('ig_ldap_sso_auth');
         $view->setFormat('html');
         $view->setTemplatePathAndFilename($template);
@@ -383,7 +427,7 @@ class ModuleController extends ActionController
                 $attributes = [];
             } else {
                 $attributes = Configuration::getLdapAttributes($config[$key]['mapping']);
-                if (strpos($config[$key]['filter'], '{USERUID}') !== false) {
+                if (str_contains($config[$key]['filter'], '{USERUID}')) {
                     $attributes[] = 'uid';
                     $attributes = array_unique($attributes);
                 }
@@ -442,11 +486,10 @@ class ModuleController extends ActionController
     {
         $params = $request->getQueryParams();
 
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $configurationRepository = $objectManager->get(ConfigurationRepository::class);
-        $ldap = $objectManager->get(Ldap::class);
+        $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
+        $ldap = GeneralUtility::makeInstance(Ldap::class);
 
-        $configuration = $configurationRepository->findByUid($params['configuration']);
+        $configuration = $configurationRepository->findByUid((int)$params['configuration']);
 
         /** @var \Causal\IgLdapSsoAuth\Utility\UserImportUtility $importUtility */
         $importUtility = GeneralUtility::makeInstance(
@@ -508,11 +551,10 @@ class ModuleController extends ActionController
     {
         $params = $request->getQueryParams();
 
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $configurationRepository = $objectManager->get(ConfigurationRepository::class);
-        $ldap = $objectManager->get(Ldap::class);
+        $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
+        $ldap = GeneralUtility::makeInstance(Ldap::class);
 
-        $configuration = $configurationRepository->findByUid($params['configuration']);
+        $configuration = $configurationRepository->findByUid((int)$params['configuration']);
 
         $data = [];
 
@@ -591,7 +633,13 @@ class ModuleController extends ActionController
      * @param string $mode
      * @throws \Causal\IgLdapSsoAuth\Exception\InvalidUserGroupTableException
      */
-    protected function setParentGroup(array $ldapParentGroups, string $fieldParent, int $childUid, int $pid, string $mode)
+    protected function setParentGroup(
+        array $ldapParentGroups,
+        string $fieldParent,
+        int $childUid,
+        int $pid,
+        string $mode
+    ): void
     {
         $subGroupList = [];
         if ($mode === 'be') {
@@ -665,7 +713,10 @@ class ModuleController extends ActionController
      * @param string $mode
      * @return array
      */
-    protected function getAvailableUsers(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration, string $mode): array
+    protected function getAvailableUsers(
+        \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration,
+        string $mode
+    ): array
     {
         /** @var \Causal\IgLdapSsoAuth\Utility\UserImportUtility $importUtility */
         $importUtility = GeneralUtility::makeInstance(
@@ -733,7 +784,10 @@ class ModuleController extends ActionController
      * @param string $mode
      * @return array
      */
-    protected function getAvailableUserGroups(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration, $mode): array
+    protected function getAvailableUserGroups(
+        \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration,
+        string $mode
+    ): array
     {
         $userGroups = [];
         $config = ($mode === 'be')
@@ -783,12 +837,13 @@ class ModuleController extends ActionController
     /**
      * Populates the view with general objects.
      *
-     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
+     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration|null $configuration
      */
-    protected function populateView(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null): void
+    protected function populateView(
+        ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
+    ): void
     {
-        $uriBuilder = $this->controllerContext->getUriBuilder();
-        $thisUri = $uriBuilder->reset()->uriFor(null, ['configuration' => $configuration]);
+        $thisUri = $this->uriBuilder->reset()->uriFor(null, ['configuration' => $configuration]);
         $editLink = '';
 
         $configurationRecords = $this->configurationRepository->findAll();
@@ -802,14 +857,16 @@ class ModuleController extends ActionController
             $message = $this->translate(
                 'configuration_missing.message',
                 [
-                    'https://docs.typo3.org/typo3cms/extensions/ig_ldap_sso_auth/AdministratorManual/Index.html',
+                    'https://docs.typo3.org/p/causal/ig_ldap_sso_auth/main/en-us/AdministratorManual/Index.html',
                     $newRecordUri,
                 ]
             );
             $this->addFlashMessage(
                 $message,
                 $this->translate('configuration_missing.title'),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
+                (new Typo3Version())->getMajorVersion() >= 12
+                    ? ContextualFeedbackSeverity::WARNING
+                    : \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
             );
         } else {
             if ($configuration == null) {
@@ -863,7 +920,7 @@ class ModuleController extends ActionController
         $trClass = '';
 
         $this->view->assignMultiple([
-            'action' => $this->getControllerContext()->getRequest()->getControllerActionName(),
+            'action' => $this->request->getControllerActionName(),
             'configurationRecords' => $configurationRecords,
             'currentConfiguration' => $configuration,
             'mode' => Configuration::getMode(),
@@ -890,14 +947,18 @@ class ModuleController extends ActionController
             $this->addFlashMessage(
                 $e->getMessage(),
                 'Error ' . $e->getCode(),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
+                (new Typo3Version())->getMajorVersion() >= 12
+                    ? ContextualFeedbackSeverity::ERROR
+                    : \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
             );
             return false;
         } catch (InvalidHostnameException $e) {
             $this->addFlashMessage(
                 $e->getMessage(),
                 'Error ' . $e->getCode(),
-                \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
+                (new Typo3Version())->getMajorVersion() >= 12
+                    ? ContextualFeedbackSeverity::ERROR
+                    : \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
             );
             return false;
         }
@@ -908,10 +969,10 @@ class ModuleController extends ActionController
      * Translates a label.
      *
      * @param string $id
-     * @param array $arguments
+     * @param array|null $arguments
      * @return string
      */
-    protected function translate(string $id, array $arguments = null): string
+    protected function translate(string $id, ?array $arguments = null): string
     {
         $value = LocalizationUtility::translate($id, 'ig_ldap_sso_auth', $arguments);
         return $value ?? $id;
@@ -920,12 +981,14 @@ class ModuleController extends ActionController
     /**
      * Saves current state.
      *
-     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
+     * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration|null $configuration
      */
-    protected function saveState(\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null)
+    protected function saveState(
+        ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
+    ): void
     {
         $GLOBALS['BE_USER']->uc['ig_ldap_sso_auth']['selection'] = [
-            'action' => $this->getControllerContext()->getRequest()->getControllerActionName(),
+            'action' => $this->request->getControllerActionName(),
             'configuration' => $configuration !== null ? $configuration->getUid() : 0,
         ];
         $GLOBALS['BE_USER']->writeUC();

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,6 +16,8 @@
 
 namespace Causal\IgLdapSsoAuth\Utility;
 
+use LDAP\Connection;
+use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Exception\InvalidHostnameException;
 use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
@@ -56,17 +60,17 @@ class LdapUtility
      * LDAP Server charset
      * @var string
      */
-    protected $ldapCharacterSet;
+    protected string $ldapCharacterSet;
 
     /**
      * Local character set (TYPO3)
      * @var string
      */
-    protected $typo3CharacterSet;
+    protected string $typo3CharacterSet;
 
     /**
      * LDAP Server Connection ID
-     * @var resource
+     * @var Connection
      */
     protected $connection;
 
@@ -86,23 +90,32 @@ class LdapUtility
      * LDAP server status
      * @var array
      */
-    protected $status;
+    protected array $status;
 
     /**
      * 'OpenLDAP' OR 'Active Directory'
      * @var string
      */
-    protected $serverType;
+    protected string $serverType;
 
     /**
      * @var bool
      */
-    protected $hasPagination;
+    protected bool $hasPagination;
 
     /**
      * @var string
      */
-    protected $paginationCookie = null;
+    protected ?string $paginationCookie = null;
+
+    /**
+     * @param CharsetConverter $charsetConverter
+     */
+    public function __construct(
+        protected readonly CharsetConverter $charsetConverter
+    )
+    {
+    }
 
     /**
      * Connects to an LDAP server.
@@ -209,8 +222,12 @@ class LdapUtility
      */
     public function disconnect(): void
     {
-        if ($this->connection) {
-            @ldap_close($this->connection);
+        if ($this->isConnected()) {
+            try {
+                @ldap_unbind($this->connection);
+            } catch (\Error $e) {
+
+            }
         }
     }
 
@@ -221,7 +238,10 @@ class LdapUtility
      * @param string|nul $password
      * @return bool true if bind succeeded
      */
-    public function bind(?string $dn = null, ?string $password = null): bool
+    public function bind(
+        ?string $dn = null,
+        #[\SensitiveParameter] ?string $password = null
+    ): bool
     {
         // LDAP_OPT_DIAGNOSTIC_MESSAGE gets the extended error output
         // from the ldap_get_option() function
@@ -285,7 +305,7 @@ class LdapUtility
         ];
 
         $parts = explode(',', $message);
-        if (preg_match('/data ([0-9a-f]+)/i', trim($parts[2]), $matches)) {
+        if (preg_match('/data ([0-9a-f]+)/i', trim($parts[2] ?? ''), $matches)) {
             $code = $matches[1];
             $diagnostic = isset($codeMessages[$code])
                 ? sprintf('%s (%s)', $codeMessages[$code], $code)
@@ -342,7 +362,17 @@ class LdapUtility
             }
 
             $controls = [['oid' => LDAP_CONTROL_PAGEDRESULTS, 'value' => ['size' => static::MAX_ENTRIES, 'cookie' => $this->paginationCookie]]];
-            $this->searchResult = @ldap_search($this->connection, $baseDn, $filter, $attributes, $attributesOnly, $sizeLimit, $timeLimit, $dereferenceAliases, $controls);
+            $this->searchResult = @ldap_search(
+                $this->connection,
+                $baseDn,
+                $filter,
+                $attributes,
+                $attributesOnly ? 1 : 0,
+                $sizeLimit,
+                $timeLimit,
+                $dereferenceAliases,
+                $controls
+            );
 
             if (!$this->searchResult) {
                 // Search failed.
@@ -395,7 +425,7 @@ class LdapUtility
 
             $tempEntry = [];
             foreach ($attributes as $key => $value) {
-                $tempEntry[strtolower($key)] = $value;
+                $tempEntry[strtolower((string)$key)] = $value;
             }
 
             $entries[] = $tempEntry;
@@ -447,7 +477,7 @@ class LdapUtility
         $attributes = @ldap_get_attributes($this->connection, $this->firstResultEntry);
         $tempEntry = [];
         foreach ($attributes as $key => $value) {
-            $tempEntry[strtolower($key)] = $value;
+            $tempEntry[strtolower((string)$key)] = $value;
         }
         return $this->convertCharacterSetForArray($tempEntry, $this->ldapCharacterSet, $this->typo3CharacterSet);
     }
@@ -512,28 +542,21 @@ class LdapUtility
      * @param string $toCharacterSet Target character set
      * @return array|mixed
      */
-    protected function convertCharacterSetForArray($arr, string $fromCharacterSet, string $toCharacterSet)
+    protected function convertCharacterSetForArray(
+        $arr,
+        string $fromCharacterSet,
+        string $toCharacterSet
+    )
     {
-        /** @var \TYPO3\CMS\Core\Charset\CharsetConverter $csObj */
-        static $csObj = null;
-
         if (!is_array($arr)) {
             return $arr;
-        }
-
-        if ($csObj === null) {
-            if ((isset($GLOBALS['TSFE'])) && (isset($GLOBALS['TSFE']->csConvObj))) {
-                $csObj = $GLOBALS['TSFE']->csConvObj;
-            } else {
-                $csObj = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class);
-            }
         }
 
         foreach ($arr as $k => $val) {
             if (is_array($val)) {
                 $arr[$k] = $this->convertCharacterSetForArray($val, $fromCharacterSet, $toCharacterSet);
             } else {
-                $arr[$k] = $csObj->conv($val, $fromCharacterSet, $toCharacterSet);
+                $arr[$k] = $this->charsetConverter->conv((string)$val, $fromCharacterSet, $toCharacterSet);
             }
         }
 

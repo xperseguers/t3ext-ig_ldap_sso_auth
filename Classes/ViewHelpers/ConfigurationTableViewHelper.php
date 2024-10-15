@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -61,11 +63,13 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
      * @param bool &$hasError
      * @return string
      */
-    protected function renderTable($data, string $humanKeyNames, int $depth, bool &$hasError): string
+    protected function renderTable(array|string $data, bool $humanKeyNames, int $depth, bool &$hasError): string
     {
         if (!is_array($data)) {
             return htmlspecialchars($data);
-        } elseif (empty($data)) {
+        }
+
+        if (empty($data)) {
             return '<em>' . htmlspecialchars($this->translate('module_status.messages.empty')) . '</em>';
         }
 
@@ -99,7 +103,7 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
      * @param bool &$hasError
      * @return string
      */
-    protected function renderValueCell($value, string $key, int $depth, bool &$hasError): string
+    protected function renderValueCell(mixed $value, string $key, int $depth, bool &$hasError): string
     {
         if ($key === '__errors') {
             $hasError = true;
@@ -141,7 +145,7 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
             $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
             $value .=  ' ' . htmlspecialchars($label);
         } elseif ($value instanceof \TYPO3\CMS\Extbase\DomainObject\AbstractEntity) {
-            if ($value instanceof \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup) {
+            if ($value instanceof \Causal\IgLdapSsoAuth\Domain\Model\BackendUserGroup) {
                 $icon = 'status-user-group-backend';
                 $table = 'be_groups';
             } else {
@@ -165,7 +169,7 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
             $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL, $overlay)->render() . ' ' . htmlspecialchars($value->getTitle());
             $value = str_replace('<img src=', '<img title="' . htmlspecialchars($options['title']) . '" src=', $value);
         } else {
-            $value = htmlspecialchars($value);
+            $value = htmlspecialchars((string)$value);
         }
 
         return sprintf('<td class="%s">%s</td>', $class, $value);

@@ -28,7 +28,6 @@ interface ExtraDataProcessorInterface
      *
      * @param string $table Name of the table into which the user was imported
      * @param array $user User record with merged TYPO3/LDAP data
-     * @return void
      */
-    public function processExtraData(string $table, array $user);
+    public function processExtraData(string $table, array $user): void;
 }

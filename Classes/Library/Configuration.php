@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -16,6 +18,7 @@ namespace Causal\IgLdapSsoAuth\Library;
 
 use Causal\IgLdapSsoAuth\Utility\CompatUtility;
 use Causal\IgLdapSsoAuth\Utility\TypoScriptUtility;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\Entity\Site;
@@ -60,7 +63,9 @@ class Configuration
         \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
     ): void
     {
-        $globalConfiguration = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['ig_ldap_sso_auth'] ?? [];
+
+        $globalConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)
+            ->get('ig_ldap_sso_auth');
 
         // Legacy configuration options
         unset($globalConfiguration['evaluateGroupsFromMembership']);
@@ -87,52 +92,58 @@ class Configuration
 
         static::$domains = array_unique(static::$domains);
 
-        static::$be['LDAPAuthentication'] = (bool)$globalConfiguration['enableBELDAPAuthentication'];
-        static::$be['SSOAuthentication'] = (bool)$globalConfiguration['enableBESSO'];
-        static::$be['SSOKeepDomainName'] = (bool)$globalConfiguration['keepBESSODomainName'];
-        static::$be['forceLowerCaseUsername'] = $globalConfiguration['forceLowerCaseUsername'] ? (bool)$globalConfiguration['forceLowerCaseUsername'] : false;
+        static::$be['LDAPAuthentication'] = (bool)($globalConfiguration['enableBELDAPAuthentication'] ?? false);
+        static::$be['SSOAuthentication'] = (bool)($globalConfiguration['enableBESSO'] ?? false);
+        static::$be['SSOKeepDomainName'] = (bool)($globalConfiguration['keepBESSODomainName'] ?? false);
+        static::$be['forceLowerCaseUsername'] = (bool)($globalConfiguration['forceLowerCaseUsername'] ?? false);
         static::$be['evaluateGroupsFromMembership'] = $configuration->getGroupMembership() === static::GROUP_MEMBERSHIP_FROM_MEMBER;
-        static::$be['IfUserExist'] = (bool)$globalConfiguration['TYPO3BEUserExist'];
-        static::$be['IfGroupExist'] = (bool)$globalConfiguration['TYPO3BEGroupExist'];
-        static::$be['BEfailsafe'] = (bool)$globalConfiguration['BEfailsafe'];
+        static::$be['IfUserExist'] = (bool)($globalConfiguration['TYPO3BEUserExist'] ?? false);
+        static::$be['IfGroupExist'] = (bool)($globalConfiguration['TYPO3BEGroupExist'] ?? false);
+        static::$be['BEfailsafe'] = (bool)($globalConfiguration['BEfailsafe'] ?? false);
         static::$be['DeleteUserIfNoLDAPGroups'] = false;
         static::$be['DeleteUserIfNoTYPO3Groups'] = false;
-        static::$be['GroupsNotSynchronize'] = (bool)$globalConfiguration['TYPO3BEGroupsNotSynchronize'];
-        static::$be['requiredLDAPGroups'] = $configuration->getBackendGroupsRequired() ? $configuration->getBackendGroupsRequired() : [];
-        static::$be['updateAdminAttribForGroups'] = $configuration->getBackendGroupsAdministrator() ? $configuration->getBackendGroupsAdministrator() : [];
-        static::$be['assignGroups'] = $configuration->getBackendGroupsAssigned() ? $configuration->getBackendGroupsAssigned() : [];
-        static::$be['keepTYPO3Groups'] = (bool)$globalConfiguration['keepBEGroups'];
+        static::$be['GroupsNotSynchronize'] = (bool)($globalConfiguration['TYPO3BEGroupsNotSynchronize'] ?? false);
+        static::$be['requiredLDAPGroups'] = $configuration->getBackendGroupsRequired();
+        static::$be['updateAdminAttribForGroups'] = $configuration->getBackendGroupsAdministrator();
+        static::$be['assignGroups'] = $configuration->getBackendGroupsAssigned();
+        static::$be['keepTYPO3Groups'] = (bool)($globalConfiguration['keepBEGroups'] ?? false);
         static::$be['users']['basedn'] = $configuration->getBackendUsersBaseDn();
         static::$be['users']['filter'] = $configuration->getBackendUsersFilter();
-        static::$be['users']['mapping'] = static::makeUserMapping($configuration->getBackendUsersMapping(), $configuration->getBackendUsersFilter());
+        static::$be['users']['mapping'] = static::makeUserMapping(
+            $configuration->getBackendUsersMapping(),
+            $configuration->getBackendUsersFilter()
+        );
         static::$be['groups']['basedn'] = $configuration->getBackendGroupsBaseDn();
         static::$be['groups']['filter'] = $configuration->getBackendGroupsFilter();
         static::$be['groups']['mapping'] = static::makeGroupMapping($configuration->getBackendGroupsMapping());
 
-        static::$fe['LDAPAuthentication'] = (bool)$globalConfiguration['enableFELDAPAuthentication'];
-        static::$fe['SSOAuthentication'] = (bool)$globalConfiguration['enableFESSO'];
-        static::$fe['SSOKeepDomainName'] = (bool)$globalConfiguration['keepFESSODomainName'];
-        static::$fe['forceLowerCaseUsername'] = $globalConfiguration['forceLowerCaseUsername'] ? (bool)$globalConfiguration['forceLowerCaseUsername'] : false;
+        static::$fe['LDAPAuthentication'] = (bool)($globalConfiguration['enableFELDAPAuthentication'] ?? false);
+        static::$fe['SSOAuthentication'] = (bool)($globalConfiguration['enableFESSO'] ?? false);
+        static::$fe['SSOKeepDomainName'] = (bool)($globalConfiguration['keepFESSODomainName'] ?? false);
+        static::$fe['forceLowerCaseUsername'] = (bool)($globalConfiguration['forceLowerCaseUsername'] ?? false);
         static::$fe['evaluateGroupsFromMembership'] = $configuration->getGroupMembership() === static::GROUP_MEMBERSHIP_FROM_MEMBER;
-        static::$fe['IfUserExist'] = (bool)$globalConfiguration['TYPO3FEUserExist'];
-        static::$fe['IfGroupExist'] = (bool)$globalConfiguration['TYPO3FEGroupExist'];
+        static::$fe['IfUserExist'] = (bool)($globalConfiguration['TYPO3FEUserExist'] ?? false);
+        static::$fe['IfGroupExist'] = (bool)($globalConfiguration['TYPO3FEGroupExist'] ?? false);
         static::$fe['BEfailsafe'] = true;
         static::$fe['updateAdminAttribForGroups'] = [];
-        static::$fe['DeleteUserIfNoTYPO3Groups'] = (bool)$globalConfiguration['TYPO3FEDeleteUserIfNoTYPO3Groups'];
-        static::$fe['DeleteUserIfNoLDAPGroups'] = (bool)$globalConfiguration['TYPO3FEDeleteUserIfNoLDAPGroups'];
-        static::$fe['GroupsNotSynchronize'] = (bool)$globalConfiguration['TYPO3FEGroupsNotSynchronize'];
-        static::$fe['assignGroups'] = $configuration->getFrontendGroupsAssigned() ? $configuration->getFrontendGroupsAssigned() : [];
-        static::$fe['keepTYPO3Groups'] = (bool)$globalConfiguration['keepFEGroups'];
-        static::$fe['requiredLDAPGroups'] = $configuration->getFrontendGroupsRequired() ? $configuration->getFrontendGroupsRequired() : [];
+        static::$fe['DeleteUserIfNoTYPO3Groups'] = (bool)($globalConfiguration['TYPO3FEDeleteUserIfNoTYPO3Groups'] ?? false);
+        static::$fe['DeleteUserIfNoLDAPGroups'] = (bool)($globalConfiguration['TYPO3FEDeleteUserIfNoLDAPGroups'] ?? false);
+        static::$fe['GroupsNotSynchronize'] = (bool)($globalConfiguration['TYPO3FEGroupsNotSynchronize'] ?? false);
+        static::$fe['assignGroups'] = $configuration->getFrontendGroupsAssigned();
+        static::$fe['keepTYPO3Groups'] = (bool)($globalConfiguration['keepFEGroups'] ?? false);
+        static::$fe['requiredLDAPGroups'] = $configuration->getFrontendGroupsRequired();
         static::$fe['users']['basedn'] = $configuration->getFrontendUsersBaseDn();
         static::$fe['users']['filter'] = $configuration->getFrontendUsersFilter();
-        static::$fe['users']['mapping'] = static::makeUserMapping($configuration->getFrontendUsersMapping(), $configuration->getFrontendUsersFilter());
+        static::$fe['users']['mapping'] = static::makeUserMapping(
+            $configuration->getFrontendUsersMapping(),
+            $configuration->getFrontendUsersFilter()
+        );
         static::$fe['groups']['basedn'] = $configuration->getFrontendGroupsBaseDn();
         static::$fe['groups']['filter'] = $configuration->getFrontendGroupsFilter();
         static::$fe['groups']['mapping'] = static::makeGroupMapping($configuration->getFrontendGroupsMapping());
 
         static::$ldap['server'] = $configuration->getLdapServer();
-        static::$ldap['charset'] = $configuration->getLdapCharset() ? $configuration->getLdapCharset() : 'utf-8';
+        static::$ldap['charset'] = $configuration->getLdapCharset() ?: 'utf-8';
         static::$ldap['host'] = $configuration->getLdapHost();
         static::$ldap['port'] = $configuration->getLdapPort();
         static::$ldap['tls'] = $configuration->isLdapTls();
@@ -172,7 +183,6 @@ class Configuration
      * Returns the list of domains.
      *
      * @return array
-     * @deprecated since TYPO3 v10
      */
     public static function getDomains(): array
     {
@@ -230,7 +240,7 @@ class Configuration
         // Remove partial definitions
         $keys = array_keys($setup);
         foreach ($keys as $key) {
-            if (substr($key, -1) !== '.') {
+            if (!str_ends_with($key, '.')) {
                 if ($setup[$key] === '') {
                     unset($setup[$key]);
                 }
@@ -351,7 +361,7 @@ class Configuration
             ? static::getBackendConfiguration()
             : static::getFrontendConfiguration();
 
-        return (isset($config[$feature]) ? $config[$feature] : false);
+        return $config[$feature] ?? false;
     }
 
     /**
@@ -365,11 +375,11 @@ class Configuration
         $ldapAttributes = [];
         if (is_array($mapping)) {
             foreach ($mapping as $field => $attribute) {
-                if (substr($field, -1) === '.') {
+                if (str_ends_with($field, '.')) {
                     // This is a TypoScript configuration
                     continue;
                 }
-                if (preg_match_all('/<(.+?)>/', $attribute, $matches)) {
+                if (preg_match_all('/<(.+?)>/', (string)$attribute, $matches)) {
                     foreach ($matches[1] as $matchedAttribute) {
                         $ldapAttributes[] = strtolower($matchedAttribute);
                     }
@@ -403,7 +413,7 @@ class Configuration
 
         if (is_array($mapping) && !$extended) {
             foreach ($mapping as $field => $attribute) {
-                if (substr($field, -1) === '.') {
+                if (str_ends_with($field, '.')) {
                     $extended = true;
                     break;
                 }

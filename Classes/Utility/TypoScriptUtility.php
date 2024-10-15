@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -15,6 +17,7 @@
 namespace Causal\IgLdapSsoAuth\Utility;
 
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
+use TYPO3\CMS\Core\TypoScript\TypoScriptStringFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -27,35 +30,34 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class TypoScriptUtility
 {
     /**
-     * Loads and parses TypoScript from a file.
-     *
-     * @param string $filePath
-     * @return array
-     */
-    public static function loadTypoScriptFromFile(string $filePath): array
-    {
-        $fileName = GeneralUtility::getFileAbsFileName($filePath);
-        $typoScript = file_get_contents($fileName);
-        return static::loadTypoScript($typoScript);
-    }
-
-    /**
      * Loads and parses TypoScript from a string.
      *
-     * @param string $typoScript
+     * @param string|null $typoScript
      * @return array
      */
-    public static function loadTypoScript(string $typoScript): array
+    public static function loadTypoScript(?string $typoScript): array
     {
-        $typoScriptParser = static::getTypoScriptParser();
-        $typoScriptParser->parse($typoScript);
-        return $typoScriptParser->setup;
+        if (empty($typoScript)) {
+            return [];
+        }
+
+        if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() < 12) {
+            $typoScriptParser = static::getTypoScriptParser();
+            $typoScriptParser->parse($typoScript);
+            return $typoScriptParser->setup;
+        }
+
+        $typoScriptStringFactory = static::getTypoScriptStringFactory();
+        $rootNode = $typoScriptStringFactory->parseFromStringWithIncludes(md5($typoScript), $typoScript);
+
+        return $rootNode->toArray();
     }
 
     /**
      * Returns a clean TypoScript parser.
      *
      * @return TypoScriptParser
+     * @deprecated since TYPO3 v12
      */
     protected static function getTypoScriptParser(): TypoScriptParser
     {
@@ -70,5 +72,22 @@ class TypoScriptUtility
         $typoScriptParser->setup = [];
 
         return $typoScriptParser;
+    }
+
+    /**
+     * Gets the TypoScript parsing tool.
+     *
+     * @return TypoScriptStringFactory
+     */
+    protected static function getTypoScriptStringFactory(): TypoScriptStringFactory
+    {
+        /** @var TypoScriptStringFactory $typoScriptStringFactory */
+        static $typoScriptStringFactory = null;
+
+        if ($typoScriptStringFactory === null) {
+            $typoScriptStringFactory = GeneralUtility::makeInstance(TypoScriptStringFactory::class);
+        }
+
+        return $typoScriptStringFactory;
     }
 }

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,22 +16,37 @@
 
 namespace Causal\IgLdapSsoAuth\ViewHelpers;
 
+use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Mvc\RequestInterface;
+use TYPO3\CMS\Extbase\Service\ExtensionService;
+use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Render a conf* View helper which renders the flash messages (if there are any).
+ *
+ * Largely inspired by @see \TYPO3\CMS\Fluid\ViewHelpers\FlashMessagesViewHelper
  *
  * @author     Xavier Perseguers <xavier@causal.ch>
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
  */
-class FlashMessagesViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FlashMessagesViewHelper
+class FlashMessagesViewHelper extends AbstractViewHelper
 {
+    use CompileWithRenderStatic;
 
     /**
-     * @var string The message severity class names
+     * ViewHelper outputs HTML therefore output escaping has to be disabled
+     *
+     * @var bool
      */
+    protected $escapeOutput = false;
+
     protected static $classes = [
         FlashMessage::NOTICE => 'notice',
         FlashMessage::INFO => 'info',
@@ -38,16 +55,30 @@ class FlashMessagesViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FlashMessages
         FlashMessage::ERROR => 'danger'
     ];
 
-    /**
-     * @var string The message severity icon names
-     */
     protected static $icons = [
-        FlashMessage::NOTICE => 'lightbulb-o',
-        FlashMessage::INFO => 'info',
-        FlashMessage::OK => 'check',
-        FlashMessage::WARNING => 'exclamation',
-        FlashMessage::ERROR => 'times'
+        FlashMessage::NOTICE => 'actions-lightbulb',
+        FlashMessage::INFO => 'actions-info-circle',
+        FlashMessage::OK => 'actions-check-circle',
+        FlashMessage::WARNING => 'actions-exclamation-triangle',
+        FlashMessage::ERROR => 'actions-exclamation-circle'
     ];
+
+    protected static $iconsV11 = [
+        FlashMessage::NOTICE => 'fa-lightbulb-o',
+        FlashMessage::INFO => 'fa-info',
+        FlashMessage::OK => 'fa-check',
+        FlashMessage::WARNING => 'fa-exclamation',
+        FlashMessage::ERROR => 'fa-times'
+    ];
+
+    /**
+     * Initialize arguments
+     */
+    public function initializeArguments()
+    {
+        $this->registerArgument('queueIdentifier', 'string', 'Flash-message queue to use');
+        $this->registerArgument('as', 'string', 'The name of the current flashMessage variable for rendering inside');
+    }
 
     /**
      * Renders FlashMessages and flushes the FlashMessage queue
@@ -63,10 +94,29 @@ class FlashMessagesViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FlashMessages
     public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
         $as = $arguments['as'];
-        $queueIdentifier = isset($arguments['queueIdentifier']) ? $arguments['queueIdentifier'] : null;
-        $flashMessages = $renderingContext->getControllerContext()
-            ->getFlashMessageQueue($queueIdentifier)->getAllMessagesAndFlush();
-        if ($flashMessages === null || empty($flashMessages)) {
+        $queueIdentifier = $arguments['queueIdentifier'] ?? null;
+
+        if ($queueIdentifier === null) {
+            /** @var RenderingContext $renderingContext */
+            $request = $renderingContext->getRequest();
+            if (!$request instanceof RequestInterface) {
+                // Throw if not an extbase request
+                throw new \RuntimeException(
+                    'ViewHelper f:flashMessages needs an extbase Request object to resolve the Queue identifier magically.'
+                    . ' When not in extbase context, set attribute "queueIdentifier".',
+                    1639821269
+                );
+            }
+            $extensionService = GeneralUtility::makeInstance(ExtensionService::class);
+            $pluginNamespace = $extensionService->getPluginNamespace($request->getControllerExtensionName(), $request->getPluginName());
+            $queueIdentifier = 'extbase.flashmessages.' . $pluginNamespace;
+        }
+
+        $flashMessageQueue = GeneralUtility::makeInstance(FlashMessageService::class)
+            ->getMessageQueueByIdentifier($queueIdentifier);
+
+        $flashMessages = $flashMessageQueue->getAllMessagesAndFlush();
+        if (count($flashMessages) === 0) {
             return '';
         }
 
@@ -91,18 +141,38 @@ class FlashMessagesViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FlashMessages
      */
     protected static function renderFlashMessage(FlashMessage $flashMessage): string
     {
-        $className = 'alert-' . static::$classes[$flashMessage->getSeverity()];
-        $iconName = 'fa-' . static::$icons[$flashMessage->getSeverity()];
+        if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12) {
+            $severity = $flashMessage->getSeverity()->value;
+        } else {
+            $severity = $flashMessage->getSeverity();
+        }
+
+        $className = 'alert-' . static::$classes[$severity];
 
         $messageTitle = $flashMessage->getTitle();
         $markup = [];
         $markup[] = '<div class="alert ' . $className . '">';
         $markup[] = '    <div class="media">';
         $markup[] = '        <div class="media-left">';
-        $markup[] = '            <span class="fa-stack fa-lg">';
-        $markup[] = '                <i class="fa fa-circle fa-stack-2x"></i>';
-        $markup[] = '                <i class="fa ' . $iconName . ' fa-stack-1x"></i>';
-        $markup[] = '            </span>';
+
+        $typo3Version = (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
+        if ($typo3Version >= 12) {
+            $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+            $icon = $iconFactory->getIcon(
+                static::$icons[$severity],
+                $typo3Version >= 13
+                    ? \TYPO3\CMS\Core\Imaging\IconSize::MEDIUM
+                    : \TYPO3\CMS\Core\Imaging\Icon::SIZE_MEDIUM
+            );
+            $markup[] = '            ' . $icon;
+        } else {
+            $iconName = static::$iconsV11[$severity];
+            $markup[] = '            <span class="fa-stack fa-lg">';
+            $markup[] = '                <i class="fa fa-circle fa-stack-2x"></i>';
+            $markup[] = '                <i class="fa ' . $iconName . ' fa-stack-1x"></i>';
+            $markup[] = '            </span>';
+        }
+
         $markup[] = '        </div>';
         $markup[] = '        <div class="media-body">';
         if (!empty($messageTitle)) {
@@ -112,6 +182,7 @@ class FlashMessagesViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\FlashMessages
         $markup[] = '        </div>';
         $markup[] = '    </div>';
         $markup[] = '</div>';
+
         return implode('', $markup);
     }
 }

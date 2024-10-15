@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -163,10 +165,7 @@ class ImportUsersAdditionalFields implements AdditionalFieldProviderInterface
 
         // Write the code for the field
         $fieldID = 'task_' . $fieldName;
-        $typo3Branch = class_exists(\TYPO3\CMS\Core\Information\Typo3Version::class)
-            ? (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch()
-            : TYPO3_branch;
-        $cssClass = version_compare($typo3Branch, '11.0', '<') ? 'form-control' : 'form-select';
+        $cssClass = 'form-select';
         if (isset($parameters['css'])) {
             $cssClass .= ' ' . $parameters['css'];
         }
@@ -178,7 +177,7 @@ class ImportUsersAdditionalFields implements AdditionalFieldProviderInterface
             if ((string)$taskInfo[$fieldName] === (string)$optionKey) {
                 $selected = ' selected="selected"';
             }
-            if (strpos($label, 'LLL:') === 0) {
+            if (str_starts_with($label, 'LLL:')) {
                 $optionLabel = htmlspecialchars($languageService->sL($localizationPrefix . substr($label, 4)));
             } else {
                 $optionLabel = htmlspecialchars($label);

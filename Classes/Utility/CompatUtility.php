@@ -20,10 +20,13 @@ use TYPO3\CMS\Core\Http\ApplicationType;
 
 final class CompatUtility
 {
-    public static function getTypo3Mode(): ?string
+    public static function getTypo3Mode(string $mode = ''): string
     {
-        if (defined('TYPO3_MODE')) {
-            return TYPO3_MODE;
+        if ($mode !== '') {
+            if (str_ends_with($mode, 'FE')) {
+                return 'FE';
+            }
+            return 'BE';
         }
 
         $request = $GLOBALS['TYPO3_REQUEST'] ?? null;
@@ -35,8 +38,6 @@ final class CompatUtility
                 : 'BE';
         }
 
-        // Hopefully TYPO3 v12 will always provide a valid TYPO3_REQUEST, and we
-        // won't have to have some magic in the calling method
-        return null;
+        return 'BE';
     }
 }

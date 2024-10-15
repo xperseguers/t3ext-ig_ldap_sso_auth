@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -29,7 +31,7 @@ class BackendUserGroupRepository extends AbstractUserGroupRepository
     /**
      * @var string
      */
-    protected $className = \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup::class;
+    protected $className = \Causal\IgLdapSsoAuth\Domain\Model\BackendUserGroup::class;
 
     /**
      * @var string

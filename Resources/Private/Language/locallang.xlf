@@ -23,6 +23,13 @@
 				<source><![CDATA[This module cannot be used until you create at least one configuration record. Please refer to the <a href="%s" target="_blank">administrator manual</a> for further information.<br /><br /><a href="%s">Click here</a> to create a configuration record.]]></source>
 			</trans-unit>
 
+			<trans-unit id="module_docheader.configurations.switch">
+				<source>Switch configuration</source>
+			</trans-unit>
+			<trans-unit id="module_docheader.configurations.edit">
+				<source>Edit current configuration</source>
+			</trans-unit>
+
 			<trans-unit id="module_overview">
 				<source>Overview</source>
 			</trans-unit>

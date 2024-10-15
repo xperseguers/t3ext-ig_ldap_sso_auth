@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,11 +16,14 @@
 
 namespace Causal\IgLdapSsoAuth\Service;
 
+use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
+use Causal\IgLdapSsoAuth\Event\AuthenticationFailedEvent;
 use Causal\IgLdapSsoAuth\Utility\CompatUtility;
 use Psr\Log\LoggerInterface;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Causal\IgLdapSsoAuth\Exception\UnsupportedLoginSecurityLevelException;
 use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
 use Causal\IgLdapSsoAuth\Library\Authentication;
 use Causal\IgLdapSsoAuth\Library\Configuration;
@@ -64,7 +69,7 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
      */
     public function __construct()
     {
-        $this->config = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extKey] ?? [];
+        $this->config = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get($this->extKey) ?? [];
         Authentication::setAuthenticationService($this);
     }
 
@@ -72,15 +77,13 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
      * Finda a user (e.g., look up the user record in database when a login is sent).
      *
      * @return array|bool User array or false
-     * @throws UnsupportedLoginSecurityLevelException
      */
     public function getUser()
     {
         $user = false;
         $userRecordOrIsValid = false;
         $remoteUser = $this->getRemoteUser();
-        // Hopefully CompatUtility::getTypo3Mode() will never be null in TYPO3 v12
-        $typo3Mode = CompatUtility::getTypo3Mode() ?? $this->authInfo['loginType'];
+        $typo3Mode = CompatUtility::getTypo3Mode($this->mode);
         $enableFrontendSso = $typo3Mode === 'FE' && (bool)$this->config['enableFESSO'] && $remoteUser;
         $enableBackendSso = $typo3Mode === 'BE' && (bool)$this->config['enableBESSO'] && $remoteUser;
 
@@ -93,8 +96,8 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
             return $user;
         }
 
-        /** @var \Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository $configurationRepository */
-        $configurationRepository = GeneralUtility::makeInstance(\Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository::class);
+        /** @var ConfigurationRepository $configurationRepository */
+        $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
         $configurationRecords = $configurationRepository->findAll();
 
         if (empty($configurationRecords)) {
@@ -144,26 +147,7 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
 
             // Authenticate user from LDAP
             if (!$userRecordOrIsValid && $this->login['status'] === 'login' && $this->login['uident']) {
-
-                // Configuration of authentication service.
-                $typo3Branch = (new \TYPO3\CMS\Core\Information\Typo3Version())->getBranch();
-                $loginSecurityLevel = version_compare($typo3Branch, '11.0', '>')
-                    ? 'normal'
-                    : $GLOBALS['TYPO3_CONF_VARS'][$typo3Mode]['loginSecurityLevel'];
-                // normal case
-                // Check if $loginSecurityLevel is set to "challenged" or "superchallenged" and throw an error if the configuration allows it
-                // By default, it will not throw an exception
-                if (isset($this->config['throwExceptionAtLogin']) && $this->config['throwExceptionAtLogin'] == 1) {
-                    if ($loginSecurityLevel === 'challenged' || $loginSecurityLevel === 'superchallenged') {
-                        $message = "ig_ldap_sso_auth error: current login security level '" . $loginSecurityLevel . "' is not supported.";
-                        $message .= " Try to use 'normal' or 'rsa' (highly recommended): ";
-                        $message .= "\$GLOBALS['TYPO3_CONF_VARS']['" . $typo3Mode . "']['loginSecurityLevel'] = 'rsa';";
-                        throw new UnsupportedLoginSecurityLevelException($message, 1324313489);
-                    }
-                }
-
-                // normal case
-                $password = isset($this->login['uident_text']) ? $this->login['uident_text'] : $this->login['uident'];
+                $password = $this->login['uident_text'] ?? $this->login['uident'];
 
                 try {
                     if ($password !== null) {
@@ -192,7 +176,7 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
                     'configUid' => $configurationRecord->getUid(),
                 ];
                 static::getLogger()->error('Authentication failed', $info);
-                NotificationUtility::dispatch(__CLASS__, 'authenticationFailed', $info);
+                NotificationUtility::dispatch(new AuthenticationFailedEvent($info));
             }
 
             // Continue and try with next configuration record...
@@ -218,13 +202,28 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
      */
     public function authUser(array $user): int
     {
+        /** @var ConfigurationRepository $configurationRepository */
+        $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
+        $configurationRecords = $configurationRepository->findAll();
+
+        if (empty($configurationRecords)) {
+            // Early return since LDAP is not configured
+            static::getLogger()->warning('Skipping LDAP authentication as extension is not yet configured');
+            // 100 = User not authenticated; this service is not responsible
+            return 100;
+        }
+
+        $typo3Mode = CompatUtility::getTypo3Mode($this->mode);
+
+        foreach ($configurationRecords as $configurationRecord) {
+            Configuration::initialize($typo3Mode, $configurationRecord);
+        }
+
         if (!Configuration::isInitialized()) {
             // Early return since LDAP is not configured
             return static::STATUS_AUTHENTICATION_FAILURE_CONTINUE;
         }
 
-        // Hopefully CompatUtility::getTypo3Mode() will never be null in TYPO3 v12
-        $typo3Mode = CompatUtility::getTypo3Mode() ?? $this->authInfo['loginType'];
         if ($typo3Mode === 'BE') {
             $status = Configuration::getValue('BEfailsafe')
                 ? static::STATUS_AUTHENTICATION_FAILURE_CONTINUE

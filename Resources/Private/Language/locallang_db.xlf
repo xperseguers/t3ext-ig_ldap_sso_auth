@@ -70,20 +70,14 @@
 				<source>Configuration LDAP / SSO</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.name">
-				<source>Name:</source>
-			</trans-unit>
-			<trans-unit id="tx_igldapssoauth_config.domains">
-				<source>Associated domains:</source>
-			</trans-unit>
-			<trans-unit id="tx_igldapssoauth_config.domains.v9_description">
-				<source>BEWARE: Usage of domains is deprecated since TYPO3 v9. Please migrate your configuration to site configurations.</source>
+				<source>Name</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.sites">
-				<source>Associated site configurations:</source>
+				<source>Associated site configurations</source>
 			</trans-unit>
 
 			<trans-unit id="tx_igldapssoauth_config.ldap_server">
-				<source>Server Type:</source>
+				<source>Server Type</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.ldap_server.I.0">
 				<source>OpenLDAP</source>
@@ -92,32 +86,32 @@
 				<source>Active Directory</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.ldap_charset">
-				<source>Character set:</source>
+				<source>Character set</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.ldap_host">
-				<source>Host:</source>
+				<source>Host</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.ldap_port">
-				<source>Port:</source>
+				<source>Port</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.ldap_tls">
-				<source>Use TLS:</source>
+				<source>Use TLS</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.ldap_tls_reqcert">
-				<source>TLS require cert:</source>
+				<source>TLS require cert</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.ldap_ssl">
-				<source>Use SSL:</source>
+				<source>Use SSL</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.ldap_binddn">
-				<source>Bind DN:</source>
+				<source>Bind DN</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.ldap_password">
-				<source>Password:</source>
+				<source>Password</source>
 			</trans-unit>
 
 			<trans-unit id="tx_igldapssoauth_config.group_membership">
-				<source>Relation between groups and users:</source>
+				<source>Relation between groups and users</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.group_membership.I.1">
 				<source>Group contains the list of its members</source>
@@ -133,61 +127,61 @@
 			</trans-unit>
 
 			<trans-unit id="tx_igldapssoauth_config.be_users_basedn">
-				<source>Base DN:</source>
+				<source>Base DN</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.be_users_filter">
-				<source>Filter:</source>
+				<source>Filter</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.be_users_mapping">
-				<source>Mapping:</source>
+				<source>Mapping</source>
 			</trans-unit>
 
 			<trans-unit id="tx_igldapssoauth_config.be_groups_basedn">
-				<source>Base DN:</source>
+				<source>Base DN</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.be_groups_filter">
-				<source>Filter:</source>
+				<source>Filter</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.be_groups_mapping">
-				<source>Mapping:</source>
+				<source>Mapping</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.be_groups_required">
-				<source>Required LDAP groups:</source>
+				<source>Required LDAP groups</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.be_groups_assigned">
-				<source>Local groups to be assigned:</source>
+				<source>Local groups to be assigned</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.be_groups_admin">
-				<source>TYPO3 administrator groups:</source>
+				<source>TYPO3 administrator groups</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.be_groups.tx_igldapssoauth_dn">
 				<source>Groups DN (Distinguished Name)</source>
 			</trans-unit>
 
 			<trans-unit id="tx_igldapssoauth_config.fe_users_basedn">
-				<source>Base DN:</source>
+				<source>Base DN</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.fe_users_filter">
-				<source>Filter:</source>
+				<source>Filter</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.fe_users_mapping">
-				<source>Mapping:</source>
+				<source>Mapping</source>
 			</trans-unit>
 
 			<trans-unit id="tx_igldapssoauth_config.fe_groups_basedn">
-				<source>Base DN:</source>
+				<source>Base DN</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.fe_groups_filter">
-				<source>Filter:</source>
+				<source>Filter</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.fe_groups_mapping">
-				<source>Mapping:</source>
+				<source>Mapping</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.fe_groups_required">
-				<source>Required LDAP groups:</source>
+				<source>Required LDAP groups</source>
 			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.fe_groups_assigned">
-				<source>Local groups to be assigned:</source>
+				<source>Local groups to be assigned</source>
 			</trans-unit>
 
 			<trans-unit id="be_groups.tx_igldapssoauth_dn">
@@ -215,10 +209,10 @@
 			</trans-unit>
 
 			<trans-unit id="suggestion.server.0">
-				<source>Suggestion for OpenLDAP:</source>
+				<source>Suggestion for OpenLDAP</source>
 			</trans-unit>
 			<trans-unit id="suggestion.server.1">
-				<source>Suggestion for Active Directory:</source>
+				<source>Suggestion for Active Directory</source>
 			</trans-unit>
 			<trans-unit id="suggestion.copy">
 				<source>copy and use</source>

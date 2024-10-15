@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -54,7 +56,7 @@ class LdapSuggestElement extends AbstractFormElement
             ? (int)$this->data['databaseRow']['ldap_server'][0]
             : Configuration::SERVER_OPENLDAP;
 
-        if (substr($this->data['fieldName'], -7) === '_basedn') {
+        if (str_ends_with($this->data['fieldName'], '_basedn')) {
             $suggestion = $this->suggestBaseDn();
         } else {
             $suggestion = $this->suggestMappingOrFilter($serverType);
@@ -109,7 +111,7 @@ class LdapSuggestElement extends AbstractFormElement
      */
     protected function suggestMappingOrFilter(int $serverType): string
     {
-        if (substr($this->data['fieldName'], -8) === '_mapping') {
+        if (str_ends_with($this->data['fieldName'], '_mapping')) {
             $prefix = 'mapping_';
             $table = substr($this->data['fieldName'], 0, -8);
         } else {

@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -62,7 +64,7 @@ abstract class AbstractUserGroupRepository
      * Returns a single backend/frontend user group.
      *
      * @param int $uid
-     * @return \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup|\TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup|null
+     * @return \Causal\IgLdapSsoAuth\Domain\Model\BackendUserGroup|\Causal\IgLdapSsoAuth\Domain\Model\FrontendUserGroup|null
      */
     public function findByUid(int $uid)
     {

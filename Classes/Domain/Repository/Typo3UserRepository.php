@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -14,7 +16,12 @@
 
 namespace Causal\IgLdapSsoAuth\Domain\Repository;
 
+use Causal\IgLdapSsoAuth\Event\UserAddedEvent;
+use Causal\IgLdapSsoAuth\Event\UserDeletedEvent;
+use Causal\IgLdapSsoAuth\Event\UserDisabledEvent;
+use Causal\IgLdapSsoAuth\Event\UserUpdatedEvent;
 use Causal\IgLdapSsoAuth\Utility\CompatUtility;
+use TYPO3\CMS\Core\Crypto\PasswordHashing\PasswordHashFactory;
 use TYPO3\CMS\Core\Crypto\Random;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
@@ -46,20 +53,18 @@ class Typo3UserRepository
             throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891582);
         }
 
-        if (empty($GLOBALS['TCA'][$table])) {
-            $bootstrap = \TYPO3\CMS\Core\Core\Bootstrap::getInstance();
-            if (is_callable([$bootstrap, 'loadCachedTca'])) {
-                $bootstrap->loadCachedTca();
-            } else {
-                ExtensionManagementUtility::loadBaseTca();
-            }
-        }
-
         $newUser = [];
-        $fieldsConfiguration = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getConnectionForTable($table)
-            ->getSchemaManager()
-            ->listTableColumns($table);
+        if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12) {
+            $fieldsConfiguration = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionForTable($table)
+                ->createSchemaManager()
+                ->listTableColumns($table);
+        } else {
+            $fieldsConfiguration = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionForTable($table)
+                ->getSchemaManager()
+                ->listTableColumns($table);
+        }
 
         foreach ($fieldsConfiguration as $configuration) {
             $field = $configuration->getName();
@@ -113,7 +118,7 @@ class Typo3UserRepository
                 ->where(
                     $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT))
                 )
-                ->execute()
+                ->executeQuery()
                 ->fetchAllAssociative();
         } elseif (!empty($dn)) {
             // Search with DN (or fall back to username) and pid
@@ -121,16 +126,30 @@ class Typo3UserRepository
             if (!empty($username)) {
                 // This additional condition will automatically add the mapping between
                 // a local user unrelated to LDAP and a corresponding LDAP user
-                $where = $queryBuilder->expr()->orX(
-                    $where,
-                    $queryBuilder->expr()->eq('username', $queryBuilder->createNamedParameter($username, \PDO::PARAM_STR))
-                );
+                if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12) {
+                    $where = $queryBuilder->expr()->or(
+                        $where,
+                        $queryBuilder->expr()->eq('username', $queryBuilder->createNamedParameter($username, \PDO::PARAM_STR))
+                    );
+                } else {
+                    $where = $queryBuilder->expr()->orX(
+                        $where,
+                        $queryBuilder->expr()->eq('username', $queryBuilder->createNamedParameter($username, \PDO::PARAM_STR))
+                    );
+                }
             }
             if (!empty($pid)) {
-                $where = $queryBuilder->expr()->andX(
-                    $where,
-                    $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, \PDO::PARAM_INT))
-                );
+                if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12) {
+                    $where = $queryBuilder->expr()->and(
+                        $where,
+                        $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, \PDO::PARAM_INT))
+                    );
+                } else {
+                    $where = $queryBuilder->expr()->andX(
+                        $where,
+                        $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, \PDO::PARAM_INT))
+                    );
+                }
             }
 
             $users = $queryBuilder
@@ -139,22 +158,29 @@ class Typo3UserRepository
                 ->where($where)
                 ->orderBy('tx_igldapssoauth_dn', 'DESC')    // rows from LDAP first...
                 ->addOrderBy('deleted', 'ASC')              // ... then privilege active records
-                ->execute()
+                ->executeQuery()
                 ->fetchAllAssociative();
         } elseif (!empty($username)) {
             // Search with username and pid
             $where = $queryBuilder->expr()->eq('username', $queryBuilder->createNamedParameter($username, \PDO::PARAM_STR));
             if (!empty($pid)) {
-                $where = $queryBuilder->expr()->andX(
-                    $where,
-                    $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, \PDO::PARAM_INT))
-                );
+                if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12) {
+                    $where = $queryBuilder->expr()->and(
+                        $where,
+                        $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, \PDO::PARAM_INT))
+                    );
+                } else {
+                    $where = $queryBuilder->expr()->andX(
+                        $where,
+                        $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, \PDO::PARAM_INT))
+                    );
+                }
             }
             $users = $queryBuilder
                 ->select('*')
                 ->from($table)
                 ->where($where)
-                ->execute()
+                ->executeQuery()
                 ->fetchAllAssociative();
         }
 
@@ -199,17 +225,10 @@ class Typo3UserRepository
             ->where(
                 $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT))
             )
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
 
-        NotificationUtility::dispatch(
-            __CLASS__,
-            'userAdded',
-            [
-                'table' => $table,
-                'user' => $newRow,
-            ]
-        );
+        NotificationUtility::dispatch(new UserAddedEvent($table, $newRow));
 
         return $newRow;
     }
@@ -247,14 +266,7 @@ class Typo3UserRepository
         $success = $affectedRows === 1;
 
         if ($success) {
-            NotificationUtility::dispatch(
-                __CLASS__,
-                'userUpdated',
-                [
-                    'table' => $table,
-                    'user' => $data,
-                ]
-            );
+            NotificationUtility::dispatch(new UserUpdatedEvent($table, $data));
         }
 
         return $success;
@@ -285,7 +297,7 @@ class Typo3UserRepository
                     $queryBuilder->expr()->eq('tx_igldapssoauth_id', $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)),
                     $queryBuilder->expr()->eq($GLOBALS['TCA'][$table]['ctrl']['enablecolumns']['disabled'], 0)
                 )
-                ->execute()
+                ->executeQuery()
                 ->fetchFirstColumn();
 
             $queryBuilder
@@ -300,16 +312,9 @@ class Typo3UserRepository
                 $queryBuilder->set($GLOBALS['TCA'][$table]['ctrl']['tstamp'], $GLOBALS['EXEC_TIME']);
             }
 
-            $queryBuilder->execute();
+            $queryBuilder->executeStatement();
 
-            NotificationUtility::dispatch(
-                __CLASS__,
-                'userDisabled',
-                [
-                    'table' => $table,
-                    'configuration' => $uid,
-                ]
-            );
+            NotificationUtility::dispatch(new UserDisabledEvent($table, $uid));
         }
         return $uids;
     }
@@ -339,7 +344,7 @@ class Typo3UserRepository
                     $queryBuilder->expr()->eq('tx_igldapssoauth_id', $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)),
                     $queryBuilder->expr()->eq($GLOBALS['TCA'][$table]['ctrl']['delete'], 0)
                 )
-                ->execute()
+                ->executeQuery()
                 ->fetchFirstColumn();
 
             $queryBuilder
@@ -354,16 +359,9 @@ class Typo3UserRepository
                 $queryBuilder->set($GLOBALS['TCA'][$table]['ctrl']['tstamp'], $GLOBALS['EXEC_TIME']);
             }
 
-            $queryBuilder->execute();
+            $queryBuilder->executeStatement();
 
-            NotificationUtility::dispatch(
-                __CLASS__,
-                'userDeleted',
-                [
-                    'table' => $table,
-                    'configuration' => $uid,
-                ]
-            );
+            NotificationUtility::dispatch(new UserDeletedEvent($table, $uid));
         }
         return $uids;
     }
@@ -386,7 +384,7 @@ class Typo3UserRepository
             }
         }
 
-        /** @var \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]|\TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup[] $assignGroups */
+        /** @var \Causal\IgLdapSsoAuth\Domain\Model\BackendUserGroup[]|\Causal\IgLdapSsoAuth\Domain\Model\FrontendUserGroup[] $assignGroups */
         $assignGroups = Configuration::getValue('assignGroups');
         foreach ($assignGroups as $group) {
             if (!in_array($group->getUid(), $groupUid)) {
@@ -407,7 +405,7 @@ class Typo3UserRepository
                         $queryBuilder->expr()->in('uid', $usergroup),
                         $queryBuilder->expr()->eq('tx_igldapssoauth_dn', $queryBuilder->createNamedParameter('', \PDO::PARAM_STR))
                     )
-                    ->execute()
+                    ->executeQuery()
                     ->fetchAllAssociative();
                 foreach ($rows as $row) {
                     $localUserGroups[] = $row['uid'];
@@ -421,7 +419,7 @@ class Typo3UserRepository
             }
         }
 
-        /** @var \TYPO3\CMS\Extbase\Domain\Model\BackendUserGroup[]|\TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup[] $administratorGroups */
+        /** @var \Causal\IgLdapSsoAuth\Domain\Model\BackendUserGroup[]|\Causal\IgLdapSsoAuth\Domain\Model\FrontendUserGroup[] $administratorGroups */
         $administratorGroups = Configuration::getValue('updateAdminAttribForGroups');
         if (!empty($administratorGroups)) {
             $typo3User['admin'] = 0;
@@ -457,16 +455,13 @@ class Typo3UserRepository
      * Defines a random password.
      *
      * @return string
+     * @see \TYPO3\CMS\Core\Authentication\CommandLineUserAuthentication::generateHashedPassword()
      */
     public static function setRandomPassword(): string
     {
-        /** @var \TYPO3\CMS\Saltedpasswords\Salt\SaltInterface $instance */
-        $instance = null;
-        if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('saltedpasswords')) {
-            $instance = \TYPO3\CMS\Saltedpasswords\Salt\SaltFactory::getSaltingInstance(null, CompatUtility::getTypo3Mode());
-        }
-        $password = GeneralUtility::makeInstance(Random::class)->generateRandomBytes(16);
-        $password = $instance ? $instance->getHashedPassword($password) : md5($password);
-        return $password;
+        $cryptoService = GeneralUtility::makeInstance(Random::class);
+        $password = $cryptoService->generateRandomBytes(20);
+        $hashInstance = GeneralUtility::makeInstance(PasswordHashFactory::class)->getDefaultHashInstance('BE');
+        return $hashInstance->getHashedPassword($password);
     }
 }

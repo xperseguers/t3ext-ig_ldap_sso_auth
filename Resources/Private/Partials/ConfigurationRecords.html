@@ -4,8 +4,10 @@
 
 <f:if condition="{configurationRecords->f:count()}==1">
     <f:then>
-        <f:format.raw>{editLink}</f:format.raw>
-        {configurationRecords.0.name}
+        <div style="display: flex;">
+            <f:format.raw>{editLink}</f:format.raw>
+            <span style="margin-inline: .375rem;">{configurationRecords.0.name}</span>
+        </div>
     </f:then>
     <f:else>
         <f:form action="{action}" method="post" class="form-inline col-sm-4">

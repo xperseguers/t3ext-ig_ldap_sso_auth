@@ -62,21 +62,20 @@ class ModuleController extends ActionController
     {
     }
 
-    /**
-     * Redirects to the saved action.
-     */
     public function initializeAction()
     {
         $this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         $this->moduleTemplate->getDocHeaderComponent()->setMetaInformation([]);
+    }
 
-        $vars = GeneralUtility::_GET('tx_igldapssoauth_system_igldapssoauthtxigldapssoauthm1');
-        if (
-            !isset($vars['redirect'])
-            && !isset($vars['action'])
-            && isset($GLOBALS['BE_USER']->uc['ig_ldap_sso_auth'])
-            && is_array($GLOBALS['BE_USER']->uc['ig_ldap_sso_auth']['selection'])
-        ) {
+    /**
+     * Redirects to the last saved action if needed.
+     *
+     * @return ResponseInterface|null
+     */
+    protected function restoreLastAction(): ?ResponseInterface
+    {
+        if (is_array($GLOBALS['BE_USER']->uc['ig_ldap_sso_auth']['selection'] ?? null)) {
             $previousSelection = $GLOBALS['BE_USER']->uc['ig_ldap_sso_auth']['selection'];
             if (!empty($previousSelection['action']) && !empty($previousSelection['configuration'])) {
                 return $this->redirect(
@@ -85,29 +84,33 @@ class ModuleController extends ActionController
                     null,
                     [
                         'configuration' => $previousSelection['configuration'],
-                        'redirect' => 1
                     ]
                 );
-            } else {
-                return $this->redirect('index');
             }
         }
 
-        /** @var PageRenderer $pageRenderer */
-        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-        $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/Search');
+        return null;
     }
 
     /**
      * Index action.
      *
      * @param \Causal\IgLdapSsoAuth\Domain\Model\Configuration|null $configuration
+     * @param bool $skipLastAction
      * @return ResponseInterface
      */
     public function indexAction(
-        ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
+        ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null,
+        bool $skipLastAction = false
     ): ResponseInterface
     {
+        if (!$skipLastAction) {
+            $lastAction = $this->restoreLastAction();
+            if ($lastAction !== null) {
+                return $lastAction;
+            }
+        }
+
         $this->saveState($configuration);
         $this->populateView($configuration);
 
@@ -132,7 +135,7 @@ class ModuleController extends ActionController
     {
         // If configuration has been deleted
         if ($configuration === null) {
-            return $this->redirect('index');
+            return $this->redirect('index', null, null, ['skipLastAction' => true]);
         }
         $this->saveState($configuration);
 
@@ -210,7 +213,7 @@ class ModuleController extends ActionController
     {
         // If configuration has been deleted
         if ($configuration === null) {
-            return $this->redirect('index');
+            return $this->redirect('index', null, null, ['skipLastAction' => true]);
         }
         $this->saveState($configuration);
 
@@ -250,7 +253,7 @@ class ModuleController extends ActionController
     {
         // If configuration has been deleted
         if ($configuration === null) {
-            return $this->redirect('index');
+            return $this->redirect('index', null, null, ['skipLastAction' => true]);
         }
         $this->saveState($configuration);
 
@@ -290,7 +293,7 @@ class ModuleController extends ActionController
     {
         // If configuration has been deleted
         if ($configuration === null) {
-            return $this->redirect('index');
+            return $this->redirect('index', null, null, ['skipLastAction' => true]);
         }
         $this->saveState($configuration);
 
@@ -330,7 +333,7 @@ class ModuleController extends ActionController
     {
         // If configuration has been deleted
         if ($configuration === null) {
-            return $this->redirect('index');
+            return $this->redirect('index', null, null, ['skipLastAction' => true]);
         }
         $this->saveState($configuration);
 
@@ -370,7 +373,7 @@ class ModuleController extends ActionController
     {
         // If configuration has been deleted
         if ($configuration === null) {
-            return $this->redirect('index');
+            return $this->redirect('index', null, null, ['skipLastAction' => true]);
         }
         $this->saveState($configuration);
 

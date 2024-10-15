@@ -24,7 +24,6 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Causal\IgLdapSsoAuth\Exception\UnsupportedLoginSecurityLevelException;
 use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
 use Causal\IgLdapSsoAuth\Library\Authentication;
 use Causal\IgLdapSsoAuth\Library\Configuration;
@@ -78,7 +77,6 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
      * Finda a user (e.g., look up the user record in database when a login is sent).
      *
      * @return array|bool User array or false
-     * @throws UnsupportedLoginSecurityLevelException
      */
     public function getUser()
     {
@@ -150,24 +148,6 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
 
             // Authenticate user from LDAP
             if (!$userRecordOrIsValid && $this->login['status'] === 'login' && $this->login['uident']) {
-
-                // Configuration of authentication service.
-                $loginSecurityLevel = (new Typo3Version())->getMajorVersion() > 11
-                    ? 'normal'
-                    : $GLOBALS['TYPO3_CONF_VARS'][$typo3Mode]['loginSecurityLevel'];
-                // normal case
-                // Check if $loginSecurityLevel is set to "challenged" or "superchallenged" and throw an error if the configuration allows it
-                // By default, it will not throw an exception
-                if (isset($this->config['throwExceptionAtLogin']) && $this->config['throwExceptionAtLogin'] == 1) {
-                    if ($loginSecurityLevel === 'challenged' || $loginSecurityLevel === 'superchallenged') {
-                        $message = "ig_ldap_sso_auth error: current login security level '" . $loginSecurityLevel . "' is not supported.";
-                        $message .= " Try to use 'normal' or 'rsa' (highly recommended): ";
-                        $message .= "\$GLOBALS['TYPO3_CONF_VARS']['" . $typo3Mode . "']['loginSecurityLevel'] = 'rsa';";
-                        throw new UnsupportedLoginSecurityLevelException($message, 1324313489);
-                    }
-                }
-
-                // normal case
                 $password = isset($this->login['uident_text']) ? $this->login['uident_text'] : $this->login['uident'];
 
                 try {

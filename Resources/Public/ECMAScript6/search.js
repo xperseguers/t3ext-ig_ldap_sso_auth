@@ -19,7 +19,66 @@ class Search {
     }
 
     initialize() {
-        alert('Search initialized');
+        const that = this;
+
+        document.getElementById('tx-igldapssoauth-searchform').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            this.search();
+        }.bind(this));
+
+        document.querySelectorAll('input[type="radio"]').forEach(function (radio) {
+            radio.addEventListener('click', function () {
+                that.updateForm(radio.value);
+            });
+        });
+
+        document.querySelectorAll('input[type="checkbox"]').forEach(function (checkbox) {
+            checkbox.addEventListener('click', function () {
+                that.search();
+            });
+        });
+
+        document.getElementById('tx-igldapssoauth-search').addEventListener('click', function () {
+            that.search();
+        });
+
+        if (document.getElementById('tx-igldapssoauth-searchform')) {
+            this.search();
+        }
+    }
+
+    search() {
+        fetch(TYPO3.settings.ajaxUrls['ldap_search'], {
+            method: 'POST',
+            body: new URLSearchParams(new FormData(document.getElementById('tx-igldapssoauth-searchform')))
+        }).then(function (response) {
+            return response.json();
+        }).then(function (data) {
+            document.getElementById('tx-igldapssoauth-result').innerHTML = data.html;
+        });
+    }
+
+    updateForm(type) {
+        const that = this;
+        const basedn = document.getElementById('tx-igldapssoauth-basedn');
+        const filter = document.getElementById('tx-igldapssoauth-filter');
+
+        fetch(TYPO3.settings.ajaxUrls['ldap_form_update'], {
+            method: 'POST',
+            body: new URLSearchParams({
+                configuration: document.getElementById('tx-igldapssoauth-result').getAttribute('data-configuration'),
+                type: type
+            })
+        }).then(function (response) {
+                return response.json();
+        }).then(function (data) {
+            if (data.success) {
+                basedn.value = data.configuration.basedn;
+                filter.value = data.configuration.filter;
+                that.search();
+            }
+        });
     }
 }
 

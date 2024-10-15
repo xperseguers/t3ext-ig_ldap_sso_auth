@@ -395,7 +395,9 @@ class ModuleController extends ActionController
      */
     public function ajaxUpdateForm(ServerRequestInterface $request): ResponseInterface
     {
-        $params = $request->getQueryParams();
+        $params = (new Typo3Version())->getMajorVersion() >= 12
+            ? $request->getParsedBody()
+            : $request->getQueryParams();
 
         $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
 
@@ -425,7 +427,9 @@ class ModuleController extends ActionController
      */
     public function ajaxSearch(ServerRequestInterface $request): ResponseInterface
     {
-        $params = $request->getQueryParams();
+        $params = (new Typo3Version())->getMajorVersion() >= 12
+            ? $request->getParsedBody()
+            : $request->getQueryParams();
 
         $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
         $ldap = GeneralUtility::makeInstance(Ldap::class);

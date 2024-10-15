@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Causal\IgLdapSsoAuth\Form\Element;
 
 use Causal\IgLdapSsoAuth\Library\Configuration;
+use TYPO3\CMS\Backend\Form\AbstractNode;
 use TYPO3\CMS\Backend\Form\Element\AbstractFormElement;
 use TYPO3\CMS\Backend\Form\Element\InputTextElement;
 use TYPO3\CMS\Backend\Form\Element\TextElement;
@@ -41,13 +42,21 @@ class LdapSuggestElement extends AbstractFormElement
         $elementType = $this->data['parameterArray']['fieldConf']['config']['type'];
         switch ($elementType) {
             case 'input':
-                $baseElement = GeneralUtility::makeInstance(InputTextElement::class, $this->nodeFactory, $this->data);
+                $baseElementClass = InputTextElement::class;
                 break;
             case 'text':
-                $baseElement = GeneralUtility::makeInstance(TextElement::class, $this->nodeFactory, $this->data);
+                $baseElementClass = TextElement::class;
                 break;
             default:
                 throw new \RuntimeException('Suggest wizard is not configured for type "' . $elementType . '"', 1553522818);
+        }
+
+        if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12) {
+            /** @var AbstractNode $baseElement */
+            $baseElement = GeneralUtility::makeInstance($baseElementClass);
+            $baseElement->setData($this->data);
+        } else {
+            $baseElement = GeneralUtility::makeInstance($baseElementClass, $this->nodeFactory, $this->data);
         }
 
         $resultArray = $baseElement->render();

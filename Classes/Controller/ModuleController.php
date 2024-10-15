@@ -489,7 +489,7 @@ class ModuleController extends ActionController
         $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
         $ldap = GeneralUtility::makeInstance(Ldap::class);
 
-        $configuration = $configurationRepository->findByUid($params['configuration']);
+        $configuration = $configurationRepository->findByUid((int)$params['configuration']);
 
         /** @var \Causal\IgLdapSsoAuth\Utility\UserImportUtility $importUtility */
         $importUtility = GeneralUtility::makeInstance(
@@ -554,7 +554,7 @@ class ModuleController extends ActionController
         $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
         $ldap = GeneralUtility::makeInstance(Ldap::class);
 
-        $configuration = $configurationRepository->findByUid($params['configuration']);
+        $configuration = $configurationRepository->findByUid((int)$params['configuration']);
 
         $data = [];
 

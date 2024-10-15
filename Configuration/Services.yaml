@@ -16,6 +16,9 @@ services:
   Causal\IgLdapSsoAuth\Utility\LdapUtility:
     public: true
 
+  Causal\IgLdapSsoAuth\Utility\NotificationUtility:
+    public: true
+
   # Register type converter
   Causal\IgLdapSsoAuth\Property\TypeConverter\ConfigurationConverter:
     tags:

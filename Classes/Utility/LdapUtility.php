@@ -477,7 +477,7 @@ class LdapUtility
         $attributes = @ldap_get_attributes($this->connection, $this->firstResultEntry);
         $tempEntry = [];
         foreach ($attributes as $key => $value) {
-            $tempEntry[strtolower($key)] = $value;
+            $tempEntry[strtolower((string)$key)] = $value;
         }
         return $this->convertCharacterSetForArray($tempEntry, $this->ldapCharacterSet, $this->typo3CharacterSet);
     }

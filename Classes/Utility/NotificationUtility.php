@@ -16,7 +16,9 @@ declare(strict_types=1);
 
 namespace Causal\IgLdapSsoAuth\Utility;
 
+use Causal\IgLdapSsoAuth\Event\LdapEventInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Notification class.
@@ -27,7 +29,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
  */
 class NotificationUtility
 {
-    private static NotificationUtility $instance;
+    private static ?NotificationUtility $instance = null;
 
     /**
      * NotificationUtility constructor.

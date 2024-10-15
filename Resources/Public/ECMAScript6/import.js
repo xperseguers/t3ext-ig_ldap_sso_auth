@@ -19,7 +19,51 @@ class Import {
     }
     
     initialize() {
-        alert('Import initialized');
+        document.querySelectorAll('button').forEach(function (button) {
+            button.addEventListener('click', function () {
+                document.getElementById('tx-igldapssoauth-dn').value = button.value;
+            });
+        });
+
+        document.getElementById('tx-igldapssoauth-importform').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            let dn = document.getElementById('tx-igldapssoauth-dn').value;
+            dn = dn.replace('\\', '\\\\');
+
+            this.ldapImport(document.querySelector('button[value="' + dn + '"]').closest('tr'));
+        }.bind(this));
+    }
+
+    ldapImport(row) {
+        const action = document.getElementById('tx-igldapssoauth-importform').getAttribute('data-ajaxaction');
+
+        row.querySelectorAll('button').forEach(function (button) {
+            button.disabled = true;
+        });
+
+        fetch(TYPO3.settings.ajaxUrls[action], {
+            method: 'POST',
+            body: new URLSearchParams(new FormData(document.getElementById('tx-igldapssoauth-importform')))
+        }).then(function (response) {
+            return response.json();
+        }).then(function (data) {
+            if (data.success) {
+                row.classList.remove();
+                row.classList.add('local-ldap-user-or-group');
+                row.querySelector('td.col-icon span').title = 'id=' + data.id;
+                row.querySelectorAll('td').forEach(function (td) {
+                    td.classList.remove('future-value');
+                });
+                row.querySelectorAll('button').forEach(function (button) {
+                    button.style.display = 'none';
+                });
+            } else {
+                row.querySelectorAll('button').forEach(function (button) {
+                    button.disabled = false;
+                });
+            }
+        });
     }
 }
 

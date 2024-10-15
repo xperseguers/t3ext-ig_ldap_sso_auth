@@ -4,8 +4,8 @@
 
 <f:if condition="{configurationRecords->f:count()}==1">
     <f:then>
-        {configurationRecords.0.name}
         <f:format.raw>{editLink}</f:format.raw>
+        {configurationRecords.0.name}
     </f:then>
     <f:else>
         <f:form action="{action}" method="post" class="form-inline">
@@ -26,8 +26,8 @@
                         value="{f:translate(key: 'module_docheader.configurations.switch')}"/>
             </div>
             <div style="margin-block-start: .5rem; display: flex;">
-                <span style="margin-inline: .375rem;">{f:translate(key: 'module_docheader.configurations.edit')}</span>
                 <f:format.raw>{editLink}</f:format.raw>
+                <span style="margin-inline: .375rem;">{f:translate(key: 'module_docheader.configurations.edit')}</span>
             </div>
         </f:form>
     </f:else>

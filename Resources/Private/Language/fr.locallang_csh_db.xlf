@@ -7,9 +7,9 @@
         <source>Name used to distinguish each configuration.</source>
         <target state="final">Nom utilisé afin de distinguer chaque configuration.</target>
       </trans-unit>
-      <trans-unit id="ldap_server.description">
+      <trans-unit id="ldap_server.description" approved="yes">
         <source>Type of LDAP server used by the authentication (OpenLDAP, Active Directory).</source>
-        <target state="translated">Type de serveur LDAP utilisé par l'authentification (OpenLDAP, Active Directory).</target>
+        <target state="final">Type de serveur LDAP utilisé par l'authentification (OpenLDAP, Active Directory).</target>
       </trans-unit>
       <trans-unit id="ldap_charset.description" approved="yes">
         <source>Character set used by the LDAP server. Usually: utf-8.</source>

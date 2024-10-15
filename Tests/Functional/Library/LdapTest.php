@@ -94,9 +94,9 @@ class LdapTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
      */
     public function validateUserSupportsSSO($filter, $username, $expected)
     {
-        $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth'] = serialize([
-            'enableFESSO' => 1,
-        ]);
+        $config = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class);
+        $config->set('ig_ldap_sso_auth', 'enableFESSO', 1);
+
         \Causal\IgLdapSsoAuth\Library\Configuration::initialize('fe', new \Causal\IgLdapSsoAuth\Domain\Model\Configuration());
 
         $result = $this->fixture->validateUser($username, null, 'cn=read-only-admin,dc=example,dc=com', $filter);

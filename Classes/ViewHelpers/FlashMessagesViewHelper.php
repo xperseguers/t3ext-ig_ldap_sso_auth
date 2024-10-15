@@ -48,27 +48,27 @@ class FlashMessagesViewHelper extends AbstractViewHelper
     protected $escapeOutput = false;
 
     protected static $classes = [
-        FlashMessage::NOTICE => 'notice',
-        FlashMessage::INFO => 'info',
-        FlashMessage::OK => 'success',
-        FlashMessage::WARNING => 'warning',
-        FlashMessage::ERROR => 'danger'
+        -2 /* notice  */ => 'notice',
+        -1 /* info    */ => 'info',
+         0 /* ok      */ => 'success',
+         1 /* warning */ => 'warning',
+         2 /* error   */ => 'danger'
     ];
 
     protected static $icons = [
-        FlashMessage::NOTICE => 'actions-lightbulb',
-        FlashMessage::INFO => 'actions-info-circle',
-        FlashMessage::OK => 'actions-check-circle',
-        FlashMessage::WARNING => 'actions-exclamation-triangle',
-        FlashMessage::ERROR => 'actions-exclamation-circle'
+        -2 /* notice  */ => 'actions-lightbulb',
+        -1 /* info    */ => 'actions-info-circle',
+         0 /* ok      */ => 'actions-check-circle',
+         1 /* warning */ => 'actions-exclamation-triangle',
+         2 /* error   */ => 'actions-exclamation-circle'
     ];
 
     protected static $iconsV11 = [
-        FlashMessage::NOTICE => 'fa-lightbulb-o',
-        FlashMessage::INFO => 'fa-info',
-        FlashMessage::OK => 'fa-check',
-        FlashMessage::WARNING => 'fa-exclamation',
-        FlashMessage::ERROR => 'fa-times'
+        -2 /* notice  */ => 'fa-lightbulb-o',
+        -1 /* info    */ => 'fa-info',
+         0 /* ok      */ => 'fa-check',
+         1 /* warning */ => 'fa-exclamation',
+         2 /* error   */ => 'fa-times'
     ];
 
     /**

@@ -1,6 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en"
       xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
-      xmlns:ldap="http://typo3.org/ns/Causal/IgLdapSsoAuth/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <f:if condition="{configurationRecords->f:count()}==1">
@@ -11,7 +10,7 @@
     <f:else>
         <f:form action="{action}" method="post" class="form-inline">
             <div class="form-group" style="display: flex;">
-                <ldap:form.select
+                <f:form.select
                         name="configuration"
                         options="{configurationRecords}"
                         value="{currentConfiguration}"

@@ -361,7 +361,7 @@ class Configuration
             ? static::getBackendConfiguration()
             : static::getFrontendConfiguration();
 
-        return (isset($config[$feature]) ? $config[$feature] : false);
+        return $config[$feature] ?? false;
     }
 
     /**

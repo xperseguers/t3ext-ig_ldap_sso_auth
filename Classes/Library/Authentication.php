@@ -730,7 +730,7 @@ class Authentication
             $pageArguments = GeneralUtility::makeInstance(
                 PageArguments::class,
                 $pageId,
-                PageRepository::DOKTYPE_SYSFOLDER,
+                (string)PageRepository::DOKTYPE_SYSFOLDER,
                 []
             );
             $frontendUserAuthentication = GeneralUtility::makeInstance(FrontendUserAuthentication::class);

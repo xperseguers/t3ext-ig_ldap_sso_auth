@@ -556,7 +556,7 @@ class LdapUtility
             if (is_array($val)) {
                 $arr[$k] = $this->convertCharacterSetForArray($val, $fromCharacterSet, $toCharacterSet);
             } else {
-                $arr[$k] = $this->charsetConverter->conv($val, $fromCharacterSet, $toCharacterSet);
+                $arr[$k] = $this->charsetConverter->conv((string)$val, $fromCharacterSet, $toCharacterSet);
             }
         }
 

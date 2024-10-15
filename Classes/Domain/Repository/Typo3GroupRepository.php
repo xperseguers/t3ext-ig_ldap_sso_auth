@@ -47,10 +47,17 @@ class Typo3GroupRepository
         }
 
         $newGroup = [];
-        $fieldsConfiguration = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getConnectionForTable($table)
-            ->getSchemaManager()
-            ->listTableColumns($table);
+        if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12) {
+            $fieldsConfiguration = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionForTable($table)
+                ->createSchemaManager()
+                ->listTableColumns($table);
+        } else {
+            $fieldsConfiguration = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionForTable($table)
+                ->getSchemaManager()
+                ->listTableColumns($table);
+        }
 
         foreach ($fieldsConfiguration as $configuration) {
             $field = $configuration->getName();

@@ -14,9 +14,11 @@ defined('TYPO3') || die();
         $GLOBALS['TYPO3_CONF_VARS']['SVCONF']['auth']['setup']['BE_fetchUserIfNoSession'] = 1;
     }
 
-    // Visually change the record icon for FE/BE users and groups
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][\TYPO3\CMS\Core\Imaging\IconFactory::class]['overrideIconOverlay'][]
-        = \Causal\IgLdapSsoAuth\Hooks\IconFactory::class;
+    if ($typo3Version < 13) {
+        // Visually change the record icon for FE/BE users and groups
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][\TYPO3\CMS\Core\Imaging\IconFactory::class]['overrideIconOverlay'][]
+            = \Causal\IgLdapSsoAuth\Hooks\IconFactory::class;
+    }
 
     if ($typo3Version < 12) {
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['getTable'][]

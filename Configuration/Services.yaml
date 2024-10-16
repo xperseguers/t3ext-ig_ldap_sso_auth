@@ -27,9 +27,15 @@ services:
         target: Causal\IgLdapSsoAuth\Domain\Model\Configuration
         sources: int,string
 
-  # Register event listeners.
+  # Register event listeners
   Causal\IgLdapSsoAuth\EventListener\ExtendUserGroupQueryListener:
     tags:
       - name: event.listener
         identifier: 'causal.ig_ldap_sso_auth.extendUserGroupQueryListener'
         event: TYPO3\CMS\Backend\View\Event\ModifyDatabaseQueryForRecordListingEvent
+
+  Causal\IgLdapSsoAuth\EventListener\OverrideIconOverlayListener:
+    tags:
+      - name: event.listener
+        identifier: 'causal.ig_ldap_sso_auth.overrideIconOverlayListener'
+        event: TYPO3\CMS\Core\Imaging\Event\ModifyRecordOverlayIconIdentifierEvent

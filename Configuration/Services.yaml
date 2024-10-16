@@ -39,3 +39,10 @@ services:
       - name: event.listener
         identifier: 'causal.ig_ldap_sso_auth.overrideIconOverlayListener'
         event: TYPO3\CMS\Core\Imaging\Event\ModifyRecordOverlayIconIdentifierEvent
+
+  # Register command
+  Causal\IgLdapSsoAuth\Command\ImportUsers:
+    tags:
+      - name: console.command
+        command: 'ldap:importusers'
+        description: 'Import users for a given LDAP configuration'

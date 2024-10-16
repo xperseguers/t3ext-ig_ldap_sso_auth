@@ -35,6 +35,7 @@ use Causal\IgLdapSsoAuth\Library\Ldap;
  * @author     Francois Suter <typo3@cobweb.ch>
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
+ * @deprecated Use the Symfony Command instead.
  */
 class ImportUsers extends \TYPO3\CMS\Scheduler\Task\AbstractTask
 {

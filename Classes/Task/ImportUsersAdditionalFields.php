@@ -53,7 +53,7 @@ class ImportUsersAdditionalFields implements AdditionalFieldProviderInterface
         /** @var \Causal\IgLdapSsoAuth\Task\ImportUsers $task */
         $additionalFields = [];
 
-        $isEdit = (string)$schedulerModule->getCurrentAction() === Action::EDIT;
+        $isEdit = $schedulerModule->getCurrentAction() === Action::EDIT;
 
         // Process the mode field
         $parameters = [
@@ -182,7 +182,7 @@ class ImportUsersAdditionalFields implements AdditionalFieldProviderInterface
             } else {
                 $optionLabel = htmlspecialchars($label);
             }
-            $fieldCode .= '<option value="' . htmlspecialchars($optionKey) . '"' . $selected . '>' . $optionLabel . '</option>';
+            $fieldCode .= '<option value="' . htmlspecialchars((string)$optionKey) . '"' . $selected . '>' . $optionLabel . '</option>';
         }
 
         $fieldCode .= '</select>';
@@ -223,7 +223,7 @@ class ImportUsersAdditionalFields implements AdditionalFieldProviderInterface
         /** @var \Causal\IgLdapSsoAuth\Task\ImportUsers $task */
         $task->setMode($submittedData['tx_igldapssoauth_mode']);
         $task->setContext($submittedData['tx_igldapssoauth_context']);
-        $task->setConfiguration($submittedData['tx_igldapssoauth_configuration']);
+        $task->setConfiguration((int)$submittedData['tx_igldapssoauth_configuration']);
         $task->setMissingUsersHandling($submittedData['tx_igldapssoauth_missinguserhandling']);
         $task->setRestoredUsersHandling($submittedData['tx_igldapssoauth_restoreduserhandling']);
     }

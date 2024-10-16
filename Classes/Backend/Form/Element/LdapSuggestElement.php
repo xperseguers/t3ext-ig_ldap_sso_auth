@@ -14,7 +14,7 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Causal\IgLdapSsoAuth\Form\Element;
+namespace Causal\IgLdapSsoAuth\Backend\Form\Element;
 
 use Causal\IgLdapSsoAuth\Library\Configuration;
 use TYPO3\CMS\Backend\Form\AbstractNode;

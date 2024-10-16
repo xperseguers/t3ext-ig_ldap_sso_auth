@@ -66,7 +66,7 @@ return [
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectMultipleSideBySide',
-                'itemsProcFunc' => \Causal\IgLdapSsoAuth\Tca\SiteConfigurationItemsProcFunc::class . '->getSites',
+                'itemsProcFunc' => \Causal\IgLdapSsoAuth\Backend\Tca\SiteConfigurationItemsProcFunc::class . '->getSites',
                 'allowNonIdValues' => true,
                 'size' => 10,
             ]

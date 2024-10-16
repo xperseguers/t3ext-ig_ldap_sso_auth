@@ -78,7 +78,7 @@ defined('TYPO3') || die();
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1553520893] = [
         'nodeName' => 'ldapSuggest',
         'priority' => 40,
-        'class' => \Causal\IgLdapSsoAuth\Form\Element\LdapSuggestElement::class,
+        'class' => \Causal\IgLdapSsoAuth\Backend\Form\Element\LdapSuggestElement::class,
     ];
 
     if ($typo3Version < 12) {

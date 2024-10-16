@@ -16,7 +16,7 @@ return [
         'enablecolumns' => [
             'disabled' => 'hidden',
         ],
-        'iconfile' => 'EXT:ig_ldap_sso_auth/Resources/Public/Icons/icon_tx_igldapssoauth_config.png',
+        'iconfile' => 'EXT:ig_ldap_sso_auth/Resources/Public/Icons/tx_igldapssoauth_config.svg',
     ],
     'types' => [
         '1' => [

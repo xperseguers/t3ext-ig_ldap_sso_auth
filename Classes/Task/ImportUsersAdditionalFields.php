@@ -17,9 +17,11 @@ declare(strict_types=1);
 namespace Causal\IgLdapSsoAuth\Task;
 
 use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\AdditionalFieldProviderInterface;
+use TYPO3\CMS\Scheduler\SchedulerManagementAction;
 use TYPO3\CMS\Scheduler\Task\AbstractTask;
 use TYPO3\CMS\Scheduler\Task\Enumeration\Action;
 
@@ -53,7 +55,9 @@ class ImportUsersAdditionalFields implements AdditionalFieldProviderInterface
         /** @var \Causal\IgLdapSsoAuth\Task\ImportUsers $task */
         $additionalFields = [];
 
-        $isEdit = $schedulerModule->getCurrentAction() === Action::EDIT;
+        $isEdit = (new Typo3Version())->getMajorVersion() >= 13
+            ? $schedulerModule->getCurrentAction() === SchedulerManagementAction::EDIT
+            : $schedulerModule->getCurrentAction() === Action::EDIT;
 
         // Process the mode field
         $parameters = [

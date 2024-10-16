@@ -18,6 +18,7 @@ namespace Causal\IgLdapSsoAuth\Domain\Repository;
 
 use Causal\IgLdapSsoAuth\Event\GroupAddedEvent;
 use Causal\IgLdapSsoAuth\Event\GroupUpdatedEvent;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Exception\InvalidUserGroupTableException;
@@ -97,19 +98,19 @@ class Typo3GroupRepository
         $queryBuilder->getRestrictions()->removeAll();
 
         if (!empty($uid)) {
-            $where = $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT));
+            $where = $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT));
         } else {
-            $where = $queryBuilder->expr()->eq('tx_igldapssoauth_dn', $queryBuilder->createNamedParameter($dn, \PDO::PARAM_STR));
+            $where = $queryBuilder->expr()->eq('tx_igldapssoauth_dn', $queryBuilder->createNamedParameter($dn, Connection::PARAM_STR));
             if (!empty($groupName)) {
                 if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12) {
                     $where = $queryBuilder->expr()->or(
                         $where,
-                        $queryBuilder->expr()->eq('title', $queryBuilder->createNamedParameter($groupName, \PDO::PARAM_STR))
+                        $queryBuilder->expr()->eq('title', $queryBuilder->createNamedParameter($groupName, Connection::PARAM_STR))
                     );
                 } else {
                     $where = $queryBuilder->expr()->orX(
                         $where,
-                        $queryBuilder->expr()->eq('title', $queryBuilder->createNamedParameter($groupName, \PDO::PARAM_STR))
+                        $queryBuilder->expr()->eq('title', $queryBuilder->createNamedParameter($groupName, Connection::PARAM_STR))
                     );
                 }
             }
@@ -117,12 +118,12 @@ class Typo3GroupRepository
                 if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12) {
                     $where = $queryBuilder->expr()->and(
                         $where,
-                        $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, \PDO::PARAM_INT))
+                        $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, Connection::PARAM_INT))
                     );
                 } else {
                     $where = $queryBuilder->expr()->andX(
                         $where,
-                        $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, \PDO::PARAM_INT))
+                        $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, Connection::PARAM_INT))
                     );
                 }
             }

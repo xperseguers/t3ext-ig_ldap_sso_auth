@@ -1,4 +1,6 @@
 <?php
+defined('TYPO3') || die();
+
 $typo3Version = (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
 return [
     'ctrl' => [

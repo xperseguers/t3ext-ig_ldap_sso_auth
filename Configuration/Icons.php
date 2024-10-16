@@ -15,6 +15,7 @@ declare(strict_types=1);
  */
 
 use TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider;
+use TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider;
 
 return [
     'extensions-ig_ldap_sso_auth-overlay-ldap-record' => [
@@ -22,7 +23,7 @@ return [
         'source' => 'EXT:ig_ldap_sso_auth/Resources/Public/Icons/overlay-ldap-record.png',
     ],
     'extensions-ig_ldap_sso_auth-module' => [
-        'provider' => BitmapIconProvider::class,
-        'source' => 'EXT:ig_ldap_sso_auth/Resources/Public/Icons/module-ldap.png',
+        'provider' => SvgIconProvider::class,
+        'source' => 'EXT:ig_ldap_sso_auth/Resources/Public/Icons/module-ldap.svg',
     ]
 ];

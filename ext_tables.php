@@ -22,7 +22,7 @@ defined('TYPO3') || die();
                 ]),
             ], [
                 'access' => 'admin',
-                'icon' => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/module-ldap.png',
+                'icon' => 'EXT:' . $_EXTKEY . '/Resources/Public/Icons/module-ldap.svg',
                 'labels' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf'
             ]
         );

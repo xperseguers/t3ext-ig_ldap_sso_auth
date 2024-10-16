@@ -239,6 +239,11 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
         if ((($this->login['uident'] && $this->login['uname']) || $enableFrontendSso || $enableBackendSso) && !empty($user['tx_igldapssoauth_dn'])) {
             if (isset($user['tx_igldapssoauth_from'])) {
                 $status = static::STATUS_AUTHENTICATION_SUCCESS_BREAK;
+            } elseif (
+                $this->login['status'] === 'sudo-mode'
+                && Authentication::ldapAuthenticate($this->login['uname'], $this->login['uident'])
+            ) {
+                $status = static::STATUS_AUTHENTICATION_SUCCESS_BREAK;
             } elseif ($typo3Mode === 'BE' && Configuration::getValue('BEfailsafe')) {
                 return static::STATUS_AUTHENTICATION_FAILURE_CONTINUE;
             } else {

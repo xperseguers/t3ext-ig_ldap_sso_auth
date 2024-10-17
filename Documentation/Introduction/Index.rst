@@ -78,6 +78,9 @@ We would like to thank:
 - Support for TYPO3 12 LTS would not have been possible without the support of
   many members of the TYPO3 community. We would like to thank all of them and
   their companies for their support.
+- Migration wizard from the import scheduler task to the new Symfony command has
+  been sponsored by the GYB (Gymnase intercantonal de la Broye) and
+  hemmer.ch SA.
 - Support for TYPO3 11 LTS has been sponsored by *TEC Competence UG*, Germany.
 - All the various developers reportings bugs and providing patches in the
   bug tracker.

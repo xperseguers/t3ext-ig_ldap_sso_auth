@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.0">
-  <file source-language="en" datatype="plaintext" original="messages" date="2015-02-17T16:10:14Z" product-name="ig_ldap_sso_auth" target-language="sv-SE">
+  <file source-language="en" datatype="plaintext" original="messages" date="2024-10-17T13:30:10Z" product-name="ig_ldap_sso_auth" target-language="sv-SE">
     <header/>
     <body>
       <trans-unit id="mlang_tabs_tab">
@@ -310,98 +310,6 @@
       <trans-unit id="module_import_groups.caption_deleted">
         <source>LDAP group has been imported but then manually deleted</source>
         <target state="needs-translation">LDAP group has been imported but then manually deleted</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.title">
-        <source>Import LDAP users</source>
-        <target state="needs-translation">Import LDAP users</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.description">
-        <source>Import LDAP for one or all configurations, for FE, BE or both. Users missing on the LDAP side will be disabled.</source>
-        <target state="needs-translation">Import LDAP for one or all configurations, for FE, BE or both. Users missing on the LDAP side will be disabled.</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.mode">
-        <source>Mode</source>
-        <target state="needs-translation">Mode</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.mode.import">
-        <source>Import missing LDAP users and synchronize existing TYPO3 users</source>
-        <target state="needs-translation">Import missing LDAP users and synchronize existing TYPO3 users</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.mode.sync">
-        <source>Only synchronize existing TYPO3 users</source>
-        <target state="needs-translation">Only synchronize existing TYPO3 users</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.mode.import.short">
-        <source><![CDATA[Import & synchronize]]></source>
-        <target state="needs-translation"><![CDATA[Import & synchronize]]></target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.mode.sync.short">
-        <source>Synchronize</source>
-        <target state="needs-translation">Synchronize</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.context">
-        <source>Context</source>
-        <target state="needs-translation">Context</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.context.both">
-        <source>Both</source>
-        <target state="needs-translation">Both</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.context.fe">
-        <source>Frontend</source>
-        <target state="needs-translation">Frontend</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.context.be">
-        <source>Backend</source>
-        <target state="needs-translation">Backend</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.configuration">
-        <source>Configuration</source>
-        <target state="needs-translation">Configuration</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.configuration.all">
-        <source>All</source>
-        <target state="needs-translation">All</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.additionalinformation">
-        <source>Mode: %s, Context: %s, Configuration: %s</source>
-        <target state="needs-translation">Mode: %s, Context: %s, Configuration: %s</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.missinguserhandling">
-        <source>Handling of missing users</source>
-        <target state="needs-translation">Handling of missing users</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.missinguserhandling.disable">
-        <source>Disable</source>
-        <target state="needs-translation">Disable</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.missinguserhandling.delete">
-        <source>Delete</source>
-        <target state="needs-translation">Delete</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.missinguserhandling.nothing">
-        <source>Do nothing</source>
-        <target state="needs-translation">Do nothing</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.restoreduserhandling">
-        <source>Handling of restored users</source>
-        <target state="needs-translation">Handling of restored users</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.restoreduserhandling.enable">
-        <source>Re-enable</source>
-        <target state="needs-translation">Re-enable</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.restoreduserhandling.undelete">
-        <source>Undelete</source>
-        <target state="needs-translation">Undelete</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.restoreduserhandling.both">
-        <source>Re-enable and undelete</source>
-        <target state="needs-translation">Re-enable and undelete</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.restoreduserhandling.nothing">
-        <source>Do nothing</source>
-        <target state="needs-translation">Do nothing</target>
       </trans-unit>
     </body>
   </file>

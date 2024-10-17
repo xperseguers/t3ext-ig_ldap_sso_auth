@@ -16,11 +16,17 @@ declare(strict_types=1);
 
 namespace Causal\IgLdapSsoAuth\Command;
 
+use Causal\IgLdapSsoAuth\Domain\Model\Configuration;
+use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
+use Causal\IgLdapSsoAuth\Utility\UserImportUtility;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ImportUsers extends Command
 {
@@ -28,6 +34,18 @@ class ImportUsers extends Command
      * @var SymfonyStyle
      */
     protected $io;
+
+    /**
+     * @param ConfigurationRepository $configurationRepository
+     * @param LoggerInterface $logger
+     */
+    public function __construct(
+        private readonly ConfigurationRepository $configurationRepository,
+        private readonly LoggerInterface $logger
+    )
+    {
+        parent::__construct();
+    }
 
     protected function configure()
     {
@@ -80,6 +98,69 @@ class ImportUsers extends Command
     {
         $this->io = new SymfonyStyle($input, $output);
         $this->io->title($this->getDescription());
+
+        $configuration = $this->configurationRepository->findByUid((int)$input->getArgument('configuration'));
+        if ($configuration === null) {
+            $this->io->error('Unknown configuration: ' . $input->getArgument('configuration'));
+            return Command::FAILURE;
+        }
+
+        $options = $input->getOptions();
+        return $this->doImport($configuration, $options);
+    }
+
+    /**
+     * @param Configuration $configuration
+     * @param array $options
+     * @return int
+     */
+    protected function doImport(Configuration $configuration, array $options): int
+    {
+        $executionContexts = match(strtolower($options['context'])) {
+            'fe' => ['fe'],
+            'be' => ['be'],
+            'all' => ['fe', 'be'],
+            default => ['fe', 'be'],
+        };
+
+        // Start a database transaction with all our changes
+        $tableConnection = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable('be_users');    // arbitrary table
+        $tableConnection->beginTransaction();
+
+        $failures = 0;
+        foreach ($executionContexts as $context) {
+            /** @var UserImportUtility $importUtility */
+            $importUtility = GeneralUtility::makeInstance(
+                UserImportUtility::class,
+                $configuration,
+                $context
+            );
+
+            $config = $importUtility->getConfiguration();
+            if (empty($config['users']['filter'])) {
+                // Current context is not configured for this LDAP configuration record
+                $this->io->warning(sprintf('Configuration record %s is not configured for context "%s"', $configuration->getUid(), $context));
+                unset($importUtility);
+                continue;
+            }
+
+            $this->io->info('Importing users for context: ' . strtoupper($context));
+            // TODO
+        }
+
+        // If some failures were registered, rollback the whole transaction and report error
+        if ($failures > 0) {
+            $tableConnection->rollBack();
+            $message = 'Some or all imports failed. Synchronisation was aborted. Check your settings or your network connection';
+            $this->logger->error($message);
+            $this->io->error($message);
+            return Command::FAILURE;
+
+        }
+
+        // Everything went fine, commit the changes
+        $tableConnection->commit();
 
         return Command::SUCCESS;
     }

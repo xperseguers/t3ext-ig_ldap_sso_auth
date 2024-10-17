@@ -473,12 +473,14 @@ class LdapUtility
      */
     public function getFirstEntry()
     {
-        $this->status['get_first_entry']['status'] = ldap_error($this->connection);
-        $attributes = @ldap_get_attributes($this->connection, $this->firstResultEntry);
         $tempEntry = [];
-        foreach ($attributes as $key => $value) {
-            $tempEntry[strtolower((string)$key)] = $value;
+        if (is_resource($this->firstResultEntry) || is_object($this->firstResultEntry) /* PHP 8.1 */) {
+            $attributes = @ldap_get_attributes($this->connection, $this->firstResultEntry);
+            foreach ($attributes as $key => $value) {
+                $tempEntry[strtolower((string)$key)] = $value;
+            }
         }
+        $this->status['get_first_entry']['status'] = ldap_error($this->connection);
         return $this->convertCharacterSetForArray($tempEntry, $this->ldapCharacterSet, $this->typo3CharacterSet);
     }
 

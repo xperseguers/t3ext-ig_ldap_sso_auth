@@ -128,11 +128,6 @@ class ImportUsers extends Command
             default => ['fe', 'be'],
         };
 
-        // Start a database transaction with all our changes
-        $tableConnection = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getConnectionForTable('be_users');    // arbitrary table
-        $tableConnection->beginTransaction();
-
         $failures = 0;
         foreach ($executionContexts as $context) {
             /** @var UserImportUtility $importUtility */
@@ -145,7 +140,11 @@ class ImportUsers extends Command
             $config = $importUtility->getConfiguration();
             if (empty($config['users']['filter'])) {
                 // Current context is not configured for this LDAP configuration record
-                $this->io->warning(sprintf('Configuration record %s is not configured for context "%s"', $configuration->getUid(), strtoupper($context)));
+                $this->io->warning(sprintf(
+                    'Configuration record %s is not configured for context "%s"',
+                    $this->configuration->getUid(),
+                    strtoupper($context))
+                );
                 unset($importUtility);
                 continue;
             }
@@ -155,7 +154,6 @@ class ImportUsers extends Command
             // Start by connecting to the designated LDAP/AD server
             $ldapInstance = Ldap::getInstance();
             $success = $ldapInstance->connect(\Causal\IgLdapSsoAuth\Library\Configuration::getLdapConfiguration());
-            // Proceed with import if successful
             if (!$success) {
                 $failures++;
                 $this->io->error('Could not connect to LDAP server');
@@ -173,24 +171,34 @@ class ImportUsers extends Command
                 continue;
             }
 
-            $this->importUsers($ldapInstance, $importUtility, $ldapUsers);
+            // Start a database transaction with all our changes
+            $tableConnection = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionForTable($context . '_users');
+            $tableConnection->beginTransaction();
+
+            try {
+                $this->importUsers($ldapInstance, $importUtility, $ldapUsers);
+                // Everything went fine, commit the changes
+                $tableConnection->commit();
+            } catch (ImportUsersException $e) {
+                // Roll back the whole transaction and report error
+                $tableConnection->rollBack();
+                $failures++;
+                $this->logger->error($e->getMessage());
+                $this->io->error($e->getMessage());
+            }
 
             // Clean up
             unset($importUtility);
             $ldapInstance->disconnect();
         }
 
-        // If some failures were registered, rollback the whole transaction and report error
         if ($failures > 0) {
-            $tableConnection->rollBack();
-            $message = 'Some or all imports failed. Synchronisation was aborted. Check your settings or your network connection';
+            $message = 'Some or all imports failed. Synchronisation was incomplete. Check your settings or your network connection.';
             $this->logger->error($message);
             $this->io->error($message);
             return Command::FAILURE;
         }
-
-        // Everything went fine, commit the changes
-        $tableConnection->commit();
 
         return Command::SUCCESS;
     }

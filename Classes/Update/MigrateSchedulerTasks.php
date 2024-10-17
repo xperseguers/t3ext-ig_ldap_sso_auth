@@ -18,11 +18,13 @@ namespace Causal\IgLdapSsoAuth\Update;
 
 use Doctrine\DBAL\Exception as DBALException;
 use RuntimeException;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 use TYPO3\CMS\Scheduler\Execution;
+use TYPO3\CMS\Scheduler\Task\AbstractTask;
 use TYPO3\CMS\Scheduler\Task\ExecuteSchedulableCommandTask;
 
 class MigrateSchedulerTasks implements UpgradeWizardInterface
@@ -89,13 +91,13 @@ class MigrateSchedulerTasks implements UpgradeWizardInterface
                     ->fetchAllAssociative();
                 foreach ($configurations as $configuration) {
                     $newTask->setArguments([
-                        'configuration' => $configuration['uid'],
+                        'configuration' => (string) $configuration['uid'],
                     ]);
 
-                    $this->insertNewSchedulerTask($newTask, $oldSchedulerTask);
+                    $this->saveTask($newTask, $oldSchedulerTask);
                 }
             } else {
-                $this->insertNewSchedulerTask($newTask, $oldSchedulerTask);
+                $this->saveTask($newTask, $oldSchedulerTask);
             }
 
             // Mark old scheduler task as deleted
@@ -186,26 +188,16 @@ class MigrateSchedulerTasks implements UpgradeWizardInterface
             'missing-users' => $oldTask->missingUsersHandling === 'nothing' ? 'ignore' : strtolower($oldTask->missingUsersHandling),
             'restored-users' => $oldTask->restoredUsersHandling === 'nothing' ? 'ignore' : strtolower($oldTask->restoredUsersHandling),
         ]);
+        $newTask->addDefaultValue('configuration', null);
+        $newTask->addDefaultValue('mode', 'import');
+        $newTask->addDefaultValue('context', 'all');
+        $newTask->addDefaultValue('missing-users', 'disable');
+        $newTask->addDefaultValue('restored-users', 'ignore');
         $newTask->setArguments([
-            'configuration' => $oldTask->configuration,
+            'configuration' => (string) $oldTask->configuration,
         ]);
 
         return $newTask;
-    }
-
-    protected function insertNewSchedulerTask(ExecuteSchedulableCommandTask $newTask, array $oldSchedulerTask): void
-    {
-        GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($this->tableName)
-            ->insert(
-                $this->tableName,
-                [
-                    'crdate' => $GLOBALS['EXEC_TIME'],
-                    'description' => $oldSchedulerTask['description'],
-                    'disable' => $oldSchedulerTask['disable'],
-                    'task_group' => $oldSchedulerTask['task_group'],
-                    'serialized_task_object' => serialize($newTask),
-                ]
-            );
     }
 
     /**
@@ -229,5 +221,56 @@ class MigrateSchedulerTasks implements UpgradeWizardInterface
                 1511950673
             );
         }
+    }
+
+    /**
+     * Updates a task in the pool
+     * Inspired of function \TYPO3\CMS\Scheduler\Domain\Repository\SchedulerTaskRepository::update
+     *
+     * @param Task\AbstractTask $task Scheduler task object
+     * @return bool False if submitted task was not of proper class
+     */
+    public function saveTask(AbstractTask $task, array $oldSchedulerTask): bool
+    {
+        $result = true;
+        try {
+            if ($task->getRunOnNextCronJob()) {
+                $executionTime = time();
+            } else {
+                $executionTime = $task->getNextDueExecution();
+            }
+            $task->setExecutionTime($executionTime);
+        } catch (\Exception $e) {
+            $task->setDisabled(true);
+            $executionTime = 0;
+        }
+        $task->unsetScheduler();
+        $fields = [
+            'crdate' => $GLOBALS['EXEC_TIME'],
+            'nextexecution' => $executionTime,
+            'disable' => (int) $oldSchedulerTask['disable'],
+            'description' => $task->getDescription(),
+            'task_group' => $task->getTaskGroup(),
+            'serialized_task_object' => '',
+        ];
+        try {
+            $tableConnection = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionForTable('tx_scheduler_task');
+            $tableConnection->insert(
+                'tx_scheduler_task',
+                $fields
+            );
+            $taskUid = (int)$tableConnection->lastInsertId();
+            $task->setTaskUid($taskUid);
+            $tableConnection->update(
+                'tx_scheduler_task',
+                ['serialized_task_object' => serialize($task)],
+                ['uid' => $taskUid],
+                ['serialized_task_object' => Connection::PARAM_LOB]
+            );
+        } catch (DBALException $e) {
+            $result = false;
+        }
+        return $result;
     }
 }

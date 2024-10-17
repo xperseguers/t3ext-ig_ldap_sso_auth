@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.0">
-  <file source-language="en" datatype="plaintext" original="messages" date="2015-02-17T16:10:14Z" product-name="ig_ldap_sso_auth" target-language="ca">
+  <file source-language="en" datatype="plaintext" original="messages" date="2024-10-17T13:30:30Z" product-name="ig_ldap_sso_auth" target-language="ca">
     <header/>
     <body>
       <trans-unit id="settings.checkConfiguration">
         <source>Configuration check</source>
         <target state="needs-translation">Configuration check</target>
-      </trans-unit>
-      <trans-unit id="settings.throwExceptionAtLogin">
-        <source>Throw exception if configured incorrectly: Recommended for new installation - LDAP authentication is not compatible with loginSecurityLevel set to "challenged" or "superchallenged" since the real password can never be sent against the LDAP repository. Instead of failing silently, the extension will throw an exception at login. If the method appears to be brutal it will save a lot of headaches. Value of loginSecurityLevel should be handled manually to "normal" or even better "rsa" in the Install Tool.</source>
-        <target state="needs-translation">Throw exception if configured incorrectly: Recommended for new installation - LDAP authentication is not compatible with loginSecurityLevel set to "challenged" or "superchallenged" since the real password can never be sent against the LDAP repository. Instead of failing silently, the extension will throw an exception at login. If the method appears to be brutal it will save a lot of headaches. Value of loginSecurityLevel should be handled manually to "normal" or even better "rsa" in the Install Tool.</target>
       </trans-unit>
       <trans-unit id="settings.forceLowerCaseUsername">
         <source>Force lower-case user name: If checked, user names will be always be stored in lower-cases. Useful for case-sensitive databases.</source>

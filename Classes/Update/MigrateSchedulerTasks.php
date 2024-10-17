@@ -33,6 +33,14 @@ class MigrateSchedulerTasks implements UpgradeWizardInterface
     /**
      * @return string
      */
+    public function getIdentifier(): string
+    {
+        return self::class;
+    }
+
+    /**
+     * @return string
+     */
     public function getTitle(): string
     {
         return 'ig_ldap_sso_auth: Migrate scheduler tasks into Symfony commands';

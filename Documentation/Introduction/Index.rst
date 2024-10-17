@@ -85,21 +85,13 @@ We would like to thank:
 .. tabularcolumns:: |p{7.53cm}|p{7.53cm}|
 
 +---------------------------------------------------+---------------------------------------------------+
-| .. image:: ../Images/logo-causal.png              |                                                   |
-|     :alt: Causal Sàrl                             |                                                   |
-|     :width: 200px                                 |                                                   |
+| .. image:: ../Images/logo-causal.png              | .. image:: ../Images/logo-tec-competence.png      |
+|     :alt: Causal Sàrl                             |     :alt: TEC Competence UG                       |
+|     :width: 200px                                 |     :width: 200px                                 |
 |                                                   |                                                   |
-| Causal Sàrl                                       |                                                   |
+| Causal Sàrl                                       | TEC Competence UG (halftungsbeschränkt) & Co. KG  |
 |                                                   |                                                   |
-| https://www.causal.ch                             |                                                   |
-+---------------------------------------------------+---------------------------------------------------+
-| .. image:: ../Images/logo-tec-competence.png      |                                                   |
-|     :alt: TEC Competence UG                       |                                                   |
-|     :width: 200px                                 |                                                   |
-|                                                   |                                                   |
-| TEC Competence UG (halftungsbeschränkt) & Co. KG  |                                                   |
-|                                                   |                                                   |
-| https://www.tec-competence.com                    |                                                   |
+| https://www.causal.ch                             | https://www.tec-competence.com                    |
 +---------------------------------------------------+---------------------------------------------------+
 
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.0">
-  <file source-language="en" datatype="plaintext" original="messages" date="2015-02-17T16:10:14Z" product-name="ig_ldap_sso_auth" target-language="nl">
+  <file source-language="en" datatype="plaintext" original="messages" date="2024-10-17T13:30:10Z" product-name="ig_ldap_sso_auth" target-language="nl">
     <header/>
     <body>
       <trans-unit id="mlang_tabs_tab">
@@ -310,98 +310,6 @@
       <trans-unit id="module_import_groups.caption_deleted" approved="yes">
         <source>LDAP group has been imported but then manually deleted</source>
         <target state="final">LDAP groep is geïmporteerd, maar handmatig verwijderd</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.title" approved="yes">
-        <source>Import LDAP users</source>
-        <target state="final">LDAP-gebruikers importeren</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.description" approved="yes">
-        <source>Import LDAP for one or all configurations, for FE, BE or both. Users missing on the LDAP side will be disabled.</source>
-        <target state="final">LDAP-gebruikers importeren voor een of alle configuraties, voor FE, BE of beide. Gebruikers die aan de LDAP kant ontbreken worden uitgeschakeld.</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.mode">
-        <source>Mode</source>
-        <target state="needs-translation">Mode</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.mode.import">
-        <source>Import missing LDAP users and synchronize existing TYPO3 users</source>
-        <target state="needs-translation">Import missing LDAP users and synchronize existing TYPO3 users</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.mode.sync">
-        <source>Only synchronize existing TYPO3 users</source>
-        <target state="needs-translation">Only synchronize existing TYPO3 users</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.mode.import.short">
-        <source><![CDATA[Import & synchronize]]></source>
-        <target state="needs-translation"><![CDATA[Import & synchronize]]></target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.mode.sync.short">
-        <source>Synchronize</source>
-        <target state="needs-translation">Synchronize</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.context">
-        <source>Context</source>
-        <target state="needs-translation">Context</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.context.both" approved="yes">
-        <source>Both</source>
-        <target state="final">Beide</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.context.fe">
-        <source>Frontend</source>
-        <target state="needs-translation">Frontend</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.context.be">
-        <source>Backend</source>
-        <target state="needs-translation">Backend</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.configuration" approved="yes">
-        <source>Configuration</source>
-        <target state="final">Configuratie</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.configuration.all" approved="yes">
-        <source>All</source>
-        <target state="final">Alle</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.additionalinformation">
-        <source>Mode: %s, Context: %s, Configuration: %s</source>
-        <target state="needs-translation">Mode: %s, Context: %s, Configuration: %s</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.missinguserhandling" approved="yes">
-        <source>Handling of missing users</source>
-        <target state="final">Afhandeling van ontbrekende gebruikers</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.missinguserhandling.disable" approved="yes">
-        <source>Disable</source>
-        <target state="final">Uitschakelen</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.missinguserhandling.delete" approved="yes">
-        <source>Delete</source>
-        <target state="final">Verwijderen</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.missinguserhandling.nothing" approved="yes">
-        <source>Do nothing</source>
-        <target state="final">Niets doen</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.restoreduserhandling" approved="yes">
-        <source>Handling of restored users</source>
-        <target state="final">Afhandeling van herstelde gebruikers</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.restoreduserhandling.enable" approved="yes">
-        <source>Re-enable</source>
-        <target state="final">Opnieuw inschakelen</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.restoreduserhandling.undelete" approved="yes">
-        <source>Undelete</source>
-        <target state="final">Verwijderen ongedaan maken</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.restoreduserhandling.both" approved="yes">
-        <source>Re-enable and undelete</source>
-        <target state="final">Opnieuw inschakelen en verwijderen ongedaan maken</target>
-      </trans-unit>
-      <trans-unit id="task.import_users.field.restoreduserhandling.nothing" approved="yes">
-        <source>Do nothing</source>
-        <target state="final">Niets doen</target>
       </trans-unit>
     </body>
   </file>

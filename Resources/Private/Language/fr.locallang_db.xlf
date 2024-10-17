@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.0">
-  <file source-language="en" datatype="plaintext" original="messages" date="2015-02-17T16:10:14Z" product-name="ig_ldap_sso_auth" target-language="fr">
+  <file source-language="en" datatype="plaintext" original="messages" date="2024-10-17T13:30:30Z" product-name="ig_ldap_sso_auth" target-language="fr">
     <header/>
     <body>
       <trans-unit id="settings.checkConfiguration" approved="yes">
         <source>Configuration check</source>
         <target state="final">Vérification de la configuration</target>
-      </trans-unit>
-      <trans-unit id="settings.throwExceptionAtLogin" approved="yes">
-        <source>Throw exception if configured incorrectly: Recommended for new installation - LDAP authentication is not compatible with loginSecurityLevel set to "challenged" or "superchallenged" since the real password can never be sent against the LDAP repository. Instead of failing silently, the extension will throw an exception at login. If the method appears to be brutal it will save a lot of headaches. Value of loginSecurityLevel should be handled manually to "normal" or even better "rsa" in the Install Tool.</source>
-        <target state="final">Lève une exception si configuré de façon incorrecte: Recommandé pour de nouvelles installations - l'authentification LDAP n'est pas compatible avec loginSecurityLevel paramétré à "challenged" ou "superchallenged" car le mot de passe réel n'est jamais transmis et ne peut pas par conséquent être envoyé au dépôt LDAP. Au lieu d'échouer silentieusement, l'extension va lever une exception au moment du login. Si la méthode paraît être brutale, elle va néanmoins vous épargner de nombreux maux de tête. La valeur de loginSecurityLevel devrait être changée manuellement à "normal" ou mieux à "rsa" dans l'Install Tool.</target>
       </trans-unit>
       <trans-unit id="settings.forceLowerCaseUsername" approved="yes">
         <source>Force lower-case user name: If checked, user names will be always be stored in lower-cases. Useful for case-sensitive databases.</source>

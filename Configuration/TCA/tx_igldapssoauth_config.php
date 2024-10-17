@@ -185,6 +185,7 @@ return [
             'config' => $typo3Version >= 12
                 ? [
                     'type' => 'password',
+                    'hashed' => false,
                 ]
                 : [
                     'type' => 'input',

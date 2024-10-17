@@ -8,8 +8,8 @@
     <input type="hidden" name="mode" value="{mode}"/>
     <input type="hidden" id="tx-igldapssoauth-dn" name="dn" value=""/>
 
-    <table class="{classes.table}">
-        <tr class="{classes.tableRow}">
+    <table class="table table-striped table-hover">
+        <tr>
             <th class="col-icon">&nbsp;</th>
             <th>
                 <f:translate key="module_import.field.name"/>
@@ -22,7 +22,7 @@
         </tr>
 
         <f:for each="{groups}" as="group">
-            <tr class="{classes.tableRow} {f:if(condition:group.uid,then:'local-ldap-user-or-group')} {f:if(condition:group.deleted,then:'deleted-ldap-user-or-group')}">
+            <tr class="{f:if(condition:group.uid,then:'local-ldap-user-or-group')} {f:if(condition:group.deleted,then:'deleted-ldap-user-or-group')}">
                 <td class="col-icon">
                     <f:if condition="{mode}=='be'">
                         <f:then>

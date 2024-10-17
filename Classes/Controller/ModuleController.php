@@ -966,9 +966,6 @@ class ModuleController extends ActionController
             ],
         ];
 
-        $tableClass = 'table table-striped table-hover';
-        $trClass = '';
-
         $values = [
             'action' => $this->request->getControllerActionName(),
             'configurationRecords' => $configurationRecords,
@@ -976,10 +973,6 @@ class ModuleController extends ActionController
             'mode' => Configuration::getMode(),
             'editLink' => $editLink,
             'menu' => $menu,
-            'classes' => [
-                'table' => $tableClass,
-                'tableRow' => $trClass,
-            ]
         ];
 
         if ($typo3Version >= 12) {

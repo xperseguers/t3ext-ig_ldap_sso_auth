@@ -182,9 +182,9 @@ class MigrateSchedulerTasks implements UpgradeWizardInterface
         ]);
         $newTask->setOptionValues([
             'mode' => $oldTask->mode,
-            'context' => $oldTask->context === 'all' ? 'both' : strtolower($oldTask->context),
-            'missing-users' => $oldTask->missingUsersHandling,
-            'restored-users' => $oldTask->restoredUsersHandling,
+            'context' => $oldTask->context === 'both' ? 'all' : strtolower($oldTask->context),
+            'missing-users' => $oldTask->missingUsersHandling === 'nothing' ? 'ignore' : strtolower($oldTask->missingUsersHandling),
+            'restored-users' => $oldTask->restoredUsersHandling === 'nothing' ? 'ignore' : strtolower($oldTask->restoredUsersHandling),
         ]);
         $newTask->setArguments([
             'configuration' => $oldTask->configuration,

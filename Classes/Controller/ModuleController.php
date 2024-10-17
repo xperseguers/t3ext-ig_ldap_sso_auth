@@ -78,6 +78,9 @@ class ModuleController extends ActionController
     {
         if (is_array($GLOBALS['BE_USER']->uc['ig_ldap_sso_auth']['selection'] ?? null)) {
             $previousSelection = $GLOBALS['BE_USER']->uc['ig_ldap_sso_auth']['selection'];
+            if (($previousSelection['action'] ?? '') === 'index') {
+                return null;
+            }
             if (!empty($previousSelection['action']) && !empty($previousSelection['configuration'])) {
                 return $this->redirect(
                     $previousSelection['action'],

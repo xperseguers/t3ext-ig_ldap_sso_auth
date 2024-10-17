@@ -8,7 +8,7 @@
         <f:variable name="additionalAttributes" value="{selected: 1}" />
     </f:if>
     <f:be.menus.actionMenuItem label="{f:translate(key:'module_overview')}" controller="Module" action="index"
-                               arguments="{configuration:currentConfiguration.uid}"
+                               arguments="{configuration:currentConfiguration.uid, skipLastAction:1}"
                                additionalAttributes="{additionalAttributes}"/>
     <f:if condition="{currentConfiguration}">
         <f:for each="{menu}" as="item">

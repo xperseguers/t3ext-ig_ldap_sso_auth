@@ -18,6 +18,8 @@ namespace Causal\IgLdapSsoAuth\Command;
 
 use Causal\IgLdapSsoAuth\Domain\Model\Configuration;
 use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
+use Causal\IgLdapSsoAuth\Library\Authentication;
+use Causal\IgLdapSsoAuth\Library\Ldap;
 use Causal\IgLdapSsoAuth\Utility\UserImportUtility;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -30,10 +32,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class ImportUsers extends Command
 {
-    /**
-     * @var SymfonyStyle
-     */
-    protected $io;
+    protected SymfonyStyle $io;
+
+    protected array $options;
+
+    protected Configuration $configuration;
 
     /**
      * @param ConfigurationRepository $configurationRepository
@@ -105,18 +108,20 @@ class ImportUsers extends Command
             return Command::FAILURE;
         }
 
-        $options = $input->getOptions();
-        return $this->doImport($configuration, $options);
+        $this->options = $input->getOptions();
+        $this->configuration = $configuration;
+
+        $this->io->info('Importing users for configuration: ' . $configuration->getName());
+
+        return $this->doImport();
     }
 
     /**
-     * @param Configuration $configuration
-     * @param array $options
      * @return int
      */
-    protected function doImport(Configuration $configuration, array $options): int
+    protected function doImport(): int
     {
-        $executionContexts = match(strtolower($options['context'])) {
+        $executionContexts = match(strtolower($this->options['context'])) {
             'fe' => ['fe'],
             'be' => ['be'],
             'all' => ['fe', 'be'],
@@ -133,20 +138,46 @@ class ImportUsers extends Command
             /** @var UserImportUtility $importUtility */
             $importUtility = GeneralUtility::makeInstance(
                 UserImportUtility::class,
-                $configuration,
+                $this->configuration,
                 $context
             );
 
             $config = $importUtility->getConfiguration();
             if (empty($config['users']['filter'])) {
                 // Current context is not configured for this LDAP configuration record
-                $this->io->warning(sprintf('Configuration record %s is not configured for context "%s"', $configuration->getUid(), $context));
+                $this->io->warning(sprintf('Configuration record %s is not configured for context "%s"', $configuration->getUid(), strtoupper($context)));
                 unset($importUtility);
                 continue;
             }
 
             $this->io->info('Importing users for context: ' . strtoupper($context));
-            // TODO
+
+            // Start by connecting to the designated LDAP/AD server
+            $ldapInstance = Ldap::getInstance();
+            $success = $ldapInstance->connect(\Causal\IgLdapSsoAuth\Library\Configuration::getLdapConfiguration());
+            // Proceed with import if successful
+            if (!$success) {
+                $failures++;
+                $this->io->error('Could not connect to LDAP server');
+                unset($importUtility);
+                continue;
+            }
+
+            $ldapUsers = $importUtility->fetchLdapUsers(false, $ldapInstance);
+
+            // Consider that fetching no users from LDAP is an error
+            if (empty($ldapUsers)) {
+                $failures++;
+                $this->io->error('No users found in LDAP server');
+                unset($importUtility);
+                continue;
+            }
+
+            $this->importUsers($ldapInstance, $importUtility, $ldapUsers);
+
+            // Clean up
+            unset($importUtility);
+            $ldapInstance->disconnect();
         }
 
         // If some failures were registered, rollback the whole transaction and report error
@@ -156,12 +187,104 @@ class ImportUsers extends Command
             $this->logger->error($message);
             $this->io->error($message);
             return Command::FAILURE;
-
         }
 
         // Everything went fine, commit the changes
         $tableConnection->commit();
 
         return Command::SUCCESS;
+    }
+
+    /**
+     * @param Ldap $ldapInstance
+     * @param UserImportUtility $importUtility
+     * @param array $ldapUsers
+     * @throws \Causal\IgLdapSsoAuth\Exception\ImportUsersException
+     */
+    protected function importUsers(
+        Ldap $ldapInstance,
+        UserImportUtility $importUtility,
+        array $ldapUsers
+    ): void
+    {
+        $config = $importUtility->getConfiguration();
+
+        // We do not know the number of users to import as there is a potential
+        // pagination in the LDAP query, so we cannot use the progress bar with
+        // a known total number of steps
+        $this->io->progressStart();
+
+        // Disable or delete users, according to settings
+        $disabledOrDeletedUserUids = [];
+        if ($this->options['missing-users'] === 'disable') {
+            $this->logger->debug(sprintf(
+                'Disabling users (%s) for configuration record %s',
+                strtoupper($importUtility->getContext()),
+                $this->configuration->getUid()
+            ));
+            $disabledOrDeletedUserUids = $importUtility->disableUsers();
+        } elseif ($this->options['missing-users'] === 'delete') {
+            $this->getLogger()->debug(sprintf(
+                'Deleting users (%s) for configuration record %s',
+                strtoupper($importUtility->getContext()),
+                $this->configuration->getUid()
+            ));
+            $disabledOrDeletedUserUids = $importUtility->deleteUsers();
+        }
+
+        // Proceed with import (handle partial result sets until every LDAP record has been returned)
+        do {
+            $typo3Users = $importUtility->fetchTypo3Users($ldapUsers);
+
+            // Loop on all users and import them
+            foreach ($ldapUsers as $index => $ldapUser) {
+                if ($this->options['mode'] === 'sync' && empty($typo3Users[$index]['uid'] ?? 0)) {
+                    // New LDAP user => skip it since only existing TYPO3 users should get synchronized
+                    continue;
+                }
+
+                // Merge LDAP and TYPO3 information
+                $user = Authentication::merge($ldapUser, $typo3Users[$index], $config['users']['mapping']);
+
+                // Import the user using information from LDAP
+                $restoreBehaviour = $this->options['restored-users'];
+                if (in_array($user['uid'] ?? 0, $disabledOrDeletedUserUids, true)) {
+                    // We disabled this user ourselves
+                    if ($this->options['missing-users'] === 'disable') {
+                        if ($restoreBehaviour === 'nothing') {
+                            $restoreBehaviour = 'enable';
+                        } elseif ($restoreBehaviour === 'undelete') {
+                            $restoreBehaviour = 'both';
+                        }
+                    } elseif ($this->options['missing-users'] === 'delete') {
+                        // We deleted this user ourselves
+                        if ($restoreBehaviour === 'nothing') {
+                            $restoreBehaviour = 'undelete';
+                        } elseif ($restoreBehaviour === 'enable') {
+                            $restoreBehaviour = 'both';
+                        }
+                    }
+                }
+
+                $importUtility->import($user, $ldapUser, $restoreBehaviour);
+                $this->io->progressAdvance();
+            }
+
+            $this->logger->debug(sprintf(
+                'Configuration record %s: processed %s LDAP users (%s)',
+                $this->configuration->getUid(),
+                count($ldapUsers),
+                strtoupper($importUtility->getContext())
+            ));
+
+            // Free memory before going on
+            $typo3Users = null;
+            $ldapUsers = null;
+            $ldapUsers = $importUtility->hasMoreLdapUsers($ldapInstance)
+                ? $importUtility->fetchLdapUsers(true, $ldapInstance)
+                : [];
+        } while (!empty($ldapUsers));
+
+        $this->io->progressFinish();
     }
 }

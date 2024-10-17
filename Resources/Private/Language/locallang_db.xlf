@@ -6,9 +6,6 @@
 			<trans-unit id="settings.checkConfiguration">
 				<source>Configuration check</source>
 			</trans-unit>
-			<trans-unit id="settings.throwExceptionAtLogin">
-				<source>Throw exception if configured incorrectly: Recommended for new installation - LDAP authentication is not compatible with loginSecurityLevel set to "challenged" or "superchallenged" since the real password can never be sent against the LDAP repository. Instead of failing silently, the extension will throw an exception at login. If the method appears to be brutal it will save a lot of headaches. Value of loginSecurityLevel should be handled manually to "normal" or even better "rsa" in the Install Tool.</source>
-			</trans-unit>
 			<trans-unit id="settings.forceLowerCaseUsername">
 				<source>Force lower-case user name: If checked, user names will be always be stored in lower-cases. Useful for case-sensitive databases.</source>
 			</trans-unit>

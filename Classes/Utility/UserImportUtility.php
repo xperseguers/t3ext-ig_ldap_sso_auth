@@ -78,6 +78,7 @@ class UserImportUtility
     {
         // Load the configuration
         Configuration::initialize($context, $configuration);
+
         // Store current context and get related configuration
         $this->context = strtolower($context);
         $this->configuration = $this->context === 'fe'
@@ -91,6 +92,14 @@ class UserImportUtility
             $this->userTable = 'fe_users';
             $this->groupTable = 'fe_groups';
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getContext(): string
+    {
+        return $this->context;
     }
 
     /**

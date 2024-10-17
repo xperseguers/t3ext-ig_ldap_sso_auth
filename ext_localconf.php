@@ -48,14 +48,6 @@ defined('TYPO3') || die();
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['processDatamapClass'][]
         = \Causal\IgLdapSsoAuth\Hooks\DataHandler::class;
 
-    // Register the import users Scheduler task
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['scheduler']['tasks'][\Causal\IgLdapSsoAuth\Task\ImportUsers::class] = [
-        'extension' => $_EXTKEY,
-        'title' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:task.import_users.title',
-        'description' => 'LLL:EXT:' . $_EXTKEY . '/Resources/Private/Language/locallang.xlf:task.import_users.description',
-        'additionalFields' => \Causal\IgLdapSsoAuth\Task\ImportUsersAdditionalFields::class
-    ];
-
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
         $_EXTKEY,
         'auth' /* sv type */,
@@ -85,9 +77,11 @@ defined('TYPO3') || die();
 
     if ($typo3Version < 12) {
         // Register type converters
-        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerTypeConverter(\Causal\IgLdapSsoAuth\Property\TypeConverter\ConfigurationConverter::class);    
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerTypeConverter(\Causal\IgLdapSsoAuth\Property\TypeConverter\ConfigurationConverter::class);
     }
 
     // User have save doc new button
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('options.saveDocNew.tx_igldapssoauth_config=1');
+
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Causal\IgLdapSsoAuth\Update\MigrateSchedulerTasks::class] = \Causal\IgLdapSsoAuth\Update\MigrateSchedulerTasks::class;
 })('ig_ldap_sso_auth');

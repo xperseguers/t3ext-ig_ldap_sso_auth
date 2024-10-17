@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 /*
@@ -17,18 +16,18 @@ declare(strict_types=1);
 
 namespace Causal\IgLdapSsoAuth\Update;
 
-use Causal\IgLdapSsoAuth\Task\ImportUsers;
 use Doctrine\DBAL\Exception as DBALException;
 use RuntimeException;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Install\Updates\DatabaseUpdatedPrerequisite;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
+use TYPO3\CMS\Scheduler\Execution;
 use TYPO3\CMS\Scheduler\Task\ExecuteSchedulableCommandTask;
 
 class MigrateSchedulerTasks implements UpgradeWizardInterface
 {
-    protected string $tablename = 'tx_scheduler_task';
+    protected string $tableName = 'tx_scheduler_task';
 
     /**
      * @return string
@@ -51,7 +50,7 @@ class MigrateSchedulerTasks implements UpgradeWizardInterface
      */
     public function getDescription(): string
     {
-        return 'Beware : this script will split scheduler with configuration "all" into a scheduler task per configuration';
+        return 'Beware: this script will split scheduler with configuration "all" into a scheduler task per configuration';
     }
 
     /**
@@ -79,12 +78,11 @@ class MigrateSchedulerTasks implements UpgradeWizardInterface
     {
         $oldSchedulerTasks = $this->getOldSchedulerTasks();
         foreach ($oldSchedulerTasks as $oldSchedulerTask) {
-            /** @var \Causal\IgLdapSsoAuth\Task\ImportUsers $oldTask */
-            $oldTask = unserialize($oldSchedulerTask['serialized_task_object']);
+            $oldTask = $this->castToClass(unserialize($oldSchedulerTask['serialized_task_object']));
             $newTask = $this->getNewTask($oldTask);
 
             // "All configurations"
-            if ($oldTask->getConfiguration() === 0) {
+            if ($oldTask->configuration === 0) {
                 $configurations = GeneralUtility::makeInstance(ConnectionPool::class)
                     ->getConnectionForTable('tx_igldapssoauth_config')
                     ->select(['uid'], 'tx_igldapssoauth_config')
@@ -101,9 +99,9 @@ class MigrateSchedulerTasks implements UpgradeWizardInterface
             }
 
             // Mark old scheduler task as deleted
-            GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($this->tablename)
+            GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($this->tableName)
                 ->update(
-                    $this->tablename,
+                    $this->tableName,
                     [
                         'deleted' => 1,
                     ],
@@ -115,20 +113,65 @@ class MigrateSchedulerTasks implements UpgradeWizardInterface
         return true;
     }
 
-    protected function getNewTask(ImportUsers $oldTask): ExecuteSchedulableCommandTask
+    /**
+     * @see: https://stackoverflow.com/a/965704/2377961
+     *
+     * @param object $object The object that should be casted
+     * @param String $class The name of the class
+     * @return mixed   The new created object
+     */
+    function castToClass(object $object, string $class = 'stdClass')
+    {
+        $ser_data = serialize($object);
+        # preg_match_all('/O:\d+:"([^"]++)"/', $ser_data, $matches); // find all classes
+
+        /*
+         * make private and protected properties public
+         *   privates  is stored as "s:14:\0class_name\0property_name")
+         *   protected is stored as "s:14:\0*\0property_name")
+         */
+        $ser_data = preg_replace_callback('/s:\d+:"\0([^\0]+)\0([^"]+)"/',
+            function ($prop_match) {
+                list($old, $classname, $propname) = $prop_match;
+                return 's:' . strlen($propname) . ':"' . $propname . '"';
+            }, $ser_data);
+
+        // replace object-names
+        $ser_data = preg_replace('/O:\d+:"[^"]++"/', 'O:' . strlen($class) . ':"' . $class . '"', $ser_data);
+        return unserialize($ser_data);
+    }
+
+    protected function getNewTask(\stdClass $oldTask): ExecuteSchedulableCommandTask
     {
         /** @var ExecuteSchedulableCommandTask $newTask */
         $newTask = GeneralUtility::makeInstance(ExecuteSchedulableCommandTask::class);
 
         $commonProperties = [
             'description',
-            'execution',
             'taskGroup',
         ];
 
         foreach ($commonProperties as $property) {
-            $newTask->{'set' . ucfirst($property)}($oldTask->{'get' . ucfirst($property)}());
+            $newTask->{'set' . ucfirst($property)}($oldTask->{$property});
         }
+
+        /** @var Execution $newExecution */
+        $newExecution = GeneralUtility::makeInstance(Execution::class);
+
+        $executionProperties = [
+            'start',
+            'end',
+            'interval',
+            'multiple',
+            'cronCmd',
+            'isNewSingleExecution',
+        ];
+
+        foreach ($executionProperties as $property) {
+            $newExecution->{'set' . ucfirst($property)}($oldTask->execution->{$property});
+        }
+
+        $newTask->setExecution($newExecution);
 
         $newTask->setCommandIdentifier('ldap:importusers');
         $newTask->setOptions([
@@ -138,13 +181,13 @@ class MigrateSchedulerTasks implements UpgradeWizardInterface
             'restored-users' => true,
         ]);
         $newTask->setOptionValues([
-            'mode' => $oldTask->getMode(),
-            'context' => $oldTask->getContext() === 'all' ? 'both': strtolower($oldTask->getContext()),
-            'missing-users' => $oldTask->getMissingUsersHandling(),
-            'restored-users' => $oldTask->getRestoredUsersHandling(),
+            'mode' => $oldTask->mode,
+            'context' => $oldTask->context === 'all' ? 'both' : strtolower($oldTask->context),
+            'missing-users' => $oldTask->missingUsersHandling,
+            'restored-users' => $oldTask->restoredUsersHandling,
         ]);
         $newTask->setArguments([
-            'configuration' => $oldTask->getConfiguration(),
+            'configuration' => $oldTask->configuration,
         ]);
 
         return $newTask;
@@ -152,9 +195,9 @@ class MigrateSchedulerTasks implements UpgradeWizardInterface
 
     protected function insertNewSchedulerTask(ExecuteSchedulableCommandTask $newTask, array $oldSchedulerTask): void
     {
-        GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($this->tablename)
+        GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($this->tableName)
             ->insert(
-                $this->tablename,
+                $this->tableName,
                 [
                     'crdate' => $GLOBALS['EXEC_TIME'],
                     'description' => $oldSchedulerTask['description'],
@@ -170,11 +213,11 @@ class MigrateSchedulerTasks implements UpgradeWizardInterface
      */
     protected function getOldSchedulerTasks(): array
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($this->tablename);
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($this->tableName);
         try {
             return $queryBuilder
                 ->select('*')
-                ->from($this->tablename)
+                ->from($this->tableName)
                 ->where(
                     $queryBuilder->expr()->like('serialized_task_object', $queryBuilder->createNamedParameter('%Causal\\\IgLdapSsoAuth\\\Task\\\ImportUsers%'))
                 )

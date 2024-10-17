@@ -1,4 +1,6 @@
 <?php
+defined('TYPO3') || die();
+
 $typo3Version = (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
 return [
     'ctrl' => [
@@ -14,7 +16,7 @@ return [
         'enablecolumns' => [
             'disabled' => 'hidden',
         ],
-        'iconfile' => 'EXT:ig_ldap_sso_auth/Resources/Public/Icons/icon_tx_igldapssoauth_config.png',
+        'iconfile' => 'EXT:ig_ldap_sso_auth/Resources/Public/Icons/tx_igldapssoauth_config.svg',
     ],
     'types' => [
         '1' => [

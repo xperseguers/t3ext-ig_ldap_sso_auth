@@ -40,6 +40,7 @@ class SpriteManagerIconViewHelper extends AbstractBackendViewHelper
     {
         $this->registerArgument('iconName', 'string', 'Icon to use', true);
         $this->registerArgument('options', 'array', 'Additional tag attributes', false, []);
+        $this->registerArgument('size', 'string', 'Size of the icon', false, 'small');
         $this->registerArgument('uid', 'int', 'UID of the record', false, 0);
     }
 
@@ -53,9 +54,28 @@ class SpriteManagerIconViewHelper extends AbstractBackendViewHelper
         if (!isset($this->arguments['options']['title']) && $this->arguments['uid'] > 0) {
             $this->arguments['options']['title'] = 'id=' . $this->arguments['uid'];
         }
+
+        if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 13) {
+            $iconSize = match($this->arguments['size']) {
+                'small' => \TYPO3\CMS\Core\Imaging\IconSize::SMALL,
+                'medium' => \TYPO3\CMS\Core\Imaging\IconSize::MEDIUM,
+                'large' => \TYPO3\CMS\Core\Imaging\IconSize::LARGE,
+                'mega' => \TYPO3\CMS\Core\Imaging\IconSize::MEGA,
+                default => \TYPO3\CMS\Core\Imaging\IconSize::DEFAULT,
+            };
+        } else {
+            $iconSize = match($this->arguments['size']) {
+                'small' => \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL,
+                'medium' => \TYPO3\CMS\Core\Imaging\Icon::SIZE_MEDIUM,
+                'large' => \TYPO3\CMS\Core\Imaging\Icon::SIZE_LARGE,
+                'mega' => \TYPO3\CMS\Core\Imaging\Icon::SIZE_MEGA,
+                default => \TYPO3\CMS\Core\Imaging\Icon::SIZE_DEFAULT,
+            };
+        }
+
         /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
         $iconFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconFactory::class);
-        $html = $iconFactory->getIcon($this->arguments['iconName'], \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
+        $html = $iconFactory->getIcon($this->arguments['iconName'], $iconSize)->render();
         if (!empty($this->arguments['options'])) {
             $attributes = '';
             foreach ($this->arguments['options'] as $key => $value) {

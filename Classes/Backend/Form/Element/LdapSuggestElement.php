@@ -54,7 +54,7 @@ class LdapSuggestElement extends AbstractFormElement
         }
 
         $typo3Version = (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
-        if ($typo3Version >= 12) {
+        if ($typo3Version >= 13) {
             /** @var AbstractNode $baseElement */
             $baseElement = GeneralUtility::makeInstance($baseElementClass);
             $baseElement->setData($this->data);

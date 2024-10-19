@@ -37,15 +37,15 @@ class DataHandler
      *
      * @param string $operation
      * @param string $table
-     * @param mixed $id
+     * @param string|int $id
      * @param array $fieldArray
      * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj
      * @return void
      */
     public function processDatamap_afterDatabaseOperations(
-        $operation,
-        $table,
-        $id,
+        string $operation,
+        string $table,
+        string|int $id,
         array $fieldArray,
         \TYPO3\CMS\Core\DataHandling\DataHandler $pObj
     )

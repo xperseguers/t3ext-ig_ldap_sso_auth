@@ -54,3 +54,10 @@ $user
 	is up to your extension to handle it as needed.
 
 .. note:: This process exists only for users, not for groups.
+
+.. info::
+
+   This hook is deprecated since version 4.1. You should migrate your code by
+   listening to the PSR-14 events `UserAddedEvent` and `UserUpdatedEvent`
+   instead. Those events are dispatched after the user is created or updated
+   and contain the user record along with your extra data.

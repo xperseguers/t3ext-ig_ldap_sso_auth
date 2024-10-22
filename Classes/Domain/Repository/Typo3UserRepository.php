@@ -195,10 +195,11 @@ class Typo3UserRepository
      *
      * @param string $table Either 'be_users' or 'fe_users'
      * @param array $data
+     * @param array|null $extraData
      * @return array The new record
      * @throws InvalidUserTableException
      */
-    public static function add(string $table, array $data = []): array
+    public static function add(string $table, array $data = [], ?array $extraData = null): array
     {
         if (!GeneralUtility::inList('be_users,fe_users', $table)) {
             throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891712);
@@ -229,7 +230,7 @@ class Typo3UserRepository
             ->executeQuery()
             ->fetchAssociative();
 
-        NotificationUtility::dispatch(new UserAddedEvent($table, $newRow));
+        NotificationUtility::dispatch(new UserAddedEvent($table, $newRow, $extraData));
 
         return $newRow;
     }
@@ -239,10 +240,11 @@ class Typo3UserRepository
      *
      * @param string $table Either 'be_users' or 'fe_users'
      * @param array $data
+     * @param array|null $extraData
      * @return bool true on success, otherwise false
      * @throws InvalidUserTableException
      */
-    public static function update(string $table, array $data = []): bool
+    public static function update(string $table, array $data = [], ?array $extraData = null): bool
     {
         if (!GeneralUtility::inList('be_users,fe_users', $table)) {
             throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891732);
@@ -267,7 +269,7 @@ class Typo3UserRepository
         $success = $affectedRows === 1;
 
         if ($success) {
-            NotificationUtility::dispatch(new UserUpdatedEvent($table, $data));
+            NotificationUtility::dispatch(new UserUpdatedEvent($table, $data, $extraData));
         }
 
         return $success;

@@ -103,6 +103,14 @@ class UserImportUtility
     }
 
     /**
+     * @return string
+     */
+    public function getUserTable(): string
+    {
+        return $this->userTable;
+    }
+
+    /**
      * Disables all users related to the current configuration.
      *
      * @return int[] List of uids of users who got disabled
@@ -211,15 +219,27 @@ class UserImportUtility
      * @param array $user Local user information
      * @param array $ldapUser LDAP user information
      * @param string $restoreBehavior How to restore users (only for update)
+     * @param string $disableField
      * @return array Modified user data
      * @throws ImportUsersException
      */
-    public function import(array $user, array $ldapUser, string $restoreBehavior = 'both'): array
+    public function import(
+        array $user,
+        array $ldapUser,
+        string $restoreBehavior = 'both',
+        string $disableField = ''
+    ): array
     {
         // Store the extra data for later restore and remove it
         if (isset($user['__extraData'])) {
             $extraData = $user['__extraData'];
             unset($user['__extraData']);
+        }
+
+        $restoreDisableValue = 0;
+        if (!empty($disableField) && isset($user['__' . $disableField])) {
+            $restoreDisableValue = $user['__' . $disableField];
+            unset($user['__' . $disableField]);
         }
 
         $typo3Groups = Authentication::getUserGroups($ldapUser, $this->configuration, $this->groupTable);
@@ -242,7 +262,7 @@ class UserImportUtility
             // (default to both undelete and re-enable)
             switch ($restoreBehavior) {
                 case 'enable':
-                    $user[$GLOBALS['TCA'][$this->userTable]['ctrl']['enablecolumns']['disabled']] = 0;
+                    $user[$GLOBALS['TCA'][$this->userTable]['ctrl']['enablecolumns']['disabled']] = $restoreDisableValue;
                     break;
                 case 'undelete':
                     $user[$GLOBALS['TCA'][$this->userTable]['ctrl']['delete']] = 0;
@@ -250,7 +270,7 @@ class UserImportUtility
                 case 'nothing':
                     break;
                 default:
-                    $user[$GLOBALS['TCA'][$this->userTable]['ctrl']['enablecolumns']['disabled']] = 0;
+                    $user[$GLOBALS['TCA'][$this->userTable]['ctrl']['enablecolumns']['disabled']] = $restoreDisableValue;
                     $user[$GLOBALS['TCA'][$this->userTable]['ctrl']['delete']] = 0;
             }
             $user = Typo3UserRepository::setUserGroups($user, $typo3Groups, $this->groupTable);

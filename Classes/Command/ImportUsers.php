@@ -252,7 +252,14 @@ class ImportUsers extends Command
                 }
 
                 // Merge LDAP and TYPO3 information
-                $user = Authentication::merge($ldapUser, $typo3Users[$index], $config['users']['mapping']);
+                $disableField = $GLOBALS['TCA'][$importUtility->getUserTable()]['ctrl']['enablecolumns']['disabled'] ?? '';
+                $user = Authentication::merge(
+                    $ldapUser,
+                    $typo3Users[$index],
+                    $config['users']['mapping'],
+                    false,
+                    $disableField
+                );
 
                 // Import the user using information from LDAP
                 $restoreBehaviour = $this->options['restored-users'];
@@ -274,7 +281,7 @@ class ImportUsers extends Command
                     }
                 }
 
-                $importUtility->import($user, $ldapUser, $restoreBehaviour);
+                $importUtility->import($user, $ldapUser, $restoreBehaviour, $disableField);
                 $this->io->progressAdvance();
             }
 

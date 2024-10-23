@@ -668,6 +668,7 @@ class Authentication
      * @param array $typo3
      * @param array $mapping Parsed mapping definition
      * @param bool $reportErrors
+     * @param string $disableField
      * @return array
      * @see \Causal\IgLdapSsoAuth\Library\Configuration::parseMapping()
      */
@@ -675,7 +676,8 @@ class Authentication
         array $ldap = [],
         array $typo3 = [],
         array $mapping = [],
-        bool $reportErrors = false
+        bool $reportErrors = false,
+        string $disableField = ''
     ): array
     {
         $out = $typo3;
@@ -687,6 +689,9 @@ class Authentication
                 if ($field !== 'usergroup' && $field !== 'parentGroup') {
                     try {
                         $out = static::mergeSimple($ldap, $out, $field, (string)$value);
+                        if ($field === $disableField) {
+                            $out['__' . $disableField] = $out[$disableField];
+                        }
                     } catch (\UnexpectedValueException $uve) {
                         if ($reportErrors) {
                             $out['__errors'][] = $uve->getMessage();
@@ -765,6 +770,9 @@ class Authentication
                 $value = $out[$field] ?? '';
                 $value = $contentObj->stdWrap($value, $mapping[$typoScriptKey]);
                 $out = static::mergeSimple([$field => $value], $out, $field, $value);
+                if ($field === $disableField) {
+                    $out['__' . $disableField] = $out[$disableField];
+                }
             }
 
             $GLOBALS['TSFE'] = $backupTSFE;

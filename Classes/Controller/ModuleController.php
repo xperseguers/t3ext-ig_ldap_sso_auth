@@ -573,10 +573,17 @@ class ModuleController extends ActionController
             $typo3Users = $importUtility->fetchTypo3Users([$ldapUser]);
 
             // Merge LDAP and TYPO3 information
-            $user = Authentication::merge($ldapUser, $typo3Users[0], $config['users']['mapping']);
+            $disableField = $GLOBALS['TCA'][$importUtility->getUserTable()]['ctrl']['enablecolumns']['disabled'] ?? '';
+            $user = Authentication::merge(
+                $ldapUser,
+                $typo3Users[0],
+                $config['users']['mapping'],
+                false,
+                $disableField
+            );
 
             // Import the user
-            $user = $importUtility->import($user, $ldapUser);
+            $user = $importUtility->import($user, $ldapUser, 'both', $disableField);
 
             $data['id'] = (int)$user['uid'];
         }
@@ -783,13 +790,21 @@ class ModuleController extends ActionController
         $config = ($mode === 'be')
             ? Configuration::getBackendConfiguration()
             : Configuration::getFrontendConfiguration();
+        $userTable = $importUtility->getUserTable();
 
         do {
             $numberOfUsers += count($ldapUsers);
             $typo3Users = $importUtility->fetchTypo3Users($ldapUsers);
             foreach ($ldapUsers as $index => $ldapUser) {
                 // Merge LDAP and TYPO3 information
-                $user = Authentication::merge($ldapUser, $typo3Users[$index], $config['users']['mapping']);
+                $disableField = $GLOBALS['TCA'][$userTable]['ctrl']['enablecolumns']['disabled'] ?? '';
+                $user = Authentication::merge(
+                    $ldapUser,
+                    $typo3Users[$index],
+                    $config['users']['mapping'],
+                    false,
+                    $disableField
+                );
 
                 // Attempt to free memory by unsetting fields which are unused in the view
                 $keepKeys = ['uid', 'pid', 'deleted', 'admin', 'name', 'realName', 'tx_igldapssoauth_dn'];

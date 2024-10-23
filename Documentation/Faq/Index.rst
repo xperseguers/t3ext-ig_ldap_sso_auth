@@ -202,7 +202,7 @@ Security
 *No. The password provided in the login form is sent directly to the LDAP server
 and never stored in TYPO3. However, since TYPO3 requires a password to be set
 for frontend and backend user records, this extension generates and saves a
-random 16 byte password for the sole purpose of making TYPO3 happy.*
+random 20 byte password for the sole purpose of making TYPO3 happy.*
 
 -------
 

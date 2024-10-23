@@ -225,6 +225,7 @@ class LdapUtility
         if ($this->isConnected()) {
             try {
                 @ldap_unbind($this->connection);
+                $this->connection = null;
             } catch (\Error $e) {
 
             }

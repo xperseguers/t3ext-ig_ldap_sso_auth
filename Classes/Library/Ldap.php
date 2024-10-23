@@ -81,7 +81,7 @@ class Ldap
             (bool)$config['ssl'],
             (bool)$config['tlsReqcert']
         )) {
-            static::getLogger()->error( 'Cannot connect', $debugConfiguration);
+            static::getLogger()->error('Cannot connect', $debugConfiguration);
             return false;
         }
 

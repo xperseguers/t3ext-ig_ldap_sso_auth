@@ -51,11 +51,6 @@ use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
 #[Autoconfigure(shared: false)]
 class LdapUtility
 {
-    const PAGE_SIZE = 100;
-
-    /**
-     * Only used if pagination fails to be initialized
-     */
     const MAX_ENTRIES = 500;
 
     /**
@@ -435,7 +430,7 @@ class LdapUtility
             $entries['count']++;
 
             // Should never happen unless pagination is not supported, for some odd reason
-            if ($entries['count'] == static::MAX_ENTRIES) {
+            if ($entries['count'] > static::MAX_ENTRIES) {
                 break;
             }
         } while ($entry = @ldap_next_entry($this->connection, $entry));

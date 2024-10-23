@@ -79,7 +79,8 @@ Glossary
 		Sign-On (:term:`SSO`). In the case of HTTP, support for Kerberos is
 		usually provided using the :term:`SPNEGO` authentication mechanism. Apache
 		does not itself support SPNEGO, but support can be added by means of the
-		``mod_auth_kerb`` authentication module.
+		``mod_auth_kerb`` authentication module. Nginx requires the additional
+		``nginx-plus-module-auth-spnego`` module.
 
 	KDC
 		A Key Distribution Center is a network service that supplies tickets and

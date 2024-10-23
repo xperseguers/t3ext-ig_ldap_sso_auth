@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Causal\IgLdapSsoAuth\Utility;
 
 use LDAP\Connection;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Exception\InvalidHostnameException;
@@ -47,6 +48,7 @@ use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
  *          Abandon     Abandon an operation in progress
  *          Extended    Extended operations (v3)
  */
+#[Autoconfigure(shared: false)]
 class LdapUtility
 {
     const PAGE_SIZE = 100;

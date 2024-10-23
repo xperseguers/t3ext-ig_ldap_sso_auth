@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Causal\IgLdapSsoAuth\Library;
 
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Utility\LdapUtility;
@@ -29,6 +30,7 @@ use Causal\IgLdapSsoAuth\Utility\LdapUtility;
  * @package       TYPO3
  * @subpackage    ig_ldap_sso_auth
  */
+#[Autoconfigure(shared: false)]
 class Ldap
 {
     /**

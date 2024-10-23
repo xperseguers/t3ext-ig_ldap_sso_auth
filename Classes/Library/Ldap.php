@@ -33,6 +33,8 @@ use Causal\IgLdapSsoAuth\Utility\LdapUtility;
 #[Autoconfigure(shared: false)]
 class Ldap
 {
+    private static array $instances = [];
+
     /**
      * @var string
      */
@@ -44,14 +46,28 @@ class Ldap
     {
     }
 
+    function __destruct() {
+        $this->disconnectAll();
+    }
+
     /**
      * Returns an instance of this class.
      *
      * @return Ldap
      */
-    public static function getInstance(): self
+    public static function getInstance(?string $identifier = null): self
     {
-        return GeneralUtility::makeInstance(__CLASS__);
+        if ($identifier !== null && isset(static::$instances[$identifier])) {
+            return static::$instances[$identifier];
+        }
+
+        $instance = GeneralUtility::makeInstance(__CLASS__);
+
+        if ($identifier !== null) {
+            static::$instances[$identifier] = $instance;
+        }
+
+        return $instance;
     }
 
     /**
@@ -119,6 +135,22 @@ class Ldap
     public function disconnect(): void
     {
         $this->ldapUtility->disconnect();
+    }
+
+    public function disconnectAll(): void
+    {
+        $this->disconnect();
+        foreach (static::$instances as $instance) {
+            $instance->disconnect();
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isConnected(): bool
+    {
+        return $this->ldapUtility->isConnected();
     }
 
     /**

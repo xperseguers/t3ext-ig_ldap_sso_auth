@@ -83,5 +83,6 @@ defined('TYPO3') || die();
     // User have save doc new button
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addUserTSConfig('options.saveDocNew.tx_igldapssoauth_config=1');
 
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Causal\IgLdapSsoAuth\Update\MigrateSchedulerTasks::class] = \Causal\IgLdapSsoAuth\Update\MigrateSchedulerTasks::class;
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/install']['update'][\Causal\IgLdapSsoAuth\Update\MigrateSchedulerTasks::class]
+        = \Causal\IgLdapSsoAuth\Update\MigrateSchedulerTasks::class;
 })('ig_ldap_sso_auth');

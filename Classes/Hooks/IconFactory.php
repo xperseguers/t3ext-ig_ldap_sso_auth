@@ -44,7 +44,7 @@ class IconFactory
         array $row,
         array $status,
         ?string $iconName
-    ): string
+    ): ?string
     {
         if (!empty($row)
             && in_array($table, ['be_groups', 'be_users', 'fe_groups', 'fe_users'], true)) {

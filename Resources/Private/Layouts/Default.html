@@ -11,7 +11,7 @@
             <div class="module-docheader-bar-column-left col-xs-12 col-sm-3">
                 <div class="form-inline">
                     <div class="form-group form-group-sm">
-                        <f:render section="iconButtons"/>
+                        <f:render partial="Menu" arguments="{menu:menu, currentConfiguration:currentConfiguration, action: action}"/>
                     </div>
                 </div>
             </div>
@@ -20,7 +20,14 @@
             </div>
         </div>
         <div class="module-docheader-bar" style="height: auto;">
-            <f:render section="configuration"/>
+            <f:if condition="{configurationRecords}">
+                <f:render partial="ConfigurationRecords"
+                          arguments="{
+                            configurationRecords:configurationRecords,
+                            currentConfiguration:currentConfiguration,
+                            editLink:editLink, action:action
+                        }"/>
+            </f:if>
         </div>
     </div>
     <f:if condition="{configurationRecords -> f:count()}==1">

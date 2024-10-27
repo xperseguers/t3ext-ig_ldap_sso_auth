@@ -5,15 +5,6 @@
 
 <f:layout name="Default"/>
 
-<f:section name="iconButtons">
-    <f:render partial="Menu" arguments="{menu:menu, currentConfiguration:currentConfiguration, action: action}"/>
-</f:section>
-
-<f:section name="configuration">
-    <f:render partial="ConfigurationRecords"
-              arguments="{configurationRecords:configurationRecords, currentConfiguration:currentConfiguration, editLink:editLink, action:action}"/>
-</f:section>
-
 <f:section name="content">
     <h1>
         <f:translate key="module_import_users_fe"/>

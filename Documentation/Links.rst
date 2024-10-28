@@ -38,7 +38,7 @@ How to contribute
 This extension is using the same contribution workflow as for TYPO3 Core, but
 with GitHub PRs for the review process. Please read more about the workflow in
 the
-`TYPO3 wiki <https://wiki.typo3.org/Contribution_Walkthrough_Life_Of_A_Patch>`__.
+`TYPO3 Core Contribution Guide <https://docs.typo3.org/m/typo3/guide-contributionworkflow/main/en-us/WorkflowExplained/Index.html>`__.
 
 
 .. _links-how-to-contribute-rules:

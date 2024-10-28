@@ -21,7 +21,7 @@ use Causal\IgLdapSsoAuth\Event\UserDeletedEvent;
 use Causal\IgLdapSsoAuth\Event\UserDisabledEvent;
 use Causal\IgLdapSsoAuth\Event\UserUpdatedEvent;
 use Causal\IgLdapSsoAuth\Utility\CompatUtility;
-use TYPO3\CMS\Core\Crypto\PasswordHashing\PasswordHashFactory;
+use TYPO3\CMS\Core\Crypto\PasswordHashing\BcryptPasswordHash;
 use TYPO3\CMS\Core\Crypto\Random;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -464,7 +464,10 @@ class Typo3UserRepository
     {
         $cryptoService = GeneralUtility::makeInstance(Random::class);
         $password = $cryptoService->generateRandomBytes(20);
-        $hashInstance = GeneralUtility::makeInstance(PasswordHashFactory::class)->getDefaultHashInstance('BE');
+        // We force hashing to use bcrypt as it is good enough for a password that
+        // is never actually used (as it is replaced by LDAP authentication) and it
+        // is around 5x faster than the default hashing Argon2i algorithm.
+        $hashInstance = GeneralUtility::makeInstance(BcryptPasswordHash::class);
         return $hashInstance->getHashedPassword($password);
     }
 }

@@ -221,6 +221,8 @@ class ImportUsers extends Command
         // pagination in the LDAP query, so we cannot use the progress bar with
         // a known total number of steps
         $this->io->progressStart();
+        $usersImported = 0;
+        $start = microtime(true);
 
         // Disable or delete users, according to settings
         $disabledOrDeletedUserUids = [];
@@ -283,6 +285,7 @@ class ImportUsers extends Command
 
                 $importUtility->import($user, $ldapUser, $restoreBehaviour, $disableField);
                 $this->io->progressAdvance();
+                $usersImported++;
             }
 
             $this->logger->debug(sprintf(
@@ -300,6 +303,13 @@ class ImportUsers extends Command
                 : [];
         } while (!empty($ldapUsers));
 
+        $end = microtime(true);
         $this->io->progressFinish();
+        $this->io->success(sprintf(
+            'Imported %d users for configuration record %d in %s seconds',
+            $usersImported,
+            $this->configuration->getUid(),
+            number_format($end - $start, 2)
+        ));
     }
 }

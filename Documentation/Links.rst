@@ -54,7 +54,7 @@ Contribution rules
 - Unique logical change per patch [#]_
 
 .. _PSR-12: https://www.php-fig.org/psr/psr-12/
-.. _format used by TYP03: https://docs.typo3.org/m/typo3/guide-contributionworkflow/master/en-us/Appendix/CommitMessage.html
+.. _format used by TYP03: https://docs.typo3.org/m/typo3/guide-contributionworkflow/main/en-us/Appendix/CommitMessage.html
 
 
 .. rubric:: Footnotes

@@ -17,8 +17,10 @@ declare(strict_types=1);
 namespace Causal\IgLdapSsoAuth\Library;
 
 use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
+use Causal\IgLdapSsoAuth\Event\AfterComputeUserGroupsEvent;
 use Causal\IgLdapSsoAuth\Service\AuthenticationService;
 use Causal\IgLdapSsoAuth\Utility\CompatUtility;
+use Causal\IgLdapSsoAuth\Utility\NotificationUtility;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
@@ -447,9 +449,24 @@ class Authentication
                 $i++;
             }
         }
+
+        $event = NotificationUtility::dispatch(new AfterComputeUserGroupsEvent(
+            $ldapUser,
+            $configuration,
+            $groupTable,
+            $typo3_groups
+        ));
+        $typo3_groups = $event->getTypo3Groups();
+
         // Hook for processing the groups
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['getGroupsProcessing'] ?? null)) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['getGroupsProcessing'] as $className) {
+                trigger_error(
+                    'Hook getGroupsProcessing is deprecated since version 4.1. Please migrate '
+                    . $className . ' to listen to the PSR-14 event "AfterComputeUserGroupsEvent".',
+                    E_USER_DEPRECATED
+                );
+
                 /** @var $postProcessor \Causal\IgLdapSsoAuth\Utility\GetGroupsProcessorInterface */
                 $postProcessor = GeneralUtility::makeInstance($className);
                 if ($postProcessor instanceof \Causal\IgLdapSsoAuth\Utility\GetGroupsProcessorInterface) {

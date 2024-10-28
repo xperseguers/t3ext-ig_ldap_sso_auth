@@ -46,10 +46,12 @@ class NotificationUtility
      * Dispatches a PSR-14 event.
      *
      * @param LdapEventInterface $event
+     * @return LdapEventInterface The event
      */
-    public static function dispatch(LdapEventInterface $event): void
+    public static function dispatch(LdapEventInterface $event): LdapEventInterface
     {
         self::getInstance()->eventDispatcher->dispatch($event);
+        return $event;
     }
 
     /**

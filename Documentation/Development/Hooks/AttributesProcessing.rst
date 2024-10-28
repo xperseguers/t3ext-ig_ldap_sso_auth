@@ -27,3 +27,8 @@ $entry
 
 $attributes
 	Array of LDAP attributes.
+
+.. info::
+
+   This hook is deprecated since version 4.1. You should migrate your code by
+   listening to the PSR-14 events `AttributesProcessingEvent` instead.

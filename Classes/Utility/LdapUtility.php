@@ -16,6 +16,7 @@ declare(strict_types=1);
 
 namespace Causal\IgLdapSsoAuth\Utility;
 
+use Causal\IgLdapSsoAuth\Event\AttributesProcessingEvent;
 use LDAP\Connection;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
@@ -408,9 +409,22 @@ class LdapUtility
             $attributes = ldap_get_attributes($this->connection, $entry);
             $attributes['dn'] = ldap_get_dn($this->connection, $entry);
 
+            $event = NotificationUtility::dispatch(new AttributesProcessingEvent(
+                $this->connection,
+                $entry,
+                $attributes
+            ));
+            $attributes = $event->getAttributes();
+
             // Hook for processing the attributes
             if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['attributesProcessing'] ?? null)) {
                 foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['attributesProcessing'] as $className) {
+                    trigger_error(
+                        'Hook attributesProcessing is deprecated since version 4.1. Please migrate '
+                        . $className . ' to listen to the PSR-14 event "AttributesProcessingEvent".',
+                        E_USER_DEPRECATED
+                    );
+
                     /** @var \Causal\IgLdapSsoAuth\Utility\AttributesProcessorInterface $postProcessor */
                     $postProcessor = GeneralUtility::makeInstance($className);
                     if ($postProcessor instanceof \Causal\IgLdapSsoAuth\Utility\AttributesProcessorInterface) {

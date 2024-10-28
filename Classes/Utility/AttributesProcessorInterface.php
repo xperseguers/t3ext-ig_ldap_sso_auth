@@ -20,6 +20,7 @@ namespace Causal\IgLdapSsoAuth\Utility;
  * @author     Xavier Perseguers <xavier@causal.ch>
  * @package    TYPO3
  * @subpackage ig_ldap_sso_auth
+ * @deprecated since version 4.1.0. Migrate your code to listen to the PSR-14 event instead.
  */
 interface AttributesProcessorInterface
 {

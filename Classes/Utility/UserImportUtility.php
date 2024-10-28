@@ -287,6 +287,12 @@ class UserImportUtility
             // Hook for processing the extra data
             if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'])) {
                 foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'] as $className) {
+                    trigger_error(
+                        'Hook extraDataProcessing is deprecated since version 4.1. Please migrate '
+                            . $className . ' to listen to the PSR-14 events "UserAddedEvent" and "UserUpdatedEvent".',
+                        E_USER_DEPRECATED
+                    );
+
                     /** @var \Causal\IgLdapSsoAuth\Utility\ExtraDataProcessorInterface $postProcessor */
                     $postProcessor = GeneralUtility::makeInstance($className);
                     if ($postProcessor instanceof \Causal\IgLdapSsoAuth\Utility\ExtraDataProcessorInterface) {

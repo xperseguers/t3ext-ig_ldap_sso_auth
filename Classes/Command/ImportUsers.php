@@ -190,7 +190,7 @@ class ImportUsers extends Command
 
             // Clean up
             unset($importUtility);
-            $ldapInstance->disconnect();
+            $ldapInstance->disconnectAll();
         }
 
         if ($failures > 0) {

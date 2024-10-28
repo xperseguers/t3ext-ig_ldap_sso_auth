@@ -478,8 +478,12 @@ class Authentication
         $ldapGroupAttributes = Configuration::getLdapAttributes(static::$config['groups']['mapping']);
         $ldapGroups = ['count' => 0];
 
-        $ldapInstance = Ldap::getInstance();
-        $ldapInstance->connect(Configuration::getLdapConfiguration());
+        $ldapConfiguration = Configuration::getLdapConfiguration();
+        $instanceIdentifier = md5(serialize($ldapConfiguration));
+        $ldapInstance = Ldap::getInstance($instanceIdentifier);
+        if (!$ldapInstance->isConnected()) {
+            $ldapInstance->connect($ldapConfiguration);
+        }
 
         if (Configuration::getValue('evaluateGroupsFromMembership')) {
             // Get LDAP groups from membership attribute
@@ -509,8 +513,6 @@ class Authentication
                 $ldapInstance
             );
         }
-
-        $ldapInstance->disconnect();
 
         static::getLogger()->debug(sprintf('Retrieving LDAP groups for user "%s"', $ldapUser['dn']), $ldapGroups);
 

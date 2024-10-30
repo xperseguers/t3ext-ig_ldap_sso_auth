@@ -173,6 +173,7 @@ class ConfigurationRepository
             'sites' => 'sites',
             'ldap_charset' => 'ldapCharset',
             'ldap_host' => 'ldapHost',
+            'ldap_timeout' => 'ldapTimeout',
             'ldap_binddn' => 'ldapBindDn',
             'ldap_password' => 'ldapPassword',
             'be_users_basedn' => 'backendUsersBaseDn',

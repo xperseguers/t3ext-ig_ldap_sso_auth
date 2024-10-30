@@ -100,6 +100,9 @@
 			<trans-unit id="tx_igldapssoauth_config.ldap_ssl">
 				<source>Use SSL</source>
 			</trans-unit>
+			<trans-unit id="tx_igldapssoauth_config.ldap_timeout">
+				<source>Custom network timeout (in seconds)</source>
+			</trans-unit>
 			<trans-unit id="tx_igldapssoauth_config.ldap_binddn">
 				<source>Bind DN</source>
 			</trans-unit>

@@ -87,6 +87,7 @@ class Ldap
             'tls' => $config['tls'],
             'tlsReqcert' => $config['tlsReqcert'],
             'ssl' => $config['ssl'],
+            'timeout' => $config['timeout'],
         ];
         // Connect to ldap server.
         if (!$this->ldapUtility->connect(
@@ -97,7 +98,8 @@ class Ldap
             Configuration::getServerType((int)$config['server']),
             (bool)$config['tls'],
             (bool)$config['ssl'],
-            (bool)$config['tlsReqcert']
+            (bool)$config['tlsReqcert'],
+            (int)$config['timeout'],
         )) {
             static::getLogger()->error('Cannot connect', $debugConfiguration);
             return false;

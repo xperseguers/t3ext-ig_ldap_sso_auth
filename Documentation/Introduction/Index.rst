@@ -1,5 +1,4 @@
-﻿.. include:: ../Includes.rst.txt
-.. _introduction:
+﻿.. _introduction:
 
 Introduction
 ============
@@ -84,8 +83,6 @@ We would like to thank:
 - Support for TYPO3 11 LTS has been sponsored by *TEC Competence UG*, Germany.
 - All the various developers reportings bugs and providing patches in the
   bug tracker.
-
-.. tabularcolumns:: |p{7.53cm}|p{7.53cm}|
 
 +---------------------------------------------------+---------------------------------------------------+
 | .. image:: ../Images/logo-causal.png              | .. image:: ../Images/logo-tec-competence.png      |

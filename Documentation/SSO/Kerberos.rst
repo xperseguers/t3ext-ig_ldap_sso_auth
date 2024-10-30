@@ -1,4 +1,3 @@
-.. include:: ../Includes.rst.txt
 .. _sso-kerberos:
 .. _admin-manual-kerberos-apache-concepts:
 

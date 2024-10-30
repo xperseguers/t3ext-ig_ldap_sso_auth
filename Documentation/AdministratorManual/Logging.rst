@@ -1,4 +1,3 @@
-.. include:: ../Includes.rst.txt
 .. _admin-manual-logging:
 
 Logging
@@ -6,7 +5,7 @@ Logging
 
 This extension makes use of the Logging system introduced in TYPO3 CMS 6.0. It
 is far more flexible than the old one writing to the "sys_log" table. Technical
-details may be found in the :ref:`TYPO3 Core API <t3api:logging>`.
+details may be found in the :ref:`TYPO3 Core API docs for logging <t3coreapi:logging>`.
 
 As an administrator, what you should know is that the TYPO3 Logger forwards log
 records to "Writers", which persist the log record.
@@ -43,5 +42,5 @@ the system log, you may add following configuration to
 
 .. hint::
 
-	Be sure to read :ref:`t3api:logging-configuration` to fine-tune your
+	Be sure to read :ref:`Configuration of the logging system <t3coreapi:logging-configuration>` to fine-tune your
 	configuration on any production website.

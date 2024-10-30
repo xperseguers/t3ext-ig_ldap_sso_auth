@@ -1,4 +1,3 @@
-.. include:: ../Includes.rst.txt
 .. _admin-manual-feusers:
 .. _admin-manual-beusers:
 
@@ -18,7 +17,7 @@ authentication and BE_USERS if you need backend authentication.
 
 	**Sections:**
 
-	.. contents::
+	.. toctree::
 		:local:
 		:depth: 2
 

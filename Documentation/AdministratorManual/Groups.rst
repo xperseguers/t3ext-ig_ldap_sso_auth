@@ -1,4 +1,3 @@
-.. include:: ../Includes.rst.txt
 .. _admin-manual-fegroups:
 .. _admin-manual-begroups:
 
@@ -20,7 +19,7 @@ authentication and do not want to use any groups coming from LDAP.
 
 	**Sections:**
 
-	.. contents::
+	.. toctree::
 		:local:
 		:depth: 1
 

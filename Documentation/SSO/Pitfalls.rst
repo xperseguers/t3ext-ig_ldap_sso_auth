@@ -1,4 +1,3 @@
-.. include:: ../Includes.rst.txt
 .. _sso-pitfalls:
 .. _admin-manual-kerberos-apache-pitfalls:
 

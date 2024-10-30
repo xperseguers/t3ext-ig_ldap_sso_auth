@@ -1,5 +1,4 @@
-﻿.. include:: Includes.rst.txt
-.. _start:
+﻿.. _start:
 
 =========================
 LDAP / SSO Authentication

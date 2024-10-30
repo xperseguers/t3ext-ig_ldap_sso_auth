@@ -1,5 +1,4 @@
-﻿.. include:: ../../Includes.rst.txt
-.. _development-attributesprocessing:
+﻿.. _development-attributesprocessing:
 
 Post-processing LDAP attributes
 ===============================

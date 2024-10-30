@@ -1,5 +1,4 @@
-﻿.. include:: ../Includes.rst.txt
-.. _glossary:
+﻿.. _glossary:
 
 Glossary
 ========

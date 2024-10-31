@@ -79,9 +79,9 @@
         <source>Frontend SSO: Enable Single Sign-On for Frontend users.</source>
         <target state="final">SSO Frontend: Activer l'authentification unique pour les utilisateurs du frontend.</target>
       </trans-unit>
-      <trans-unit id="settings.keepFESSODomainName">
+      <trans-unit id="settings.keepFESSODomainName" approved="yes">
         <source>Keep Frontend SSO Domain: Keep the domain name after a successful login (for example on a CAS-Server), to continue the chain of authentication through LDAP.</source>
-        <target state="needs-translation">Keep Frontend SSO Domain: Keep the domain name after a successful login (for example on a CAS-Server), to continue the chain of authentication through LDAP.</target>
+        <target state="final">Conserver le domaine SSO Frontend: Conserver le nom de domaine après une connexion réussie (par exemple sur un serveur CAS), afin de poursuivre la chaîne d'authentification via LDAP.</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config" approved="yes">
         <source>Configuration LDAP / SSO</source>

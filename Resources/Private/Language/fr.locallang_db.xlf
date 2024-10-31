@@ -39,13 +39,13 @@
         <source>Keep Backend groups: Keep the Backend user groups assigned locally.</source>
         <target state="final">Garder les groupes backend: Garde les groupes d'utilisateurs backend assignés localement.</target>
       </trans-unit>
-      <trans-unit id="settings.enableBESSO">
+      <trans-unit id="settings.enableBESSO" approved="yes">
         <source>Backend SSO: Enable Single Sign-On for Backend users.</source>
-        <target state="needs-translation">Backend SSO: Enable Single Sign-On for Backend users.</target>
+        <target state="final">SSO Backend: Activer l'authentification unique pour les utilisateurs du backend.</target>
       </trans-unit>
-      <trans-unit id="settings.keepBESSODomainName">
+      <trans-unit id="settings.keepBESSODomainName" approved="yes">
         <source>Keep Backend SSO Domain: Keep the domain name after a successful login (for example on a CAS-Server), to continue the chain of authentication through LDAP.</source>
-        <target state="needs-translation">Keep Backend SSO Domain: Keep the domain name after a successful login (for example on a CAS-Server), to continue the chain of authentication through LDAP.</target>
+        <target state="final">Conserver le domaine SSO Backend: Conserver le nom de domaine après une connexion réussie (par exemple sur un serveur CAS), afin de poursuivre la chaîne d'authentification via LDAP.</target>
       </trans-unit>
       <trans-unit id="settings.enableFELDAPAuthentication" approved="yes">
         <source>Frontend LDAP authentication: Enable LDAP authentication for the frontend.</source>
@@ -55,9 +55,9 @@
         <source>Purge Frontend users: Delete Frontend user upon login if no LDAP groups are found.</source>
         <target state="final">Purger les utilisateurs Frontend: Supprime les utilisateurs Frontend lors de l'authentification si aucun groupe LDAP n'est trouvé.</target>
       </trans-unit>
-      <trans-unit id="settings.TYPO3FEDeleteUserIfNoTYPO3Groups">
+      <trans-unit id="settings.TYPO3FEDeleteUserIfNoTYPO3Groups" approved="yes">
         <source>Restrict new Frontend users: This option will prevent new Frontend users to be created and will delete existing ones whenever the LDAP groups they are member of are not found locally.</source>
-        <target state="needs-translation">Restrict new Frontend users: This option will prevent new Frontend users to be created and will delete existing ones whenever the LDAP groups they are member of are not found locally.</target>
+        <target state="final">Restreindre les nouveaux utilisateurs Frontend: Cette option empêchera la création de nouveaux utilisateurs Frontend et supprimera les utilisateurs existants si les groupes LDAP dont ils sont membres ne sont pas trouvés localement.</target>
       </trans-unit>
       <trans-unit id="settings.TYPO3FEGroupExist" approved="yes">
         <source>Frontend user group must exist: If no groups are found locally, the user may not log on.</source>
@@ -77,11 +77,11 @@
       </trans-unit>
       <trans-unit id="settings.enableFESSO" approved="yes">
         <source>Frontend SSO: Enable Single Sign-On for Frontend users.</source>
-        <target state="final">SSO frontend: Active le single sign-on pour les utilisateurs frontend.</target>
+        <target state="final">SSO Frontend: Activer l'authentification unique pour les utilisateurs du frontend.</target>
       </trans-unit>
       <trans-unit id="settings.keepFESSODomainName">
-        <source>Frontend SSO: Keep the domain name after a successful login (for example on a CAS-Server), to continue the chain of authentication through LDAP.</source>
-        <target state="needs-translation">Frontend SSO: Keep the domain name after a successful login (for example on a CAS-Server), to continue the chain of authentication through LDAP.</target>
+        <source>Keep Frontend SSO Domain: Keep the domain name after a successful login (for example on a CAS-Server), to continue the chain of authentication through LDAP.</source>
+        <target state="needs-translation">Keep Frontend SSO Domain: Keep the domain name after a successful login (for example on a CAS-Server), to continue the chain of authentication through LDAP.</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config" approved="yes">
         <source>Configuration LDAP / SSO</source>
@@ -259,9 +259,9 @@
         <source>Suggestion for OpenLDAP</source>
         <target state="final">Suggestion pour OpenLDAP</target>
       </trans-unit>
-      <trans-unit id="suggestion.server.1">
+      <trans-unit id="suggestion.server.1" approved="yes">
         <source>Suggestion for Active Directory</source>
-        <target state="translated">Suggestion pour Active Directory</target>
+        <target state="final">Suggestion pour Active Directory</target>
       </trans-unit>
       <trans-unit id="suggestion.copy" approved="yes">
         <source>copy and use</source>

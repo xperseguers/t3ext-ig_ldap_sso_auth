@@ -1,4 +1,3 @@
-.. include:: ../Includes.rst.txt
 .. _admin-manual-ldap:
 
 LDAP
@@ -10,7 +9,7 @@ The second tab is the global configuration about a single LDAP server.
 
 	**Sections:**
 
-	.. contents::
+	.. toctree::
 		:local:
 		:depth: 1
 

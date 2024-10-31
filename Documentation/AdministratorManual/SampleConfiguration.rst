@@ -1,4 +1,3 @@
-.. include:: ../Includes.rst.txt
 .. _admin-manual-sample:
 
 Sample Configuration
@@ -16,7 +15,7 @@ just for testing.
 
 	**Sections:**
 
-	.. contents::
+	.. toctree::
 		:local:
 		:depth: 1
 
@@ -25,8 +24,6 @@ just for testing.
 
 LDAP
 ^^^^
-
-.. tabularcolumns:: |p{7.53cm}|p{7.53cm}|
 
 =================================== ===========================================
 Option                              Value
@@ -44,8 +41,6 @@ Relation between groups and users   Group contains the list of its members
 
 BE_USERS
 ^^^^^^^^
-
-.. tabularcolumns:: |p{2.5cm}|p{12.56cm}|
 
 =================================== ===========================================
 Option                              Value
@@ -74,8 +69,6 @@ Mapping                             .. code-block:: typoscript
 BE_GROUPS
 ^^^^^^^^^
 
-.. tabularcolumns:: |p{2.5cm}|p{12.56cm}|
-
 =================================== ===========================================
 Option                              Value
 =================================== ===========================================
@@ -92,8 +85,6 @@ Mapping                             .. code-block:: typoscript
 
 FE_USERS
 ^^^^^^^^
-
-.. tabularcolumns:: |p{2.5cm}|p{12.56cm}|
 
 =================================== ===========================================
 Option                              Value

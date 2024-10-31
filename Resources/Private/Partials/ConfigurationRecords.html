@@ -12,14 +12,15 @@
     <f:else>
         <f:form action="{action}" method="post" class="form-inline col-sm-4">
             <div class="form-group" style="display: flex;">
-                <f:if condition="{typo3v11}">
-                    <f:then>
-                        <f:render section="ConfigurationRecordsV11" arguments="{_all}"/>
-                    </f:then>
-                    <f:else>
-                        <f:render section="ConfigurationRecordsV12" arguments="{_all}"/>
-                    </f:else>
-                </f:if>
+                <f:form.select
+                        id="configuration-records"
+                        name="configuration"
+                        options="{configurationRecords}"
+                        value="{currentConfiguration}"
+                        optionValueField="uid"
+                        optionLabelField="name"
+                        class="form-select form-select-sm form-control"
+                        style="display: inline-flex; width: 100%;"/>
 
                 <f:form.submit
                         class="form-submit form-submit-sm form-control"
@@ -33,28 +34,5 @@
         </f:form>
     </f:else>
 </f:if>
-
-<f:section name="ConfigurationRecordsV11">
-    <f:form.select
-            name="configuration"
-            options="{configurationRecords}"
-            value="{currentConfiguration}"
-            optionValueField="uid"
-            optionLabelField="name"
-            class="form-select form-select-sm form-control"
-            style="display: inline-flex; width: 100%;"/>
-</f:section>
-
-<f:section name="ConfigurationRecordsV12">
-    <f:form.select
-            name="configuration"
-            options="{configurationRecords}"
-            value="{currentConfiguration}"
-            optionValueField="uid"
-            optionLabelField="name"
-            onchange="this.form.submit();"
-            class="form-select form-select-sm form-control"
-            style="display: inline-flex; width: 100%;"/>
-</f:section>
 
 </html>

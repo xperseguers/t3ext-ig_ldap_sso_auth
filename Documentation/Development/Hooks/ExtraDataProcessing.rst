@@ -1,5 +1,4 @@
-﻿.. include:: ../../Includes.rst.txt
-.. _development-extradataprocessing:
+﻿.. _development-extradataprocessing:
 .. _admin-manual-import-tables:
 
 Importing data to other tables
@@ -55,7 +54,7 @@ $user
 
 .. note:: This process exists only for users, not for groups.
 
-.. info::
+.. attention::
 
    This hook is deprecated since version 4.1. You should migrate your code by
    listening to the PSR-14 events `UserAddedEvent` and `UserUpdatedEvent`

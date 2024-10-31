@@ -1,5 +1,4 @@
-﻿.. include:: Includes.rst.txt
-.. _start:
+﻿.. _start:
 
 =========================
 LDAP / SSO Authentication
@@ -63,4 +62,5 @@ LDAP / SSO Authentication
 	SSO/Index
 	Development/Index
 	Glossary/Index
+	BreakingChanges/Index
 	Links

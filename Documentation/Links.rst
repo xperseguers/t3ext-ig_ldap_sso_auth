@@ -3,9 +3,6 @@
 .. --------------------------------------------------
 .. -*- coding: utf-8 -*- with BOM.
 
-.. include:: Includes.txt
-
-
 .. _links:
 
 Links
@@ -38,8 +35,7 @@ How to contribute
 This extension is using the same contribution workflow as for TYPO3 Core, but
 with GitHub PRs for the review process. Please read more about the workflow in
 the
-`TYPO3 Core Contribution Guide <https://docs.typo3.org/m/typo3/guide-contributionworkflow/main/en-us/WorkflowExplained/Index.html>`__.
-
+:ref:`TYPO3 Core Contribution Guide <t3contribute:recommended-reading>`.
 
 .. _links-how-to-contribute-rules:
 
@@ -49,12 +45,11 @@ Contribution rules
 - There must be a ticket in the project's bug tracker explaining the problem /
   the suggested enhancement
 - `PSR-12`_ coding guidelines are enforced
-- Commit message complies to the `format used by TYPO3`_ (the "releases:" line
+- Commit message complies to the :ref:`Commit Message rules for TYPO3 CMS <t3contribute:commitmessage>` (the "releases:" line
   is useless here)
 - Unique logical change per patch [#]_
 
 .. _PSR-12: https://www.php-fig.org/psr/psr-12/
-.. _format used by TYP03: https://docs.typo3.org/m/typo3/guide-contributionworkflow/main/en-us/Appendix/CommitMessage.html
 
 
 .. rubric:: Footnotes

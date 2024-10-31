@@ -1,5 +1,4 @@
-﻿.. include:: ../Includes.rst.txt
-.. _users-manual:
+﻿.. _users-manual:
 
 Users manual
 ============

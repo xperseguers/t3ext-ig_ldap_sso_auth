@@ -1,4 +1,3 @@
-.. include:: ../Includes.rst.txt
 .. _sso-scenario:
 .. _admin-manual-kerberos-apache-scenario:
 

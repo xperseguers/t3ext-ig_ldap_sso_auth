@@ -1,5 +1,4 @@
-﻿.. include:: ../../Includes.rst.txt
-.. _development-getgroupsprocessing:
+﻿.. _development-getgroupsprocessing:
 
 Post-processing the attached groups of a user
 ================================================

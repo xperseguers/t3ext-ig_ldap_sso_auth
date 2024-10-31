@@ -1,5 +1,4 @@
-﻿.. include:: ../Includes.rst.txt
-.. _faq:
+﻿.. _faq:
 
 Frequently Asked Questions
 ==========================
@@ -8,7 +7,7 @@ Frequently Asked Questions
 
 	**Categories:**
 
-	.. contents::
+	.. toctree::
 		:local:
 		:depth: 1
 

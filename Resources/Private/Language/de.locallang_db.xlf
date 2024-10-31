@@ -31,17 +31,17 @@
         <source>Enable local Backend users: If checked, Backend users without a reference to LDAP (e.g., "admin") may log on.</source>
         <target state="needs-translation">Enable local Backend users: If checked, Backend users without a reference to LDAP (e.g., "admin") may log on.</target>
       </trans-unit>
-      <trans-unit id="settings.TYPO3BEGroupsNotSynchronize">
+      <trans-unit id="settings.TYPO3BEGroupsNotSynchronize" approved="yes">
         <source>Disable Backend group synchronization: If checked, TYPO3 Backend user groups will not get updated.</source>
-        <target state="needs-translation">Disable Backend group synchronization: If checked, TYPO3 Backend user groups will not get updated.</target>
+        <target state="final">Deaktiviere die Synchronisation von Backend-Gruppen: Wenn aktiviert, werden TYPO3 Backend-Benutzergruppen nicht aktualisiert.</target>
       </trans-unit>
-      <trans-unit id="settings.keepBEGroups">
+      <trans-unit id="settings.keepBEGroups" approved="yes">
         <source>Keep Backend groups: Keep the Backend user groups assigned locally.</source>
-        <target state="needs-translation">Keep Backend groups: Keep the Backend user groups assigned locally.</target>
+        <target state="final">Backend-Gruppen beibehalten: Behalte die lokal zugewiesenen Backend-Benutzergruppen.</target>
       </trans-unit>
-      <trans-unit id="settings.enableBESSO">
+      <trans-unit id="settings.enableBESSO" approved="yes">
         <source>Backend SSO: Enable Single Sign-On for Backend users.</source>
-        <target state="needs-translation">Backend SSO: Enable Single Sign-On for Backend users.</target>
+        <target state="final">Backend SSO: Single Sign-On für Backend Benutzer aktivieren.</target>
       </trans-unit>
       <trans-unit id="settings.keepBESSODomainName">
         <source>Keep Backend SSO Domain: Keep the domain name after a successful login (for example on a CAS-Server), to continue the chain of authentication through LDAP.</source>

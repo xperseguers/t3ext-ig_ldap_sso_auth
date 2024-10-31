@@ -62,4 +62,5 @@ LDAP / SSO Authentication
 	SSO/Index
 	Development/Index
 	Glossary/Index
+	BreakingChanges/Index
 	Links

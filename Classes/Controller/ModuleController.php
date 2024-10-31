@@ -988,8 +988,11 @@ class ModuleController extends ActionController
             'mode' => Configuration::getMode(),
             'editLink' => $editLink,
             'menu' => $menu,
-            'typo3v11' => $typo3Version < 12,
         ];
+
+        if (count($configurationRecords) > 1) {
+            $this->loadJavaScriptModule('autosubmit');
+        }
 
         if ($typo3Version >= 12) {
             $this->moduleTemplate->assignMultiple($values);

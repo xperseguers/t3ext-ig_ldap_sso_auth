@@ -3,9 +3,9 @@
   <file source-language="en" datatype="plaintext" original="messages" date="2024-10-17T13:30:10Z" product-name="ig_ldap_sso_auth" target-language="de">
     <header/>
     <body>
-      <trans-unit id="mlang_tabs_tab">
+      <trans-unit id="mlang_tabs_tab" approved="yes">
         <source>LDAP / SSO</source>
-        <target state="needs-translation">LDAP / SSO</target>
+        <target state="final">LDAP / SSO</target>
       </trans-unit>
       <trans-unit id="mlang_labels_tabdescr" approved="yes">
         <source>LDAP management and configuration module.</source>
@@ -107,9 +107,9 @@
         <source>TLS require cert</source>
         <target state="needs-translation">TLS require cert</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.ssl">
+      <trans-unit id="module_status.configuration.ssl" approved="yes">
         <source>Use SSL</source>
-        <target state="needs-translation">Use SSL</target>
+        <target state="final">SSL verwenden</target>
       </trans-unit>
       <trans-unit id="module_status.configuration.binddn">
         <source>Bind DN</source>
@@ -131,17 +131,17 @@
         <source>LDAP authentication</source>
         <target state="final">LDAP Authentifizierung</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.SSOAuthentication">
+      <trans-unit id="module_status.configuration.SSOAuthentication" approved="yes">
         <source>Single Sign On (SSO)</source>
-        <target state="needs-translation">Single Sign On (SSO)</target>
+        <target state="final">Single Sign On (SSO)</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.forceLowerCaseUsername">
+      <trans-unit id="module_status.configuration.forceLowerCaseUsername" approved="yes">
         <source>Convert user name to lower-case</source>
-        <target state="needs-translation">Convert user name to lower-case</target>
+        <target state="final">Benutzernamen in Kleinbuchstaben umwandeln</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.evaluateGroupsFromMembership">
+      <trans-unit id="module_status.configuration.evaluateGroupsFromMembership" approved="yes">
         <source>Extract groups from membership attribute</source>
-        <target state="needs-translation">Extract groups from membership attribute</target>
+        <target state="final">Gruppen aus Mitgliedschaftsattribut extrahieren</target>
       </trans-unit>
       <trans-unit id="module_status.configuration.IfUserExist">
         <source>User must exist already</source>
@@ -151,37 +151,37 @@
         <source>User group must exist already</source>
         <target state="needs-translation">User group must exist already</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.BEfailsafe">
+      <trans-unit id="module_status.configuration.BEfailsafe" approved="yes">
         <source>Local (non-LDAP) users may authenticate</source>
-        <target state="needs-translation">Local (non-LDAP) users may authenticate</target>
+        <target state="final">Lokale (nicht-LDAP) Benutzer können sich authentifizieren</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.updateAdminAttribForGroups">
+      <trans-unit id="module_status.configuration.updateAdminAttribForGroups" approved="yes">
         <source>User groups promoted as TYPO3 administrators</source>
-        <target state="needs-translation">User groups promoted as TYPO3 administrators</target>
+        <target state="final">Benutzergruppen, die als TYPO3-Administratoren beworben werden</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.DeleteUserIfNoTYPO3Groups">
+      <trans-unit id="module_status.configuration.DeleteUserIfNoTYPO3Groups" approved="yes">
         <source>Delete user if not in any TYPO3 user groups</source>
-        <target state="needs-translation">Delete user if not in any TYPO3 user groups</target>
+        <target state="final">Benutzer löschen, wenn nicht in einer TYPO3-Benutzergruppe</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.DeleteUserIfNoLDAPGroups">
+      <trans-unit id="module_status.configuration.DeleteUserIfNoLDAPGroups" approved="yes">
         <source>Delete user if not in any LDAP user groups</source>
-        <target state="needs-translation">Delete user if not in any LDAP user groups</target>
+        <target state="final">Benutzer löschen, wenn nicht in einer LDAP-Benutzergruppe</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.GroupsNotSynchronize">
+      <trans-unit id="module_status.configuration.GroupsNotSynchronize" approved="yes">
         <source>Prevent synchronization of user groups</source>
-        <target state="needs-translation">Prevent synchronization of user groups</target>
+        <target state="final">Synchronisierung von Benutzergruppen verhindern</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.assignGroups">
+      <trans-unit id="module_status.configuration.assignGroups" approved="yes">
         <source>Additional TYPO3 user groups assigned</source>
-        <target state="needs-translation">Additional TYPO3 user groups assigned</target>
+        <target state="final">Zusätzliche TYPO3 Benutzergruppen zugewiesen</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.keepTYPO3Groups">
+      <trans-unit id="module_status.configuration.keepTYPO3Groups" approved="yes">
         <source>Keep locally-assigned TYPO3 user groups</source>
-        <target state="needs-translation">Keep locally-assigned TYPO3 user groups</target>
+        <target state="final">Lokal zugewiesene TYPO3 Benutzergruppen behalten</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.requiredLDAPGroups">
+      <trans-unit id="module_status.configuration.requiredLDAPGroups" approved="yes">
         <source>Required LDAP user groups to validate authentication</source>
-        <target state="needs-translation">Required LDAP user groups to validate authentication</target>
+        <target state="final">Erforderliche LDAP-Benutzergruppen zur Überprüfung der Authentifizierung</target>
       </trans-unit>
       <trans-unit id="module_status.configuration.users" approved="yes">
         <source>Configuration for users</source>

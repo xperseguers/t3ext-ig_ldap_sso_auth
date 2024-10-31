@@ -98,7 +98,7 @@ class LdapUtility
     /**
      * @var bool
      */
-    protected bool $hasPagination;
+    protected bool $hasPagination = false;
 
     /**
      * @var string

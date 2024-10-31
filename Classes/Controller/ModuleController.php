@@ -988,7 +988,6 @@ class ModuleController extends ActionController
             'mode' => Configuration::getMode(),
             'editLink' => $editLink,
             'menu' => $menu,
-            'typo3v11' => $typo3Version < 12,
         ];
 
         if ($typo3Version >= 12) {

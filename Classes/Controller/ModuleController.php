@@ -990,6 +990,10 @@ class ModuleController extends ActionController
             'menu' => $menu,
         ];
 
+        if (count($configurationRecords) > 1) {
+            $this->loadJavaScriptModule('autosubmit');
+        }
+
         if ($typo3Version >= 12) {
             $this->moduleTemplate->assignMultiple($values);
         } else {

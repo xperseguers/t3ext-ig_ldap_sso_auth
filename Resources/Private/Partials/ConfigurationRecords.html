@@ -13,12 +13,12 @@
         <f:form action="{action}" method="post" class="form-inline col-sm-4">
             <div class="form-group" style="display: flex;">
                 <f:form.select
+                        id="configuration-records"
                         name="configuration"
                         options="{configurationRecords}"
                         value="{currentConfiguration}"
                         optionValueField="uid"
                         optionLabelField="name"
-                        onchange="this.form.submit();"
                         class="form-select form-select-sm form-control"
                         style="display: inline-flex; width: 100%;"/>
 

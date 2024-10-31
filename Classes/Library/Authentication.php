@@ -161,6 +161,8 @@ class Authentication
             return false;
         }
 
+        // Get diagnostic if authentication failed because host was not reachable
+        static::$lastAuthenticationDiagnostic = $ldapInstance->getLastBindDiagnostic();
         // LDAP authentication failed.
         static::getLogger()->warning('Cannot connect to LDAP or username is empty', ['username' => $username]);
         $ldapInstance->disconnect();

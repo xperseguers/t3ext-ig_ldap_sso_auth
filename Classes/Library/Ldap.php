@@ -113,6 +113,10 @@ class Ldap
             $status = $this->ldapUtility->getStatus();
             $this->lastBindDiagnostic = $status['bind']['diagnostic'];
 
+            if (!$this->lastBindDiagnostic) {
+                $this->lastBindDiagnostic = $status['bind']['status'];
+            }
+
             $message = 'Cannot bind to LDAP';
             if (!empty($this->lastBindDiagnostic)) {
                 $message .= ': ' . $this->lastBindDiagnostic;

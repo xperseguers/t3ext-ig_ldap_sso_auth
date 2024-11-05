@@ -87,7 +87,7 @@ class LdapUtility
      * LDAP server status
      * @var array
      */
-    protected array $status;
+    protected array $status = [];
 
     /**
      * 'OpenLDAP' OR 'Active Directory'

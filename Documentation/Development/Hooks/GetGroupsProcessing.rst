@@ -28,3 +28,8 @@ $ldapUser
 $ldapGroups
 	The array of the groups that have been calculated for this user. passed as
 	reference so you can add/remove items from the list.
+
+.. info::
+
+   This hook is deprecated since version 4.1. You should migrate your code by
+   listening to the PSR-14 events `AfterComputeUserGroupsEvent` instead.

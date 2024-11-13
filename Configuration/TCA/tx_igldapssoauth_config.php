@@ -39,7 +39,7 @@ return [
     ],
     'palettes' => [
         'connection' => [
-            'showitem' => 'ldap_host, --linebreak--, ldap_port, --linebreak--, ldap_tls, ldap_tls_reqcert, ldap_ssl',
+            'showitem' => 'ldap_host, --linebreak--, ldap_port, --linebreak--, ldap_timeout, --linebreak--, ldap_tls, ldap_tls_reqcert, ldap_ssl',
         ],
     ],
     'columns' => [
@@ -167,6 +167,16 @@ return [
             'config' => [
                 'type' => 'check',
                 'renderType' => 'checkboxToggle',
+            ],
+        ],
+        'ldap_timeout' => [
+            'exclude' => true,
+            'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_timeout',
+            'config' => [
+                'type' => 'input',
+                'size' => 4,
+                'eval' => 'int',
+                'default' => 0,
             ],
         ],
         'ldap_binddn' => [

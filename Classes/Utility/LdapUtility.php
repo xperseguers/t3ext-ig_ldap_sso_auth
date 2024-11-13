@@ -16,6 +16,7 @@ declare(strict_types=1);
 
 namespace Causal\IgLdapSsoAuth\Utility;
 
+use Causal\IgLdapSsoAuth\Event\AttributesProcessingEvent;
 use LDAP\Connection;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\Charset\CharsetConverter;
@@ -125,6 +126,7 @@ class LdapUtility
      * @param bool $tls
      * @param bool $ssl
      * @param bool $tlsReqcert
+     * @param int $timeout
      * @return bool true if connection succeeded.
      * @throws UnresolvedPhpDependencyException when LDAP extension for PHP is not available
      */
@@ -136,7 +138,8 @@ class LdapUtility
         string $serverType = 'OpenLDAP',
         bool $tls = false,
         bool $ssl = false,
-        bool $tlsReqcert = false
+        bool $tlsReqcert = false,
+        int $timeout = 0
     ): bool
     {
         if ($tlsReqcert === false) {
@@ -152,6 +155,11 @@ class LdapUtility
         $this->status['connect']['host'] = $host;
         $this->status['connect']['port'] = $port;
         $this->serverType = $serverType;
+
+        // Set custom network ldapTimeout
+        if ($timeout) {
+            @ldap_set_option(null, LDAP_OPT_NETWORK_TIMEOUT, $timeout);
+        }
 
         if ($ssl) {
             $this->status['option']['ssl'] = 'Enable';
@@ -408,9 +416,22 @@ class LdapUtility
             $attributes = ldap_get_attributes($this->connection, $entry);
             $attributes['dn'] = ldap_get_dn($this->connection, $entry);
 
+            $event = NotificationUtility::dispatch(new AttributesProcessingEvent(
+                $this->connection,
+                $entry,
+                $attributes
+            ));
+            $attributes = $event->getAttributes();
+
             // Hook for processing the attributes
             if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['attributesProcessing'] ?? null)) {
                 foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['attributesProcessing'] as $className) {
+                    trigger_error(
+                        'Hook attributesProcessing is deprecated since version 4.1. Please migrate '
+                        . $className . ' to listen to the PSR-14 event "AttributesProcessingEvent".',
+                        E_USER_DEPRECATED
+                    );
+
                     /** @var \Causal\IgLdapSsoAuth\Utility\AttributesProcessorInterface $postProcessor */
                     $postProcessor = GeneralUtility::makeInstance($className);
                     if ($postProcessor instanceof \Causal\IgLdapSsoAuth\Utility\AttributesProcessorInterface) {

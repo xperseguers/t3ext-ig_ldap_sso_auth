@@ -234,7 +234,7 @@ class ImportUsers extends Command
             ));
             $disabledOrDeletedUserUids = $importUtility->disableUsers();
         } elseif ($this->options['missing-users'] === 'delete') {
-            $this->getLogger()->debug(sprintf(
+            $this->logger->debug(sprintf(
                 'Deleting users (%s) for configuration record %s',
                 strtoupper($importUtility->getContext()),
                 $this->configuration->getUid()

@@ -16,7 +16,7 @@ declare(strict_types=1);
 
 namespace Causal\IgLdapSsoAuth\Event;
 
-final class AfterComputeUserGroupsEvent
+final class AfterComputeUserGroupsEvent implements LdapEventInterface
 {
     public function __construct(
         protected readonly array $ldapUser,

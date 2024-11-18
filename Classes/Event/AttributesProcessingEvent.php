@@ -18,7 +18,7 @@ namespace Causal\IgLdapSsoAuth\Event;
 
 use LDAP\Connection;
 
-final class AttributesProcessingEvent
+final class AttributesProcessingEvent implements LdapEventInterface
 {
     public function __construct(
         protected readonly Connection $connection,

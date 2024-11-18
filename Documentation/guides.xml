@@ -3,8 +3,11 @@
         xsi:schemaLocation="https://www.phpdoc.org/guides ../vendor/phpdocumentor/guides-cli/resources/schema/guides.xsd"
         links-are-relative="true">
     <extension class="\T3Docs\Typo3DocsTheme\DependencyInjection\Typo3DocsThemeExtension"
-               project-repository="https://github.com/xperseguers/t3ext-ig_ldap_sso_auth.git"
+               project-home="https://extensions.typo3.org/extension/ig_ldap_sso_auth"
+               project-repository="https://github.com/xperseguers/t3ext-ig_ldap_sso_auth"
                project-issues="https://github.com/xperseguers/t3ext-ig_ldap_sso_auth/issues"
+               edit-on-github-branch="master"
+               edit-on-github="xperseguers/t3ext-ig_ldap_sso_auth"
                typo3-core-preferred="stable"/>
     <project title="LDAP / SSO Authentication" release="4.1.0" version="4.1" copyright="2000-2024"/>
 </guides>

@@ -343,7 +343,7 @@ class Authentication
      * @return array|null Array of groups or null if required LDAP groups are missing
      * @throws \Causal\IgLdapSsoAuth\Exception\InvalidUserGroupTableException
      */
-    public static function getUserGroups(array $ldapUser, array $configuration = null, string $groupTable = ''): ?array
+    public static function getUserGroups(array $ldapUser, ?array $configuration = null, string $groupTable = ''): ?array
     {
         if ($configuration === null) {
             $configuration = static::$config;

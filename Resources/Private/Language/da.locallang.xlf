@@ -5,27 +5,27 @@
     <body>
       <trans-unit id="mlang_tabs_tab">
         <source>LDAP / SSO</source>
-        <target state="needs-translation">LDAP / SSO</target>
+        <target state="translated">LDAP / SSO</target>
       </trans-unit>
       <trans-unit id="mlang_labels_tabdescr">
         <source>LDAP management and configuration module.</source>
-        <target state="needs-translation">LDAP management and configuration module.</target>
+        <target state="translated">LDAP håndtering- og konfigurations-modul.</target>
       </trans-unit>
       <trans-unit id="mlang_labels_tablabel">
         <source>LDAP management</source>
-        <target state="needs-translation">LDAP management</target>
+        <target state="translated">LDAP håndtering</target>
       </trans-unit>
       <trans-unit id="title">
         <source>LDAP / SSO service management</source>
-        <target state="needs-translation">LDAP / SSO service management</target>
+        <target state="translated">LDAP / SSO servicehåndtering</target>
       </trans-unit>
       <trans-unit id="configuration_missing.title">
         <source>No Configuration Records</source>
-        <target state="needs-translation">No Configuration Records</target>
+        <target state="translated">Ingen konfigurationselementer</target>
       </trans-unit>
       <trans-unit id="configuration_missing.message">
         <source><![CDATA[This module cannot be used until you create at least one configuration record. Please refer to the <a href="%s" target="_blank">administrator manual</a> for further information.<br /><br /><a href="%s">Click here</a> to create a configuration record.]]></source>
-        <target state="needs-translation"><![CDATA[This module cannot be used until you create at least one configuration record. Please refer to the <a href="%s" target="_blank">administrator manual</a> for further information.<br /><br /><a href="%s">Click here</a> to create a configuration record.]]></target>
+        <target state="translated"><![CDATA[Dette modul kan ikke bruges før du opretter mindst et konfigurationselement. Se venligst <a href="%s" target="_blank">administratorhåndbogen</a> for yderligere oplysninger.<br /><br /><a href="%s">Klik her</a> for at oprette et konfigurationselement.]]></target>
       </trans-unit>
       <trans-unit id="module_docheader.configurations.switch">
         <source>Switch configuration</source>
@@ -37,39 +37,39 @@
       </trans-unit>
       <trans-unit id="module_overview">
         <source>Overview</source>
-        <target state="needs-translation">Overview</target>
+        <target state="translated">Oversigt</target>
       </trans-unit>
       <trans-unit id="module_status">
         <source>Status</source>
-        <target state="needs-translation">Status</target>
+        <target state="translated">Status</target>
       </trans-unit>
       <trans-unit id="module_status.title.domains">
         <source>Domains</source>
-        <target state="needs-translation">Domains</target>
+        <target state="translated">Domæner</target>
       </trans-unit>
       <trans-unit id="module_status.description.domains">
         <source>Current LDAP configuration is restricted to following domain(s):</source>
-        <target state="needs-translation">Current LDAP configuration is restricted to following domain(s):</target>
+        <target state="translated">Den aktuelle LDAP-konfiguration er begrænset til følgende domæne(r):</target>
       </trans-unit>
       <trans-unit id="module_status.title.ldap">
         <source>LDAP</source>
-        <target state="needs-translation">LDAP</target>
+        <target state="translated">LDAP</target>
       </trans-unit>
       <trans-unit id="module_status.messages.ldapDisable">
         <source>LDAP is disabled since the host name is undefined.</source>
-        <target state="needs-translation">LDAP is disabled since the host name is undefined.</target>
+        <target state="translated">LDAP er deaktiveret da værtsnavnet ikke er defineret.</target>
       </trans-unit>
       <trans-unit id="module_status.messages.enabled">
         <source>enabled</source>
-        <target state="needs-translation">enabled</target>
+        <target state="translated">aktiveret</target>
       </trans-unit>
       <trans-unit id="module_status.messages.disabled">
         <source>disabled</source>
-        <target state="needs-translation">disabled</target>
+        <target state="translated">deaktiveret</target>
       </trans-unit>
       <trans-unit id="module_status.messages.empty">
         <source>none</source>
-        <target state="needs-translation">none</target>
+        <target state="translated">ingen</target>
       </trans-unit>
       <trans-unit id="module_status.title.connection">
         <source>Connection status</source>

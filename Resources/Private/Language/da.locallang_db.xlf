@@ -165,19 +165,19 @@
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_users_basedn">
         <source>Base DN</source>
-        <target state="needs-translation">Base DN</target>
+        <target state="translated">Base DN</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_users_filter">
         <source>Filter</source>
-        <target state="needs-translation">Filter</target>
+        <target state="translated">Filter</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_users_mapping">
         <source>Mapping</source>
-        <target state="needs-translation">Mapping</target>
+        <target state="translated">Mapning</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_groups_basedn">
         <source>Base DN</source>
-        <target state="needs-translation">Base DN</target>
+        <target state="translated">Base DN</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_groups_filter">
         <source>Filter</source>
@@ -189,11 +189,11 @@
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_groups_required">
         <source>Required LDAP groups</source>
-        <target state="needs-translation">Required LDAP groups</target>
+        <target state="translated">Krævede LDAP-grupper</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_groups_assigned">
         <source>Local groups to be assigned</source>
-        <target state="needs-translation">Local groups to be assigned</target>
+        <target state="translated">Lokale grupper, der skal tildeles</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_groups_admin">
         <source>TYPO3 administrator groups</source>
@@ -221,11 +221,11 @@
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.fe_groups_filter">
         <source>Filter</source>
-        <target state="needs-translation">Filter</target>
+        <target state="translated">Filter</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.fe_groups_mapping">
         <source>Mapping</source>
-        <target state="needs-translation">Mapping</target>
+        <target state="translated">Mapning</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.fe_groups_required">
         <source>Required LDAP groups</source>

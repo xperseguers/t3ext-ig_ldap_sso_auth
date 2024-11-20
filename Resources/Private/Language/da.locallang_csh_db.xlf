@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.0">
-  <file source-language="en" datatype="plaintext" original="messages" date="2015-02-17T16:10:14Z" product-name="ig_ldap_sso_auth" target-language="da">
+  <file source-language="en" datatype="plaintext" original="messages" date="2024-10-17T13:30:20Z" product-name="ig_ldap_sso_auth" target-language="da">
     <header/>
     <body>
       <trans-unit id="name.description">
         <source>Name used to distinguish each configuration.</source>
-        <target state="needs-translation">Name used to distinguish each configuration.</target>
+        <target state="translated">Navn der bruges til at skelne mellem hver konfiguration.</target>
       </trans-unit>
       <trans-unit id="ldap_server.description">
         <source>Type of LDAP server used by the authentication (OpenLDAP, Active Directory).</source>
-        <target state="needs-translation">Type of LDAP server used by the authentication (OpenLDAP, Active Directory).</target>
+        <target state="translated">Typen af LDAP-server, der bruges af autentificeringen (OpenLDAP, Active Directory).</target>
       </trans-unit>
       <trans-unit id="ldap_charset.description">
         <source>Character set used by the LDAP server. Usually: utf-8.</source>
-        <target state="needs-translation">Character set used by the LDAP server. Usually: utf-8.</target>
+        <target state="translated">Karaktersæt brugt af LDAP-serveren. Sædvanligvis: utf- 8.</target>
       </trans-unit>
       <trans-unit id="ldap_port.description">
         <source>Port used by the LDAP server. Default: 389.</source>
-        <target state="needs-translation">Port used by the LDAP server. Default: 389.</target>
+        <target state="translated">Port brugt af LDAP-serveren. Standard: 389.</target>
       </trans-unit>
       <trans-unit id="ldap_binddn.description">
         <source>DN (Distinguished Name) used to bind to the server.</source>
-        <target state="needs-translation">DN (Distinguished Name) used to bind to the server.</target>
+        <target state="translated">DN (Distinguished Name) bruges til at forbinde til serveren.</target>
       </trans-unit>
       <trans-unit id="ldap_binddn.syntax">
         <source>E.g., cn=admin,dc=example,dc=com</source>
@@ -81,7 +81,7 @@
       </trans-unit>
       <trans-unit id="fe_users_basedn.description">
         <source>DN (Distinguished Name) to be used to look for FE users in the LDAP server.</source>
-        <target state="needs-translation">DN (Distinguished Name) to be used to look for FE users in the LDAP server.</target>
+        <target state="translated">DN (Distinguished Name) der skal bruges til at slå FE-brugere op på LDAP-serveren.</target>
       </trans-unit>
       <trans-unit id="fe_users_basedn.syntax">
         <source>E.g., ou=USERS,dc=example,dc=com</source>
@@ -89,7 +89,7 @@
       </trans-unit>
       <trans-unit id="fe_users_filter.description">
         <source>Filter to search for FE users in the LDAP server.</source>
-        <target state="needs-translation">Filter to search for FE users in the LDAP server.</target>
+        <target state="translated">Filtrer for at søge efter FE brugere på LDAP- serveren.</target>
       </trans-unit>
       <trans-unit id="fe_users_filter.syntax">
         <source>Sample of a filter used for the authentication: (cn={USERNAME})</source>
@@ -97,7 +97,7 @@
       </trans-unit>
       <trans-unit id="fe_users_mapping.description">
         <source>Assign LDAP attribute to a field of the user record.</source>
-        <target state="needs-translation">Assign LDAP attribute to a field of the user record.</target>
+        <target state="translated">Tildel LDAP-attribut til et felt fra brugerelementet.</target>
       </trans-unit>
       <trans-unit id="fe_groups_basedn.description">
         <source>DN (Distinguished Name) to be used to look for FE groups in the LDAP server.</source>
@@ -121,11 +121,11 @@
       </trans-unit>
       <trans-unit id="fe_groups_required.description">
         <source>List of frontend user groups (previously imported from LDAP) required to authorize authentication of LDAP users.</source>
-        <target state="needs-translation">List of frontend user groups (previously imported from LDAP) required to authorize authentication of LDAP users.</target>
+        <target state="translated">Liste over brugergrupper (tidligere importeret fra LDAP) der kræves for at godkende godkendelse af LDAP-brugere.</target>
       </trans-unit>
       <trans-unit id="fe_groups_assigned.description">
         <source>List of frontend user groups to be assigned automatically when authenticating LDAP users.</source>
-        <target state="needs-translation">List of frontend user groups to be assigned automatically when authenticating LDAP users.</target>
+        <target state="translated">Liste over brugergrupper, der skal tildeles automatisk ved godkendelse af LDAP-brugere.</target>
       </trans-unit>
     </body>
   </file>

@@ -85,19 +85,19 @@
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config">
         <source>Configuration LDAP / SSO</source>
-        <target state="needs-translation">Configuration LDAP / SSO</target>
+        <target state="translated">konfiguration LDAP / SSO</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.name">
         <source>Name</source>
-        <target state="needs-translation">Name</target>
+        <target state="translated">Navn</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.sites">
         <source>Associated site configurations</source>
-        <target state="needs-translation">Associated site configurations</target>
+        <target state="translated">Tilknyttede site-konfigurationer</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_server">
         <source>Server Type</source>
-        <target state="needs-translation">Server Type</target>
+        <target state="translated">Servertype</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_server.I.0">
         <source>OpenLDAP</source>
@@ -109,27 +109,27 @@
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_charset">
         <source>Character set</source>
-        <target state="needs-translation">Character set</target>
+        <target state="translated">Karaktersæt</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_host">
         <source>Host</source>
-        <target state="needs-translation">Host</target>
+        <target state="translated">Vært</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_port">
         <source>Port</source>
-        <target state="needs-translation">Port</target>
+        <target state="translated">Port</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_tls">
         <source>Use TLS</source>
-        <target state="needs-translation">Use TLS</target>
+        <target state="translated">Brug TLS</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_tls_reqcert">
         <source>TLS require cert</source>
-        <target state="needs-translation">TLS require cert</target>
+        <target state="translated">TLS kræver certifikat</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_ssl">
         <source>Use SSL</source>
-        <target state="needs-translation">Use SSL</target>
+        <target state="translated">Brug SSL</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_timeout">
         <source>Custom network timeout (in seconds)</source>
@@ -137,23 +137,23 @@
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_binddn">
         <source>Bind DN</source>
-        <target state="needs-translation">Bind DN</target>
+        <target state="translated">Bind DN</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_password">
         <source>Password</source>
-        <target state="needs-translation">Password</target>
+        <target state="translated">Adgangskode</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.group_membership">
         <source>Relation between groups and users</source>
-        <target state="needs-translation">Relation between groups and users</target>
+        <target state="translated">Relation mellem grupper og brugere</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.group_membership.I.1">
         <source>Group contains the list of its members</source>
-        <target state="needs-translation">Group contains the list of its members</target>
+        <target state="translated">Gruppen indeholder listen over sine medlemmer</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.group_membership.I.2">
         <source>User contains the list of its associated groups</source>
-        <target state="needs-translation">User contains the list of its associated groups</target>
+        <target state="translated">Bruger indeholder listen over tilknyttede grupper</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.group_membership.fe.missingUsergroupMapping">
         <source><![CDATA[Mapping for field "usergroup" is missing in the configuration of frontend users. You may end up importing ALL groups in LDAP into TYPO3 and get users associated to wrong groups. Suggestion: usergroup = <memberOf>]]></source>
@@ -205,19 +205,19 @@
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.fe_users_basedn">
         <source>Base DN</source>
-        <target state="needs-translation">Base DN</target>
+        <target state="translated">Base DN</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.fe_users_filter">
         <source>Filter</source>
-        <target state="needs-translation">Filter</target>
+        <target state="translated">Filter</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.fe_users_mapping">
         <source>Mapping</source>
-        <target state="needs-translation">Mapping</target>
+        <target state="translated">Mapning</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.fe_groups_basedn">
         <source>Base DN</source>
-        <target state="needs-translation">Base DN</target>
+        <target state="translated">Base DN</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.fe_groups_filter">
         <source>Filter</source>
@@ -229,11 +229,11 @@
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.fe_groups_required">
         <source>Required LDAP groups</source>
-        <target state="needs-translation">Required LDAP groups</target>
+        <target state="translated">Krævede LDAP-grupper</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.fe_groups_assigned">
         <source>Local groups to be assigned</source>
-        <target state="needs-translation">Local groups to be assigned</target>
+        <target state="translated">Lokale grupper, der skal tildeles</target>
       </trans-unit>
       <trans-unit id="be_groups.tx_igldapssoauth_dn">
         <source>Group's DN (Distinguished Name)</source>
@@ -257,11 +257,11 @@
       </trans-unit>
       <trans-unit id="palette.connection">
         <source>Connection</source>
-        <target state="needs-translation">Connection</target>
+        <target state="translated">Forbindelse</target>
       </trans-unit>
       <trans-unit id="suggestion.server.0">
         <source>Suggestion for OpenLDAP</source>
-        <target state="needs-translation">Suggestion for OpenLDAP</target>
+        <target state="translated">Forslag til OpenLDAP</target>
       </trans-unit>
       <trans-unit id="suggestion.server.1">
         <source>Suggestion for Active Directory</source>
@@ -269,7 +269,7 @@
       </trans-unit>
       <trans-unit id="suggestion.copy">
         <source>copy and use</source>
-        <target state="needs-translation">copy and use</target>
+        <target state="translated">kopiér og brug</target>
       </trans-unit>
     </body>
   </file>

@@ -85,7 +85,7 @@
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config">
         <source>Configuration LDAP / SSO</source>
-        <target state="translated">konfiguration LDAP / SSO</target>
+        <target state="translated">Konfiguration LDAP / SSO</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.name">
         <source>Name</source>
@@ -101,11 +101,11 @@
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_server.I.0">
         <source>OpenLDAP</source>
-        <target state="needs-translation">OpenLDAP</target>
+        <target state="translated">OpenLDAP</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_server.I.1">
         <source>Active Directory</source>
-        <target state="needs-translation">Active Directory</target>
+        <target state="translated">Active Directory</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_charset">
         <source>Character set</source>
@@ -181,11 +181,11 @@
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_groups_filter">
         <source>Filter</source>
-        <target state="needs-translation">Filter</target>
+        <target state="translated">Filter</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_groups_mapping">
         <source>Mapping</source>
-        <target state="needs-translation">Mapping</target>
+        <target state="translated">Mapning</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_groups_required">
         <source>Required LDAP groups</source>
@@ -197,7 +197,7 @@
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_groups_admin">
         <source>TYPO3 administrator groups</source>
-        <target state="needs-translation">TYPO3 administrator groups</target>
+        <target state="translated">TYPO3 administratorgrupper</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_groups.tx_igldapssoauth_dn">
         <source>Groups DN (Distinguished Name)</source>

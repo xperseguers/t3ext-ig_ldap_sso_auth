@@ -3,17 +3,17 @@
   <file source-language="en" datatype="plaintext" original="messages" date="2024-10-17T13:30:10Z" product-name="ig_ldap_sso_auth" target-language="da">
     <header/>
     <body>
-      <trans-unit id="mlang_tabs_tab">
+      <trans-unit id="mlang_tabs_tab" approved="yes">
         <source>LDAP / SSO</source>
-        <target state="translated">LDAP / SSO</target>
+        <target state="final">LDAP / SSO</target>
       </trans-unit>
-      <trans-unit id="mlang_labels_tabdescr">
+      <trans-unit id="mlang_labels_tabdescr" approved="yes">
         <source>LDAP management and configuration module.</source>
-        <target state="translated">LDAP håndtering- og konfigurations-modul.</target>
+        <target state="final">LDAP håndtering- og konfigurations-modul.</target>
       </trans-unit>
-      <trans-unit id="mlang_labels_tablabel">
+      <trans-unit id="mlang_labels_tablabel" approved="yes">
         <source>LDAP management</source>
-        <target state="translated">LDAP håndtering</target>
+        <target state="final">LDAP håndtering</target>
       </trans-unit>
       <trans-unit id="title">
         <source>LDAP / SSO service management</source>
@@ -73,15 +73,15 @@
       </trans-unit>
       <trans-unit id="module_status.title.connection">
         <source>Connection status</source>
-        <target state="needs-translation">Connection status</target>
+        <target state="translated">Forbindelsesstatus</target>
       </trans-unit>
       <trans-unit id="module_status.title.frontend">
         <source>Frontend authentication</source>
-        <target state="needs-translation">Frontend authentication</target>
+        <target state="translated">Frontend godkendelse</target>
       </trans-unit>
       <trans-unit id="module_status.title.backend">
         <source>Backend authentication</source>
-        <target state="needs-translation">Backend authentication</target>
+        <target state="translated">Backend godkendelse</target>
       </trans-unit>
       <trans-unit id="module_status.configuration.server">
         <source>Server type</source>

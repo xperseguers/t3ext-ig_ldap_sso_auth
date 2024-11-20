@@ -29,7 +29,7 @@
       </trans-unit>
       <trans-unit id="be_users_basedn.description">
         <source>DN (Distinguished Name) to be used to look for BE users in the LDAP server.</source>
-        <target state="needs-translation">DN (Distinguished Name) to be used to look for BE users in the LDAP server.</target>
+        <target state="translated">DN (Distinguished Name) der skal bruges til at slå BE-brugere op på LDAP-serveren.</target>
       </trans-unit>
       <trans-unit id="be_users_basedn.syntax">
         <source>E.g., ou=USERS,dc=example,dc=com</source>
@@ -37,7 +37,7 @@
       </trans-unit>
       <trans-unit id="be_users_filter.description">
         <source>Filter to search for BE users in the LDAP server.</source>
-        <target state="needs-translation">Filter to search for BE users in the LDAP server.</target>
+        <target state="translated">Filtrer for at søge efter BE-brugere på LDAP-serveren.</target>
       </trans-unit>
       <trans-unit id="be_users_filter.syntax">
         <source>Sample of a filter used for the authentication: (cn={USERNAME})</source>
@@ -45,11 +45,11 @@
       </trans-unit>
       <trans-unit id="be_users_mapping.description">
         <source>Assign LDAP attribute to a field of the user record.</source>
-        <target state="needs-translation">Assign LDAP attribute to a field of the user record.</target>
+        <target state="translated">Tildel LDAP-attribut til et felt fra brugerelementet.</target>
       </trans-unit>
       <trans-unit id="be_groups_basedn.description">
         <source>DN (Distinguished Name) to be used to look for BE groups in the LDAP server.</source>
-        <target state="needs-translation">DN (Distinguished Name) to be used to look for BE groups in the LDAP server.</target>
+        <target state="translated">DN (Distinguished Name) der skal bruges til at lede efter BE-grupper på LDAP-serveren.</target>
       </trans-unit>
       <trans-unit id="be_groups_basedn.syntax">
         <source>E.g., ou=GROUPS,dc=example,dc=com</source>
@@ -69,11 +69,11 @@
       </trans-unit>
       <trans-unit id="be_groups_required.description">
         <source>List of backend user groups (previously imported from LDAP) required to authorize authentication of LDAP users.</source>
-        <target state="needs-translation">List of backend user groups (previously imported from LDAP) required to authorize authentication of LDAP users.</target>
+        <target state="translated">Liste over backend brugergrupper (tidligere importeret fra LDAP) som kræves for at godkende godkendelse af LDAP-brugere.</target>
       </trans-unit>
       <trans-unit id="be_groups_assigned.description">
         <source>List of backend user groups to be assigned automatically when authenticating LDAP users.</source>
-        <target state="needs-translation">List of backend user groups to be assigned automatically when authenticating LDAP users.</target>
+        <target state="translated">Liste over backend brugergrupper, der skal tildeles automatisk ved godkendelse af LDAP-brugere.</target>
       </trans-unit>
       <trans-unit id="be_groups_admin.description">
         <source>List of backend user groups whose members should be promoted as TYPO3 administrators (valid only as part of LDAP authentication).</source>
@@ -101,7 +101,7 @@
       </trans-unit>
       <trans-unit id="fe_groups_basedn.description">
         <source>DN (Distinguished Name) to be used to look for FE groups in the LDAP server.</source>
-        <target state="needs-translation">DN (Distinguished Name) to be used to look for FE groups in the LDAP server.</target>
+        <target state="translated">DN (Distinguished Name) der skal bruges til at søge efter FE grupper på LDAP-serveren.</target>
       </trans-unit>
       <trans-unit id="fe_groups_basedn.syntax">
         <source>E.g., ou=GROUPS,dc=example,dc=com</source>
@@ -109,7 +109,7 @@
       </trans-unit>
       <trans-unit id="fe_groups_filter.description">
         <source>Filter to search for FE groups in the LDAP server. Example: (objectClass=posixGroup)</source>
-        <target state="needs-translation">Filter to search for FE groups in the LDAP server. Example: (objectClass=posixGroup)</target>
+        <target state="translated">Filtrér for at søge efter FE-grupper på LDAP-serveren. Eksempel: (objectClass=posixGroup)</target>
       </trans-unit>
       <trans-unit id="fe_groups_filter.syntax">
         <source>Sample if option "Relation between groups and users" is set to "Group contains the list of its members": (memberuid={USERDN})</source>
@@ -117,7 +117,7 @@
       </trans-unit>
       <trans-unit id="fe_groups_mapping.description">
         <source>Assign LDAP attribute to a field of the group record.</source>
-        <target state="needs-translation">Assign LDAP attribute to a field of the group record.</target>
+        <target state="translated">Tildel LDAP-attribut til et felt fra gruppeelementet.</target>
       </trans-unit>
       <trans-unit id="fe_groups_required.description">
         <source>List of frontend user groups (previously imported from LDAP) required to authorize authentication of LDAP users.</source>

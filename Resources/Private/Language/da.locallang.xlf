@@ -119,41 +119,41 @@
         <source>Password</source>
         <target state="final">Adgangskode</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.connect">
+      <trans-unit id="module_status.configuration.connect" approved="yes">
         <source>LDAP connect</source>
-        <target state="needs-translation">LDAP connect</target>
+        <target state="final">LDAP forbindelse</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.bind">
+      <trans-unit id="module_status.configuration.bind" approved="yes">
         <source>LDAP bind</source>
-        <target state="needs-translation">LDAP bind</target>
+        <target state="final">LDAP bind</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.LDAPAuthentication">
+      <trans-unit id="module_status.configuration.LDAPAuthentication" approved="yes">
         <source>LDAP authentication</source>
-        <target state="needs-translation">LDAP authentication</target>
+        <target state="final">LDAP-godkendelse</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.SSOAuthentication">
+      <trans-unit id="module_status.configuration.SSOAuthentication" approved="yes">
         <source>Single Sign On (SSO)</source>
-        <target state="needs-translation">Single Sign On (SSO)</target>
+        <target state="final">Single Sign On (SSO)</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.forceLowerCaseUsername">
+      <trans-unit id="module_status.configuration.forceLowerCaseUsername" approved="yes">
         <source>Convert user name to lower-case</source>
-        <target state="needs-translation">Convert user name to lower-case</target>
+        <target state="final">Konverter brugernavn til små bogstaver</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.evaluateGroupsFromMembership">
+      <trans-unit id="module_status.configuration.evaluateGroupsFromMembership" approved="yes">
         <source>Extract groups from membership attribute</source>
-        <target state="needs-translation">Extract groups from membership attribute</target>
+        <target state="final">Udtræk grupper fra medlemskabsattributten</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.IfUserExist">
+      <trans-unit id="module_status.configuration.IfUserExist" approved="yes">
         <source>User must exist already</source>
-        <target state="needs-translation">User must exist already</target>
+        <target state="final">Brugeren skal allerede findes</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.IfGroupExist">
+      <trans-unit id="module_status.configuration.IfGroupExist" approved="yes">
         <source>User group must exist already</source>
-        <target state="needs-translation">User group must exist already</target>
+        <target state="final">Brugergruppe skal allerede eksistere</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.BEfailsafe">
+      <trans-unit id="module_status.configuration.BEfailsafe" approved="yes">
         <source>Local (non-LDAP) users may authenticate</source>
-        <target state="needs-translation">Local (non-LDAP) users may authenticate</target>
+        <target state="final">Lokale (ikke-LDAP) brugere kan godkende</target>
       </trans-unit>
       <trans-unit id="module_status.configuration.updateAdminAttribForGroups">
         <source>User groups promoted as TYPO3 administrators</source>
@@ -193,7 +193,7 @@
       </trans-unit>
       <trans-unit id="module_search" approved="yes">
         <source>Search wizard</source>
-        <target state="final">Søgeguiden</target>
+        <target state="final">Søgeguide</target>
       </trans-unit>
       <trans-unit id="module_search_type" approved="yes">
         <source>Type</source>
@@ -211,45 +211,45 @@
         <source>Backend users</source>
         <target state="final">Backend brugere</target>
       </trans-unit>
-      <trans-unit id="module_search_type.backendUserGroups">
+      <trans-unit id="module_search_type.backendUserGroups" approved="yes">
         <source>Backend user groups</source>
-        <target state="needs-translation">Backend user groups</target>
+        <target state="final">Backend brugergrupper</target>
       </trans-unit>
-      <trans-unit id="module_search_options">
+      <trans-unit id="module_search_options" approved="yes">
         <source>Options</source>
-        <target state="needs-translation">Options</target>
+        <target state="final">Indstillinger</target>
       </trans-unit>
-      <trans-unit id="module_search_options.firstEntry">
+      <trans-unit id="module_search_options.firstEntry" approved="yes">
         <source>First entry only</source>
-        <target state="needs-translation">First entry only</target>
+        <target state="final">Kun første post</target>
       </trans-unit>
-      <trans-unit id="module_search_options.status">
+      <trans-unit id="module_search_options.status" approved="yes">
         <source>Show status</source>
-        <target state="needs-translation">Show status</target>
+        <target state="final">Vis status</target>
       </trans-unit>
-      <trans-unit id="module_search_basedn">
+      <trans-unit id="module_search_basedn" approved="yes">
         <source>Base DN</source>
-        <target state="needs-translation">Base DN</target>
+        <target state="final">Base DN</target>
       </trans-unit>
-      <trans-unit id="module_search_filter">
+      <trans-unit id="module_search_filter" approved="yes">
         <source>Filter</source>
-        <target state="needs-translation">Filter</target>
+        <target state="final">Filter</target>
       </trans-unit>
-      <trans-unit id="module_search.action.search">
+      <trans-unit id="module_search.action.search" approved="yes">
         <source>search</source>
-        <target state="needs-translation">search</target>
+        <target state="final">søg</target>
       </trans-unit>
       <trans-unit id="module_search_status">
         <source>LDAP search status</source>
         <target state="needs-translation">LDAP search status</target>
       </trans-unit>
-      <trans-unit id="module_search_result">
+      <trans-unit id="module_search_result" approved="yes">
         <source>Result</source>
-        <target state="needs-translation">Result</target>
+        <target state="final">Resultat</target>
       </trans-unit>
-      <trans-unit id="module_search_noResult">
+      <trans-unit id="module_search_noResult" approved="yes">
         <source>No results</source>
-        <target state="needs-translation">No results</target>
+        <target state="final">Ingen resultater</target>
       </trans-unit>
       <trans-unit id="module_search_preview">
         <source>Preview mapping</source>
@@ -267,17 +267,17 @@
         <source>undelete</source>
         <target state="needs-translation">undelete</target>
       </trans-unit>
-      <trans-unit id="module_import_users_fe">
+      <trans-unit id="module_import_users_fe" approved="yes">
         <source>Import LDAP users (Frontend)</source>
-        <target state="needs-translation">Import LDAP users (Frontend)</target>
+        <target state="final">Importér LDAP-brugere (frontend)</target>
       </trans-unit>
-      <trans-unit id="module_import_users_be">
+      <trans-unit id="module_import_users_be" approved="yes">
         <source>Import LDAP users (Backend)</source>
-        <target state="needs-translation">Import LDAP users (Backend)</target>
+        <target state="final">Importér LDAP-brugere (backend)</target>
       </trans-unit>
-      <trans-unit id="module_import_users.empty">
+      <trans-unit id="module_import_users.empty" approved="yes">
         <source>No users found.</source>
-        <target state="needs-translation">No users found.</target>
+        <target state="final">Ingen brugere fundet.</target>
       </trans-unit>
       <trans-unit id="module_import_users.caption_local">
         <source>LDAP user is available locally</source>
@@ -291,17 +291,17 @@
         <source>Name</source>
         <target state="needs-translation">Name</target>
       </trans-unit>
-      <trans-unit id="module_import_groups_fe">
+      <trans-unit id="module_import_groups_fe" approved="yes">
         <source>Import LDAP groups (Frontend)</source>
-        <target state="needs-translation">Import LDAP groups (Frontend)</target>
+        <target state="final">Importér LDAP-grupper (frontend)</target>
       </trans-unit>
-      <trans-unit id="module_import_groups_be">
+      <trans-unit id="module_import_groups_be" approved="yes">
         <source>Import LDAP groups (Backend)</source>
-        <target state="needs-translation">Import LDAP groups (Backend)</target>
+        <target state="final">Importér LDAP-grupper (backend)</target>
       </trans-unit>
-      <trans-unit id="module_import_groups.empty">
+      <trans-unit id="module_import_groups.empty" approved="yes">
         <source>No groups found.</source>
-        <target state="needs-translation">No groups found.</target>
+        <target state="final">Ingen grupper fundet.</target>
       </trans-unit>
       <trans-unit id="module_import_groups.caption_local">
         <source>LDAP group is available locally</source>

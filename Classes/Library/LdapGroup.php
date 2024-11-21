@@ -128,7 +128,11 @@ class LdapGroup
      */
     public static function getMembership(array $ldapUser = [], array $mapping = [])
     {
-        if (isset($mapping['usergroup']) && preg_match("`<([^$]*)>`", $mapping['usergroup'], $attribute)) {
+        if (
+            isset($mapping['usergroup'])
+            && preg_match("`<([^$]*)>`", $mapping['usergroup'], $attribute)
+            && array_key_exists(strtolower($attribute[1]), $ldapUser)
+        ) {
             return $ldapUser[strtolower($attribute[1])];
         }
 

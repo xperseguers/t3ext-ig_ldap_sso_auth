@@ -11,13 +11,16 @@
  * The TYPO3 project - inspiring people to share!
  */
 
+import DocumentService from '@typo3/core/document-service.js';
+
 class Import {
     create(options) {
-        this.options = options || {};
-        
-        this.initialize();
+        DocumentService.ready().then(() => {
+            this.options = options || {};
+            this.initialize();
+        });
     }
-    
+
     initialize() {
         document.querySelectorAll('button').forEach(function (button) {
             button.addEventListener('click', function () {

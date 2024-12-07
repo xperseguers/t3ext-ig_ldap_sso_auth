@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2015-02-17T16:10:14Z" product-name="ig_ldap_sso_auth" target-language="nl">
+    <header/>
+    <body>
+      <trans-unit id="name.description" approved="yes">
+        <source>Name used to distinguish each configuration.</source>
+        <target state="final">Naam gebruikt on elke configuratie te kunnen herkennen</target>
+      </trans-unit>
+      <trans-unit id="ldap_server.description">
+        <source>Type of LDAP server used by the authentication (OpenLDAP, Active Directory).</source>
+        <target state="needs-translation">Type of LDAP server used by the authentication (OpenLDAP, Active Directory).</target>
+      </trans-unit>
+      <trans-unit id="ldap_charset.description" approved="yes">
+        <source>Character set used by the LDAP server. Usually: utf-8.</source>
+        <target state="final">Tekenset gebruikt door de LDAP server. Standaard: utf-8.</target>
+      </trans-unit>
+      <trans-unit id="ldap_port.description" approved="yes">
+        <source>Port used by the LDAP server. Default: 389.</source>
+        <target state="final">Port gebruikt door LDAP server. Standaard: 389.</target>
+      </trans-unit>
+      <trans-unit id="ldap_binddn.description" approved="yes">
+        <source>DN (Distinguished Name) used to bind to the server.</source>
+        <target state="final">DN (Distinguished Name) gebruikt voor de verbinding met de server.</target>
+      </trans-unit>
+      <trans-unit id="ldap_binddn.syntax" approved="yes">
+        <source>E.g., cn=admin,dc=example,dc=com</source>
+        <target state="final">Bijv. cn=admin,dc=example,dc=com</target>
+      </trans-unit>
+      <trans-unit id="be_users_basedn.description" approved="yes">
+        <source>DN (Distinguished Name) to be used to look for BE users in the LDAP server.</source>
+        <target state="final">DN (Distinguished Name) om BE gebruikers te zoeken in de LDAP server.</target>
+      </trans-unit>
+      <trans-unit id="be_users_basedn.syntax" approved="yes">
+        <source>E.g., ou=USERS,dc=example,dc=com</source>
+        <target state="final">Bijv. ou=USERS,dc=example,dc=com</target>
+      </trans-unit>
+      <trans-unit id="be_users_filter.description" approved="yes">
+        <source>Filter to search for BE users in the LDAP server.</source>
+        <target state="final">Filter om te zoeken naar BE gebruikers in de LDAP server.</target>
+      </trans-unit>
+      <trans-unit id="be_users_filter.syntax" approved="yes">
+        <source>Sample of a filter used for the authentication: (cn={USERNAME})</source>
+        <target state="final">Voorbeel van een filter voor de authenticatie: (cn={USERNAME})</target>
+      </trans-unit>
+      <trans-unit id="be_users_mapping.description" approved="yes">
+        <source>Assign LDAP attribute to a field of the user record.</source>
+        <target state="final">Koppel LDAP attribuut aan een veld in het record van de gebruiker.</target>
+      </trans-unit>
+      <trans-unit id="be_groups_basedn.description" approved="yes">
+        <source>DN (Distinguished Name) to be used to look for BE groups in the LDAP server.</source>
+        <target state="final">DN (Distinguished Name) gebruikt om te zoeken naar BE groepen in de LDAP server.</target>
+      </trans-unit>
+      <trans-unit id="be_groups_basedn.syntax" approved="yes">
+        <source>E.g., ou=GROUPS,dc=example,dc=com</source>
+        <target state="final">Bijv. ou=GROUPS,dc=example,dc=com</target>
+      </trans-unit>
+      <trans-unit id="be_groups_filter.description" approved="yes">
+        <source>Filter to search for BE groups in the LDAP server. Example: (objectClass=posixGroup)</source>
+        <target state="final">Filter voor het zoeken naar BE groepen in de LDAP server. Voorbeeld: (objectClass=posixGroup)</target>
+      </trans-unit>
+      <trans-unit id="be_groups_filter.syntax" approved="yes">
+        <source>Sample if option "Relation between groups and users" is set to "Group contains the list of its members": (memberuid={USERDN})</source>
+        <target state="final">Voorbeeld als optie "Relatie tussen groepen en gebruikers" is ingesteld op "Groep bevat lijst met leden": (memberuid={USERDN})</target>
+      </trans-unit>
+      <trans-unit id="be_groups_mapping.description" approved="yes">
+        <source>Assign LDAP attribute to a field of the user group.</source>
+        <target state="final">LDAP attribuut aan veld van gebruikersgroep toewijzen.</target>
+      </trans-unit>
+      <trans-unit id="be_groups_required.description" approved="yes">
+        <source>List of backend user groups (previously imported from LDAP) required to authorize authentication of LDAP users.</source>
+        <target state="final">Lijst van backendgebruikers (eerder geïmporteerd uit LDAP) benodigd voor het authorizeren van de authenticatie van LDAP gebruikers.</target>
+      </trans-unit>
+      <trans-unit id="be_groups_assigned.description" approved="yes">
+        <source>List of backend user groups to be assigned automatically when authenticating LDAP users.</source>
+        <target state="final">Lijst van backend gebruikersgroepen die automatisch toegewezen moeten worden bij het authenticeren van LDAP gebruikers.</target>
+      </trans-unit>
+      <trans-unit id="be_groups_admin.description" approved="yes">
+        <source>List of backend user groups whose members should be promoted as TYPO3 administrators (valid only as part of LDAP authentication).</source>
+        <target state="final">Lijst van backendgebruikersgroepen waarvan de leden in TYPO3 admin-rechten moeten krijgen (alleen geldig als onderdeel van LDAP authenticatie).</target>
+      </trans-unit>
+      <trans-unit id="fe_users_basedn.description" approved="yes">
+        <source>DN (Distinguished Name) to be used to look for FE users in the LDAP server.</source>
+        <target state="final">DN (Distinguished Name) te gebruiken bij het zoeken naar FE gebruikers in de LDAP server.</target>
+      </trans-unit>
+      <trans-unit id="fe_users_basedn.syntax" approved="yes">
+        <source>E.g., ou=USERS,dc=example,dc=com</source>
+        <target state="final">Bijv. ou=USERS,dc=example,dc=com</target>
+      </trans-unit>
+      <trans-unit id="fe_users_filter.description" approved="yes">
+        <source>Filter to search for FE users in the LDAP server.</source>
+        <target state="final">Filter voor het zoeken naar FE gebruikers in de LDAP server.</target>
+      </trans-unit>
+      <trans-unit id="fe_users_filter.syntax" approved="yes">
+        <source>Sample of a filter used for the authentication: (cn={USERNAME})</source>
+        <target state="final">Voorbeeld van een filter voor authenticatie: (cn={USERNAME})</target>
+      </trans-unit>
+      <trans-unit id="fe_users_mapping.description" approved="yes">
+        <source>Assign LDAP attribute to a field of the user record.</source>
+        <target state="final">Koppel LDAP attribuut aan een veld in het record van de gebruiker.</target>
+      </trans-unit>
+      <trans-unit id="fe_groups_basedn.description" approved="yes">
+        <source>DN (Distinguished Name) to be used to look for FE groups in the LDAP server.</source>
+        <target state="final">DN (Distinguished Name) om te zoeken naar FE groepen in de LDAP server.</target>
+      </trans-unit>
+      <trans-unit id="fe_groups_basedn.syntax" approved="yes">
+        <source>E.g., ou=GROUPS,dc=example,dc=com</source>
+        <target state="final">Bijv. ou=GROUPS,dc=example,dc=com</target>
+      </trans-unit>
+      <trans-unit id="fe_groups_filter.description" approved="yes">
+        <source>Filter to search for FE groups in the LDAP server. Example: (objectClass=posixGroup)</source>
+        <target state="final">Filter om te zoeken naar FE groepen in de LDAP server. Voorbeeld: (objectClass=posixGroup)</target>
+      </trans-unit>
+      <trans-unit id="fe_groups_filter.syntax" approved="yes">
+        <source>Sample if option "Relation between groups and users" is set to "Group contains the list of its members": (memberuid={USERDN})</source>
+        <target state="final">Voorbeeld als de optie "Relatie tussen groepen en gebruikers" is ingesteld op "Groep bevat lijst van leden": (memberuid={USERDN})</target>
+      </trans-unit>
+      <trans-unit id="fe_groups_mapping.description" approved="yes">
+        <source>Assign LDAP attribute to a field of the group record.</source>
+        <target state="final">Wijs LDAP attribuut toe aan een veld van het groep-record.</target>
+      </trans-unit>
+      <trans-unit id="fe_groups_required.description" approved="yes">
+        <source>List of frontend user groups (previously imported from LDAP) required to authorize authentication of LDAP users.</source>
+        <target state="final">Lijst van frontend gebruikersgroepen (eerder geïmporteerd uit LDAP) benodigd voor het authorizeren van de authenticatie van LDAP-gebruikers.</target>
+      </trans-unit>
+      <trans-unit id="fe_groups_assigned.description" approved="yes">
+        <source>List of frontend user groups to be assigned automatically when authenticating LDAP users.</source>
+        <target state="final">Lijst van frontend gebruikersgroepen die automatisch toegewezen moeten worden biji het authenticeren van LDAP-gebruikers.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

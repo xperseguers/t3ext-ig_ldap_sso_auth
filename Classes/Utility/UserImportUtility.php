@@ -285,7 +285,7 @@ class UserImportUtility
             $user['__extraData'] = $extraData;
 
             // Hook for processing the extra data
-            if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'])) {
+            if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'] ?? null)) {
                 foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['ig_ldap_sso_auth']['extraDataProcessing'] as $className) {
                     trigger_error(
                         'Hook extraDataProcessing is deprecated since version 4.1. Please migrate '

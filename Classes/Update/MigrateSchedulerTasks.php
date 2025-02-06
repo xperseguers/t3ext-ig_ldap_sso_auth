@@ -205,8 +205,13 @@ class MigrateSchedulerTasks implements UpgradeWizardInterface
      */
     protected function getOldSchedulerTasks(): array
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($this->tableName);
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($this->tableName);
         try {
+            if(!$connection->createSchemaManager()->tablesExist([$this->tableName])) {
+                return [];
+            }
+
+            $queryBuilder = $connection->createQueryBuilder();
             return $queryBuilder
                 ->select('*')
                 ->from($this->tableName)

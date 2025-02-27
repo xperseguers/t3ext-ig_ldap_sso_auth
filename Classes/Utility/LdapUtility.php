@@ -361,13 +361,16 @@ class LdapUtility
                 $this->paginationCookie = null;
             }
 
-            $ldapControls = ldap_read($this->connection, '', '(objectClass=*)', ['supportedControl']);
-            $ldapEntries = ldap_get_entries($this->connection, $ldapControls);
-            if (isset($ldapEntries[0]['supportedcontrol']) && in_array(LDAP_CONTROL_PAGEDRESULTS, $ldapEntries[0]['supportedcontrol'])) {
-                $this->hasPagination = true;
+            $ldapControls = @ldap_read($this->connection, '', '(objectClass=*)', ['supportedControl']);
+            if ($ldapControls !== false) {
+                $ldapEntries = ldap_get_entries($this->connection, $ldapControls);
+                $this->hasPagination = isset($ldapEntries[0]['supportedcontrol']) && in_array(LDAP_CONTROL_PAGEDRESULTS, $ldapEntries[0]['supportedcontrol']);
             }
 
-            $controls = [['oid' => LDAP_CONTROL_PAGEDRESULTS, 'value' => ['size' => static::MAX_ENTRIES, 'cookie' => $this->paginationCookie]]];
+            $controls = [];
+            if ($this->hasPagination) {
+                $controls = [['oid' => LDAP_CONTROL_PAGEDRESULTS, 'value' => ['size' => static::MAX_ENTRIES, 'cookie' => $this->paginationCookie]]];
+            }
             $this->searchResult = @ldap_search(
                 $this->connection,
                 $baseDn,

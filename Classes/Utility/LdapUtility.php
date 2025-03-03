@@ -495,7 +495,7 @@ class LdapUtility
         $tempEntry = [];
         if (is_resource($this->firstResultEntry) || is_object($this->firstResultEntry) /* PHP 8.1 */) {
             $attributes = @ldap_get_attributes($this->connection, $this->firstResultEntry);
-            $entry = @ldap_first_entry($this->connection, $this->firstResultEntry);
+            $entry = @ldap_first_entry($this->connection, $this->searchResult);
 
             $event = NotificationUtility::dispatch(new AttributesProcessingEvent(
                 $this->connection,

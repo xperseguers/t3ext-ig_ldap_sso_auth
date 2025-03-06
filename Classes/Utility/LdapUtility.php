@@ -156,7 +156,7 @@ class LdapUtility
         $this->status['connect']['port'] = $port;
         $this->serverType = $serverType;
 
-        // Set custom network ldapTimeout
+        // Set custom network timeout
         if ($timeout) {
             @ldap_set_option(null, LDAP_OPT_NETWORK_TIMEOUT, $timeout);
         }
@@ -192,6 +192,12 @@ class LdapUtility
         // We only support LDAP v3 from now on
         $protocol = 3;
         @ldap_set_option($this->connection, LDAP_OPT_PROTOCOL_VERSION, $protocol);
+
+        // Keep the connection alive (options at least supported by OpenLDAP)
+        @ldap_set_option($this->connection, LDAP_OPT_RESTART, true);
+        @ldap_set_option($this->connection, LDAP_OPT_X_KEEPALIVE_IDLE, 60);
+        @ldap_set_option($this->connection, LDAP_OPT_X_KEEPALIVE_PROBES, 3);
+        @ldap_set_option($this->connection, LDAP_OPT_X_KEEPALIVE_INTERVAL, 30);
 
         // Active Directory (User@Domain) configuration
         if ($serverType === 'Active Directory') {

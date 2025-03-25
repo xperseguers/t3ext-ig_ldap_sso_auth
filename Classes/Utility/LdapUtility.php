@@ -504,6 +504,14 @@ class LdapUtility
         $tempEntry = [];
         if (is_resource($this->firstResultEntry) || is_object($this->firstResultEntry) /* PHP 8.1 */) {
             $attributes = @ldap_get_attributes($this->connection, $this->firstResultEntry);
+
+            $event = NotificationUtility::dispatch(new AttributesProcessingEvent(
+                $this->connection,
+                $this->firstResultEntry,
+                $attributes
+            ));
+            $attributes = $event->getAttributes();
+
             foreach ($attributes as $key => $value) {
                 $tempEntry[strtolower((string)$key)] = $value;
             }

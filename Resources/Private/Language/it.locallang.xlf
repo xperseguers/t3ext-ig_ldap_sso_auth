@@ -5,7 +5,7 @@
     <body>
       <trans-unit id="mlang_tabs_tab">
         <source>LDAP / SSO</source>
-        <target state="needs-translation">LDAP / SSO</target>
+        <target state="translated">LDAP / SSO</target>
       </trans-unit>
       <trans-unit id="mlang_labels_tabdescr" approved="yes">
         <source>LDAP management and configuration module.</source>
@@ -29,11 +29,11 @@
       </trans-unit>
       <trans-unit id="module_docheader.configurations.switch">
         <source>Switch configuration</source>
-        <target state="needs-translation">Switch configuration</target>
+        <target state="translated">Cambia configurazione</target>
       </trans-unit>
       <trans-unit id="module_docheader.configurations.edit">
         <source>Edit current configuration</source>
-        <target state="needs-translation">Edit current configuration</target>
+        <target state="translated">Modifica la configurazione corrente</target>
       </trans-unit>
       <trans-unit id="module_overview" approved="yes">
         <source>Overview</source>
@@ -53,7 +53,7 @@
       </trans-unit>
       <trans-unit id="module_status.title.ldap">
         <source>LDAP</source>
-        <target state="needs-translation">LDAP</target>
+        <target state="translated">LDAP</target>
       </trans-unit>
       <trans-unit id="module_status.messages.ldapDisable" approved="yes">
         <source>LDAP is disabled since the host name is undefined.</source>
@@ -93,7 +93,7 @@
       </trans-unit>
       <trans-unit id="module_status.configuration.host">
         <source>Host</source>
-        <target state="needs-translation">Host</target>
+        <target state="translated">Host</target>
       </trans-unit>
       <trans-unit id="module_status.configuration.port">
         <source>Port</source>
@@ -113,11 +113,11 @@
       </trans-unit>
       <trans-unit id="module_status.configuration.binddn">
         <source>Bind DN</source>
-        <target state="needs-translation">Bind DN</target>
+        <target state="translated">Bind DN</target>
       </trans-unit>
       <trans-unit id="module_status.configuration.password">
         <source>Password</source>
-        <target state="needs-translation">Password</target>
+        <target state="translated">Password</target>
       </trans-unit>
       <trans-unit id="module_status.configuration.connect" approved="yes">
         <source>LDAP connect</source>
@@ -133,7 +133,7 @@
       </trans-unit>
       <trans-unit id="module_status.configuration.SSOAuthentication">
         <source>Single Sign On (SSO)</source>
-        <target state="needs-translation">Single Sign On (SSO)</target>
+        <target state="translated">Single Sign On (SSO)</target>
       </trans-unit>
       <trans-unit id="module_status.configuration.forceLowerCaseUsername" approved="yes">
         <source>Convert user name to lower-case</source>
@@ -229,7 +229,7 @@
       </trans-unit>
       <trans-unit id="module_search_basedn">
         <source>Base DN</source>
-        <target state="needs-translation">Base DN</target>
+        <target state="translated">Base DN</target>
       </trans-unit>
       <trans-unit id="module_search_filter" approved="yes">
         <source>Filter</source>

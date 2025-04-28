@@ -18,6 +18,8 @@ defined('TYPO3_MODE') || defined('TYPO3') || die();
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['getTable'][] = \Causal\IgLdapSsoAuth\Hooks\DatabaseRecordListIconUtility::class;
 
+    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][\TYPO3\CMS\Lowlevel\Controller\ConfigurationController::class]['modifyBlindedConfigurationOptions'][] = \Causal\IgLdapSsoAuth\Hooks\BlindedConfigurationOptionsHook::class;
+
     // Service configuration
     $subTypesArr = [];
     $subTypes = '';

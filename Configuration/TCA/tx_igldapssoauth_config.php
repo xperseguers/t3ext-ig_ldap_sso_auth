@@ -172,12 +172,16 @@ return [
         'ldap_timeout' => [
             'exclude' => true,
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_timeout',
-            'config' => [
-                'type' => 'input',
-                'size' => 4,
-                'eval' => 'int',
-                'default' => 0,
-            ],
+            'config' => $typo3Version >= 12
+                ? [
+                    'type' => 'number',
+                ]
+                : [
+                    'type' => 'input',
+                    'size' => 4,
+                    'eval' => 'int',
+                    'default' => 0,
+                ],
         ],
         'ldap_binddn' => [
             'exclude' => true,

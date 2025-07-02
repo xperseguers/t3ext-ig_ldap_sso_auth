@@ -19,12 +19,10 @@ namespace Causal\IgLdapSsoAuth\EventListener;
 
 use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
 use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
-use Causal\IgLdapSsoAuth\Library\Authentication;
 use Causal\IgLdapSsoAuth\Library\Configuration;
 use Causal\IgLdapSsoAuth\Library\Ldap;
-use Causal\IgLdapSsoAuth\Utility\Typo3Utility;
+use Causal\IgLdapSsoAuth\Utility\CompatUtility;
 use TYPO3\CMS\Backend\Security\SudoMode\Event\SudoModeVerifyEvent;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 final class SudoModeVerifyEventListener
 {
@@ -35,12 +33,12 @@ final class SudoModeVerifyEventListener
     ) {
     }
 
-	public function __invoke(SudoModeVerifyEvent $event): void
-	{
+    public function __invoke(SudoModeVerifyEvent $event): void
+    {
         // SSO for BE means the user has to use the install tool password
-		if (!$event->isUseInstallToolPassword() && !$this->extensionConfiguration['enableBESSO']) {
+        if (!$event->isUseInstallToolPassword() && !$this->extensionConfiguration['enableBESSO']) {
             foreach ($this->configurationRepository->findAll() as $configurationRecord) {
-                Configuration::initialize(Typo3Utility::getTypo3Mode('BE'), $configurationRecord);
+                Configuration::initialize(CompatUtility::getTypo3Mode('BE'), $configurationRecord);
                 if (!Configuration::isEnabledForCurrentHost()) {
                     continue;
                 }
@@ -66,6 +64,6 @@ final class SudoModeVerifyEventListener
                 } catch (UnresolvedPhpDependencyException $e) {
                 }
             }
-		}
-	}
+        }
+    }
 }

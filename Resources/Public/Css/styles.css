@@ -12,6 +12,8 @@ div.module[data-module-name="system_IgLdapSsoAuthTxigldapssoauthm1"] > .module-b
 .module-docheader {
     /** Prevent too much space between the module header and the module body **/
     position: fixed;
+    flex-direction: row;
+    z-index: 1;
 }
 
 dl.t3-overview-list {

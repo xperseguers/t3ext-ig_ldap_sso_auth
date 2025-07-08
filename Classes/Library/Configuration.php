@@ -376,7 +376,7 @@ class Configuration
         $ldapAttributes = [];
         if (is_array($mapping)) {
             foreach ($mapping as $field => $attribute) {
-                if (str_ends_with($field, '.')) {
+                if (str_ends_with((string)$field, '.')) {
                     // This is a TypoScript configuration
                     continue;
                 }

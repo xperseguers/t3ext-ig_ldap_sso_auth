@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2024-10-17T13:30:10Z" product-name="ig_ldap_sso_auth" target-language="t3">
+    <header/>
+    <body>
+      <trans-unit id="mlang_tabs_tab">
+        <source>LDAP / SSO</source>
+        <target>crwdns227877:0crwdne227877:0</target>
+      </trans-unit>
+      <trans-unit id="mlang_labels_tabdescr">
+        <source>LDAP management and configuration module.</source>
+        <target>crwdns227879:0crwdne227879:0</target>
+      </trans-unit>
+      <trans-unit id="mlang_labels_tablabel">
+        <source>LDAP management</source>
+        <target>crwdns227881:0crwdne227881:0</target>
+      </trans-unit>
+      <trans-unit id="title">
+        <source>LDAP / SSO service management</source>
+        <target>crwdns227883:0crwdne227883:0</target>
+      </trans-unit>
+      <trans-unit id="configuration_missing.title">
+        <source>No Configuration Records</source>
+        <target>crwdns227885:0crwdne227885:0</target>
+      </trans-unit>
+      <trans-unit id="configuration_missing.message">
+        <source><![CDATA[This module cannot be used until you create at least one configuration record. Please refer to the <a href="%s" target="_blank">administrator manual</a> for further information.<br /><br /><a href="%s">Click here</a> to create a configuration record.]]></source>
+        <target><![CDATA[crwdns227887:0%scrwdnd227887:0%scrwdne227887:0]]></target>
+      </trans-unit>
+      <trans-unit id="module_docheader.configurations.switch">
+        <source>Switch configuration</source>
+        <target>crwdns342112:0crwdne342112:0</target>
+      </trans-unit>
+      <trans-unit id="module_docheader.configurations.edit">
+        <source>Edit current configuration</source>
+        <target>crwdns342114:0crwdne342114:0</target>
+      </trans-unit>
+      <trans-unit id="module_overview">
+        <source>Overview</source>
+        <target>crwdns227889:0crwdne227889:0</target>
+      </trans-unit>
+      <trans-unit id="module_status">
+        <source>Status</source>
+        <target>crwdns227891:0crwdne227891:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.title.domains">
+        <source>Domains</source>
+        <target>crwdns227893:0crwdne227893:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.description.domains">
+        <source>Current LDAP configuration is restricted to following domain(s):</source>
+        <target>crwdns227895:0crwdne227895:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.title.ldap">
+        <source>LDAP</source>
+        <target>crwdns227897:0crwdne227897:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.messages.ldapDisable">
+        <source>LDAP is disabled since the host name is undefined.</source>
+        <target>crwdns227899:0crwdne227899:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.messages.enabled">
+        <source>enabled</source>
+        <target>crwdns227901:0crwdne227901:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.messages.disabled">
+        <source>disabled</source>
+        <target>crwdns227903:0crwdne227903:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.messages.empty">
+        <source>none</source>
+        <target>crwdns227905:0crwdne227905:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.title.connection">
+        <source>Connection status</source>
+        <target>crwdns227907:0crwdne227907:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.title.frontend">
+        <source>Frontend authentication</source>
+        <target>crwdns227909:0crwdne227909:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.title.backend">
+        <source>Backend authentication</source>
+        <target>crwdns227911:0crwdne227911:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.server">
+        <source>Server type</source>
+        <target>crwdns227913:0crwdne227913:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.charset">
+        <source>Character set</source>
+        <target>crwdns227915:0crwdne227915:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.host">
+        <source>Host</source>
+        <target>crwdns227917:0crwdne227917:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.port">
+        <source>Port</source>
+        <target>crwdns227919:0crwdne227919:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.tls">
+        <source>Use TLS</source>
+        <target>crwdns227921:0crwdne227921:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.tlsReqcert">
+        <source>TLS require cert</source>
+        <target>crwdns227923:0crwdne227923:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.ssl">
+        <source>Use SSL</source>
+        <target>crwdns227925:0crwdne227925:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.binddn">
+        <source>Bind DN</source>
+        <target>crwdns227927:0crwdne227927:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.password">
+        <source>Password</source>
+        <target>crwdns227929:0crwdne227929:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.connect">
+        <source>LDAP connect</source>
+        <target>crwdns227931:0crwdne227931:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.bind">
+        <source>LDAP bind</source>
+        <target>crwdns227933:0crwdne227933:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.LDAPAuthentication">
+        <source>LDAP authentication</source>
+        <target>crwdns227935:0crwdne227935:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.SSOAuthentication">
+        <source>Single Sign On (SSO)</source>
+        <target>crwdns227937:0crwdne227937:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.forceLowerCaseUsername">
+        <source>Convert user name to lower-case</source>
+        <target>crwdns227939:0crwdne227939:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.evaluateGroupsFromMembership">
+        <source>Extract groups from membership attribute</source>
+        <target>crwdns227941:0crwdne227941:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.IfUserExist">
+        <source>User must exist already</source>
+        <target>crwdns227943:0crwdne227943:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.IfGroupExist">
+        <source>User group must exist already</source>
+        <target>crwdns227945:0crwdne227945:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.BEfailsafe">
+        <source>Local (non-LDAP) users may authenticate</source>
+        <target>crwdns227947:0crwdne227947:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.updateAdminAttribForGroups">
+        <source>User groups promoted as TYPO3 administrators</source>
+        <target>crwdns227949:0crwdne227949:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.DeleteUserIfNoTYPO3Groups">
+        <source>Delete user if not in any TYPO3 user groups</source>
+        <target>crwdns227951:0crwdne227951:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.DeleteUserIfNoLDAPGroups">
+        <source>Delete user if not in any LDAP user groups</source>
+        <target>crwdns227953:0crwdne227953:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.GroupsNotSynchronize">
+        <source>Prevent synchronization of user groups</source>
+        <target>crwdns227955:0crwdne227955:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.assignGroups">
+        <source>Additional TYPO3 user groups assigned</source>
+        <target>crwdns227957:0crwdne227957:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.keepTYPO3Groups">
+        <source>Keep locally-assigned TYPO3 user groups</source>
+        <target>crwdns227959:0crwdne227959:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.requiredLDAPGroups">
+        <source>Required LDAP user groups to validate authentication</source>
+        <target>crwdns227961:0crwdne227961:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.users">
+        <source>Configuration for users</source>
+        <target>crwdns227963:0crwdne227963:0</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.groups">
+        <source>Configuration for user groups</source>
+        <target>crwdns227965:0crwdne227965:0</target>
+      </trans-unit>
+      <trans-unit id="module_search">
+        <source>Search wizard</source>
+        <target>crwdns227967:0crwdne227967:0</target>
+      </trans-unit>
+      <trans-unit id="module_search_type">
+        <source>Type</source>
+        <target>crwdns227969:0crwdne227969:0</target>
+      </trans-unit>
+      <trans-unit id="module_search_type.frontendUsers">
+        <source>Frontend users</source>
+        <target>crwdns227971:0crwdne227971:0</target>
+      </trans-unit>
+      <trans-unit id="module_search_type.frontendUserGroups">
+        <source>Frontend user groups</source>
+        <target>crwdns227973:0crwdne227973:0</target>
+      </trans-unit>
+      <trans-unit id="module_search_type.backendUsers">
+        <source>Backend users</source>
+        <target>crwdns227975:0crwdne227975:0</target>
+      </trans-unit>
+      <trans-unit id="module_search_type.backendUserGroups">
+        <source>Backend user groups</source>
+        <target>crwdns227977:0crwdne227977:0</target>
+      </trans-unit>
+      <trans-unit id="module_search_options">
+        <source>Options</source>
+        <target>crwdns227979:0crwdne227979:0</target>
+      </trans-unit>
+      <trans-unit id="module_search_options.firstEntry">
+        <source>First entry only</source>
+        <target>crwdns227981:0crwdne227981:0</target>
+      </trans-unit>
+      <trans-unit id="module_search_options.status">
+        <source>Show status</source>
+        <target>crwdns227983:0crwdne227983:0</target>
+      </trans-unit>
+      <trans-unit id="module_search_basedn">
+        <source>Base DN</source>
+        <target>crwdns227985:0crwdne227985:0</target>
+      </trans-unit>
+      <trans-unit id="module_search_filter">
+        <source>Filter</source>
+        <target>crwdns227987:0crwdne227987:0</target>
+      </trans-unit>
+      <trans-unit id="module_search.action.search">
+        <source>search</source>
+        <target>crwdns227989:0crwdne227989:0</target>
+      </trans-unit>
+      <trans-unit id="module_search_status">
+        <source>LDAP search status</source>
+        <target>crwdns227991:0crwdne227991:0</target>
+      </trans-unit>
+      <trans-unit id="module_search_result">
+        <source>Result</source>
+        <target>crwdns227993:0crwdne227993:0</target>
+      </trans-unit>
+      <trans-unit id="module_search_noResult">
+        <source>No results</source>
+        <target>crwdns227995:0crwdne227995:0</target>
+      </trans-unit>
+      <trans-unit id="module_search_preview">
+        <source>Preview mapping</source>
+        <target>crwdns227997:0crwdne227997:0</target>
+      </trans-unit>
+      <trans-unit id="module_import.action.import">
+        <source>import</source>
+        <target>crwdns227999:0crwdne227999:0</target>
+      </trans-unit>
+      <trans-unit id="module_import.action.update">
+        <source>update</source>
+        <target>crwdns228001:0crwdne228001:0</target>
+      </trans-unit>
+      <trans-unit id="module_import.action.undelete">
+        <source>undelete</source>
+        <target>crwdns228003:0crwdne228003:0</target>
+      </trans-unit>
+      <trans-unit id="module_import_users_fe">
+        <source>Import LDAP users (Frontend)</source>
+        <target>crwdns228005:0crwdne228005:0</target>
+      </trans-unit>
+      <trans-unit id="module_import_users_be">
+        <source>Import LDAP users (Backend)</source>
+        <target>crwdns228007:0crwdne228007:0</target>
+      </trans-unit>
+      <trans-unit id="module_import_users.empty">
+        <source>No users found.</source>
+        <target>crwdns228009:0crwdne228009:0</target>
+      </trans-unit>
+      <trans-unit id="module_import_users.caption_local">
+        <source>LDAP user is available locally</source>
+        <target>crwdns228011:0crwdne228011:0</target>
+      </trans-unit>
+      <trans-unit id="module_import_users.caption_deleted">
+        <source>LDAP user has been imported but then manually deleted</source>
+        <target>crwdns228013:0crwdne228013:0</target>
+      </trans-unit>
+      <trans-unit id="module_import.field.name">
+        <source>Name</source>
+        <target>crwdns228015:0crwdne228015:0</target>
+      </trans-unit>
+      <trans-unit id="module_import_groups_fe">
+        <source>Import LDAP groups (Frontend)</source>
+        <target>crwdns228017:0crwdne228017:0</target>
+      </trans-unit>
+      <trans-unit id="module_import_groups_be">
+        <source>Import LDAP groups (Backend)</source>
+        <target>crwdns228019:0crwdne228019:0</target>
+      </trans-unit>
+      <trans-unit id="module_import_groups.empty">
+        <source>No groups found.</source>
+        <target>crwdns228021:0crwdne228021:0</target>
+      </trans-unit>
+      <trans-unit id="module_import_groups.caption_local">
+        <source>LDAP group is available locally</source>
+        <target>crwdns228023:0crwdne228023:0</target>
+      </trans-unit>
+      <trans-unit id="module_import_groups.caption_deleted">
+        <source>LDAP group has been imported but then manually deleted</source>
+        <target>crwdns228025:0crwdne228025:0</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

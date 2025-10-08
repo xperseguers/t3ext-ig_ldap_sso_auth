@@ -24,7 +24,7 @@ Links
 	https://crowdin.com/project/typo3-extension-igldapssoauth
 
 :Contact:
-	`@xperseguers <https://twitter.com/xperseguers>`__
+	`@xperseguers <https://x.com/xperseguers>`__
 
 
 .. _links-how-to-contribute:

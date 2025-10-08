@@ -9,5 +9,5 @@
                edit-on-github-branch="master"
                edit-on-github="xperseguers/t3ext-ig_ldap_sso_auth"
                typo3-core-preferred="stable"/>
-    <project title="LDAP / SSO Authentication" release="4.1.0" version="4.1" copyright="2000-2025"/>
+    <project title="LDAP / SSO Authentication" release="4.2.0" version="4.2" copyright="2000-2025"/>
 </guides>

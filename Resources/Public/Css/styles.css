@@ -8,10 +8,12 @@ div.module[data-module-name="system_IgLdapSsoAuthTxigldapssoauthm1"] > .module-b
 }
 /** [end] **/
 
-/** TYPO3 v12 fix (same as v11 actually), weird! **/
+/** TYPO3 v13 fix (same as v12/v11 actually), weird! **/
 .module-docheader {
     /** Prevent too much space between the module header and the module body **/
     position: fixed;
+    z-index: 1;
+    width: 100%;
 }
 
 dl.t3-overview-list {

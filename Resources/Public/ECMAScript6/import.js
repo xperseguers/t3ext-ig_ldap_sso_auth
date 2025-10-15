@@ -32,7 +32,7 @@ class Import {
             event.preventDefault();
 
             let dn = document.getElementById('tx-igldapssoauth-dn').value;
-            dn = dn.replace('\\', '\\\\');
+            dn = dn.replaceAll('\\', '\\\\');
 
             this.ldapImport(document.querySelector('button[value="' + dn + '"]').closest('tr'));
         }.bind(this));

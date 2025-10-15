@@ -35,7 +35,7 @@ define([
         IgLdapSsoAuthImport.fields.form.submit(function (e) {
             e.preventDefault(); // this will prevent from submitting the form
             var dn = $('#tx-igldapssoauth-dn').val();
-            dn = dn.replace('\\', '\\\\');
+            dn = dn.replaceAll('\\', '\\\\');
             IgLdapSsoAuthImport.ldapImport($("button[value='" + dn + "']").closest('tr'));
         });
     };

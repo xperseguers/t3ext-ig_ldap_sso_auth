@@ -40,6 +40,22 @@ services:
         identifier: 'causal.ig_ldap_sso_auth.overrideIconOverlayListener'
         event: TYPO3\CMS\Core\Imaging\Event\ModifyRecordOverlayIconIdentifierEvent
 
+  extensionConfiguration:
+    class: 'string'
+    factory:
+      - '@TYPO3\CMS\Core\Configuration\ExtensionConfiguration'
+      - 'get'
+    arguments:
+      - 'ig_ldap_sso_auth'
+
+  Causal\IgLdapSsoAuth\EventListener\SudoModeVerifyEventListener:
+    tags:
+      - name: event.listener
+        identifier: 'causal.ig_ldap_sso_auth.sudoModeVerifyEventListener'
+        event: TYPO3\CMS\Backend\Security\SudoMode\Event\SudoModeVerifyEvent
+    arguments:
+      $extensionConfiguration: '@extensionConfiguration'
+
   # Register command
   Causal\IgLdapSsoAuth\Command\ImportUsers:
     tags:

@@ -118,6 +118,10 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
             $iconFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconFactory::class);
         }
 
+        $iconSizeSmall = (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 13
+            ? \TYPO3\CMS\Core\Imaging\IconSize::SMALL
+            : \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL;
+
         $class = 'value-default';
 
         if (is_bool($value)) {
@@ -130,7 +134,7 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
                 $messageId = 'module_status.messages.disabled';
                 $class = 'value-disabled';
             }
-            $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
+            $value = $iconFactory->getIcon($icon, $iconSizeSmall)->render();
             $value .=  ' ' . htmlspecialchars($this->translate($messageId));
         } elseif ($depth > 1 && $key === 'status') {
             $label = $value;
@@ -142,7 +146,7 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
                 $class = 'value-error';
                 $hasError = true;
             }
-            $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
+            $value = $iconFactory->getIcon($icon, $iconSizeSmall)->render();
             $value .=  ' ' . htmlspecialchars($label);
         } elseif ($value instanceof \TYPO3\CMS\Extbase\DomainObject\AbstractEntity) {
             if ($value instanceof \Causal\IgLdapSsoAuth\Domain\Model\BackendUserGroup) {
@@ -166,7 +170,7 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
                 [],
                 null
             );
-            $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL, $overlay)->render() . ' ' . htmlspecialchars($value->getTitle());
+            $value = $iconFactory->getIcon($icon, $iconSizeSmall, $overlay)->render() . ' ' . htmlspecialchars($value->getTitle());
             $value = str_replace('<img src=', '<img title="' . htmlspecialchars($options['title']) . '" src=', $value);
         } else {
             $value = htmlspecialchars((string)$value);

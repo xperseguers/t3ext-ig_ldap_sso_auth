@@ -153,12 +153,19 @@ class Typo3UserRepository
                 }
             }
 
-            $users = $queryBuilder
+            $queryBuilder
                 ->select('*')
                 ->from($table)
                 ->where($where)
-                ->orderBy('tx_igldapssoauth_dn', 'DESC')    // rows from LDAP first...
-                ->addOrderBy('deleted', 'ASC')              // ... then privilege active records
+                ->orderBy('tx_igldapssoauth_dn', 'DESC');    // rows from LDAP first...
+
+            // Only for BE users, table fe_users has no 'deleted' column
+            if ($table !== 'fe_users') {
+                // ... then privilege active records
+                $queryBuilder->addOrderBy('deleted', 'ASC');
+            }
+
+            $users = $queryBuilder
                 ->executeQuery()
                 ->fetchAllAssociative();
         } elseif (!empty($username)) {
@@ -211,6 +218,11 @@ class Typo3UserRepository
         $data['tstamp'] = (int)$data['tstamp'];
         $data['disable'] = (int)$data['disable'];
 
+        // Remove 'deleted' column for fe_users as it does not exist in that table
+        if ($table === 'fe_users' && isset($data['deleted'])) {
+            unset($data['deleted']);
+        }
+
         $tableConnection->insert(
             $table,
             $data
@@ -255,6 +267,11 @@ class Typo3UserRepository
         // tstamp and disable needs to be int. If it's empty it's transferred as ""
         $cleanData['tstamp'] = (int)$cleanData['tstamp'];
         $cleanData['disable'] = (int)$cleanData['disable'];
+
+        // Remove 'deleted' column for fe_users as it does not exist in that table
+        if ($table === 'fe_users' && isset($cleanData['deleted'])) {
+            unset($cleanData['deleted']);
+        }
 
         $affectedRows = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getConnectionForTable($table)

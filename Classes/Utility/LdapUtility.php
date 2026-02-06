@@ -19,7 +19,6 @@ namespace Causal\IgLdapSsoAuth\Utility;
 use Causal\IgLdapSsoAuth\Event\AttributesProcessingEvent;
 use LDAP\Connection;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
-use TYPO3\CMS\Core\Charset\CharsetConverter;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Exception\InvalidHostnameException;
 use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
@@ -105,15 +104,6 @@ class LdapUtility
      * @var string
      */
     protected ?string $paginationCookie = null;
-
-    /**
-     * @param CharsetConverter $charsetConverter
-     */
-    public function __construct(
-        protected readonly CharsetConverter $charsetConverter
-    )
-    {
-    }
 
     /**
      * Connects to an LDAP server.
@@ -558,7 +548,7 @@ class LdapUtility
     protected function initializeCharacterSet(?string $characterSet = null): void
     {
         // LDAP server charset
-        $this->ldapCharacterSet = !empty($characterSet) ? trim(strtolower($characterSet)) : 'utf-8';
+        $this->ldapCharacterSet = !empty($characterSet) ? strtolower(trim($characterSet)) : 'utf-8';
 
         // TYPO3 charset
         $this->typo3CharacterSet = 'utf-8';
@@ -578,7 +568,7 @@ class LdapUtility
         string $toCharacterSet
     )
     {
-        if (!is_array($arr)) {
+        if (!is_array($arr) || $fromCharacterSet === $toCharacterSet) {
             return $arr;
         }
 
@@ -586,7 +576,7 @@ class LdapUtility
             if (is_array($val)) {
                 $arr[$k] = $this->convertCharacterSetForArray($val, $fromCharacterSet, $toCharacterSet);
             } else {
-                $arr[$k] = $this->charsetConverter->conv((string)$val, $fromCharacterSet, $toCharacterSet);
+                $arr[$k] = mb_convert_encoding((string)$val, $toCharacterSet, $fromCharacterSet);;
             }
         }
 

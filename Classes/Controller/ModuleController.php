@@ -940,7 +940,10 @@ class ModuleController extends ActionController
             $editUri = $editRecordModuleUrl . '&returnUrl=' . urlencode($thisUri) . '&edit[tx_igldapssoauth_config][' . $configuration->getUid() . ']=edit';
             /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
             $iconFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconFactory::class);
-            $icon = $iconFactory->getIcon('actions-document-open', \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
+            $iconSize = $typo3Version >= 13
+                ? \TYPO3\CMS\Core\Imaging\IconSize::SMALL
+                : \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL;
+            $icon = $iconFactory->getIcon('actions-document-open', $iconSize)->render();
             $editLink = sprintf(
                 ' <a href="%s" title="uid=%s" class="btn btn-default btn-sm" style="vertical-align: inherit;">' . $icon . '</a>',
                 $editUri,

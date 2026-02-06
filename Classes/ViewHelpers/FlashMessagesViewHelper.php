@@ -16,6 +16,7 @@ declare(strict_types=1);
 
 namespace Causal\IgLdapSsoAuth\ViewHelpers;
 
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
@@ -90,7 +91,16 @@ class FlashMessagesViewHelper extends AbstractViewHelper
 
         if ($queueIdentifier === null) {
             /** @var RenderingContext $renderingContext */
-            $request = $renderingContext->getRequest();
+            $renderingContext = $this->renderingContext;
+            if (
+                method_exists($renderingContext, 'getAttribute') &&
+                method_exists($renderingContext, 'hasAttribute') &&
+                $renderingContext->hasAttribute(ServerRequestInterface::class)
+            ) {
+                $request = $renderingContext->getAttribute(ServerRequestInterface::class);
+            } else {
+                $request = $renderingContext->getRequest();
+            }
             if (!$request instanceof RequestInterface) {
                 // Throw if not an extbase request
                 throw new \RuntimeException(

@@ -50,6 +50,8 @@ class ModuleController extends ActionController
 {
     protected ?ModuleTemplate $moduleTemplate = null;
 
+    private readonly int $typo3Version;
+
     /**
      * @param ModuleTemplateFactory $moduleTemplateFactory
      * @param ConfigurationRepository $configurationRepository
@@ -61,6 +63,7 @@ class ModuleController extends ActionController
         private readonly Ldap $ldap
     )
     {
+        $this->typo3Version = (new Typo3Version())->getMajorVersion();
     }
 
     public function initializeAction(): void
@@ -118,8 +121,7 @@ class ModuleController extends ActionController
         $this->saveState($configuration);
         $this->populateView($configuration);
 
-        $typo3Version = (new Typo3Version())->getMajorVersion();
-        if ($typo3Version < 12) {
+        if ($this->typo3Version < 12) {
             $this->moduleTemplate->setContent($this->view->render());
             return $this->htmlResponse($this->moduleTemplate->renderContent());
         }
@@ -146,7 +148,6 @@ class ModuleController extends ActionController
         Configuration::initialize(CompatUtility::getTypo3Mode(), $configuration);
         $this->populateView($configuration);
 
-        $typo3Version = (new Typo3Version())->getMajorVersion();
         $ldapConfiguration = Configuration::getLdapConfiguration();
         $connectionStatus = [];
 
@@ -160,7 +161,7 @@ class ModuleController extends ActionController
                 $this->addFlashMessage(
                     $e->getMessage(),
                     'Error ' . $e->getCode(),
-                    $typo3Version >= 12
+                    $this->typo3Version >= 12
                         ? ContextualFeedbackSeverity::ERROR
                         : \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
                 );
@@ -195,7 +196,7 @@ class ModuleController extends ActionController
             ],
         ];
 
-        if ($typo3Version < 12) {
+        if ($this->typo3Version < 12) {
             $this->view->assignMultiple($values);
             $this->moduleTemplate->setContent($this->view->render());
             return $this->htmlResponse($this->moduleTemplate->renderContent());
@@ -225,7 +226,6 @@ class ModuleController extends ActionController
         $this->populateView($configuration);
         $this->loadJavaScriptModule('search');
 
-        $typo3Version = (new Typo3Version())->getMajorVersion();
         $frontendConfiguration = Configuration::getFrontendConfiguration();
 
         $values = [
@@ -233,7 +233,7 @@ class ModuleController extends ActionController
             'filter' => $frontendConfiguration['users']['filter'],
         ];
 
-        if ($typo3Version < 12) {
+        if ($this->typo3Version < 12) {
             $this->view->assignMultiple($values);
             $this->moduleTemplate->setContent($this->view->render());
             return $this->htmlResponse($this->moduleTemplate->renderContent());
@@ -262,7 +262,6 @@ class ModuleController extends ActionController
         Configuration::initialize('fe', $configuration);
         $this->populateView($configuration);
 
-        $typo3Version = (new Typo3Version())->getMajorVersion();
         $values = [];
         if ($this->checkLdapConnection()) {
             $this->loadJavaScriptModule('import');
@@ -271,7 +270,7 @@ class ModuleController extends ActionController
             $values['users'] = $users;
         }
 
-        if ($typo3Version < 12) {
+        if ($this->typo3Version < 12) {
             $this->view->assignMultiple($values);
             $this->moduleTemplate->setContent($this->view->render());
             return $this->htmlResponse($this->moduleTemplate->renderContent());
@@ -300,7 +299,6 @@ class ModuleController extends ActionController
         Configuration::initialize('be', $configuration);
         $this->populateView($configuration);
 
-        $typo3Version = (new Typo3Version())->getMajorVersion();
         $values = [];
         if ($this->checkLdapConnection()) {
             $this->loadJavaScriptModule('import');
@@ -309,7 +307,7 @@ class ModuleController extends ActionController
             $values['users'] = $users;
         }
 
-        if ($typo3Version < 12) {
+        if ($this->typo3Version < 12) {
             $this->view->assignMultiple($values);
             $this->moduleTemplate->setContent($this->view->render());
             return $this->htmlResponse($this->moduleTemplate->renderContent());
@@ -338,7 +336,6 @@ class ModuleController extends ActionController
         Configuration::initialize('fe', $configuration);
         $this->populateView($configuration);
 
-        $typo3Version = (new Typo3Version())->getMajorVersion();
         $values = [];
         if ($this->checkLdapConnection()) {
             $this->loadJavaScriptModule('import');
@@ -347,7 +344,7 @@ class ModuleController extends ActionController
             $values['groups'] = $groups;
         }
 
-        if ($typo3Version < 12) {
+        if ($this->typo3Version < 12) {
             $this->view->assignMultiple($values);
             $this->moduleTemplate->setContent($this->view->render());
             return $this->htmlResponse($this->moduleTemplate->renderContent());
@@ -376,7 +373,6 @@ class ModuleController extends ActionController
         Configuration::initialize('be', $configuration);
         $this->populateView($configuration);
 
-        $typo3Version = (new Typo3Version())->getMajorVersion();
         $values = [];
         if ($this->checkLdapConnection()) {
             $this->loadJavaScriptModule('import');
@@ -385,7 +381,7 @@ class ModuleController extends ActionController
             $values['groups'] = $groups;
         }
 
-        if ($typo3Version < 12) {
+        if ($this->typo3Version < 12) {
             $this->view->assignMultiple($values);
             $this->moduleTemplate->setContent($this->view->render());
             return $this->htmlResponse($this->moduleTemplate->renderContent());
@@ -403,7 +399,7 @@ class ModuleController extends ActionController
      */
     public function ajaxUpdateForm(ServerRequestInterface $request): ResponseInterface
     {
-        $params = (new Typo3Version())->getMajorVersion() >= 12
+        $params = $this->typo3Version >= 12
             ? $request->getParsedBody()
             : $request->getQueryParams();
 
@@ -435,7 +431,7 @@ class ModuleController extends ActionController
      */
     public function ajaxSearch(ServerRequestInterface $request): ResponseInterface
     {
-        $params = (new Typo3Version())->getMajorVersion() >= 12
+        $params = $this->typo3Version >= 12
             ? $request->getParsedBody()
             : $request->getQueryParams();
 
@@ -529,7 +525,7 @@ class ModuleController extends ActionController
      */
     public function ajaxUsersImport(ServerRequestInterface $request): ResponseInterface
     {
-        $params = (new Typo3Version())->getMajorVersion() >= 12
+        $params = $this->typo3Version >= 12
             ? $request->getParsedBody()
             : $request->getQueryParams();
 
@@ -603,7 +599,7 @@ class ModuleController extends ActionController
      */
     public function ajaxGroupsImport(ServerRequestInterface $request): ResponseInterface
     {
-        $params = (new Typo3Version())->getMajorVersion() >= 12
+        $params = $this->typo3Version >= 12
             ? $request->getParsedBody()
             : $request->getQueryParams();
 
@@ -907,7 +903,6 @@ class ModuleController extends ActionController
         ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
     ): void
     {
-        $typo3Version = (new Typo3Version())->getMajorVersion();
         $thisUri = $this->uriBuilder->reset()->uriFor(null, ['configuration' => $configuration]);
         $editLink = '';
 
@@ -929,7 +924,7 @@ class ModuleController extends ActionController
             $this->addFlashMessage(
                 $message,
                 $this->translate('configuration_missing.title'),
-                $typo3Version >= 12
+                $this->typo3Version >= 12
                     ? ContextualFeedbackSeverity::WARNING
                     : \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
             );
@@ -940,7 +935,7 @@ class ModuleController extends ActionController
             $editUri = $editRecordModuleUrl . '&returnUrl=' . urlencode($thisUri) . '&edit[tx_igldapssoauth_config][' . $configuration->getUid() . ']=edit';
             /** @var \TYPO3\CMS\Core\Imaging\IconFactory $iconFactory */
             $iconFactory = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconFactory::class);
-            $iconSize = $typo3Version >= 13
+            $iconSize = $this->typo3Version >= 13
                 ? \TYPO3\CMS\Core\Imaging\IconSize::SMALL
                 : \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL;
             $icon = $iconFactory->getIcon('actions-document-open', $iconSize)->render();
@@ -997,7 +992,7 @@ class ModuleController extends ActionController
             $this->loadJavaScriptModule('autosubmit');
         }
 
-        if ($typo3Version >= 12) {
+        if ($this->typo3Version >= 12) {
             $this->moduleTemplate->assignMultiple($values);
         } else {
             $this->view->assignMultiple($values);
@@ -1018,7 +1013,7 @@ class ModuleController extends ActionController
             $this->addFlashMessage(
                 $e->getMessage(),
                 'Error ' . $e->getCode(),
-                (new Typo3Version())->getMajorVersion() >= 12
+                $this->typo3Version >= 12
                     ? ContextualFeedbackSeverity::ERROR
                     : \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
             );
@@ -1027,7 +1022,7 @@ class ModuleController extends ActionController
             $this->addFlashMessage(
                 $e->getMessage(),
                 'Error ' . $e->getCode(),
-                (new Typo3Version())->getMajorVersion() >= 12
+                $this->typo3Version >= 12
                     ? ContextualFeedbackSeverity::ERROR
                     : \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
             );
@@ -1093,7 +1088,7 @@ class ModuleController extends ActionController
         /** @var PageRenderer $pageRenderer */
         $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
 
-        if ((new Typo3Version())->getMajorVersion() >= 12) {
+        if ($this->typo3Version >= 12) {
             $pageRenderer->getJavaScriptRenderer()->addJavaScriptModuleInstruction(
                 JavaScriptModuleInstruction::create('@causal/ig-ldap-sso-auth/' . $module . '.js')
                     ->invoke('create', [

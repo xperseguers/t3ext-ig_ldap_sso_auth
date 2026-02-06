@@ -25,6 +25,7 @@ use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\TypoScript\TemplateService;
@@ -736,49 +737,43 @@ class Authentication
                 }
             }
 
-            $backupTSFE = $GLOBALS['TSFE'] ?? null;
+            $typo3Version = ((new Typo3Version())->getMajorVersion() >= 13);
+            if ($typo3Version < 13) {
+                $backupTSFE = $GLOBALS['TSFE'] ?? null;
 
-            // Advanced stdWrap methods require a valid $GLOBALS['TSFE'] => create the most lightweight one
-            $pageId = (int)$typo3['pid'];
-            // Use SiteFinder to get a Site object for the current page tree
-            $siteFinder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Site\SiteFinder::class);
-            try {
-                $currentSite = $siteFinder->getSiteByPageId($pageId);
-            } catch (SiteNotFoundException $e) {
-                $allSites = $siteFinder->getAllSites();
-                $currentSite = reset($allSites);
-                $pageId = $currentSite->getRootPageId();
+                // Advanced stdWrap methods require a valid $GLOBALS['TSFE'] => create the most lightweight one
+                $pageId = (int)$typo3['pid'];
+                // Use SiteFinder to get a Site object for the current page tree
+                $siteFinder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Site\SiteFinder::class);
+                try {
+                    $currentSite = $siteFinder->getSiteByPageId($pageId);
+                } catch (SiteNotFoundException $e) {
+                    $allSites = $siteFinder->getAllSites();
+                    $currentSite = reset($allSites);
+                    $pageId = $currentSite->getRootPageId();
+                }
+
+                // Context is a singleton, so we can get the current Context by instantiation
+                $currentContext = GeneralUtility::makeInstance(Context::class);
+
+                $pageArguments = GeneralUtility::makeInstance(
+                    PageArguments::class,
+                    $pageId,
+                    (string)PageRepository::DOKTYPE_SYSFOLDER,
+                    []
+                );
+                $frontendUserAuthentication = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
+
+                // Use Site & Context to instantiate TSFE properly for TYPO3 v10+
+                $GLOBALS['TSFE'] = GeneralUtility::makeInstance(
+                    TypoScriptFrontendController::class,
+                    $currentContext,
+                    $currentSite,
+                    $currentSite->getDefaultLanguage(),
+                    $pageArguments,
+                    $frontendUserAuthentication
+                );
             }
-
-            // Context is a singleton, so we can get the current Context by instantiation
-            $currentContext = GeneralUtility::makeInstance(Context::class);
-
-            $pageArguments = GeneralUtility::makeInstance(
-                PageArguments::class,
-                $pageId,
-                (string)PageRepository::DOKTYPE_SYSFOLDER,
-                []
-            );
-            $frontendUserAuthentication = GeneralUtility::makeInstance(FrontendUserAuthentication::class);
-
-            // Use Site & Context to instantiate TSFE properly for TYPO3 v10+
-            $GLOBALS['TSFE'] = GeneralUtility::makeInstance(
-                TypoScriptFrontendController::class,
-                $currentContext,
-                $currentSite,
-                $currentSite->getDefaultLanguage(),
-                $pageArguments,
-                $frontendUserAuthentication
-            );
-
-            // @todo Is this necessary?
-            /*
-            // initTemplate() has been removed. The deprecation notice suggests setting the property directly
-            $GLOBALS['TSFE']->tmpl = GeneralUtility::makeInstance(
-                TemplateService::class,
-                $currentContext
-            );
-            */
 
             /** @var $contentObj ContentObjectRenderer */
             $contentObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
@@ -796,7 +791,9 @@ class Authentication
                 }
             }
 
-            $GLOBALS['TSFE'] = $backupTSFE;
+            if ($typo3Version < 13) {
+                $GLOBALS['TSFE'] = $backupTSFE;
+            }
         }
 
         return $out;

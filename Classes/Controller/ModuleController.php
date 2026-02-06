@@ -38,6 +38,8 @@ use Causal\IgLdapSsoAuth\Library\Configuration;
 use Causal\IgLdapSsoAuth\Library\Ldap;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
+use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextFactory;
+use TYPO3\CMS\Fluid\View\FluidViewFactory;
 
 /**
  * Module controller.
@@ -453,9 +455,19 @@ class ModuleController extends ActionController
         }
 
         $template = GeneralUtility::getFileAbsFileName('EXT:ig_ldap_sso_auth/Resources/Private/Templates/Ajax/Search.html');
-        $view = GeneralUtility::makeInstance(\TYPO3\CMS\Fluid\View\StandaloneView::class);
-        $view->setFormat('html');
-        $view->setTemplatePathAndFilename($template);
+
+        if ($this->typo3Version >= 13) {
+            $renderingContextFactory = GeneralUtility::makeInstance(RenderingContextFactory::class);
+            $fluidViewFactory = GeneralUtility::makeInstance(FluidViewFactory::class, $renderingContextFactory);
+            $view = $fluidViewFactory->create(new \TYPO3\CMS\Core\View\ViewFactoryData(
+                templatePathAndFilename: $template,
+                format: 'html'
+            ));
+        } else {
+            $view = GeneralUtility::makeInstance(\TYPO3\CMS\Fluid\View\StandaloneView::class);
+            $view->setFormat('html');
+            $view->setTemplatePathAndFilename($template);
+        }
 
         if ((bool)($params['showStatus'] ?? false)) {
             $view->assign('status', $ldap->getStatus());

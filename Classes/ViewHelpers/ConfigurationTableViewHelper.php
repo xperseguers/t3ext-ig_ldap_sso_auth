@@ -36,7 +36,7 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
     /**
      * Initialize arguments
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('data', 'mixed', 'Data as array or string', true);
         $this->registerArgument('humanKeyNames', 'bool', 'Use human key names', false, false);

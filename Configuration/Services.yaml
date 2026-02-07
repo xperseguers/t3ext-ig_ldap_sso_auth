@@ -28,6 +28,12 @@ services:
         sources: int,string
 
   # Register event listeners
+  Causal\IgLdapSsoAuth\EventListener\BlindedConfigurationOptionsListener:
+    tags:
+      - name: event.listener
+        identifier: 'causal.ig_ldap_sso_auth.blindedConfigurationOptionsListener'
+        event: TYPO3\CMS\Lowlevel\Event\ModifyBlindedConfigurationOptionsEvent
+
   Causal\IgLdapSsoAuth\EventListener\ExtendUserGroupQueryListener:
     tags:
       - name: event.listener

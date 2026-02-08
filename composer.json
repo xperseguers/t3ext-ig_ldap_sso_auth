@@ -36,8 +36,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "4.2.x-dev",
-      "dev-features/TYPO3v14": "4.3.x-dev",
+      "dev-master": "4.3.x-dev",
       "dev-3-8": "3.8.x-dev",
       "dev-3-3": "3.3.x-dev"
     },

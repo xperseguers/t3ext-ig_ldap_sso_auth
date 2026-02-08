@@ -16,6 +16,7 @@ declare(strict_types=1);
 
 namespace Causal\IgLdapSsoAuth\ViewHelpers;
 
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
@@ -36,7 +37,7 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
     /**
      * Initialize arguments
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('data', 'mixed', 'Data as array or string', true);
         $this->registerArgument('humanKeyNames', 'bool', 'Use human key names', false, false);
@@ -119,6 +120,10 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
         }
 
         $class = 'value-default';
+        $typo3Version = ((new Typo3Version())->getMajorVersion() >= 13);
+        $iconSize = $typo3Version >= 13
+            ? \TYPO3\CMS\Core\Imaging\IconSize::SMALL
+            : \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL;
 
         if (is_bool($value)) {
             if ($value === true) {
@@ -130,7 +135,7 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
                 $messageId = 'module_status.messages.disabled';
                 $class = 'value-disabled';
             }
-            $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
+            $value = $iconFactory->getIcon($icon, $iconSize)->render();
             $value .=  ' ' . htmlspecialchars($this->translate($messageId));
         } elseif ($depth > 1 && $key === 'status') {
             $label = $value;
@@ -142,7 +147,7 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
                 $class = 'value-error';
                 $hasError = true;
             }
-            $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL)->render();
+            $value = $iconFactory->getIcon($icon, $iconSize)->render();
             $value .=  ' ' . htmlspecialchars($label);
         } elseif ($value instanceof \TYPO3\CMS\Extbase\DomainObject\AbstractEntity) {
             if ($value instanceof \Causal\IgLdapSsoAuth\Domain\Model\BackendUserGroup) {
@@ -166,7 +171,7 @@ class ConfigurationTableViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\Abs
                 [],
                 null
             );
-            $value = $iconFactory->getIcon($icon, \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL, $overlay)->render() . ' ' . htmlspecialchars($value->getTitle());
+            $value = $iconFactory->getIcon($icon, $iconSize, $overlay)->render() . ' ' . htmlspecialchars($value->getTitle());
             $value = str_replace('<img src=', '<img title="' . htmlspecialchars($options['title']) . '" src=', $value);
         } else {
             $value = htmlspecialchars((string)$value);

@@ -16,6 +16,7 @@ declare(strict_types=1);
 
 namespace Causal\IgLdapSsoAuth\ViewHelpers;
 
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
@@ -23,9 +24,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 use TYPO3\CMS\Extbase\Service\ExtensionService;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Render a conf* View helper which renders the flash messages (if there are any).
@@ -38,8 +37,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  */
 class FlashMessagesViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
      * ViewHelper outputs HTML therefore output escaping has to be disabled
      *
@@ -74,7 +71,7 @@ class FlashMessagesViewHelper extends AbstractViewHelper
     /**
      * Initialize arguments
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('queueIdentifier', 'string', 'Flash-message queue to use');
         $this->registerArgument('as', 'string', 'The name of the current flashMessage variable for rendering inside');
@@ -85,20 +82,25 @@ class FlashMessagesViewHelper extends AbstractViewHelper
      * Note: This disables the current page cache in order to prevent FlashMessage output
      * from being cached.
      *
-     * @see \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController::no_cache
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return mixed
+     * @return string
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
+    public function render(): string
     {
-        $as = $arguments['as'];
-        $queueIdentifier = $arguments['queueIdentifier'] ?? null;
+        $as = $this->arguments['as'];
+        $queueIdentifier = $this->arguments['queueIdentifier'] ?? null;
 
         if ($queueIdentifier === null) {
             /** @var RenderingContext $renderingContext */
-            $request = $renderingContext->getRequest();
+            $renderingContext = $this->renderingContext;
+            if (
+                method_exists($renderingContext, 'getAttribute') &&
+                method_exists($renderingContext, 'hasAttribute') &&
+                $renderingContext->hasAttribute(ServerRequestInterface::class)
+            ) {
+                $request = $renderingContext->getAttribute(ServerRequestInterface::class);
+            } else {
+                $request = $renderingContext->getRequest();
+            }
             if (!$request instanceof RequestInterface) {
                 // Throw if not an extbase request
                 throw new \RuntimeException(
@@ -129,7 +131,7 @@ class FlashMessagesViewHelper extends AbstractViewHelper
         }
         $templateVariableContainer = $renderingContext->getVariableProvider();
         $templateVariableContainer->add($as, $flashMessages);
-        $content = $renderChildrenClosure();
+        $content = $this->renderChildren();
         $templateVariableContainer->remove($as);
 
         return $content;

@@ -13,9 +13,6 @@ services:
   Causal\IgLdapSsoAuth\Library\Ldap:
     public: true
 
-  Causal\IgLdapSsoAuth\Utility\LdapUtility:
-    public: true
-
   Causal\IgLdapSsoAuth\Utility\NotificationUtility:
     public: true
 

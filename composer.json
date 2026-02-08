@@ -24,10 +24,10 @@
   ],
   "license": "GPL-2.0-or-later",
   "require": {
-    "php": ">=8.1.0 <=8.4.99",
+    "php": ">=8.1.0 <=8.5.99",
     "ext-ldap": "*",
     "ext-json": "*",
-    "typo3/cms-core": "^11 || ^12 || ^13"
+    "typo3/cms-core": "^11 || ^12 || ^13 || 14.*.*@dev"
   },
   "autoload": {
     "psr-4": {
@@ -37,6 +37,7 @@
   "extra": {
     "branch-alias": {
       "dev-master": "4.2.x-dev",
+      "dev-features/TYPO3v14": "4.3.x-dev",
       "dev-3-8": "3.8.x-dev",
       "dev-3-3": "3.3.x-dev"
     },

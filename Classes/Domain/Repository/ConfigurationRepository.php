@@ -79,14 +79,6 @@ class ConfigurationRepository
             )
             ->fetchAllAssociative();
 
-        // TODO: Drop "support" in version 4.2 or so
-        if ((bool)($this->config['useExtConfConfiguration'] ?? false) && !empty($this->config)) {
-            trigger_error(
-                'Using useExtConfConfiguration is not supported anymore since version 4.0. Please switch to PSR-14 ConfigurationLoadedEvent.',
-                E_USER_DEPRECATED
-            );
-        }
-
         $configurations = [];
         foreach ($rows as $row) {
             /** @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration */
@@ -127,14 +119,6 @@ class ConfigurationRepository
             $this->thawProperties($configuration, $row);
         } else {
             $configuration = null;
-        }
-
-        // TODO: Drop "support" in version 4.2 or so
-        if ((bool)($this->config['useExtConfConfiguration'] ?? false) && !empty($this->config)) {
-            trigger_error(
-                'Using useExtConfConfiguration is not supported anymore since version 4.0. Please switch to PSR-14 CustomConfigurationEvent.',
-                E_USER_DEPRECATED
-            );
         }
 
         /** @var CustomConfigurationEvent $event */

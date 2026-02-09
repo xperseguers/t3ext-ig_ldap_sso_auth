@@ -231,6 +231,7 @@ class UserImportUtility
     ): array
     {
         // Store the extra data for later restore and remove it
+        $extraData = null;
         if (isset($user['__extraData'])) {
             $extraData = $user['__extraData'];
             unset($user['__extraData']);
@@ -255,7 +256,7 @@ class UserImportUtility
             $user['username'] = Typo3UserRepository::setUsername($user['username']);
             $user['password'] = Typo3UserRepository::setRandomPassword();
             $user = Typo3UserRepository::setUserGroups($user, $typo3Groups, $this->groupTable);
-            $user = Typo3UserRepository::add($this->userTable, $user);
+            $user = Typo3UserRepository::add($this->userTable, $user, $extraData);
             $this->usersAdded++;
         } else {
             // Restore user that may have been previously deleted or disabled, depending on chosen behavior
@@ -274,7 +275,7 @@ class UserImportUtility
                     $user[$GLOBALS['TCA'][$this->userTable]['ctrl']['delete']] = 0;
             }
             $user = Typo3UserRepository::setUserGroups($user, $typo3Groups, $this->groupTable);
-            $success = Typo3UserRepository::update($this->userTable, $user);
+            $success = Typo3UserRepository::update($this->userTable, $user, $extraData);
             if ($success) {
                 $this->usersUpdated++;
             }

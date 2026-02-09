@@ -90,16 +90,15 @@ class FlashMessagesViewHelper extends AbstractViewHelper
         $queueIdentifier = $this->arguments['queueIdentifier'] ?? null;
 
         if ($queueIdentifier === null) {
-            /** @var RenderingContext $renderingContext */
-            $renderingContext = $this->renderingContext;
             if (
-                method_exists($renderingContext, 'getAttribute') &&
-                method_exists($renderingContext, 'hasAttribute') &&
-                $renderingContext->hasAttribute(ServerRequestInterface::class)
+                method_exists($this->renderingContext, 'getAttribute') &&
+                method_exists($this->renderingContext, 'hasAttribute')
             ) {
-                $request = $renderingContext->getAttribute(ServerRequestInterface::class);
+                $request = $this->renderingContext->hasAttribute(ServerRequestInterface::class)
+                    ? $this->renderingContext->getAttribute(ServerRequestInterface::class)
+                    : null;
             } else {
-                $request = $renderingContext->getRequest();
+                $request = $this->renderingContext->getRequest();
             }
             if (!$request instanceof RequestInterface) {
                 // Throw if not an extbase request
@@ -129,7 +128,7 @@ class FlashMessagesViewHelper extends AbstractViewHelper
             }
             return implode(LF, $out);
         }
-        $templateVariableContainer = $renderingContext->getVariableProvider();
+        $templateVariableContainer = $this->renderingContext->getVariableProvider();
         $templateVariableContainer->add($as, $flashMessages);
         $content = $this->renderChildren();
         $templateVariableContainer->remove($as);

@@ -47,23 +47,17 @@ class SiteConfigurationItemsProcFunc
     public function getSites(array &$config): void
     {
         $allSites = $this->siteFinder->getAllSites();
-        $typo3Version = (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
 
         $config['items'] = array_map(
-            static function (Site $site) use ($typo3Version) {
+            static function (Site $site) {
                 $host = $site->getBase()->getHost();
                 if (empty($host)) {
                     $host = GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY');
                 }
-                return $typo3Version >= 12
-                    ? [
-                        'label' => $host,
-                        'value' => $site->getIdentifier(),
-                    ]
-                    : [
-                        $host,
-                        $site->getIdentifier(),
-                    ];
+                return [
+                    'label' => $host,
+                    'value' => $site->getIdentifier(),
+                ];
             },
             $allSites
         );

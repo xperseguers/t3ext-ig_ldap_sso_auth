@@ -55,17 +55,10 @@ class Typo3UserRepository
         }
 
         $newUser = [];
-        if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12) {
-            $fieldsConfiguration = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getConnectionForTable($table)
-                ->createSchemaManager()
-                ->listTableColumns($table);
-        } else {
-            $fieldsConfiguration = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getConnectionForTable($table)
-                ->getSchemaManager()
-                ->listTableColumns($table);
-        }
+        $fieldsConfiguration = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionForTable($table)
+            ->createSchemaManager()
+            ->listTableColumns($table);
 
         foreach ($fieldsConfiguration as $configuration) {
             $field = $configuration->getName();
@@ -127,30 +120,16 @@ class Typo3UserRepository
             if (!empty($username)) {
                 // This additional condition will automatically add the mapping between
                 // a local user unrelated to LDAP and a corresponding LDAP user
-                if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12) {
-                    $where = $queryBuilder->expr()->or(
-                        $where,
-                        $queryBuilder->expr()->eq('username', $queryBuilder->createNamedParameter($username, Connection::PARAM_STR))
-                    );
-                } else {
-                    $where = $queryBuilder->expr()->orX(
-                        $where,
-                        $queryBuilder->expr()->eq('username', $queryBuilder->createNamedParameter($username, Connection::PARAM_STR))
-                    );
-                }
+                $where = $queryBuilder->expr()->or(
+                    $where,
+                    $queryBuilder->expr()->eq('username', $queryBuilder->createNamedParameter($username, Connection::PARAM_STR))
+                );
             }
             if (!empty($pid)) {
-                if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12) {
-                    $where = $queryBuilder->expr()->and(
-                        $where,
-                        $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, Connection::PARAM_INT))
-                    );
-                } else {
-                    $where = $queryBuilder->expr()->andX(
-                        $where,
-                        $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, Connection::PARAM_INT))
-                    );
-                }
+                $where = $queryBuilder->expr()->and(
+                    $where,
+                    $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, Connection::PARAM_INT))
+                );
             }
 
             $queryBuilder
@@ -172,17 +151,10 @@ class Typo3UserRepository
             // Search with username and pid
             $where = $queryBuilder->expr()->eq('username', $queryBuilder->createNamedParameter($username, Connection::PARAM_STR));
             if (!empty($pid)) {
-                if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12) {
-                    $where = $queryBuilder->expr()->and(
-                        $where,
-                        $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, Connection::PARAM_INT))
-                    );
-                } else {
-                    $where = $queryBuilder->expr()->andX(
-                        $where,
-                        $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, Connection::PARAM_INT))
-                    );
-                }
+                $where = $queryBuilder->expr()->and(
+                    $where,
+                    $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($pid, Connection::PARAM_INT))
+                );
             }
             $users = $queryBuilder
                 ->select('*')

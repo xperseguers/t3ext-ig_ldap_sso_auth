@@ -21,7 +21,6 @@ use Causal\IgLdapSsoAuth\Event\AuthenticationFailedEvent;
 use Causal\IgLdapSsoAuth\Utility\CompatUtility;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;

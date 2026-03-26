@@ -737,7 +737,7 @@ class Authentication
                 }
             }
 
-            $typo3Version = ((new Typo3Version())->getMajorVersion() >= 13);
+            $typo3Version = (new Typo3Version())->getMajorVersion();
             if ($typo3Version < 13) {
                 $backupTSFE = $GLOBALS['TSFE'] ?? null;
 

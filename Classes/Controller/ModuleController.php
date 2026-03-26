@@ -123,11 +123,6 @@ class ModuleController extends ActionController
         $this->saveState($configuration);
         $this->populateView($configuration);
 
-        if ($this->typo3Version < 12) {
-            $this->moduleTemplate->setContent($this->view->render());
-            return $this->htmlResponse($this->moduleTemplate->renderContent());
-        }
-
         return $this->moduleTemplate->renderResponse('Module/Index');
     }
 
@@ -163,9 +158,7 @@ class ModuleController extends ActionController
                 $this->addFlashMessage(
                     $e->getMessage(),
                     'Error ' . $e->getCode(),
-                    $this->typo3Version >= 12
-                        ? ContextualFeedbackSeverity::ERROR
-                        : \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
+                    ContextualFeedbackSeverity::ERROR
                 );
             }
 
@@ -198,12 +191,6 @@ class ModuleController extends ActionController
             ],
         ];
 
-        if ($this->typo3Version < 12) {
-            $this->view->assignMultiple($values);
-            $this->moduleTemplate->setContent($this->view->render());
-            return $this->htmlResponse($this->moduleTemplate->renderContent());
-        }
-
         $this->moduleTemplate->assignMultiple($values);
         return $this->moduleTemplate->renderResponse('Module/Status');
     }
@@ -235,12 +222,6 @@ class ModuleController extends ActionController
             'filter' => $frontendConfiguration['users']['filter'],
         ];
 
-        if ($this->typo3Version < 12) {
-            $this->view->assignMultiple($values);
-            $this->moduleTemplate->setContent($this->view->render());
-            return $this->htmlResponse($this->moduleTemplate->renderContent());
-        }
-
         $this->moduleTemplate->assignMultiple($values);
         return $this->moduleTemplate->renderResponse('Module/Search');
     }
@@ -270,12 +251,6 @@ class ModuleController extends ActionController
 
             $users = $this->getAvailableUsers($configuration, 'fe');
             $values['users'] = $users;
-        }
-
-        if ($this->typo3Version < 12) {
-            $this->view->assignMultiple($values);
-            $this->moduleTemplate->setContent($this->view->render());
-            return $this->htmlResponse($this->moduleTemplate->renderContent());
         }
 
         $this->moduleTemplate->assignMultiple($values);
@@ -309,12 +284,6 @@ class ModuleController extends ActionController
             $values['users'] = $users;
         }
 
-        if ($this->typo3Version < 12) {
-            $this->view->assignMultiple($values);
-            $this->moduleTemplate->setContent($this->view->render());
-            return $this->htmlResponse($this->moduleTemplate->renderContent());
-        }
-
         $this->moduleTemplate->assignMultiple($values);
         return $this->moduleTemplate->renderResponse('Module/ImportBackendUsers');
     }
@@ -344,12 +313,6 @@ class ModuleController extends ActionController
 
             $groups = $this->getAvailableUserGroups($configuration, 'fe');
             $values['groups'] = $groups;
-        }
-
-        if ($this->typo3Version < 12) {
-            $this->view->assignMultiple($values);
-            $this->moduleTemplate->setContent($this->view->render());
-            return $this->htmlResponse($this->moduleTemplate->renderContent());
         }
 
         $this->moduleTemplate->assignMultiple($values);
@@ -383,12 +346,6 @@ class ModuleController extends ActionController
             $values['groups'] = $groups;
         }
 
-        if ($this->typo3Version < 12) {
-            $this->view->assignMultiple($values);
-            $this->moduleTemplate->setContent($this->view->render());
-            return $this->htmlResponse($this->moduleTemplate->renderContent());
-        }
-
         $this->moduleTemplate->assignMultiple($values);
         return $this->moduleTemplate->renderResponse('Module/ImportBackendUserGroups');
     }
@@ -401,9 +358,7 @@ class ModuleController extends ActionController
      */
     public function ajaxUpdateForm(ServerRequestInterface $request): ResponseInterface
     {
-        $params = $this->typo3Version >= 12
-            ? $request->getParsedBody()
-            : $request->getQueryParams();
+        $params = $request->getParsedBody();
 
         $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
 
@@ -433,9 +388,7 @@ class ModuleController extends ActionController
      */
     public function ajaxSearch(ServerRequestInterface $request): ResponseInterface
     {
-        $params = $this->typo3Version >= 12
-            ? $request->getParsedBody()
-            : $request->getQueryParams();
+        $params = $request->getParsedBody();
 
         $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
         $ldap = GeneralUtility::makeInstance(Ldap::class);
@@ -537,9 +490,7 @@ class ModuleController extends ActionController
      */
     public function ajaxUsersImport(ServerRequestInterface $request): ResponseInterface
     {
-        $params = $this->typo3Version >= 12
-            ? $request->getParsedBody()
-            : $request->getQueryParams();
+        $params = $request->getParsedBody();
 
         $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
         $ldap = GeneralUtility::makeInstance(Ldap::class);
@@ -611,9 +562,7 @@ class ModuleController extends ActionController
      */
     public function ajaxGroupsImport(ServerRequestInterface $request): ResponseInterface
     {
-        $params = $this->typo3Version >= 12
-            ? $request->getParsedBody()
-            : $request->getQueryParams();
+        $params = $request->getParsedBody();
 
         $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
         $ldap = GeneralUtility::makeInstance(Ldap::class);
@@ -936,9 +885,7 @@ class ModuleController extends ActionController
             $this->addFlashMessage(
                 $message,
                 $this->translate('configuration_missing.title'),
-                $this->typo3Version >= 12
-                    ? ContextualFeedbackSeverity::WARNING
-                    : \TYPO3\CMS\Core\Messaging\FlashMessage::WARNING
+                ContextualFeedbackSeverity::WARNING
             );
         } else {
             if ($configuration == null) {
@@ -1004,11 +951,7 @@ class ModuleController extends ActionController
             $this->loadJavaScriptModule('autosubmit');
         }
 
-        if ($this->typo3Version >= 12) {
-            $this->moduleTemplate->assignMultiple($values);
-        } else {
-            $this->view->assignMultiple($values);
-        }
+        $this->moduleTemplate->assignMultiple($values);
     }
 
     /**
@@ -1025,18 +968,14 @@ class ModuleController extends ActionController
             $this->addFlashMessage(
                 $e->getMessage(),
                 'Error ' . $e->getCode(),
-                $this->typo3Version >= 12
-                    ? ContextualFeedbackSeverity::ERROR
-                    : \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
             return false;
         } catch (InvalidHostnameException $e) {
             $this->addFlashMessage(
                 $e->getMessage(),
                 'Error ' . $e->getCode(),
-                $this->typo3Version >= 12
-                    ? ContextualFeedbackSeverity::ERROR
-                    : \TYPO3\CMS\Core\Messaging\FlashMessage::ERROR
+                ContextualFeedbackSeverity::ERROR
             );
             return false;
         }
@@ -1100,15 +1039,11 @@ class ModuleController extends ActionController
         /** @var PageRenderer $pageRenderer */
         $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
 
-        if ($this->typo3Version >= 12) {
-            $pageRenderer->getJavaScriptRenderer()->addJavaScriptModuleInstruction(
-                JavaScriptModuleInstruction::create('@causal/ig-ldap-sso-auth/' . $module . '.js')
-                    ->invoke('create', [
-                        // options go here...
-                    ])
-            );
-        } else {
-            $pageRenderer->loadRequireJsModule('TYPO3/CMS/IgLdapSsoAuth/' . ucfirst($module));
-        }
+        $pageRenderer->getJavaScriptRenderer()->addJavaScriptModuleInstruction(
+            JavaScriptModuleInstruction::create('@causal/ig-ldap-sso-auth/' . $module . '.js')
+                ->invoke('create', [
+                    // options go here...
+                ])
+        );
     }
 }

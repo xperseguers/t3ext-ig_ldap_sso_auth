@@ -60,14 +60,6 @@ class FlashMessagesViewHelper extends AbstractViewHelper
          2 /* error   */ => 'actions-exclamation-circle'
     ];
 
-    protected static $iconsV11 = [
-        -2 /* notice  */ => 'fa-lightbulb-o',
-        -1 /* info    */ => 'fa-info',
-         0 /* ok      */ => 'fa-check',
-         1 /* warning */ => 'fa-exclamation',
-         2 /* error   */ => 'fa-times'
-    ];
-
     /**
      * Initialize arguments
      */
@@ -142,11 +134,7 @@ class FlashMessagesViewHelper extends AbstractViewHelper
      */
     protected static function renderFlashMessage(FlashMessage $flashMessage): string
     {
-        if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12) {
-            $severity = $flashMessage->getSeverity()->value;
-        } else {
-            $severity = $flashMessage->getSeverity();
-        }
+        $severity = $flashMessage->getSeverity()->value;
 
         $className = 'alert-' . static::$classes[$severity];
 
@@ -157,22 +145,14 @@ class FlashMessagesViewHelper extends AbstractViewHelper
         $markup[] = '        <div class="media-left">';
 
         $typo3Version = (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
-        if ($typo3Version >= 12) {
-            $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
-            $icon = $iconFactory->getIcon(
-                static::$icons[$severity],
-                $typo3Version >= 13
-                    ? \TYPO3\CMS\Core\Imaging\IconSize::MEDIUM
-                    : \TYPO3\CMS\Core\Imaging\Icon::SIZE_MEDIUM
-            );
-            $markup[] = '            ' . $icon;
-        } else {
-            $iconName = static::$iconsV11[$severity];
-            $markup[] = '            <span class="fa-stack fa-lg">';
-            $markup[] = '                <i class="fa fa-circle fa-stack-2x"></i>';
-            $markup[] = '                <i class="fa ' . $iconName . ' fa-stack-1x"></i>';
-            $markup[] = '            </span>';
-        }
+        $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
+        $icon = $iconFactory->getIcon(
+            static::$icons[$severity],
+            $typo3Version >= 13
+                ? \TYPO3\CMS\Core\Imaging\IconSize::MEDIUM
+                : \TYPO3\CMS\Core\Imaging\Icon::SIZE_MEDIUM
+        );
+        $markup[] = '            ' . $icon;
 
         $markup[] = '        </div>';
         $markup[] = '        <div class="media-body">';

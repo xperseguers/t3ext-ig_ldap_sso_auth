@@ -77,17 +77,15 @@ class LdapSuggestElement extends AbstractFormElement
         if (!empty($suggestion)) {
             $suggestId = 'tx_igldapssoauth_suggest_' . $this->data['fieldName'];
 
-            if ($typo3Version >= 12) {
-                /** @var PageRenderer $pageRenderer */
-                $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-                $pageRenderer->getJavaScriptRenderer()->addJavaScriptModuleInstruction(
-                    JavaScriptModuleInstruction::create('@causal/ig-ldap-sso-auth/suggest.js')
-                        ->instance([
-                            'suggestId' => $suggestId,
-                            'fieldName' => 'data' . $this->data['elementBaseName'],
-                        ])
-                );
-            }
+            /** @var PageRenderer $pageRenderer */
+            $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+            $pageRenderer->getJavaScriptRenderer()->addJavaScriptModuleInstruction(
+                JavaScriptModuleInstruction::create('@causal/ig-ldap-sso-auth/suggest.js')
+                    ->instance([
+                        'suggestId' => $suggestId,
+                        'fieldName' => 'data' . $this->data['elementBaseName'],
+                    ])
+            );
 
             $out[] = '<div style="margin:1em 0 0 1em; font-size:11px;">';
             $out[] = '<strong>' . htmlspecialchars($this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:suggestion.server.' . $serverType)) . '</strong>';
@@ -99,14 +97,7 @@ class LdapSuggestElement extends AbstractFormElement
             $out[] = $suggestion . '</pre>';
 
             // Prepare the "copy" button
-            if ($typo3Version >= 12) {
-                $button = '<button id="' . $suggestId . '_btn" class="btn btn-default btn-sm">';
-            } else {
-                $fieldJs = '$("[data-formengine-input-name=\'data' . $this->data['elementBaseName'] . '\'").first()';
-                $onclick = "var node=document.getElementById('$suggestId');$fieldJs.val(node.innerText || node.textContent);$fieldJs.trigger('change');return false;";
-                $button = '<button class="btn btn-default btn-sm" onclick="' . htmlspecialchars($onclick) . '">';
-            }
-
+            $button = '<button id="' . $suggestId . '_btn" class="btn btn-default btn-sm">';
             $button .= htmlspecialchars($this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:suggestion.copy'));
             $button .= '</button>';
 

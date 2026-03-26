@@ -83,9 +83,7 @@ class DataHandler
                     FlashMessage::class,
                     htmlspecialchars($this->getLanguageService()->sL('LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:' . $key)),
                     '',
-                    (new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 12
-                        ? ContextualFeedbackSeverity::WARNING
-                        : FlashMessage::WARNING,
+                    ContextualFeedbackSeverity::WARNING,
                     true
                 );
                 /** @var FlashMessageService $flashMessageService */

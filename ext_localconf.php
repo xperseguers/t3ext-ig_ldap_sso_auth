@@ -20,11 +20,6 @@ defined('TYPO3') || die();
             = \Causal\IgLdapSsoAuth\Hooks\IconFactory::class;
     }
 
-    if ($typo3Version < 12) {
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['typo3/class.db_list_extra.inc']['getTable'][]
-            = \Causal\IgLdapSsoAuth\Hooks\DatabaseRecordListIconUtility::class;
-    }
-
     // Service configuration
     $subTypesArr = [];
     $subTypes = '';
@@ -74,11 +69,6 @@ defined('TYPO3') || die();
         'priority' => 40,
         'class' => \Causal\IgLdapSsoAuth\Backend\Form\Element\LdapSuggestElement::class,
     ];
-
-    if ($typo3Version < 12) {
-        // Register type converters
-        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerTypeConverter(\Causal\IgLdapSsoAuth\Property\TypeConverter\ConfigurationConverter::class);
-    }
 
     if ($typo3Version < 13) {
         // User have save doc new button

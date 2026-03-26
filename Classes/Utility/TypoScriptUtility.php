@@ -41,12 +41,6 @@ class TypoScriptUtility
             return [];
         }
 
-        if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() < 12) {
-            $typoScriptParser = static::getTypoScriptParser();
-            $typoScriptParser->parse($typoScript);
-            return $typoScriptParser->setup;
-        }
-
         $typoScriptStringFactory = static::getTypoScriptStringFactory();
         $rootNode = $typoScriptStringFactory->parseFromStringWithIncludes(md5($typoScript), $typoScript);
 

@@ -30,13 +30,7 @@ class ConfigurationConverter extends AbstractTypeConverter implements SingletonI
     public function __construct(
         private readonly ConfigurationRepository $configurationRepository
     )
-    {
-        if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() < 12) {
-            $this->sourceTypes = ['integer', 'string'];
-            $this->targetType = Configuration::class;
-            $this->priority = 10;
-        }
-    }
+    {}
 
     /**
      * @param string|int $source TODO: should actually be type-hinted as int

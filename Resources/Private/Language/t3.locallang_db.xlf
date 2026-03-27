@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2024-10-17T13:30:30Z" product-name="ig_ldap_sso_auth" target-language="t3">
+    <header/>
+    <body>
+      <trans-unit id="settings.checkConfiguration">
+        <source>Configuration check</source>
+        <target>crwdns228141:0crwdne228141:0</target>
+      </trans-unit>
+      <trans-unit id="settings.forceLowerCaseUsername">
+        <source>Force lower-case user name: If checked, user names will be always be stored in lower-cases. Useful for case-sensitive databases.</source>
+        <target>crwdns228145:0crwdne228145:0</target>
+      </trans-unit>
+      <trans-unit id="settings.useExtensionConfiguration">
+        <source>Use the configuration specified in $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']['configuration']</source>
+        <target>crwdns228147:0$GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']['configuration']crwdne228147:0</target>
+      </trans-unit>
+      <trans-unit id="settings.enableBELDAPAuthentication">
+        <source>Backend LDAP authentication: Enable LDAP authentication for the backend.</source>
+        <target>crwdns228149:0crwdne228149:0</target>
+      </trans-unit>
+      <trans-unit id="settings.TYPO3BEGroupExist">
+        <source>Backend user group must exist: If no groups are found locally, the user may not log on.</source>
+        <target>crwdns228151:0crwdne228151:0</target>
+      </trans-unit>
+      <trans-unit id="settings.TYPO3BEUserExist">
+        <source>Backend user must exist: If checked, users that are not already present in TYPO3 may not log on.</source>
+        <target>crwdns228153:0crwdne228153:0</target>
+      </trans-unit>
+      <trans-unit id="settings.BEfailsafe">
+        <source>Enable local Backend users: If checked, Backend users without a reference to LDAP (e.g., "admin") may log on.</source>
+        <target>crwdns228155:0crwdne228155:0</target>
+      </trans-unit>
+      <trans-unit id="settings.TYPO3BEGroupsNotSynchronize">
+        <source>Disable Backend group synchronization: If checked, TYPO3 Backend user groups will not get updated.</source>
+        <target>crwdns228157:0crwdne228157:0</target>
+      </trans-unit>
+      <trans-unit id="settings.keepBEGroups">
+        <source>Keep Backend groups: Keep the Backend user groups assigned locally.</source>
+        <target>crwdns228159:0crwdne228159:0</target>
+      </trans-unit>
+      <trans-unit id="settings.enableBESSO">
+        <source>Backend SSO: Enable Single Sign-On for Backend users.</source>
+        <target>crwdns228161:0crwdne228161:0</target>
+      </trans-unit>
+      <trans-unit id="settings.keepBESSODomainName">
+        <source>Keep Backend SSO Domain: Keep the domain name after a successful login (for example on a CAS-Server), to continue the chain of authentication through LDAP.</source>
+        <target>crwdns342116:0crwdne342116:0</target>
+      </trans-unit>
+      <trans-unit id="settings.enableFELDAPAuthentication">
+        <source>Frontend LDAP authentication: Enable LDAP authentication for the frontend.</source>
+        <target>crwdns228165:0crwdne228165:0</target>
+      </trans-unit>
+      <trans-unit id="settings.TYPO3FEDeleteUserIfNoLDAPGroups">
+        <source>Purge Frontend users: Delete Frontend user upon login if no LDAP groups are found.</source>
+        <target>crwdns228167:0crwdne228167:0</target>
+      </trans-unit>
+      <trans-unit id="settings.TYPO3FEDeleteUserIfNoTYPO3Groups">
+        <source>Restrict new Frontend users: This option will prevent new Frontend users to be created and will delete existing ones whenever the LDAP groups they are member of are not found locally.</source>
+        <target>crwdns228169:0crwdne228169:0</target>
+      </trans-unit>
+      <trans-unit id="settings.TYPO3FEGroupExist">
+        <source>Frontend user group must exist: If no groups are found locally, the user may not log on.</source>
+        <target>crwdns228171:0crwdne228171:0</target>
+      </trans-unit>
+      <trans-unit id="settings.TYPO3FEUserExist">
+        <source>Frontend user must exist: If checked, users that are not already present in TYPO3 may not log on.</source>
+        <target>crwdns228173:0crwdne228173:0</target>
+      </trans-unit>
+      <trans-unit id="settings.TYPO3FEGroupsNotSynchronize">
+        <source>Disable Frontend group synchronization: If checked, TYPO3 Frontend user groups will not get updated.</source>
+        <target>crwdns228175:0crwdne228175:0</target>
+      </trans-unit>
+      <trans-unit id="settings.keepFEGroups">
+        <source>Keep Frontend groups: Keep the Frontend user groups assigned locally.</source>
+        <target>crwdns228177:0crwdne228177:0</target>
+      </trans-unit>
+      <trans-unit id="settings.enableFESSO">
+        <source>Frontend SSO: Enable Single Sign-On for Frontend users.</source>
+        <target>crwdns228179:0crwdne228179:0</target>
+      </trans-unit>
+      <trans-unit id="settings.keepFESSODomainName">
+        <source>Keep Frontend SSO Domain: Keep the domain name after a successful login (for example on a CAS-Server), to continue the chain of authentication through LDAP.</source>
+        <target>crwdns342542:0crwdne342542:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config">
+        <source>Configuration LDAP / SSO</source>
+        <target>crwdns228183:0crwdne228183:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.name">
+        <source>Name</source>
+        <target>crwdns342118:0crwdne342118:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.sites">
+        <source>Associated site configurations</source>
+        <target>crwdns342120:0crwdne342120:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_server">
+        <source>Server Type</source>
+        <target>crwdns342122:0crwdne342122:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_server.I.0">
+        <source>OpenLDAP</source>
+        <target>crwdns228195:0crwdne228195:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_server.I.1">
+        <source>Active Directory</source>
+        <target>crwdns228197:0crwdne228197:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_charset">
+        <source>Character set</source>
+        <target>crwdns342124:0crwdne342124:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_host">
+        <source>Host</source>
+        <target>crwdns342126:0crwdne342126:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_port">
+        <source>Port</source>
+        <target>crwdns342128:0crwdne342128:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_tls">
+        <source>Use TLS</source>
+        <target>crwdns342130:0crwdne342130:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_tls_reqcert">
+        <source>TLS require cert</source>
+        <target>crwdns342132:0crwdne342132:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_ssl">
+        <source>Use SSL</source>
+        <target>crwdns342134:0crwdne342134:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_timeout">
+        <source>Custom network timeout (in seconds)</source>
+        <target>crwdns355524:0crwdne355524:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_binddn">
+        <source>Bind DN</source>
+        <target>crwdns342136:0crwdne342136:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_password">
+        <source>Password</source>
+        <target>crwdns342138:0crwdne342138:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.group_membership">
+        <source>Relation between groups and users</source>
+        <target>crwdns342140:0crwdne342140:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.group_membership.I.1">
+        <source>Group contains the list of its members</source>
+        <target>crwdns228217:0crwdne228217:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.group_membership.I.2">
+        <source>User contains the list of its associated groups</source>
+        <target>crwdns228219:0crwdne228219:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.group_membership.fe.missingUsergroupMapping">
+        <source><![CDATA[Mapping for field "usergroup" is missing in the configuration of frontend users. You may end up importing ALL groups in LDAP into TYPO3 and get users associated to wrong groups. Suggestion: usergroup = <memberOf>]]></source>
+        <target><![CDATA[crwdns228221:0crwdne228221:0]]></target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.group_membership.be.missingUsergroupMapping">
+        <source><![CDATA[Mapping for field "usergroup" is missing in the configuration of backend users. You may end up importing ALL groups in LDAP into TYPO3 and get users associated to wrong groups. Suggestion: usergroup = <memberOf>]]></source>
+        <target><![CDATA[crwdns228223:0crwdne228223:0]]></target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_users_basedn">
+        <source>Base DN</source>
+        <target>crwdns342142:0crwdne342142:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_users_filter">
+        <source>Filter</source>
+        <target>crwdns342144:0crwdne342144:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_users_mapping">
+        <source>Mapping</source>
+        <target>crwdns342146:0crwdne342146:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_groups_basedn">
+        <source>Base DN</source>
+        <target>crwdns342148:0crwdne342148:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_groups_filter">
+        <source>Filter</source>
+        <target>crwdns342150:0crwdne342150:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_groups_mapping">
+        <source>Mapping</source>
+        <target>crwdns342152:0crwdne342152:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_groups_required">
+        <source>Required LDAP groups</source>
+        <target>crwdns342154:0crwdne342154:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_groups_assigned">
+        <source>Local groups to be assigned</source>
+        <target>crwdns342156:0crwdne342156:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_groups_admin">
+        <source>TYPO3 administrator groups</source>
+        <target>crwdns342158:0crwdne342158:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_groups.tx_igldapssoauth_dn">
+        <source>Groups DN (Distinguished Name)</source>
+        <target>crwdns228243:0crwdne228243:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.fe_users_basedn">
+        <source>Base DN</source>
+        <target>crwdns342160:0crwdne342160:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.fe_users_filter">
+        <source>Filter</source>
+        <target>crwdns342162:0crwdne342162:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.fe_users_mapping">
+        <source>Mapping</source>
+        <target>crwdns342164:0crwdne342164:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.fe_groups_basedn">
+        <source>Base DN</source>
+        <target>crwdns342166:0crwdne342166:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.fe_groups_filter">
+        <source>Filter</source>
+        <target>crwdns342168:0crwdne342168:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.fe_groups_mapping">
+        <source>Mapping</source>
+        <target>crwdns342170:0crwdne342170:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.fe_groups_required">
+        <source>Required LDAP groups</source>
+        <target>crwdns342172:0crwdne342172:0</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.fe_groups_assigned">
+        <source>Local groups to be assigned</source>
+        <target>crwdns342174:0crwdne342174:0</target>
+      </trans-unit>
+      <trans-unit id="be_groups.tx_igldapssoauth_dn">
+        <source>Group's DN (Distinguished Name)</source>
+        <target>crwdns228261:0crwdne228261:0</target>
+      </trans-unit>
+      <trans-unit id="be_users.tx_igldapssoauth_dn">
+        <source>User's DN (Distinguished Name)</source>
+        <target>crwdns228263:0crwdne228263:0</target>
+      </trans-unit>
+      <trans-unit id="fe_groups.tx_igldapssoauth_dn">
+        <source>Group's DN (Distinguished Name)</source>
+        <target>crwdns228265:0crwdne228265:0</target>
+      </trans-unit>
+      <trans-unit id="fe_users.tx_igldapssoauth_dn">
+        <source>User's DN (Distinguished Name)</source>
+        <target>crwdns228267:0crwdne228267:0</target>
+      </trans-unit>
+      <trans-unit id="tt_content.list_type_pi1">
+        <source>Central Authentication Service</source>
+        <target>crwdns228269:0crwdne228269:0</target>
+      </trans-unit>
+      <trans-unit id="palette.connection">
+        <source>Connection</source>
+        <target>crwdns228271:0crwdne228271:0</target>
+      </trans-unit>
+      <trans-unit id="suggestion.server.0">
+        <source>Suggestion for OpenLDAP</source>
+        <target>crwdns342176:0crwdne342176:0</target>
+      </trans-unit>
+      <trans-unit id="suggestion.server.1">
+        <source>Suggestion for Active Directory</source>
+        <target>crwdns342178:0crwdne342178:0</target>
+      </trans-unit>
+      <trans-unit id="suggestion.copy">
+        <source>copy and use</source>
+        <target>crwdns228277:0crwdne228277:0</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

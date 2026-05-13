@@ -89,7 +89,7 @@
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.name">
         <source>Name</source>
-        <target state="needs-translation">Name</target>
+        <target state="needs-review-translation" state-qualifier="leveraged-tm">Name</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.sites">
         <source>Associated site configurations</source>
@@ -113,7 +113,7 @@
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_host">
         <source>Host</source>
-        <target state="needs-translation">Host</target>
+        <target state="needs-review-translation" state-qualifier="leveraged-tm">Host</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_port">
         <source>Port</source>
@@ -141,7 +141,7 @@
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.ldap_password">
         <source>Password</source>
-        <target state="needs-translation">Password</target>
+        <target state="needs-review-translation" state-qualifier="leveraged-tm">Passwort</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.group_membership">
         <source>Relation between groups and users</source>
@@ -169,7 +169,7 @@
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_users_filter">
         <source>Filter</source>
-        <target state="needs-translation">Filter</target>
+        <target state="needs-review-translation" state-qualifier="leveraged-tm">Filter</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_users_mapping">
         <source>Mapping</source>
@@ -181,7 +181,7 @@
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_groups_filter">
         <source>Filter</source>
-        <target state="needs-translation">Filter</target>
+        <target state="needs-review-translation" state-qualifier="leveraged-tm">Filter</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.be_groups_mapping">
         <source>Mapping</source>
@@ -209,7 +209,7 @@
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.fe_users_filter">
         <source>Filter</source>
-        <target state="needs-translation">Filter</target>
+        <target state="needs-review-translation" state-qualifier="leveraged-tm">Filter</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.fe_users_mapping">
         <source>Mapping</source>
@@ -221,7 +221,7 @@
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.fe_groups_filter">
         <source>Filter</source>
-        <target state="needs-translation">Filter</target>
+        <target state="needs-review-translation" state-qualifier="leveraged-tm">Filter</target>
       </trans-unit>
       <trans-unit id="tx_igldapssoauth_config.fe_groups_mapping">
         <source>Mapping</source>

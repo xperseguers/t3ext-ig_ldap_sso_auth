@@ -41,7 +41,7 @@
       </trans-unit>
       <trans-unit id="module_status">
         <source>Status</source>
-        <target state="needs-translation">Status</target>
+        <target state="needs-review-translation" state-qualifier="leveraged-tm">Status</target>
       </trans-unit>
       <trans-unit id="module_status.title.domains">
         <source>Domains</source>
@@ -233,7 +233,7 @@
       </trans-unit>
       <trans-unit id="module_search_filter">
         <source>Filter</source>
-        <target state="needs-translation">Filter</target>
+        <target state="needs-review-translation" state-qualifier="leveraged-tm">Filter</target>
       </trans-unit>
       <trans-unit id="module_search.action.search" approved="yes">
         <source>search</source>
@@ -289,7 +289,7 @@
       </trans-unit>
       <trans-unit id="module_import.field.name">
         <source>Name</source>
-        <target state="needs-translation">Name</target>
+        <target state="needs-review-translation" state-qualifier="leveraged-tm">Name</target>
       </trans-unit>
       <trans-unit id="module_import_groups_fe" approved="yes">
         <source>Import LDAP groups (Frontend)</source>

@@ -245,6 +245,11 @@ class Typo3UserRepository
             unset($cleanData['deleted']);
         }
 
+        // @TODO: Do not remove until https://review.typo3.org/c/Packages/TYPO3.CMS/+/89293 is merged, otherwise the value will be JSON-encoded twice.
+        if (isset($cleanData['user_settings'])) {
+            unset($cleanData['user_settings']);
+        }
+
         $affectedRows = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getConnectionForTable($table)
             ->update(

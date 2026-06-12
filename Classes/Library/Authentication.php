@@ -129,7 +129,11 @@ class Authentication
                 $domain = strtolower($domain);
 
                 $configDomain = strtolower(static::$config['users']['basedn']);
-                $configDomain = substr($configDomain, strpos($configDomain, 'dc'));
+                $dcPosition = strpos($configDomain, 'dc');
+                if ($dcPosition === false) {
+                    return false;
+                }
+                $configDomain = substr($configDomain, $dcPosition);
 
                 if ($domain !== $configDomain) {
                     // Domain does not match, stop validating here

@@ -29,10 +29,9 @@ class SetupModuleController
     /**
      * Pre-processes the submitted data.
      *
-     * @param array $params
-     * @param \TYPO3\CMS\Setup\Controller\SetupModuleController $pObj
+     * @param array $params Parameters passed by reference
      */
-    public function preprocessData(array $params, \TYPO3\CMS\Setup\Controller\SetupModuleController $pObj)
+    public function preprocessData(array $params)
     {
         if (empty($GLOBALS['BE_USER']->user['tx_igldapssoauth_dn'])) {
             return;
@@ -45,5 +44,4 @@ class SetupModuleController
             $params['be_user_data']['password2'] = '';
         }
     }
-
 }

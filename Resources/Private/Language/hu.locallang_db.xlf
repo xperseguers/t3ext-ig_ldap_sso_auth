@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2024-10-17T13:30:30Z" product-name="ig_ldap_sso_auth" target-language="hu">
+    <header/>
+    <body>
+      <trans-unit id="settings.checkConfiguration">
+        <source>Configuration check</source>
+        <target state="translated">Konfiguráció-ellenőrzés</target>
+      </trans-unit>
+      <trans-unit id="settings.forceLowerCaseUsername">
+        <source>Force lower-case user name: If checked, user names will be always be stored in lower-cases. Useful for case-sensitive databases.</source>
+        <target state="translated">Kisbetűs felhasználónév kényszerítése: bejelölés esetén a felhasználónevek mindig kisbetűsen kerülnek tárolásra. Hasznos a kis- és nagybetűket megkülönböztető adatbázisoknál.</target>
+      </trans-unit>
+      <trans-unit id="settings.useExtensionConfiguration">
+        <source>Use the configuration specified in $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']['configuration']</source>
+        <target state="translated">A(z) $GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['ig_ldap_sso_auth']['configuration'] változóban megadott konfiguráció használata</target>
+      </trans-unit>
+      <trans-unit id="settings.enableBELDAPAuthentication">
+        <source>Backend LDAP authentication: Enable LDAP authentication for the backend.</source>
+        <target state="translated">Backend LDAP-hitelesítés: LDAP-hitelesítés engedélyezése a backendhez.</target>
+      </trans-unit>
+      <trans-unit id="settings.TYPO3BEGroupExist">
+        <source>Backend user group must exist: If no groups are found locally, the user may not log on.</source>
+        <target state="translated">Backend-felhasználói csoportnak léteznie kell: ha nem találhatók helyi csoportok, a felhasználó nem jelentkezhet be.</target>
+      </trans-unit>
+      <trans-unit id="settings.TYPO3BEUserExist">
+        <source>Backend user must exist: If checked, users that are not already present in TYPO3 may not log on.</source>
+        <target state="translated">Backend-felhasználónak léteznie kell: bejelölés esetén a TYPO3-ban még nem szereplő felhasználók nem jelentkezhetnek be.</target>
+      </trans-unit>
+      <trans-unit id="settings.BEfailsafe">
+        <source>Enable local Backend users: If checked, Backend users without a reference to LDAP (e.g., "admin") may log on.</source>
+        <target state="translated">Helyi backend-felhasználók engedélyezése: bejelölés esetén az LDAP-ra hivatkozás nélküli backend-felhasználók (pl. „admin”) bejelentkezhetnek.</target>
+      </trans-unit>
+      <trans-unit id="settings.TYPO3BEGroupsNotSynchronize">
+        <source>Disable Backend group synchronization: If checked, TYPO3 Backend user groups will not get updated.</source>
+        <target state="translated">Backend-csoport-szinkronizálás letiltása: bejelölés esetén a TYPO3 backend-felhasználói csoportjai nem frissülnek.</target>
+      </trans-unit>
+      <trans-unit id="settings.keepBEGroups">
+        <source>Keep Backend groups: Keep the Backend user groups assigned locally.</source>
+        <target state="translated">Backend-csoportok megtartása: a helyileg hozzárendelt backend-felhasználói csoportok megtartása.</target>
+      </trans-unit>
+      <trans-unit id="settings.enableBESSO">
+        <source>Backend SSO: Enable Single Sign-On for Backend users.</source>
+        <target state="translated">Backend SSO: egyszeri bejelentkezés (SSO) engedélyezése a backend-felhasználók számára.</target>
+      </trans-unit>
+      <trans-unit id="settings.keepBESSODomainName">
+        <source>Keep Backend SSO Domain: Keep the domain name after a successful login (for example on a CAS-Server), to continue the chain of authentication through LDAP.</source>
+        <target state="translated">Backend SSO-tartomány megtartása: a tartománynév megtartása sikeres bejelentkezés után (például CAS-kiszolgáló esetén) az LDAP-on keresztüli hitelesítési lánc folytatásához.</target>
+      </trans-unit>
+      <trans-unit id="settings.enableFELDAPAuthentication">
+        <source>Frontend LDAP authentication: Enable LDAP authentication for the frontend.</source>
+        <target state="translated">Frontend LDAP-hitelesítés: LDAP-hitelesítés engedélyezése a frontendhez.</target>
+      </trans-unit>
+      <trans-unit id="settings.TYPO3FEDeleteUserIfNoLDAPGroups">
+        <source>Purge Frontend users: Delete Frontend user upon login if no LDAP groups are found.</source>
+        <target state="translated">Frontend-felhasználók törlése: a frontend-felhasználó törlése a bejelentkezéskor, ha nem találhatók LDAP-csoportok.</target>
+      </trans-unit>
+      <trans-unit id="settings.TYPO3FEDeleteUserIfNoTYPO3Groups">
+        <source>Restrict new Frontend users: This option will prevent new Frontend users to be created and will delete existing ones whenever the LDAP groups they are member of are not found locally.</source>
+        <target state="translated">Új frontend-felhasználók korlátozása: ez a beállítás megakadályozza új frontend-felhasználók létrehozását, és törli a meglévőket, ha azoknak az LDAP-csoportjai, amelyeknek tagjai, helyileg nem találhatók meg.</target>
+      </trans-unit>
+      <trans-unit id="settings.TYPO3FEGroupExist">
+        <source>Frontend user group must exist: If no groups are found locally, the user may not log on.</source>
+        <target state="translated">Frontend-felhasználói csoportnak léteznie kell: ha nem találhatók helyi csoportok, a felhasználó nem jelentkezhet be.</target>
+      </trans-unit>
+      <trans-unit id="settings.TYPO3FEUserExist">
+        <source>Frontend user must exist: If checked, users that are not already present in TYPO3 may not log on.</source>
+        <target state="translated">Frontend-felhasználónak léteznie kell: bejelölés esetén a TYPO3-ban még nem szereplő felhasználók nem jelentkezhetnek be.</target>
+      </trans-unit>
+      <trans-unit id="settings.TYPO3FEGroupsNotSynchronize">
+        <source>Disable Frontend group synchronization: If checked, TYPO3 Frontend user groups will not get updated.</source>
+        <target state="translated">Frontend-csoport-szinkronizálás letiltása: bejelölés esetén a TYPO3 frontend-felhasználói csoportjai nem frissülnek.</target>
+      </trans-unit>
+      <trans-unit id="settings.keepFEGroups">
+        <source>Keep Frontend groups: Keep the Frontend user groups assigned locally.</source>
+        <target state="translated">Frontend-csoportok megtartása: a helyileg hozzárendelt frontend-felhasználói csoportok megtartása.</target>
+      </trans-unit>
+      <trans-unit id="settings.enableFESSO">
+        <source>Frontend SSO: Enable Single Sign-On for Frontend users.</source>
+        <target state="translated">Frontend SSO: egyszeri bejelentkezés (SSO) engedélyezése a frontend-felhasználók számára.</target>
+      </trans-unit>
+      <trans-unit id="settings.keepFESSODomainName">
+        <source>Keep Frontend SSO Domain: Keep the domain name after a successful login (for example on a CAS-Server), to continue the chain of authentication through LDAP.</source>
+        <target state="translated">Frontend SSO-tartomány megtartása: a tartománynév megtartása sikeres bejelentkezés után (például CAS-kiszolgáló esetén) az LDAP-on keresztüli hitelesítési lánc folytatásához.</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config">
+        <source>Configuration LDAP / SSO</source>
+        <target state="translated">LDAP / SSO konfiguráció</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.name">
+        <source>Name</source>
+        <target state="translated">Név</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.sites">
+        <source>Associated site configurations</source>
+        <target state="translated">Kapcsolódó webhelykonfigurációk</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_server">
+        <source>Server Type</source>
+        <target state="translated">Kiszolgáló típusa</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_server.I.0">
+        <source>OpenLDAP</source>
+        <target state="translated">OpenLDAP</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_server.I.1">
+        <source>Active Directory</source>
+        <target state="translated">Active Directory</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_charset">
+        <source>Character set</source>
+        <target state="translated">Karakterkészlet</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_host">
+        <source>Host</source>
+        <target state="translated">Hoszt</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_port">
+        <source>Port</source>
+        <target state="translated">Port</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_tls">
+        <source>Use TLS</source>
+        <target state="translated">TLS használata</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_tls_reqcert">
+        <source>TLS require cert</source>
+        <target state="translated">TLS-tanúsítvány szükséges</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_ssl">
+        <source>Use SSL</source>
+        <target state="translated">SSL használata</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_timeout">
+        <source>Custom network timeout (in seconds)</source>
+        <target state="translated">Egyéni hálózati időtúllépés (másodpercben)</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_binddn">
+        <source>Bind DN</source>
+        <target state="translated">Bind DN</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.ldap_password">
+        <source>Password</source>
+        <target state="translated">Jelszó</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.group_membership">
+        <source>Relation between groups and users</source>
+        <target state="translated">Kapcsolat a csoportok és felhasználók között</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.group_membership.I.1">
+        <source>Group contains the list of its members</source>
+        <target state="translated">A csoport tartalmazza tagjainak listáját</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.group_membership.I.2">
+        <source>User contains the list of its associated groups</source>
+        <target state="translated">A felhasználó tartalmazza a hozzá társított csoportok listáját</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.group_membership.fe.missingUsergroupMapping">
+        <source><![CDATA[Mapping for field "usergroup" is missing in the configuration of frontend users. You may end up importing ALL groups in LDAP into TYPO3 and get users associated to wrong groups. Suggestion: usergroup = <memberOf>]]></source>
+        <target state="translated"><![CDATA[A frontend-felhasználók konfigurációjából hiányzik a „usergroup” mező leképezése. Előfordulhat, hogy az összes LDAP-csoport importálásra kerül a TYPO3-ba, és a felhasználók rossz csoportokhoz kapcsolódnak. Javaslat: usergroup = <memberOf>]]></target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.group_membership.be.missingUsergroupMapping">
+        <source><![CDATA[Mapping for field "usergroup" is missing in the configuration of backend users. You may end up importing ALL groups in LDAP into TYPO3 and get users associated to wrong groups. Suggestion: usergroup = <memberOf>]]></source>
+        <target state="translated"><![CDATA[A backend-felhasználók konfigurációjából hiányzik a „usergroup” mező leképezése. Előfordulhat, hogy az összes LDAP-csoport importálásra kerül a TYPO3-ba, és a felhasználók rossz csoportokhoz kapcsolódnak. Javaslat: usergroup = <memberOf>]]></target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_users_basedn">
+        <source>Base DN</source>
+        <target state="translated">Alap DN</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_users_filter">
+        <source>Filter</source>
+        <target state="translated">Szűrő</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_users_mapping">
+        <source>Mapping</source>
+        <target state="translated">Leképezés</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_groups_basedn">
+        <source>Base DN</source>
+        <target state="translated">Alap DN</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_groups_filter">
+        <source>Filter</source>
+        <target state="translated">Szűrő</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_groups_mapping">
+        <source>Mapping</source>
+        <target state="translated">Leképezés</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_groups_required">
+        <source>Required LDAP groups</source>
+        <target state="translated">Szükséges LDAP-csoportok</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_groups_assigned">
+        <source>Local groups to be assigned</source>
+        <target state="translated">Hozzárendelendő helyi csoportok</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_groups_admin">
+        <source>TYPO3 administrator groups</source>
+        <target state="translated">TYPO3-adminisztrátor csoportok</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.be_groups.tx_igldapssoauth_dn">
+        <source>Groups DN (Distinguished Name)</source>
+        <target state="translated">Csoportok DN-je (Distinguished Name)</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.fe_users_basedn">
+        <source>Base DN</source>
+        <target state="translated">Alap DN</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.fe_users_filter">
+        <source>Filter</source>
+        <target state="translated">Szűrő</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.fe_users_mapping">
+        <source>Mapping</source>
+        <target state="translated">Leképezés</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.fe_groups_basedn">
+        <source>Base DN</source>
+        <target state="translated">Alap DN</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.fe_groups_filter">
+        <source>Filter</source>
+        <target state="translated">Szűrő</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.fe_groups_mapping">
+        <source>Mapping</source>
+        <target state="translated">Leképezés</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.fe_groups_required">
+        <source>Required LDAP groups</source>
+        <target state="translated">Szükséges LDAP-csoportok</target>
+      </trans-unit>
+      <trans-unit id="tx_igldapssoauth_config.fe_groups_assigned">
+        <source>Local groups to be assigned</source>
+        <target state="translated">Hozzárendelendő helyi csoportok</target>
+      </trans-unit>
+      <trans-unit id="be_groups.tx_igldapssoauth_dn">
+        <source>Group's DN (Distinguished Name)</source>
+        <target state="translated">A csoport DN-je (Distinguished Name)</target>
+      </trans-unit>
+      <trans-unit id="be_users.tx_igldapssoauth_dn">
+        <source>User's DN (Distinguished Name)</source>
+        <target state="translated">A felhasználó DN-je (Distinguished Name)</target>
+      </trans-unit>
+      <trans-unit id="fe_groups.tx_igldapssoauth_dn">
+        <source>Group's DN (Distinguished Name)</source>
+        <target state="translated">A csoport DN-je (Distinguished Name)</target>
+      </trans-unit>
+      <trans-unit id="fe_users.tx_igldapssoauth_dn">
+        <source>User's DN (Distinguished Name)</source>
+        <target state="translated">A felhasználó DN-je (Distinguished Name)</target>
+      </trans-unit>
+      <trans-unit id="tt_content.list_type_pi1">
+        <source>Central Authentication Service</source>
+        <target state="translated">Központi hitelesítési szolgáltatás</target>
+      </trans-unit>
+      <trans-unit id="palette.connection">
+        <source>Connection</source>
+        <target state="translated">Kapcsolat</target>
+      </trans-unit>
+      <trans-unit id="suggestion.server.0">
+        <source>Suggestion for OpenLDAP</source>
+        <target state="translated">Javaslat az OpenLDAP-hoz</target>
+      </trans-unit>
+      <trans-unit id="suggestion.server.1">
+        <source>Suggestion for Active Directory</source>
+        <target state="translated">Javaslat az Active Directory-hoz</target>
+      </trans-unit>
+      <trans-unit id="suggestion.copy">
+        <source>copy and use</source>
+        <target state="translated">másolás és használat</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

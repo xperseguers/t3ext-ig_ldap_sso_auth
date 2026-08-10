@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2024-10-17T13:30:10Z" product-name="ig_ldap_sso_auth" target-language="hu">
+    <header/>
+    <body>
+      <trans-unit id="mlang_tabs_tab">
+        <source>LDAP / SSO</source>
+        <target state="translated">LDAP / SSO</target>
+      </trans-unit>
+      <trans-unit id="mlang_labels_tabdescr">
+        <source>LDAP management and configuration module.</source>
+        <target state="translated">LDAP-kezelő és -konfigurációs modul.</target>
+      </trans-unit>
+      <trans-unit id="mlang_labels_tablabel">
+        <source>LDAP management</source>
+        <target state="translated">LDAP-kezelés</target>
+      </trans-unit>
+      <trans-unit id="title">
+        <source>LDAP / SSO service management</source>
+        <target state="translated">LDAP / SSO szolgáltatáskezelés</target>
+      </trans-unit>
+      <trans-unit id="configuration_missing.title">
+        <source>No Configuration Records</source>
+        <target state="translated">Nincs konfigurációs rekord</target>
+      </trans-unit>
+      <trans-unit id="configuration_missing.message">
+        <source><![CDATA[This module cannot be used until you create at least one configuration record. Please refer to the <a href="%s" target="_blank">administrator manual</a> for further information.<br /><br /><a href="%s">Click here</a> to create a configuration record.]]></source>
+        <target state="translated"><![CDATA[Ez a modul addig nem használható, amíg nem hoz létre legalább egy konfigurációs rekordot. A további információkért tekintse meg az <a href="%s" target="_blank">adminisztrátori kézikönyvet</a>.<br /><br />A konfigurációs rekord létrehozásához <a href="%s">kattintson ide</a>.]]></target>
+      </trans-unit>
+      <trans-unit id="module_docheader.configurations.switch">
+        <source>Switch configuration</source>
+        <target state="translated">Konfiguráció váltása</target>
+      </trans-unit>
+      <trans-unit id="module_docheader.configurations.edit">
+        <source>Edit current configuration</source>
+        <target state="translated">Aktuális konfiguráció szerkesztése</target>
+      </trans-unit>
+      <trans-unit id="module_overview">
+        <source>Overview</source>
+        <target state="translated">Áttekintés</target>
+      </trans-unit>
+      <trans-unit id="module_status">
+        <source>Status</source>
+        <target state="translated">Állapot</target>
+      </trans-unit>
+      <trans-unit id="module_status.title.domains">
+        <source>Domains</source>
+        <target state="translated">Tartományok</target>
+      </trans-unit>
+      <trans-unit id="module_status.description.domains">
+        <source>Current LDAP configuration is restricted to following domain(s):</source>
+        <target state="translated">Az aktuális LDAP-konfiguráció a következő tartomány(ok)ra korlátozódik:</target>
+      </trans-unit>
+      <trans-unit id="module_status.title.ldap">
+        <source>LDAP</source>
+        <target state="translated">LDAP</target>
+      </trans-unit>
+      <trans-unit id="module_status.messages.ldapDisable">
+        <source>LDAP is disabled since the host name is undefined.</source>
+        <target state="translated">Az LDAP le van tiltva, mert a hosztnév nincs definiálva.</target>
+      </trans-unit>
+      <trans-unit id="module_status.messages.enabled">
+        <source>enabled</source>
+        <target state="translated">engedélyezve</target>
+      </trans-unit>
+      <trans-unit id="module_status.messages.disabled">
+        <source>disabled</source>
+        <target state="translated">letiltva</target>
+      </trans-unit>
+      <trans-unit id="module_status.messages.empty">
+        <source>none</source>
+        <target state="translated">nincs</target>
+      </trans-unit>
+      <trans-unit id="module_status.title.connection">
+        <source>Connection status</source>
+        <target state="translated">Kapcsolat állapota</target>
+      </trans-unit>
+      <trans-unit id="module_status.title.frontend">
+        <source>Frontend authentication</source>
+        <target state="translated">Frontend hitelesítés</target>
+      </trans-unit>
+      <trans-unit id="module_status.title.backend">
+        <source>Backend authentication</source>
+        <target state="translated">Backend hitelesítés</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.server">
+        <source>Server type</source>
+        <target state="translated">Kiszolgáló típusa</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.charset">
+        <source>Character set</source>
+        <target state="translated">Karakterkészlet</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.host">
+        <source>Host</source>
+        <target state="translated">Hoszt</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.port">
+        <source>Port</source>
+        <target state="translated">Port</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.tls">
+        <source>Use TLS</source>
+        <target state="translated">TLS használata</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.tlsReqcert">
+        <source>TLS require cert</source>
+        <target state="translated">TLS-tanúsítvány szükséges</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.ssl">
+        <source>Use SSL</source>
+        <target state="translated">SSL használata</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.binddn">
+        <source>Bind DN</source>
+        <target state="translated">Bind DN</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.password">
+        <source>Password</source>
+        <target state="translated">Jelszó</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.connect">
+        <source>LDAP connect</source>
+        <target state="translated">LDAP-kapcsolat</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.bind">
+        <source>LDAP bind</source>
+        <target state="translated">LDAP-kötés</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.LDAPAuthentication">
+        <source>LDAP authentication</source>
+        <target state="translated">LDAP-hitelesítés</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.SSOAuthentication">
+        <source>Single Sign On (SSO)</source>
+        <target state="translated">Egyszeri bejelentkezés (SSO)</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.forceLowerCaseUsername">
+        <source>Convert user name to lower-case</source>
+        <target state="translated">Felhasználónév konvertálása kisbetűssé</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.evaluateGroupsFromMembership">
+        <source>Extract groups from membership attribute</source>
+        <target state="translated">Csoportok kinyerése a tagsági attribútumból</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.IfUserExist">
+        <source>User must exist already</source>
+        <target state="translated">A felhasználónak már léteznie kell</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.IfGroupExist">
+        <source>User group must exist already</source>
+        <target state="translated">A felhasználói csoportnak már léteznie kell</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.BEfailsafe">
+        <source>Local (non-LDAP) users may authenticate</source>
+        <target state="translated">A helyi (nem LDAP) felhasználók hitelesíthetnek</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.updateAdminAttribForGroups">
+        <source>User groups promoted as TYPO3 administrators</source>
+        <target state="translated">TYPO3-adminisztrátorként kezelt felhasználói csoportok</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.DeleteUserIfNoTYPO3Groups">
+        <source>Delete user if not in any TYPO3 user groups</source>
+        <target state="translated">Felhasználó törlése, ha nem tartozik egyetlen TYPO3-felhasználói csoporthoz sem</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.DeleteUserIfNoLDAPGroups">
+        <source>Delete user if not in any LDAP user groups</source>
+        <target state="translated">Felhasználó törlése, ha nem tartozik egyetlen LDAP-felhasználói csoporthoz sem</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.GroupsNotSynchronize">
+        <source>Prevent synchronization of user groups</source>
+        <target state="translated">Felhasználói csoportok szinkronizálásának megakadályozása</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.assignGroups">
+        <source>Additional TYPO3 user groups assigned</source>
+        <target state="translated">Hozzárendelt további TYPO3-felhasználói csoportok</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.keepTYPO3Groups">
+        <source>Keep locally-assigned TYPO3 user groups</source>
+        <target state="translated">Helyileg hozzárendelt TYPO3-felhasználói csoportok megtartása</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.requiredLDAPGroups">
+        <source>Required LDAP user groups to validate authentication</source>
+        <target state="translated">A hitelesítés érvényesítéséhez szükséges LDAP-felhasználói csoportok</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.users">
+        <source>Configuration for users</source>
+        <target state="translated">Felhasználók konfigurációja</target>
+      </trans-unit>
+      <trans-unit id="module_status.configuration.groups">
+        <source>Configuration for user groups</source>
+        <target state="translated">Felhasználói csoportok konfigurációja</target>
+      </trans-unit>
+      <trans-unit id="module_search">
+        <source>Search wizard</source>
+        <target state="translated">Keresővarázsló</target>
+      </trans-unit>
+      <trans-unit id="module_search_type">
+        <source>Type</source>
+        <target state="translated">Típus</target>
+      </trans-unit>
+      <trans-unit id="module_search_type.frontendUsers">
+        <source>Frontend users</source>
+        <target state="translated">Frontend-felhasználók</target>
+      </trans-unit>
+      <trans-unit id="module_search_type.frontendUserGroups">
+        <source>Frontend user groups</source>
+        <target state="translated">Frontend-felhasználói csoportok</target>
+      </trans-unit>
+      <trans-unit id="module_search_type.backendUsers">
+        <source>Backend users</source>
+        <target state="translated">Backend-felhasználók</target>
+      </trans-unit>
+      <trans-unit id="module_search_type.backendUserGroups">
+        <source>Backend user groups</source>
+        <target state="translated">Backend-felhasználói csoportok</target>
+      </trans-unit>
+      <trans-unit id="module_search_options">
+        <source>Options</source>
+        <target state="translated">Beállítások</target>
+      </trans-unit>
+      <trans-unit id="module_search_options.firstEntry">
+        <source>First entry only</source>
+        <target state="translated">Csak az első bejegyzés</target>
+      </trans-unit>
+      <trans-unit id="module_search_options.status">
+        <source>Show status</source>
+        <target state="translated">Állapot megjelenítése</target>
+      </trans-unit>
+      <trans-unit id="module_search_basedn">
+        <source>Base DN</source>
+        <target state="translated">Alap DN</target>
+      </trans-unit>
+      <trans-unit id="module_search_filter">
+        <source>Filter</source>
+        <target state="translated">Szűrő</target>
+      </trans-unit>
+      <trans-unit id="module_search.action.search">
+        <source>search</source>
+        <target state="translated">keresés</target>
+      </trans-unit>
+      <trans-unit id="module_search_status">
+        <source>LDAP search status</source>
+        <target state="translated">LDAP-keresés állapota</target>
+      </trans-unit>
+      <trans-unit id="module_search_result">
+        <source>Result</source>
+        <target state="translated">Eredmény</target>
+      </trans-unit>
+      <trans-unit id="module_search_noResult">
+        <source>No results</source>
+        <target state="translated">Nincs eredmény</target>
+      </trans-unit>
+      <trans-unit id="module_search_preview">
+        <source>Preview mapping</source>
+        <target state="translated">Leképezés előnézete</target>
+      </trans-unit>
+      <trans-unit id="module_import.action.import">
+        <source>import</source>
+        <target state="translated">importálás</target>
+      </trans-unit>
+      <trans-unit id="module_import.action.update">
+        <source>update</source>
+        <target state="translated">frissítés</target>
+      </trans-unit>
+      <trans-unit id="module_import.action.undelete">
+        <source>undelete</source>
+        <target state="translated">visszaállítás</target>
+      </trans-unit>
+      <trans-unit id="module_import_users_fe">
+        <source>Import LDAP users (Frontend)</source>
+        <target state="translated">LDAP-felhasználók importálása (Frontend)</target>
+      </trans-unit>
+      <trans-unit id="module_import_users_be">
+        <source>Import LDAP users (Backend)</source>
+        <target state="translated">LDAP-felhasználók importálása (Backend)</target>
+      </trans-unit>
+      <trans-unit id="module_import_users.empty">
+        <source>No users found.</source>
+        <target state="translated">Nem találhatók felhasználók.</target>
+      </trans-unit>
+      <trans-unit id="module_import_users.caption_local">
+        <source>LDAP user is available locally</source>
+        <target state="translated">Az LDAP-felhasználó helyileg elérhető</target>
+      </trans-unit>
+      <trans-unit id="module_import_users.caption_deleted">
+        <source>LDAP user has been imported but then manually deleted</source>
+        <target state="translated">Az LDAP-felhasználó importálásra került, de ezt követően manuálisan törölték</target>
+      </trans-unit>
+      <trans-unit id="module_import.field.name">
+        <source>Name</source>
+        <target state="translated">Név</target>
+      </trans-unit>
+      <trans-unit id="module_import_groups_fe">
+        <source>Import LDAP groups (Frontend)</source>
+        <target state="translated">LDAP-csoportok importálása (Frontend)</target>
+      </trans-unit>
+      <trans-unit id="module_import_groups_be">
+        <source>Import LDAP groups (Backend)</source>
+        <target state="translated">LDAP-csoportok importálása (Backend)</target>
+      </trans-unit>
+      <trans-unit id="module_import_groups.empty">
+        <source>No groups found.</source>
+        <target state="translated">Nem találhatók csoportok.</target>
+      </trans-unit>
+      <trans-unit id="module_import_groups.caption_local">
+        <source>LDAP group is available locally</source>
+        <target state="translated">Az LDAP-csoport helyileg elérhető</target>
+      </trans-unit>
+      <trans-unit id="module_import_groups.caption_deleted">
+        <source>LDAP group has been imported but then manually deleted</source>
+        <target state="translated">Az LDAP-csoport importálásra került, de ezt követően manuálisan törölték</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

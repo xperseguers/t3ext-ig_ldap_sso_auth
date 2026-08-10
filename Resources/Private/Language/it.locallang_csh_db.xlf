@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0">
+  <file source-language="en" datatype="plaintext" original="messages" date="2024-10-17T13:30:20Z" product-name="ig_ldap_sso_auth" target-language="it">
+    <header/>
+    <body>
+      <trans-unit id="name.description" approved="yes">
+        <source>Name used to distinguish each configuration.</source>
+        <target state="final">Nome usato per distinguere ogni configurazione.</target>
+      </trans-unit>
+      <trans-unit id="ldap_server.description" approved="yes">
+        <source>Type of LDAP server used by the authentication (OpenLDAP, Active Directory).</source>
+        <target state="final">Tipo di server LDAP usato per l'autenticazione (OpenLDAP, Active Directory).</target>
+      </trans-unit>
+      <trans-unit id="ldap_charset.description" approved="yes">
+        <source>Character set used by the LDAP server. Usually: utf-8.</source>
+        <target state="final">Set di caratteri usato dal server LDAP. Di solito: utf-8.</target>
+      </trans-unit>
+      <trans-unit id="ldap_port.description" approved="yes">
+        <source>Port used by the LDAP server. Default: 389.</source>
+        <target state="final">Porta usata dal server LDAP. Impostazione predefinita: 389.</target>
+      </trans-unit>
+      <trans-unit id="ldap_binddn.description" approved="yes">
+        <source>DN (Distinguished Name) used to bind to the server.</source>
+        <target state="final">DN (Distinguished Name) utilizzato per il collegamento al server.</target>
+      </trans-unit>
+      <trans-unit id="ldap_binddn.syntax" approved="yes">
+        <source>E.g., cn=admin,dc=example,dc=com</source>
+        <target state="final">Es. cn=admin,dc=example,dc=com</target>
+      </trans-unit>
+      <trans-unit id="be_users_basedn.description" approved="yes">
+        <source>DN (Distinguished Name) to be used to look for BE users in the LDAP server.</source>
+        <target state="final">DN (Distinguished Name) da utilizzare per la ricerca degli utenti di BE nel server LDAP.</target>
+      </trans-unit>
+      <trans-unit id="be_users_basedn.syntax" approved="yes">
+        <source>E.g., ou=USERS,dc=example,dc=com</source>
+        <target state="final">Es. ou=USERS,dc=example,dc=com</target>
+      </trans-unit>
+      <trans-unit id="be_users_filter.description" approved="yes">
+        <source>Filter to search for BE users in the LDAP server.</source>
+        <target state="final">Filtro per la ricerca degli utenti di BE nel server LDAP.</target>
+      </trans-unit>
+      <trans-unit id="be_users_filter.syntax" approved="yes">
+        <source>Sample of a filter used for the authentication: (cn={USERNAME})</source>
+        <target state="final">Esempio di filtro usato per l'autenticazione: (cn={USERNAME})</target>
+      </trans-unit>
+      <trans-unit id="be_users_mapping.description" approved="yes">
+        <source>Assign LDAP attribute to a field of the user record.</source>
+        <target state="final">Assegna attributo LDAP a un campo della scheda utente.</target>
+      </trans-unit>
+      <trans-unit id="be_groups_basedn.description" approved="yes">
+        <source>DN (Distinguished Name) to be used to look for BE groups in the LDAP server.</source>
+        <target state="final">DN (Distinguished Name) da utilizzare per la ricerca dei gruppi di BE nel server LDAP.</target>
+      </trans-unit>
+      <trans-unit id="be_groups_basedn.syntax" approved="yes">
+        <source>E.g., ou=GROUPS,dc=example,dc=com</source>
+        <target state="final">Es., ou=GROUPS,dc=example,dc=com</target>
+      </trans-unit>
+      <trans-unit id="be_groups_filter.description" approved="yes">
+        <source>Filter to search for BE groups in the LDAP server. Example: (objectClass=posixGroup)</source>
+        <target state="final">Filtro per la ricerca dei gruppi di BE nel server LDAP. Ad esempio: (objectClass=posixGroup)</target>
+      </trans-unit>
+      <trans-unit id="be_groups_filter.syntax">
+        <source>Sample if option "Relation between groups and users" is set to "Group contains the list of its members": (memberuid={USERDN})</source>
+        <target state="translated">Esempio se l'opzione "Relazione tra gruppi e utenti" è impostata su "Il gruppo contiene l'elenco dei suoi membri": (memberuid={USERDN})</target>
+      </trans-unit>
+      <trans-unit id="be_groups_mapping.description" approved="yes">
+        <source>Assign LDAP attribute to a field of the user group.</source>
+        <target state="final">Assegna attributo LDAP a un campo del gruppo di utenti.</target>
+      </trans-unit>
+      <trans-unit id="be_groups_required.description" approved="yes">
+        <source>List of backend user groups (previously imported from LDAP) required to authorize authentication of LDAP users.</source>
+        <target state="final">Lista dei gruppi di utenti di backend (importati da LDAP in precedenza) richiesti per autorizzare l'autenticazione degli utenti LDAP.</target>
+      </trans-unit>
+      <trans-unit id="be_groups_assigned.description" approved="yes">
+        <source>List of backend user groups to be assigned automatically when authenticating LDAP users.</source>
+        <target state="final">Lista dei gruppi di utenti di backend da assegnare automaticamente in seguito all'autenticazione degli utenti LDAP.</target>
+      </trans-unit>
+      <trans-unit id="be_groups_admin.description" approved="yes">
+        <source>List of backend user groups whose members should be promoted as TYPO3 administrators (valid only as part of LDAP authentication).</source>
+        <target state="final">Lista dei gruppi di utenti di backend i cui membri devono essere promossi ad amministratori TYPO3 (valido solo come parte della procedura di autenticazione LDAP).</target>
+      </trans-unit>
+      <trans-unit id="fe_users_basedn.description" approved="yes">
+        <source>DN (Distinguished Name) to be used to look for FE users in the LDAP server.</source>
+        <target state="final">DN (Distinguished Name) da utilizzare per la ricerca degli utenti di FE nel server LDAP.</target>
+      </trans-unit>
+      <trans-unit id="fe_users_basedn.syntax" approved="yes">
+        <source>E.g., ou=USERS,dc=example,dc=com</source>
+        <target state="final">Es., ou=USERS,dc=example,dc=com</target>
+      </trans-unit>
+      <trans-unit id="fe_users_filter.description" approved="yes">
+        <source>Filter to search for FE users in the LDAP server.</source>
+        <target state="final">Filtro per la ricerca degli utenti di FE nel server LDAP.</target>
+      </trans-unit>
+      <trans-unit id="fe_users_filter.syntax" approved="yes">
+        <source>Sample of a filter used for the authentication: (cn={USERNAME})</source>
+        <target state="final">Esempio di filtro usato per l'autenticazione: (cn={USERNAME})</target>
+      </trans-unit>
+      <trans-unit id="fe_users_mapping.description" approved="yes">
+        <source>Assign LDAP attribute to a field of the user record.</source>
+        <target state="final">Assegna attributo LDAP a un campo della scheda utente.</target>
+      </trans-unit>
+      <trans-unit id="fe_groups_basedn.description" approved="yes">
+        <source>DN (Distinguished Name) to be used to look for FE groups in the LDAP server.</source>
+        <target state="final">DN (Distinguished Name) da utilizzare per la ricerca dei gruppi di FE nel server LDAP.</target>
+      </trans-unit>
+      <trans-unit id="fe_groups_basedn.syntax" approved="yes">
+        <source>E.g., ou=GROUPS,dc=example,dc=com</source>
+        <target state="final">Es., ou=GROUPS,dc=example,dc=com</target>
+      </trans-unit>
+      <trans-unit id="fe_groups_filter.description" approved="yes">
+        <source>Filter to search for FE groups in the LDAP server. Example: (objectClass=posixGroup)</source>
+        <target state="final">Filtro per la ricerca degli utenti di FE nel server LDAP. Esempio: (objectClass=posixGroup)</target>
+      </trans-unit>
+      <trans-unit id="fe_groups_filter.syntax">
+        <source>Sample if option "Relation between groups and users" is set to "Group contains the list of its members": (memberuid={USERDN})</source>
+        <target state="translated">Esempio se l'opzione "Relazione tra gruppi e utenti" è impostata su "Il gruppo contiene l'elenco dei suoi membri": (memberuid={USERDN})</target>
+      </trans-unit>
+      <trans-unit id="fe_groups_mapping.description" approved="yes">
+        <source>Assign LDAP attribute to a field of the group record.</source>
+        <target state="final">Assegna attributo LDAP a un campo della scheda del gruppo.</target>
+      </trans-unit>
+      <trans-unit id="fe_groups_required.description" approved="yes">
+        <source>List of frontend user groups (previously imported from LDAP) required to authorize authentication of LDAP users.</source>
+        <target state="final">Lista dei gruppi degli utenti di frontend (importati da LDAP in precedenza) richiesti per autorizzare l'autenticazione degli utenti LDAP.</target>
+      </trans-unit>
+      <trans-unit id="fe_groups_assigned.description" approved="yes">
+        <source>List of frontend user groups to be assigned automatically when authenticating LDAP users.</source>
+        <target state="final">Lista dei gruppi di utenti di frontend da assegnare automaticamente in seguito all'autenticazione degli utenti LDAP.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

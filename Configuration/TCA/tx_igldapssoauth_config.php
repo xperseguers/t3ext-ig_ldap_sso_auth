@@ -1,4 +1,5 @@
 <?php
+
 defined('TYPO3') || die();
 
 return [
@@ -33,7 +34,7 @@ return [
                     --div--;BE_USERS,
                         be_users_basedn, be_users_filter, be_users_mapping, be_groups_required, be_groups_assigned,
                     --div--;BE_GROUPS,
-                        be_groups_basedn, be_groups_filter, be_groups_mapping, be_groups_admin'
+                        be_groups_basedn, be_groups_filter, be_groups_mapping, be_groups_admin',
         ],
     ],
     'palettes' => [
@@ -59,7 +60,7 @@ return [
                 'size' => 30,
                 'eval' => 'trim',
                 'required' => true,
-            ]
+            ],
         ],
         'sites' => [
             'exclude' => true,
@@ -70,7 +71,7 @@ return [
                 'itemsProcFunc' => \Causal\IgLdapSsoAuth\Backend\Tca\SiteConfigurationItemsProcFunc::class . '->getSites',
                 'allowNonIdValues' => true,
                 'size' => 10,
-            ]
+            ],
         ],
         'ldap_server' => [
             'exclude' => true,
@@ -82,11 +83,11 @@ return [
                 'items' => [
                     [
                         'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_server.I.0',
-                        'value' => \Causal\IgLdapSsoAuth\Library\Configuration::SERVER_OPENLDAP
+                        'value' => \Causal\IgLdapSsoAuth\Library\Configuration::SERVER_OPENLDAP,
                     ],
                     [
                         'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.ldap_server.I.1',
-                        'value' => \Causal\IgLdapSsoAuth\Library\Configuration::SERVER_ACTIVE_DIRECTORY
+                        'value' => \Causal\IgLdapSsoAuth\Library\Configuration::SERVER_ACTIVE_DIRECTORY,
                     ],
                 ],
                 'size' => 1,
@@ -104,7 +105,7 @@ return [
                 'max' => 255,
                 'eval' => 'trim',
                 'default' => 'utf-8',
-            ]
+            ],
         ],
         'ldap_host' => [
             'exclude' => true,
@@ -114,7 +115,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'eval' => 'trim',
-            ]
+            ],
         ],
         'ldap_port' => [
             'exclude' => true,
@@ -122,7 +123,7 @@ return [
             'description' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_csh_db.xlf:ldap_port.description',
             'config' => [
                 'type' => 'number',
-            ]
+            ],
         ],
         'ldap_tls' => [
             'exclude' => true,
@@ -164,7 +165,7 @@ return [
                 'type' => 'input',
                 'size' => 30,
                 'eval' => 'trim',
-            ]
+            ],
         ],
         'ldap_password' => [
             'exclude' => true,
@@ -172,7 +173,7 @@ return [
             'config' => [
                 'type' => 'password',
                 'hashed' => false,
-            ]
+            ],
         ],
         'group_membership' => [
             'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.group_membership',
@@ -183,12 +184,12 @@ return [
                     [
                         'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.group_membership.I.1',
                         'value' => \Causal\IgLdapSsoAuth\Library\Configuration::GROUP_MEMBERSHIP_FROM_GROUP,
-                        'icon' => 'EXT:ig_ldap_sso_auth/Resources/Public/Icons/selicon_group_membership_1.png'
+                        'icon' => 'EXT:ig_ldap_sso_auth/Resources/Public/Icons/selicon_group_membership_1.png',
                     ],
                     [
                         'label' => 'LLL:EXT:ig_ldap_sso_auth/Resources/Private/Language/locallang_db.xlf:tx_igldapssoauth_config.group_membership.I.2',
                         'value' => \Causal\IgLdapSsoAuth\Library\Configuration::GROUP_MEMBERSHIP_FROM_MEMBER,
-                        'icon' => 'EXT:ig_ldap_sso_auth/Resources/Public/Icons/selicon_group_membership_2.png'
+                        'icon' => 'EXT:ig_ldap_sso_auth/Resources/Public/Icons/selicon_group_membership_2.png',
                     ],
                 ],
                 'minitems' => 1,
@@ -210,7 +211,7 @@ return [
                 'renderType' => 'ldapSuggest',
                 'size' => 30,
                 'eval' => 'trim',
-            ]
+            ],
         ],
         'be_users_filter' => [
             'exclude' => true,
@@ -222,7 +223,7 @@ return [
                 'rows' => 3,
                 'cols' => 30,
                 'eval' => 'trim',
-            ]
+            ],
         ],
         'be_users_mapping' => [
             'exclude' => true,
@@ -234,7 +235,7 @@ return [
                 'rows' => 8,
                 'cols' => 30,
                 'eval' => 'trim',
-            ]
+            ],
         ],
         'be_groups_basedn' => [
             'exclude' => true,
@@ -245,7 +246,7 @@ return [
                 'renderType' => 'ldapSuggest',
                 'size' => 30,
                 'eval' => 'trim',
-            ]
+            ],
         ],
         'be_groups_filter' => [
             'exclude' => true,
@@ -257,7 +258,7 @@ return [
                 'rows' => 3,
                 'cols' => 30,
                 'eval' => 'trim',
-            ]
+            ],
         ],
         'be_groups_mapping' => [
             'exclude' => true,
@@ -269,7 +270,7 @@ return [
                 'rows' => 8,
                 'cols' => 30,
                 'eval' => 'trim',
-            ]
+            ],
         ],
         'be_groups_required' => [
             'exclude' => true,
@@ -283,7 +284,7 @@ return [
                 'size' => 6,
                 'minitems' => 0,
                 'maxitems' => 30,
-            ]
+            ],
         ],
         'be_groups_assigned' => [
             'exclude' => true,
@@ -297,7 +298,7 @@ return [
                 'size' => 10,
                 'minitems' => 0,
                 'maxitems' => 30,
-            ]
+            ],
         ],
         'be_groups_admin' => [
             'exclude' => true,
@@ -311,7 +312,7 @@ return [
                 'size' => 6,
                 'minitems' => 0,
                 'maxitems' => 30,
-            ]
+            ],
         ],
         'fe_users_basedn' => [
             'exclude' => true,
@@ -322,7 +323,7 @@ return [
                 'renderType' => 'ldapSuggest',
                 'size' => 30,
                 'eval' => 'trim',
-            ]
+            ],
         ],
         'fe_users_filter' => [
             'exclude' => true,
@@ -334,7 +335,7 @@ return [
                 'rows' => 3,
                 'cols' => 30,
                 'eval' => 'trim',
-            ]
+            ],
         ],
         'fe_users_mapping' => [
             'exclude' => true,
@@ -346,7 +347,7 @@ return [
                 'rows' => 8,
                 'cols' => 30,
                 'eval' => 'trim',
-            ]
+            ],
         ],
         'fe_groups_basedn' => [
             'exclude' => true,
@@ -357,7 +358,7 @@ return [
                 'renderType' => 'ldapSuggest',
                 'size' => 30,
                 'eval' => 'trim',
-            ]
+            ],
         ],
         'fe_groups_filter' => [
             'exclude' => true,
@@ -369,7 +370,7 @@ return [
                 'rows' => 3,
                 'cols' => 30,
                 'eval' => 'trim',
-            ]
+            ],
         ],
         'fe_groups_mapping' => [
             'exclude' => true,
@@ -381,7 +382,7 @@ return [
                 'rows' => 8,
                 'cols' => 30,
                 'eval' => 'trim',
-            ]
+            ],
         ],
         'fe_groups_required' => [
             'exclude' => true,
@@ -395,7 +396,7 @@ return [
                 'size' => 10,
                 'minitems' => 0,
                 'maxitems' => 99,
-            ]
+            ],
         ],
         'fe_groups_assigned' => [
             'exclude' => true,
@@ -409,7 +410,7 @@ return [
                 'size' => 10,
                 'minitems' => 0,
                 'maxitems' => 99,
-            ]
+            ],
         ],
     ],
 ];

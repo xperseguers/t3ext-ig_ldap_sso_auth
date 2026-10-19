@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -23,8 +24,6 @@ use TYPO3\CMS\Fluid\ViewHelpers\Be\AbstractBackendViewHelper;
  * Displays sprite icon identified by iconName key
  *
  * @author     Felix Kopp <felix-source@phorax.com>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 class SpriteManagerIconViewHelper extends AbstractBackendViewHelper
 {
@@ -56,7 +55,7 @@ class SpriteManagerIconViewHelper extends AbstractBackendViewHelper
         }
 
         if ((new \TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion() >= 13) {
-            $iconSize = match($this->arguments['size']) {
+            $iconSize = match ($this->arguments['size']) {
                 'small' => \TYPO3\CMS\Core\Imaging\IconSize::SMALL,
                 'medium' => \TYPO3\CMS\Core\Imaging\IconSize::MEDIUM,
                 'large' => \TYPO3\CMS\Core\Imaging\IconSize::LARGE,
@@ -64,7 +63,7 @@ class SpriteManagerIconViewHelper extends AbstractBackendViewHelper
                 default => \TYPO3\CMS\Core\Imaging\IconSize::DEFAULT,
             };
         } else {
-            $iconSize = match($this->arguments['size']) {
+            $iconSize = match ($this->arguments['size']) {
                 'small' => \TYPO3\CMS\Core\Imaging\Icon::SIZE_SMALL,
                 'medium' => \TYPO3\CMS\Core\Imaging\Icon::SIZE_MEDIUM,
                 'large' => \TYPO3\CMS\Core\Imaging\Icon::SIZE_LARGE,

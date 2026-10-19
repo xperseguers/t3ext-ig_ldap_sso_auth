@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -29,8 +30,7 @@ class ConfigurationConverter extends AbstractTypeConverter implements SingletonI
 {
     public function __construct(
         private readonly ConfigurationRepository $configurationRepository
-    )
-    {}
+    ) {}
 
     /**
      * @param string|int $source TODO: should actually be type-hinted as int
@@ -44,8 +44,7 @@ class ConfigurationConverter extends AbstractTypeConverter implements SingletonI
         string $targetType,
         array $convertedChildProperties = [],
         ?PropertyMappingConfigurationInterface $configuration = null
-    ): ?Configuration
-    {
+    ): ?Configuration {
         return $this->configurationRepository->findByUid((int)$source);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -24,9 +25,7 @@ final class AttributesProcessingEvent implements LdapEventInterface
         protected readonly Connection $connection,
         protected readonly mixed /* resource */ $entry,
         protected array $attributes
-    )
-    {
-    }
+    ) {}
 
     /**
      * @return Connection

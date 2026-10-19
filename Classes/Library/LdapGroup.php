@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -20,8 +21,6 @@ namespace Causal\IgLdapSsoAuth\Library;
  * Class tx_igldapssoauth_typo3_group for the 'ig_ldap_sso_auth' extension.
  *
  * @author     Michael Gagnon <mgagnon@infoglobe.ca>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 class LdapGroup
 {
@@ -44,8 +43,7 @@ class LdapGroup
         array $attributes = [],
         bool $extendedCheck = true,
         ?Ldap $ldapInstance = null
-    )
-    {
+    ) {
         $ldapGroups['count'] = 0;
 
         if (empty($membership) || empty($filter) || $ldapInstance === null) {
@@ -63,7 +61,7 @@ class LdapGroup
                 $ldapGroup = $ldapInstance->search($groupDn, $filter, $attributes);
             } else {
                 $parts = explode(',', $groupDn);
-                list($firstAttribute, $value) = explode('=', $parts[0]);
+                [$firstAttribute, $value] = explode('=', $parts[0]);
                 $firstAttribute = strtolower($firstAttribute);
                 $ldapGroup = [
                     0 => [
@@ -106,8 +104,7 @@ class LdapGroup
         string $userUid = '',
         array $attributes = [],
         ?Ldap $ldapInstance = null
-    )
-    {
+    ) {
         if ($ldapInstance === null) {
             return [];
         }
@@ -130,7 +127,7 @@ class LdapGroup
     {
         if (
             isset($mapping['usergroup'])
-            && preg_match("`<([^$]*)>`", $mapping['usergroup'], $attribute)
+            && preg_match('`<([^$]*)>`', $mapping['usergroup'], $attribute)
             && array_key_exists(strtolower($attribute[1]), $ldapUser)
         ) {
             return $ldapUser[strtolower($attribute[1])];

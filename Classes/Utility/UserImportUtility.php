@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -16,19 +17,17 @@ declare(strict_types=1);
 
 namespace Causal\IgLdapSsoAuth\Utility;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Causal\IgLdapSsoAuth\Exception\ImportUsersException;
 use Causal\IgLdapSsoAuth\Domain\Repository\Typo3UserRepository;
+use Causal\IgLdapSsoAuth\Exception\ImportUsersException;
 use Causal\IgLdapSsoAuth\Library\Authentication;
 use Causal\IgLdapSsoAuth\Library\Configuration;
 use Causal\IgLdapSsoAuth\Library\Ldap;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Centralizes the code for importing users from LDAP/AD sources.
  *
  * @author     Francois Suter <typo3@cobweb.ch>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 class UserImportUtility
 {
@@ -74,8 +73,7 @@ class UserImportUtility
     public function __construct(
         \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration,
         protected string $context
-    )
-    {
+    ) {
         // Load the configuration
         Configuration::initialize($context, $configuration);
 
@@ -228,8 +226,7 @@ class UserImportUtility
         array $ldapUser,
         string $restoreBehavior = 'both',
         string $disableField = ''
-    ): array
-    {
+    ): array {
         // Store the extra data for later restore and remove it
         $extraData = null;
         if (isset($user['__extraData'])) {

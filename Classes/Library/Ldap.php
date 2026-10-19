@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -16,19 +17,17 @@ declare(strict_types=1);
 
 namespace Causal\IgLdapSsoAuth\Library;
 
+use Causal\IgLdapSsoAuth\Utility\LdapUtility;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Causal\IgLdapSsoAuth\Utility\LdapUtility;
 
 /**
  * Class Ldap for the 'ig_ldap_sso_auth' extension.
  *
  * @author        Xavier Perseguers <xavier@causal.ch>
  * @author        Michael Gagnon <mgagnon@infoglobe.ca>
- * @package       TYPO3
- * @subpackage    ig_ldap_sso_auth
  */
 #[Autoconfigure(shared: false)]
 class Ldap
@@ -42,11 +41,10 @@ class Ldap
 
     public function __construct(
         protected readonly LdapUtility $ldapUtility
-    )
-    {
-    }
+    ) {}
 
-    function __destruct() {
+    public function __destruct()
+    {
         $this->disconnectAll();
     }
 
@@ -135,8 +133,6 @@ class Ldap
 
     /**
      * Disconnects the LDAP server.
-     *
-     * @return void
      */
     public function disconnect(): void
     {
@@ -170,11 +166,11 @@ class Ldap
      */
     public function validateUser(
         ?string $username = null,
-        #[\SensitiveParameter] ?string $password = null,
+        #[\SensitiveParameter]
+        ?string $password = null,
         ?string $baseDn = null,
         ?string $filter = null
-    )
-    {
+    ) {
         // If user found on ldap server.
         if ($this->ldapUtility->search(
             $baseDn,
@@ -188,7 +184,8 @@ class Ldap
                     $this->lastBindDiagnostic = 'Empty password provided!';
 
                     return false;
-                } elseif ($this->ldapUtility->bind($this->ldapUtility->getDn(), $password)) {
+                }
+                if ($this->ldapUtility->bind($this->ldapUtility->getDn(), $password)) {
                     $dn = $this->ldapUtility->getDn();
 
                     // Restore last LDAP binding
@@ -197,23 +194,21 @@ class Ldap
                     $this->lastBindDiagnostic = '';
 
                     return $dn;
-                } else {
-                    $status = $this->ldapUtility->getStatus();
-                    $this->lastBindDiagnostic = $status['bind']['diagnostic'];
-
-                    return false;    // Password does not match
                 }
+                $status = $this->ldapUtility->getStatus();
+                $this->lastBindDiagnostic = $status['bind']['diagnostic'];
+
+                return false;    // Password does not match
 
                 // If enabled, SSO authentication without password
             } elseif ($password === null && Configuration::getValue('SSOAuthentication')) {
 
                 return $this->ldapUtility->getDn();
 
-            } else {
-
-                // User invalid. Authentication failed.
-                return false;
             }
+
+            // User invalid. Authentication failed.
+            return false;
 
         }
 
@@ -238,8 +233,7 @@ class Ldap
         bool $firstEntry = false,
         int $limit = 0,
         bool $continueLastSearch = false
-    ): array
-    {
+    ): array {
         $result = [];
         $timeLimit = 0;
         $dereferenceAliases = LDAP_DEREF_NEVER;

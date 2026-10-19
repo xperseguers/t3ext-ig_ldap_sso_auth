@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -22,7 +23,6 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * This model represents a backend usergroup.
- *
  */
 class BackendUserGroup extends AbstractEntity
 {

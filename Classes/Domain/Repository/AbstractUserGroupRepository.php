@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -27,8 +28,6 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  * are needed (no mapping nor fancy other stuff).
  *
  * @author     Xavier Perseguers <xavier@causal.ch>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 abstract class AbstractUserGroupRepository
 {
@@ -53,10 +52,10 @@ abstract class AbstractUserGroupRepository
     final public function __construct()
     {
         if (empty($this->className)) {
-            throw new \LogicException(get_class($this) . ' must have a property $className', 1449144226);
+            throw new \LogicException(static::class . ' must have a property $className', 1449144226);
         }
         if (empty($this->tableName)) {
-            throw new \LogicException(get_class($this) . ' must have a property $tableName', 1449144585);
+            throw new \LogicException(static::class . ' must have a property $tableName', 1449144585);
         }
     }
 
@@ -72,7 +71,7 @@ abstract class AbstractUserGroupRepository
             ->getConnectionForTable($this->tableName)
             ->select(
                 GeneralUtility::trimExplode(',', $this->selectFields, true),
-            $this->tableName,
+                $this->tableName,
                 [
                     'uid' => (int)$uid,
                 ]

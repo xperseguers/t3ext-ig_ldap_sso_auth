@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -18,45 +19,43 @@ namespace Causal\IgLdapSsoAuth\Service;
 
 use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
 use Causal\IgLdapSsoAuth\Event\AuthenticationFailedEvent;
+use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
+use Causal\IgLdapSsoAuth\Library\Authentication;
+use Causal\IgLdapSsoAuth\Library\Configuration;
 use Causal\IgLdapSsoAuth\Utility\CompatUtility;
+use Causal\IgLdapSsoAuth\Utility\NotificationUtility;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
-use Causal\IgLdapSsoAuth\Library\Authentication;
-use Causal\IgLdapSsoAuth\Library\Configuration;
-use Causal\IgLdapSsoAuth\Utility\NotificationUtility;
 
 /**
  * LDAP / SSO authentication service.
  *
  * @author     Xavier Perseguers <xavier@causal.ch>
  * @author     Michael Gagnon <mgagnon@infoglobe.ca>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 class AuthenticationService extends \TYPO3\CMS\Core\Authentication\AuthenticationService
 {
     /**
      * 200 - authenticated and no more checking needed
      */
-    const STATUS_AUTHENTICATION_SUCCESS_BREAK = 200;
+    public const STATUS_AUTHENTICATION_SUCCESS_BREAK = 200;
 
     /**
      * 0 - this service was the right one to authenticate the user but it failed
      */
-    const STATUS_AUTHENTICATION_FAILURE_BREAK = 0;
+    public const STATUS_AUTHENTICATION_FAILURE_BREAK = 0;
 
     /**
      * 100 - just go on. User is not authenticated but there's still no reason to stop
      */
-    const STATUS_AUTHENTICATION_FAILURE_CONTINUE = 100;
+    public const STATUS_AUTHENTICATION_FAILURE_CONTINUE = 100;
 
-    var $prefixId = 'tx_igldapssoauth_sv1'; // Keep class name
-    var $scriptRelPath = 'Classes/Service/AuthenticationService.php'; // Path to this script relative to the extension dir.
-    var $extKey = 'ig_ldap_sso_auth'; // The extension key.
-    var $igldapssoauth;
+    public $prefixId = 'tx_igldapssoauth_sv1'; // Keep class name
+    public $scriptRelPath = 'Classes/Service/AuthenticationService.php'; // Path to this script relative to the extension dir.
+    public $extKey = 'ig_ldap_sso_auth'; // The extension key.
+    public $igldapssoauth;
 
     /**
      * @var array
@@ -165,20 +164,20 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
             if (is_array($userRecordOrIsValid)) {
                 $user = $userRecordOrIsValid;
                 break;
-            } elseif ($userRecordOrIsValid) {
+            }
+            if ($userRecordOrIsValid) {
                 // Authentication is valid
                 break;
-            } else {
-                $diagnostic = Authentication::getLastAuthenticationDiagnostic();
-                $info = [
-                    'username' => $this->login['uname'],
-                    'remote' => sprintf('%s (%s)', $this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST']),
-                    'diagnostic' => $diagnostic,
-                    'configUid' => $configurationRecord->getUid(),
-                ];
-                static::getLogger()->error('Authentication failed', $info);
-                NotificationUtility::dispatch(new AuthenticationFailedEvent($info));
             }
+            $diagnostic = Authentication::getLastAuthenticationDiagnostic();
+            $info = [
+                'username' => $this->login['uname'],
+                'remote' => sprintf('%s (%s)', $this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST']),
+                'diagnostic' => $diagnostic,
+                'configUid' => $configurationRecord->getUid(),
+            ];
+            static::getLogger()->error('Authentication failed', $info);
+            NotificationUtility::dispatch(new AuthenticationFailedEvent($info));
 
             // Continue and try with next configuration record...
         }
@@ -250,9 +249,9 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
             } else {
                 // Failed login attempt (wrong password) - write that to the log!
                 static::getLogger()->warning('Password not accepted: ', [
-                        'username' => $this->login['uname'],
-                        'remote' => sprintf('%s (%s)', $this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST']),
-                    ]);
+                    'username' => $this->login['uname'],
+                    'remote' => sprintf('%s (%s)', $this->authInfo['REMOTE_ADDR'], $this->authInfo['REMOTE_HOST']),
+                ]);
                 $status = static::STATUS_AUTHENTICATION_FAILURE_BREAK;
             }
 
@@ -281,7 +280,8 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
     {
         $remoteUser = !empty($_SERVER['REMOTE_USER'])
             ? $_SERVER['REMOTE_USER']
-            : (!empty($_SERVER['REDIRECT_REMOTE_USER'])
+            : (
+                !empty($_SERVER['REDIRECT_REMOTE_USER'])
                 ? $_SERVER['REDIRECT_REMOTE_USER']
                 : null
             );

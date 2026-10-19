@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -20,18 +21,18 @@ declare(strict_types=1);
 return [
     'ldap_form_update' => [
         'path' => '/ldap/form/update',
-        'target' => \Causal\IgLdapSsoAuth\Controller\ModuleController::class . '::ajaxUpdateForm'
+        'target' => \Causal\IgLdapSsoAuth\Controller\ModuleController::class . '::ajaxUpdateForm',
     ],
     'ldap_search' => [
         'path' => '/ldap/search',
-        'target' => \Causal\IgLdapSsoAuth\Controller\ModuleController::class . '::ajaxSearch'
+        'target' => \Causal\IgLdapSsoAuth\Controller\ModuleController::class . '::ajaxSearch',
     ],
     'ldap_users_import' => [
         'path' => '/ldap/users/import',
-        'target' => \Causal\IgLdapSsoAuth\Controller\ModuleController::class . '::ajaxUsersImport'
+        'target' => \Causal\IgLdapSsoAuth\Controller\ModuleController::class . '::ajaxUsersImport',
     ],
     'ldap_groups_import' => [
         'path' => '/ldap/groups/import',
-        'target' => \Causal\IgLdapSsoAuth\Controller\ModuleController::class . '::ajaxGroupsImport'
+        'target' => \Causal\IgLdapSsoAuth\Controller\ModuleController::class . '::ajaxGroupsImport',
     ],
 ];

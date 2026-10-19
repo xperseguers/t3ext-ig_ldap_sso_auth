@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,7 +20,6 @@ namespace Causal\IgLdapSsoAuth\Tests\Functional\Library;
  */
 class LdapTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
 {
-
     /**
      * @var \Causal\IgLdapSsoAuth\Library\Ldap
      */
@@ -33,11 +33,11 @@ class LdapTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
     protected function setUp()
     {
         $ldapUtility = $this->getMock(\Causal\IgLdapSsoAuth\Utility\LdapUtility::class, ['bind', 'search', 'getEntries', 'getFirstEntry', 'getDn']);
-        $ldapUtility->expects($this->any())->method('bind')->will($this->returnCallback([$this, 'bindExecuteCallback']));
-        $ldapUtility->expects($this->any())->method('search')->will($this->returnCallback([$this, 'searchExecuteCallback']));
-        $ldapUtility->expects($this->any())->method('getEntries')->will($this->returnCallback([$this, 'getEntriesExecuteCallback']));
-        $ldapUtility->expects($this->any())->method('getFirstEntry')->will($this->returnCallback([$this, 'getFirstEntryExecuteCallback']));
-        $ldapUtility->expects($this->any())->method('getDn')->will($this->returnCallback([$this, 'getDnExecuteCallback']));
+        $ldapUtility->expects($this->any())->method('bind')->willReturnCallback([$this, 'bindExecuteCallback']);
+        $ldapUtility->expects($this->any())->method('search')->willReturnCallback([$this, 'searchExecuteCallback']);
+        $ldapUtility->expects($this->any())->method('getEntries')->willReturnCallback([$this, 'getEntriesExecuteCallback']);
+        $ldapUtility->expects($this->any())->method('getFirstEntry')->willReturnCallback([$this, 'getFirstEntryExecuteCallback']);
+        $ldapUtility->expects($this->any())->method('getDn')->willReturnCallback([$this, 'getDnExecuteCallback']);
 
         $this->fixture = new \Causal\IgLdapSsoAuth\Library\Ldap();
         $this->inject($this->fixture, 'ldapUtility', $ldapUtility);
@@ -50,7 +50,7 @@ class LdapTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
     public function validateUserReturnsEitherValidDnOrfalse($filter, $username, $password, $expected)
     {
         $result = $this->fixture->validateUser($username, $password, 'cn=read-only-admin,dc=example,dc=com', $filter);
-        $this->assertEquals($expected, $result);
+        self::assertEquals($expected, $result);
     }
 
     public function usernamePasswordProvider()
@@ -100,7 +100,7 @@ class LdapTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
         \Causal\IgLdapSsoAuth\Library\Configuration::initialize('fe', new \Causal\IgLdapSsoAuth\Domain\Model\Configuration());
 
         $result = $this->fixture->validateUser($username, null, 'cn=read-only-admin,dc=example,dc=com', $filter);
-        $this->assertEquals($expected, $result);
+        self::assertEquals($expected, $result);
     }
 
     public function usernameSsoProvider()
@@ -134,7 +134,7 @@ class LdapTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
     {
         $baseDn = 'cn=INVALID,dc=example,dc=com';
         $users = $this->fixture->search($baseDn);
-        $this->assertEquals([], $users);
+        self::assertEquals([], $users);
     }
 
     /**
@@ -145,9 +145,9 @@ class LdapTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
         $baseDn = 'cn=read-only-admin,dc=example,dc=com';
         $filter = '(uid=*)';
         $users = $this->fixture->search($baseDn, $filter);
-        $this->assertEquals(9, $users['count']);
+        self::assertEquals(9, $users['count']);
         unset($users['count']);
-        $this->assertEquals(9, count($users));
+        self::assertEquals(9, count($users));
     }
 
     /**
@@ -158,7 +158,7 @@ class LdapTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
         $baseDn = 'cn=read-only-admin,dc=example,dc=com';
         $filter = '(uid=*)';
         $users = $this->fixture->search($baseDn, $filter, [], true);
-        $this->assertEquals('uid=newton,dc=example,dc=com', $users['dn']);
+        self::assertEquals('uid=newton,dc=example,dc=com', $users['dn']);
     }
 
     /**
@@ -168,7 +168,7 @@ class LdapTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
     {
         $baseDn = 'cn=INVALID,dc=example,dc=com';
         $groups = $this->fixture->search($baseDn);
-        $this->assertEquals([], $groups);
+        self::assertEquals([], $groups);
     }
 
     /**
@@ -179,9 +179,9 @@ class LdapTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
         $baseDn = 'cn=read-only-admin,dc=example,dc=com';
         $filter = '(ou=*)';
         $groups = $this->fixture->search($baseDn, $filter);
-        $this->assertEquals(3, $groups['count']);
+        self::assertEquals(3, $groups['count']);
         unset($groups['count']);
-        $this->assertEquals(3, count($groups));
+        self::assertEquals(3, count($groups));
     }
 
     /**
@@ -192,7 +192,7 @@ class LdapTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
         $baseDn = 'cn=read-only-admin,dc=example,dc=com';
         $filter = '(ou=*)';
         $groups = $this->fixture->search($baseDn, $filter, [], true);
-        $this->assertEquals('ou=mathematicians,dc=example,dc=com', $groups['dn']);
+        self::assertEquals('ou=mathematicians,dc=example,dc=com', $groups['dn']);
     }
 
     public function bindExecuteCallback($dn, $password)
@@ -205,7 +205,7 @@ class LdapTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
         $success = false;
         if ($baseDn === 'cn=read-only-admin,dc=example,dc=com') {
             // WARNING: support only for single condition "(key=value)"
-            list($key, $searchValue) = explode('=', substr($filter, 1, -1), 2);
+            [$key, $searchValue] = explode('=', substr($filter, 1, -1), 2);
             $file = ($key === 'ou') ? 'Groups.json' : 'Users.json';
             $rows = $this->loadData($file);
             unset($rows['count']);
@@ -214,8 +214,8 @@ class LdapTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
             foreach ($rows as $row) {
                 $testRow = $row;
                 if (!isset($testRow[$key]) && !empty($testRow['dn'])) {
-                    list($firstSegment,) = explode(',', $testRow['dn'], 2);
-                    list ($firstSegmentKey, $value) = explode('=', $firstSegment, 2);
+                    [$firstSegment] = explode(',', $testRow['dn'], 2);
+                    [$firstSegmentKey, $value] = explode('=', $firstSegment, 2);
                     $testRow[$firstSegmentKey] = $value;
                 }
 

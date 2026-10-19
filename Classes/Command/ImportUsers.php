@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -45,8 +46,7 @@ class ImportUsers extends Command
     public function __construct(
         private readonly ConfigurationRepository $configurationRepository,
         private readonly LoggerInterface $logger
-    )
-    {
+    ) {
         parent::__construct();
     }
 
@@ -121,7 +121,7 @@ class ImportUsers extends Command
      */
     protected function doImport(): int
     {
-        $executionContexts = match(strtolower($this->options['context'])) {
+        $executionContexts = match (strtolower($this->options['context'])) {
             'fe' => ['fe'],
             'be' => ['be'],
             'all' => ['fe', 'be'],
@@ -140,10 +140,12 @@ class ImportUsers extends Command
             $config = $importUtility->getConfiguration();
             if (empty($config['users']['filter'])) {
                 // Current context is not configured for this LDAP configuration record
-                $this->io->warning(sprintf(
-                    'Configuration record %s is not configured for context "%s"',
-                    $this->configuration->getUid(),
-                    strtoupper($context))
+                $this->io->warning(
+                    sprintf(
+                        'Configuration record %s is not configured for context "%s"',
+                        $this->configuration->getUid(),
+                        strtoupper($context)
+                    )
                 );
                 unset($importUtility);
                 continue;
@@ -213,8 +215,7 @@ class ImportUsers extends Command
         Ldap $ldapInstance,
         UserImportUtility $importUtility,
         array $ldapUsers
-    ): void
-    {
+    ): void {
         $config = $importUtility->getConfiguration();
 
         // We do not know the number of users to import as there is a potential

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -17,6 +18,8 @@ declare(strict_types=1);
 namespace Causal\IgLdapSsoAuth\Library;
 
 use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
+use Causal\IgLdapSsoAuth\Domain\Repository\Typo3GroupRepository;
+use Causal\IgLdapSsoAuth\Domain\Repository\Typo3UserRepository;
 use Causal\IgLdapSsoAuth\Event\AfterComputeUserGroupsEvent;
 use Causal\IgLdapSsoAuth\Service\AuthenticationService;
 use Causal\IgLdapSsoAuth\Utility\CompatUtility;
@@ -28,10 +31,7 @@ use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Routing\PageArguments;
-use TYPO3\CMS\Core\TypoScript\TemplateService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Causal\IgLdapSsoAuth\Domain\Repository\Typo3GroupRepository;
-use Causal\IgLdapSsoAuth\Domain\Repository\Typo3UserRepository;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -40,8 +40,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * Class Authentication for the 'ig_ldap_sso_auth' extension.
  *
  * @author      Michael Gagnon <mgagnon@infoglobe.ca>
- * @package     TYPO3
- * @subpackage  ig_ldap_sso_auth
  */
 class Authentication
 {
@@ -53,7 +51,7 @@ class Authentication
      *
      * @var array|null
      */
-    protected static $ldapGroups = null;
+    protected static $ldapGroups;
 
     /**
      * @var AuthenticationService
@@ -64,7 +62,6 @@ class Authentication
      * Sets the authentication service.
      *
      * @param AuthenticationService $authenticationService
-     * @return void
      */
     public static function setAuthenticationService(AuthenticationService $authenticationService)
     {
@@ -99,10 +96,10 @@ class Authentication
      */
     public static function ldapAuthenticate(
         string $username,
-        #[\SensitiveParameter] ?string $password = null,
+        #[\SensitiveParameter]
+        ?string $password = null,
         ?string $domain = null
-    )
-    {
+    ) {
         static::$lastAuthenticationDiagnostic = '';
 
         if ($username && Configuration::getValue('forceLowerCaseUsername')) {
@@ -150,11 +147,10 @@ class Authentication
                     return true;
                 }
                 return static::synchroniseUser($userdn, $username);
-            } else {
-                static::$lastAuthenticationDiagnostic = $ldapInstance->getLastBindDiagnostic();
-                if (!empty(static::$lastAuthenticationDiagnostic)) {
-                    static::getLogger()->notice(static::$lastAuthenticationDiagnostic);
-                }
+            }
+            static::$lastAuthenticationDiagnostic = $ldapInstance->getLastBindDiagnostic();
+            if (!empty(static::$lastAuthenticationDiagnostic)) {
+                static::getLogger()->notice(static::$lastAuthenticationDiagnostic);
             }
 
             // LDAP authentication failed.
@@ -227,7 +223,8 @@ class Authentication
         if (Configuration::getValue('IfUserExist') && empty($typo3_user['uid'])) {
             return false;
             // User does not exist in TYPO3.
-        } elseif (empty($typo3_user['uid']) && (!empty($typo3_groups) || !Configuration::getValue('DeleteUserIfNoTYPO3Groups'))) {
+        }
+        if (empty($typo3_user['uid']) && (!empty($typo3_groups) || !Configuration::getValue('DeleteUserIfNoTYPO3Groups'))) {
             // Insert new user: use TCA configuration to override default values
             $userTable = static::$authenticationService->authInfo['db_user']['table'];
             if (is_array($GLOBALS['TCA'][$userTable]['columns'])) {
@@ -312,7 +309,7 @@ class Authentication
         //     Warning: ldap_search(): Array initialization wrong
         // Therefore we leave the attributes array empty and expect the default
         // set if the extended mapping hook is used
-        if (true === Configuration::hasExtendedMapping(static::$config['users']['mapping'])) {
+        if (Configuration::hasExtendedMapping(static::$config['users']['mapping']) === true) {
             $attributes = [];
         } else {
             $attributes = Configuration::getLdapAttributes(static::$config['users']['mapping']);
@@ -610,8 +607,7 @@ class Authentication
         ?string $table = null,
         ?int $pid = null,
         array $mapping = []
-    ): array
-    {
+    ): array {
         if (empty($ldapGroups)) {
             // Early return
             return [];
@@ -621,7 +617,7 @@ class Authentication
 
         foreach ($ldapGroups as $ldapGroup) {
             $groupName = null;
-            if (isset($mapping['title']) &&  preg_match("`<([^$]*)>`", $mapping['title'])) {
+            if (isset($mapping['title']) &&  preg_match('`<([^$]*)>`', $mapping['title'])) {
                 $groupName = static::replaceLdapMarkers($mapping['title'], $ldapGroup);
             }
             $existingTypo3Groups = Typo3GroupRepository::fetch($table, 0, $pid, $ldapGroup['dn'], $groupName);
@@ -656,8 +652,7 @@ class Authentication
         array $mapping = [],
         ?string $table = null,
         ?int $pid = null
-    ): array
-    {
+    ): array {
         if (empty($ldapUsers)) {
             // Early return
             return [];
@@ -667,7 +662,7 @@ class Authentication
 
         foreach ($ldapUsers as $ldapUser) {
             $username = null;
-            if (isset($mapping['username']) && preg_match("`<([^$]*)>`", $mapping['username'])) {
+            if (isset($mapping['username']) && preg_match('`<([^$]*)>`', $mapping['username'])) {
                 $username = static::replaceLdapMarkers($mapping['username'], $ldapUser);
             }
             $existingTypo3Users = Typo3UserRepository::fetch($table, 0, $pid, $username, $ldapUser['dn']);
@@ -704,8 +699,7 @@ class Authentication
         array $mapping = [],
         bool $reportErrors = false,
         string $disableField = ''
-    ): array
-    {
+    ): array {
         $out = $typo3;
         $typoScriptKeys = [];
 
@@ -816,7 +810,7 @@ class Authentication
     protected static function mergeSimple(array $ldap, array $typo3, string $field, string $value): array
     {
         // Standard marker or custom function
-        if (preg_match("`{([^$]*)}`", $value, $matches)) {
+        if (preg_match('`{([^$]*)}`', $value, $matches)) {
             switch ($value) {
                 case '{DATE}':
                     $mappedValue = $GLOBALS['EXEC_TIME'];
@@ -830,7 +824,7 @@ class Authentication
                     $hookParameters = [];
 
                     foreach ($parameters as $parameter) {
-                        list($parameterKey, $parameterValue) = explode('|', $parameter, 2);
+                        [$parameterKey, $parameterValue] = explode('|', $parameter, 2);
                         $hookParameters[trim($parameterKey)] = $parameterValue;
                     }
                     if (empty($hookParameters['hookName'])) {
@@ -853,7 +847,7 @@ class Authentication
             }
 
             // LDAP attribute
-        } elseif (preg_match("`<([^$]*)>`", $value, $attribute)) {
+        } elseif (preg_match('`<([^$]*)>`', $value, $attribute)) {
             if ($field === 'tx_igldapssoauth_dn' || ($field === 'title' && $value === '<dn>')) {
                 $mappedValue = $ldap[strtolower($attribute[1])];
             } else {

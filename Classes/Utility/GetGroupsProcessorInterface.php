@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,8 +19,6 @@ namespace Causal\IgLdapSsoAuth\Utility;
  * An interface to post-process determining groups for a user.
  *
  * @author     Peter Niederlag <peter.niederlag@datenbetrieb.de>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  * @deprecated since version 4.1.0. Migrate your code to listen to the PSR-14 event instead.
  */
 interface GetGroupsProcessorInterface

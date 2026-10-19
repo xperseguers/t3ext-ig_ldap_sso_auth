@@ -29,9 +29,20 @@
     "ext-json": "*",
     "typo3/cms-core": "^12 || ^13 || ^14"
   },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "~3.95.10",
+    "phpstan/phpstan": "2.1.51",
+    "phpunit/phpunit": "^12.5",
+    "rector/rector": "2.4.2"
+  },
   "autoload": {
     "psr-4": {
       "Causal\\IgLdapSsoAuth\\": "Classes/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Causal\\IgLdapSsoAuth\\Tests\\": "Tests/"
     }
   },
   "extra": {
@@ -42,6 +53,20 @@
     },
     "typo3/cms": {
       "extension-key": "ig_ldap_sso_auth"
+    }
+  },
+  "scripts": {
+    "cs": [
+      "./vendor/bin/php-cs-fixer fix -v --dry-run --config .php-cs-fixer.php"
+    ],
+    "csfix": [
+      "./vendor/bin/php-cs-fixer fix -v --config .php-cs-fixer.php"
+    ]
+  },
+  "config": {
+    "allow-plugins": {
+      "typo3/cms-composer-installers": true,
+      "typo3/class-alias-loader": true
     }
   }
 }

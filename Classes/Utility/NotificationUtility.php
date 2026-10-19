@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -24,8 +25,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Notification class.
  *
  * @author     Xavier Perseguers <xavier@causal.ch>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 class NotificationUtility
 {
@@ -38,9 +37,7 @@ class NotificationUtility
      */
     public function __construct(
         private readonly EventDispatcherInterface $eventDispatcher
-    )
-    {
-    }
+    ) {}
 
     /**
      * Dispatches a PSR-14 event.

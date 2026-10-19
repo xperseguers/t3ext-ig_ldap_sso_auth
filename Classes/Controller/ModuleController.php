@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -16,11 +17,17 @@ declare(strict_types=1);
 
 namespace Causal\IgLdapSsoAuth\Controller;
 
+use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
+use Causal\IgLdapSsoAuth\Domain\Repository\Typo3GroupRepository;
+use Causal\IgLdapSsoAuth\Domain\Repository\Typo3UserRepository;
 use Causal\IgLdapSsoAuth\Exception\InvalidHostnameException;
 use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
+use Causal\IgLdapSsoAuth\Library\Authentication;
+use Causal\IgLdapSsoAuth\Library\Configuration;
+use Causal\IgLdapSsoAuth\Library\Ldap;
 use Causal\IgLdapSsoAuth\Utility\CompatUtility;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
@@ -30,12 +37,6 @@ use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Causal\IgLdapSsoAuth\Domain\Repository\ConfigurationRepository;
-use Causal\IgLdapSsoAuth\Domain\Repository\Typo3GroupRepository;
-use Causal\IgLdapSsoAuth\Domain\Repository\Typo3UserRepository;
-use Causal\IgLdapSsoAuth\Library\Authentication;
-use Causal\IgLdapSsoAuth\Library\Configuration;
-use Causal\IgLdapSsoAuth\Library\Ldap;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextFactory;
@@ -45,8 +46,6 @@ use TYPO3\CMS\Fluid\View\FluidViewFactory;
  * Module controller.
  *
  * @author     Xavier Perseguers <xavier@causal.ch>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 class ModuleController extends ActionController
 {
@@ -63,8 +62,7 @@ class ModuleController extends ActionController
         private readonly ModuleTemplateFactory $moduleTemplateFactory,
         private readonly ConfigurationRepository $configurationRepository,
         private readonly Ldap $ldap
-    )
-    {
+    ) {
         $this->typo3Version = (new Typo3Version())->getMajorVersion();
     }
 
@@ -111,8 +109,7 @@ class ModuleController extends ActionController
     public function indexAction(
         ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null,
         bool $skipLastAction = false
-    ): ResponseInterface
-    {
+    ): ResponseInterface {
         if (!$skipLastAction) {
             $lastAction = $this->restoreLastAction();
             if ($lastAction !== null) {
@@ -134,8 +131,7 @@ class ModuleController extends ActionController
      */
     public function statusAction(
         ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
-    ): ResponseInterface
-    {
+    ): ResponseInterface {
         // If configuration has been deleted
         if ($configuration === null) {
             return $this->redirect('index', null, null, ['skipLastAction' => true]);
@@ -203,8 +199,7 @@ class ModuleController extends ActionController
      */
     public function searchAction(
         ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
-    ): ResponseInterface
-    {
+    ): ResponseInterface {
         // If configuration has been deleted
         if ($configuration === null) {
             return $this->redirect('index', null, null, ['skipLastAction' => true]);
@@ -234,8 +229,7 @@ class ModuleController extends ActionController
      */
     public function importFrontendUsersAction(
         ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
-    ): ResponseInterface
-    {
+    ): ResponseInterface {
         // If configuration has been deleted
         if ($configuration === null) {
             return $this->redirect('index', null, null, ['skipLastAction' => true]);
@@ -265,8 +259,7 @@ class ModuleController extends ActionController
      */
     public function importBackendUsersAction(
         ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
-    ): ResponseInterface
-    {
+    ): ResponseInterface {
         // If configuration has been deleted
         if ($configuration === null) {
             return $this->redirect('index', null, null, ['skipLastAction' => true]);
@@ -296,8 +289,7 @@ class ModuleController extends ActionController
      */
     public function importFrontendUserGroupsAction(
         ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
-    ): ResponseInterface
-    {
+    ): ResponseInterface {
         // If configuration has been deleted
         if ($configuration === null) {
             return $this->redirect('index', null, null, ['skipLastAction' => true]);
@@ -327,8 +319,7 @@ class ModuleController extends ActionController
      */
     public function importBackendUserGroupsAction(
         ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
-    ): ResponseInterface
-    {
+    ): ResponseInterface {
         // If configuration has been deleted
         if ($configuration === null) {
             return $this->redirect('index', null, null, ['skipLastAction' => true]);
@@ -363,7 +354,7 @@ class ModuleController extends ActionController
         $configurationRepository = GeneralUtility::makeInstance(ConfigurationRepository::class);
 
         $configuration = $configurationRepository->findByUid((int)$params['configuration']);
-        list($mode, $key) = explode('_', $params['type'], 2);
+        [$mode, $key] = explode('_', $params['type'], 2);
 
         Configuration::initialize($mode, $configuration);
         $config = ($mode === 'be')
@@ -394,7 +385,7 @@ class ModuleController extends ActionController
         $ldap = GeneralUtility::makeInstance(Ldap::class);
 
         $configuration = $configurationRepository->findByUid((int)$params['configuration']);
-        list($mode, $key) = explode('_', $params['type'], 2);
+        [$mode, $key] = explode('_', $params['type'], 2);
 
         Configuration::initialize($mode, $configuration);
         $config = ($mode === 'be')
@@ -520,9 +511,9 @@ class ModuleController extends ActionController
         if ($success) {
             // If we assume that DN is
             // CN=Mustermann\, Max (LAN),OU=Users,DC=example,DC=com
-            list($filter, $baseDn) = Authentication::getRelativeDistinguishedNames($params['dn'], 2);
+            [$filter, $baseDn] = Authentication::getRelativeDistinguishedNames($params['dn'], 2);
             // ... we need to properly escape $filter "CN=Mustermann\, Max (LAN)" as "CN=Mustermann, Max \28LAN\29"
-            list($key, $value) = explode('=', $filter, 2);
+            [$key, $value] = explode('=', $filter, 2);
             // 1) Unescape the comma
             $value = str_replace('\\', '', $value);
             // 2) Create a proper search filter
@@ -584,7 +575,7 @@ class ModuleController extends ActionController
         }
 
         if ($success) {
-            list($filter, $baseDn) = explode(',', $params['dn'], 2);
+            [$filter, $baseDn] = explode(',', $params['dn'], 2);
             $attributes = Configuration::getLdapAttributes($config['groups']['mapping']);
             $ldapGroup = $ldap->search($baseDn, '(' . $filter . ')', $attributes, true);
 
@@ -609,7 +600,7 @@ class ModuleController extends ActionController
 
             if (!empty($config['groups']['mapping']['parentGroup'])) {
                 $fieldParent = $config['groups']['mapping']['parentGroup'];
-                if (preg_match("`<([^$]*)>`", $fieldParent, $attribute)) {
+                if (preg_match('`<([^$]*)>`', $fieldParent, $attribute)) {
                     $fieldParent = $attribute[1];
 
                     if (is_array($ldapGroup[$fieldParent])) {
@@ -652,8 +643,7 @@ class ModuleController extends ActionController
         int $childUid,
         int $pid,
         string $mode
-    ): void
-    {
+    ): void {
         $subGroupList = [];
         if ($mode === 'be') {
             $table = 'be_groups';
@@ -729,8 +719,7 @@ class ModuleController extends ActionController
     protected function getAvailableUsers(
         \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration,
         string $mode
-    ): array
-    {
+    ): array {
         /** @var \Causal\IgLdapSsoAuth\Utility\UserImportUtility $importUtility */
         $importUtility = GeneralUtility::makeInstance(
             \Causal\IgLdapSsoAuth\Utility\UserImportUtility::class,
@@ -808,8 +797,7 @@ class ModuleController extends ActionController
     protected function getAvailableUserGroups(
         \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration,
         string $mode
-    ): array
-    {
+    ): array {
         $userGroups = [];
         $config = ($mode === 'be')
             ? Configuration::getBackendConfiguration()
@@ -862,8 +850,7 @@ class ModuleController extends ActionController
      */
     protected function populateView(
         ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
-    ): void
-    {
+    ): void {
         $thisUri = $this->uriBuilder->reset()->uriFor(null, ['configuration' => $configuration]);
         $editLink = '';
 
@@ -1002,8 +989,7 @@ class ModuleController extends ActionController
      */
     protected function saveState(
         ?\Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration = null
-    ): void
-    {
+    ): void {
         $GLOBALS['BE_USER']->uc['ig_ldap_sso_auth']['selection'] = [
             'action' => $this->request->getControllerActionName(),
             'configuration' => $configuration !== null ? $configuration->getUid() : 0,

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -17,17 +18,15 @@ declare(strict_types=1);
 namespace Causal\IgLdapSsoAuth\Utility;
 
 use Causal\IgLdapSsoAuth\Event\AttributesProcessingEvent;
+use Causal\IgLdapSsoAuth\Exception\InvalidHostnameException;
+use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
 use LDAP\Connection;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Causal\IgLdapSsoAuth\Exception\InvalidHostnameException;
-use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
 
 /**
  * Class LdapUtility.
  *
- * @package     TYPO3
- * @subpackage  ig_ldap_sso_auth
  * @author      Xavier Perseguers <xavier@causal.ch>
  * @author      Michael Gagnon <mgagnon@infoglobe.ca>
  * @copyright    (c) 2011-2025 Xavier Perseguers <xavier@causal.ch>
@@ -51,7 +50,7 @@ use Causal\IgLdapSsoAuth\Exception\UnresolvedPhpDependencyException;
 #[Autoconfigure(shared: false)]
 class LdapUtility
 {
-    const MAX_ENTRIES = 500;
+    public const MAX_ENTRIES = 500;
 
     /**
      * LDAP Server charset
@@ -130,8 +129,7 @@ class LdapUtility
         bool $ssl = false,
         bool $tlsReqcert = false,
         int $timeout = 0
-    ): bool
-    {
+    ): bool {
         if ($tlsReqcert === false) {
             putenv('LDAPTLS_REQCERT=never');
         }
@@ -242,9 +240,9 @@ class LdapUtility
      */
     public function bind(
         ?string $dn = null,
-        #[\SensitiveParameter] ?string $password = null
-    ): bool
-    {
+        #[\SensitiveParameter]
+        ?string $password = null
+    ): bool {
         // LDAP_OPT_DIAGNOSTIC_MESSAGE gets the extended error output
         // from the ldap_get_option() function
         if (!defined('LDAP_OPT_DIAGNOSTIC_MESSAGE')) {
@@ -340,8 +338,7 @@ class LdapUtility
         int $timeLimit = 0,
         int $dereferenceAliases = LDAP_DEREF_NEVER,
         bool $continueLastSearch = false
-    ): bool
-    {
+    ): bool {
         if (!$baseDn) {
             $this->status['search']['basedn'] = 'No valid base DN';
             return false;
@@ -574,8 +571,7 @@ class LdapUtility
         $arr,
         string $fromCharacterSet,
         string $toCharacterSet
-    )
-    {
+    ) {
         if (!is_array($arr) || $fromCharacterSet === $toCharacterSet) {
             return $arr;
         }
@@ -584,7 +580,7 @@ class LdapUtility
             if (is_array($val)) {
                 $arr[$k] = $this->convertCharacterSetForArray($val, $fromCharacterSet, $toCharacterSet);
             } else {
-                $arr[$k] = mb_convert_encoding((string)$val, $toCharacterSet, $fromCharacterSet);;
+                $arr[$k] = mb_convert_encoding((string)$val, $toCharacterSet, $fromCharacterSet);
             }
         }
 

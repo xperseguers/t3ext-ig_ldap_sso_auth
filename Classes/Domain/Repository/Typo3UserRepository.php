@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -20,24 +21,20 @@ use Causal\IgLdapSsoAuth\Event\UserAddedEvent;
 use Causal\IgLdapSsoAuth\Event\UserDeletedEvent;
 use Causal\IgLdapSsoAuth\Event\UserDisabledEvent;
 use Causal\IgLdapSsoAuth\Event\UserUpdatedEvent;
-use Causal\IgLdapSsoAuth\Utility\CompatUtility;
+use Causal\IgLdapSsoAuth\Exception\InvalidUserTableException;
+use Causal\IgLdapSsoAuth\Library\Configuration;
+use Causal\IgLdapSsoAuth\Utility\NotificationUtility;
 use TYPO3\CMS\Core\Crypto\PasswordHashing\BcryptPasswordHash;
 use TYPO3\CMS\Core\Crypto\Random;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Causal\IgLdapSsoAuth\Exception\InvalidUserTableException;
-use Causal\IgLdapSsoAuth\Library\Configuration;
-use Causal\IgLdapSsoAuth\Utility\NotificationUtility;
 
 /**
  * Class Typo3UserRepository for the 'ig_ldap_sso_auth' extension.
  *
  * @author     Xavier Perseguers <xavier@causal.ch>
  * @author     Michael Gagnon <mgagnon@infoglobe.ca>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 class Typo3UserRepository
 {
@@ -92,8 +89,7 @@ class Typo3UserRepository
         ?int $pid = null,
         ?string $username = null,
         ?string $dn = null
-    ): array
-    {
+    ): array {
         if (!GeneralUtility::inList('be_users,fe_users', $table)) {
             throw new InvalidUserTableException('Invalid table "' . $table . '"', 1404891636);
         }

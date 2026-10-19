@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -18,19 +19,17 @@ namespace Causal\IgLdapSsoAuth\Domain\Repository;
 
 use Causal\IgLdapSsoAuth\Event\GroupAddedEvent;
 use Causal\IgLdapSsoAuth\Event\GroupUpdatedEvent;
+use Causal\IgLdapSsoAuth\Exception\InvalidUserGroupTableException;
+use Causal\IgLdapSsoAuth\Utility\NotificationUtility;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Causal\IgLdapSsoAuth\Exception\InvalidUserGroupTableException;
-use Causal\IgLdapSsoAuth\Utility\NotificationUtility;
 
 /**
  * Class Typo3GroupRepository for the 'ig_ldap_sso_auth' extension.
  *
  * @author     Xavier Perseguers <xavier@causal.ch>
  * @author     Michael Gagnon <mgagnon@infoglobe.ca>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 class Typo3GroupRepository
 {
@@ -72,7 +71,6 @@ class Typo3GroupRepository
      * @param int|null $pid
      * @param string $dn
      * @param string $groupName
-     * @return null
      */
     public static function fetch(
         string $table,
@@ -80,8 +78,7 @@ class Typo3GroupRepository
         ?int $pid = null,
         ?string $dn = null,
         ?string $groupName = null
-    ): array
-    {
+    ): array {
         if (!GeneralUtility::inList('be_groups,fe_groups', $table)) {
             throw new InvalidUserGroupTableException('Invalid table "' . $table . '"', 1404891809);
         }
@@ -145,7 +142,7 @@ class Typo3GroupRepository
         $newRow = $tableConnection
             ->select(
                 ['*'],
-            $table,
+                $table,
                 [
                     'uid' => (int)$uid,
                 ]

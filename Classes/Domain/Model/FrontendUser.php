@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -21,7 +22,6 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * A Frontend User
- *
  */
 class FrontendUser extends AbstractEntity
 {
@@ -48,7 +48,6 @@ class FrontendUser extends AbstractEntity
 
     protected string $title = '';
 
-
     protected string $zip = '';
 
     protected string $city = '';
@@ -74,9 +73,9 @@ class FrontendUser extends AbstractEntity
      */
     public function __construct(
         protected string $username = '',
-        #[\SensitiveParameter] protected string $password = ''
-    )
-    {
+        #[\SensitiveParameter]
+        protected string $password = ''
+    ) {
         $this->usergroup = new ObjectStorage();
         $this->image = new ObjectStorage();
     }

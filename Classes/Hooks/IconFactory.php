@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -24,8 +25,6 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
  * the record is linked to LDAP.
  *
  * @author     Xavier Perseguers <xavier@causal.ch>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 class IconFactory
 {
@@ -44,8 +43,7 @@ class IconFactory
         array $row,
         array $status,
         ?string $iconName
-    ): ?string
-    {
+    ): ?string {
         if (!empty($row)
             && in_array($table, ['be_groups', 'be_users', 'fe_groups', 'fe_users'], true)) {
             if ($row['uid'] ?? false) {

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -23,9 +24,7 @@ final class AfterComputeUserGroupsEvent implements LdapEventInterface
         protected readonly array $configuration,
         protected readonly string $groupTable,
         protected array $typo3Groups
-    )
-    {
-    }
+    ) {}
 
     /**
      * @return array

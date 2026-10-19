@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -22,7 +23,4 @@ namespace Causal\IgLdapSsoAuth\Exception;
  *
  * @author Xavier Perseguers <xavier@causal.ch>
  */
-class InvalidHostnameException extends IgLdapSsoAuthException
-{
-
-}
+class InvalidHostnameException extends IgLdapSsoAuthException {}

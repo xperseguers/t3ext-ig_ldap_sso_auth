@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -28,5 +29,5 @@ return [
         'source' => (new Typo3Version())->getMajorVersion() >= 14
             ? 'EXT:ig_ldap_sso_auth/Resources/Public/Icons/module-ldap-v14.svg'
             : 'EXT:ig_ldap_sso_auth/Resources/Public/Icons/module-ldap.svg',
-    ]
+    ],
 ];

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -16,19 +17,17 @@ declare(strict_types=1);
 
 namespace Causal\IgLdapSsoAuth\Hooks;
 
+use Causal\IgLdapSsoAuth\Library\Configuration;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Causal\IgLdapSsoAuth\Library\Configuration;
 
 /**
  * Hook into \TYPO3\CMS\Core\DataHandling\DataHandler.
  *
  * @author     Xavier Perseguers <xavier@causal.ch>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 class DataHandler
 {
@@ -40,7 +39,6 @@ class DataHandler
      * @param string|int $id
      * @param array $fieldArray
      * @param \TYPO3\CMS\Core\DataHandling\DataHandler $pObj
-     * @return void
      */
     public function processDatamap_afterDatabaseOperations(
         string $operation,
@@ -48,8 +46,7 @@ class DataHandler
         string|int $id,
         array $fieldArray,
         \TYPO3\CMS\Core\DataHandling\DataHandler $pObj
-    )
-    {
+    ) {
         if ($table !== 'tx_igldapssoauth_config') {
             // Early return
             return;

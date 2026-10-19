@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -22,9 +23,7 @@ final class ConfigurationLoadedEvent
 {
     public function __construct(
         private array $configurationRecords
-    )
-    {
-    }
+    ) {}
 
     /**
      * @return array<Configuration>
@@ -33,7 +32,7 @@ final class ConfigurationLoadedEvent
     {
         return $this->configurationRecords;
     }
-    
+
     /**
      * @param array<Configuration> $configurationRecords
      * @return $this

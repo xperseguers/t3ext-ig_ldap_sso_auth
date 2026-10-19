@@ -1,4 +1,5 @@
 <?php
+
 defined('TYPO3') || die();
 
 $tempColumns = [
@@ -8,7 +9,7 @@ $tempColumns = [
         'config' => [
             'type' => 'input',
             'size' => 30,
-        ]
+        ],
     ],
 ];
 

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -23,7 +24,6 @@ use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\RequestInterface;
 use TYPO3\CMS\Extbase\Service\ExtensionService;
-use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -32,8 +32,6 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  * Largely inspired by @see \TYPO3\CMS\Fluid\ViewHelpers\FlashMessagesViewHelper
  *
  * @author     Xavier Perseguers <xavier@causal.ch>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 class FlashMessagesViewHelper extends AbstractViewHelper
 {
@@ -47,17 +45,17 @@ class FlashMessagesViewHelper extends AbstractViewHelper
     protected static $classes = [
         -2 /* notice  */ => 'notice',
         -1 /* info    */ => 'info',
-         0 /* ok      */ => 'success',
-         1 /* warning */ => 'warning',
-         2 /* error   */ => 'danger'
+        0 /* ok      */ => 'success',
+        1 /* warning */ => 'warning',
+        2 /* error   */ => 'danger',
     ];
 
     protected static $icons = [
         -2 /* notice  */ => 'actions-lightbulb',
         -1 /* info    */ => 'actions-info-circle',
-         0 /* ok      */ => 'actions-check-circle',
-         1 /* warning */ => 'actions-exclamation-triangle',
-         2 /* error   */ => 'actions-exclamation-circle'
+        0 /* ok      */ => 'actions-check-circle',
+        1 /* warning */ => 'actions-exclamation-triangle',
+        2 /* error   */ => 'actions-exclamation-circle',
     ];
 
     /**

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -18,8 +19,6 @@ namespace Causal\IgLdapSsoAuth\Utility;
  * Centralizes the code for importing users from LDAP/AD sources.
  *
  * @author     Francois Suter <typo3@cobweb.ch>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  * @deprecated since version 4.1.0. Migrate your code to listen to the PSR-14 events instead.
  */
 interface ExtraDataProcessorInterface

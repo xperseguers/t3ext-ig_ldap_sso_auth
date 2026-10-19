@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -23,9 +24,7 @@ final class AuthenticationFailedEvent implements LdapEventInterface
      */
     public function __construct(
         protected readonly array $info
-    )
-    {
-    }
+    ) {}
 
     /**
      * @return array

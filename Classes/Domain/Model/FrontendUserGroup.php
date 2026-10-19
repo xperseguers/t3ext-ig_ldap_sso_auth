@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -21,7 +22,6 @@ use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * A Frontend User Group
- *
  */
 class FrontendUserGroup extends AbstractEntity
 {
@@ -39,8 +39,7 @@ class FrontendUserGroup extends AbstractEntity
      */
     public function __construct(
         protected string $title = ''
-    )
-    {
+    ) {
         $this->subgroup = new ObjectStorage();
     }
 

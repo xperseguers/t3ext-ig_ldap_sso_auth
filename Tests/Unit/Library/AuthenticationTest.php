@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -22,7 +23,6 @@ use Causal\IgLdapSsoAuth\Library\Configuration;
  */
 class AuthenticationTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
 {
-
     /** @var array */
     protected $ldapUserFixture;
 
@@ -198,7 +198,7 @@ EOT;
         $mapping = Configuration::parseMapping($mapping);
         $user = Authentication::merge($this->ldapUserFixture, $this->typo3UserFixture, $mapping);
 
-        $this->assertEquals($expected, $user);
+        self::assertEquals($expected, $user);
     }
 
     /**
@@ -213,7 +213,7 @@ EOT;
         $mapping = Configuration::parseMapping($mapping);
         $user = Authentication::merge($this->ldapUserFixture, $this->typo3UserFixture, $mapping);
 
-        $this->assertEquals('newton@ldap.forumsys.com', $user['email']);
+        self::assertEquals('newton@ldap.forumsys.com', $user['email']);
     }
 
     /**
@@ -231,7 +231,7 @@ EOT;
         $mapping = Configuration::parseMapping($mapping);
         $user = Authentication::merge($this->ldapUserFixture, $this->typo3UserFixture, $mapping);
 
-        $this->assertEquals($GLOBALS['EXEC_TIME'], $user['tstamp']);
+        self::assertEquals($GLOBALS['EXEC_TIME'], $user['tstamp']);
     }
 
     /**
@@ -249,10 +249,10 @@ EOT;
         $mapping = Configuration::parseMapping($mapping);
         $user = Authentication::merge($this->ldapUserFixture, $this->typo3UserFixture, $mapping);
 
-        $this->assertEquals('Isaac Newton', $user['name']);
-        $this->assertEquals('Newton', $user['last_name']);
-        $this->assertEquals('Woolsthorpe-by-Colsterworth', $user['city']);
-        $this->assertEquals('uid=newton,dc=example,dc=com', $user['tx_igldapssoauth_dn']);
+        self::assertEquals('Isaac Newton', $user['name']);
+        self::assertEquals('Newton', $user['last_name']);
+        self::assertEquals('Woolsthorpe-by-Colsterworth', $user['city']);
+        self::assertEquals('uid=newton,dc=example,dc=com', $user['tx_igldapssoauth_dn']);
     }
 
     public function canMapMixCasedAttribute()
@@ -265,7 +265,7 @@ EOT;
         $mapping = Configuration::parseMapping($mapping);
         $user = Authentication::merge($this->ldapUserFixture, $this->typo3UserFixture, $mapping);
 
-        $this->assertEquals('NG33', $user['zip']);
+        self::assertEquals('NG33', $user['zip']);
     }
 
     /**
@@ -280,7 +280,7 @@ EOT;
         $mapping = Configuration::parseMapping($mapping);
         $user = Authentication::merge($this->ldapUserFixture, $this->typo3UserFixture, $mapping);
 
-        $this->assertEquals('Woolsthorpe Manor, NG33 Woolsthorpe-by-Colsterworth, England', $user['address']);
+        self::assertEquals('Woolsthorpe Manor, NG33 Woolsthorpe-by-Colsterworth, England', $user['address']);
     }
 
     /**
@@ -296,14 +296,14 @@ EOT;
         $mapping = Configuration::parseMapping($mapping);
         $user = Authentication::merge($this->ldapUserFixture, $this->typo3UserFixture, $mapping);
 
-        $this->assertArrayHasKey('__extraData', $user);
+        self::assertArrayHasKey('__extraData', $user);
 
         $expectedData = [
             'custom_field' => 'Woolsthorpe-by-Colsterworth',
             'custom_field2' => 'Woolsthorpe-by-Colsterworth (NG33)',
         ];
 
-        $this->assertEquals($expectedData, $user['__extraData']);
+        self::assertEquals($expectedData, $user['__extraData']);
     }
 
     /**
@@ -322,7 +322,7 @@ EOT;
         $mapping = Configuration::parseMapping($mapping);
         $user = Authentication::merge($this->ldapUserFixture, $this->typo3UserFixture, $mapping);
 
-        $this->assertEquals($expected, $user);
+        self::assertEquals($expected, $user);
     }
 
     /**
@@ -348,7 +348,7 @@ EOT;
         $mapping = Configuration::parseMapping($mapping);
         $user = Authentication::merge($this->ldapUserFixture, $this->typo3UserFixture, $mapping);
 
-        $this->assertEquals('inetOrgPerson, organizationalPerson, person, top', $user['usergroup']);
+        self::assertEquals('inetOrgPerson, organizationalPerson, person, top', $user['usergroup']);
     }
 
     /**
@@ -369,7 +369,7 @@ EOT;
         $mapping = Configuration::parseMapping($mapping);
         $user = Authentication::merge($this->ldapUserFixture, $this->typo3UserFixture, $mapping);
 
-        $this->assertEquals('Isaac', $user['first_name']);
+        self::assertEquals('Isaac', $user['first_name']);
     }
 
     /**
@@ -392,7 +392,7 @@ EOT;
         $mapping = Configuration::parseMapping($mapping);
         $group = Authentication::merge($this->ldapGroupFixture, $this->typo3GroupFixture, $mapping);
 
-        $this->assertEquals($expected, $group);
+        self::assertEquals($expected, $group);
     }
 
     /**
@@ -402,7 +402,7 @@ EOT;
     public function canExtractRelativeDistinguishedNames($dn, $limit, $expected)
     {
         $parts = Authentication::getRelativeDistinguishedNames($dn, $limit);
-        $this->assertSame($expected, $parts);
+        self::assertSame($expected, $parts);
     }
 
     public function dnProvider()
@@ -411,7 +411,7 @@ EOT;
             ['uid=newton,ou=department,dc=example,dc=com', null, ['uid=newton', 'ou=department', 'dc=example', 'dc=com']],
             ['uid=newton,ou=department,dc=example,dc=com', 2, ['uid=newton', 'ou=department,dc=example,dc=com']],
             ['uid=newton,ou=department,dc=example,dc=com', 3, ['uid=newton', 'ou=department', 'dc=example,dc=com']],
-            ['CN=Doering\\, Olaf,OU=Admins,OU=IT,DC=my-company,DN=local', null, ['CN=Doering\\, Olaf', 'OU=Admins', 'OU=IT', 'DC=my-company' ,'DN=local']],
+            ['CN=Doering\\, Olaf,OU=Admins,OU=IT,DC=my-company,DN=local', null, ['CN=Doering\\, Olaf', 'OU=Admins', 'OU=IT', 'DC=my-company' , 'DN=local']],
             ['CN=Doering\\, Olaf,OU=Admins,OU=IT,DC=my-company,DN=local', 2, ['CN=Doering\\, Olaf', 'OU=Admins,OU=IT,DC=my-company,DN=local']],
         ];
     }

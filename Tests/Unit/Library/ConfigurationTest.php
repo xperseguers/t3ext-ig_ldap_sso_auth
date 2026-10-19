@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -21,7 +22,6 @@ use Causal\IgLdapSsoAuth\Library\Configuration;
  */
 class ConfigurationTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
 {
-
     /**
      * @test
      * @dataProvider usernameFilterProvider
@@ -29,7 +29,7 @@ class ConfigurationTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
     public function canGetUsernameAttribute($filter, $expected)
     {
         $attribute = Configuration::getUsernameAttribute($filter);
-        $this->assertSame($expected, $attribute);
+        self::assertSame($expected, $attribute);
     }
 
     public function usernameFilterProvider()
@@ -70,7 +70,7 @@ EOT;
         ];
 
         $actual = Configuration::parseMapping($mapping);
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -95,7 +95,7 @@ EOT;
         ];
 
         $actual = Configuration::parseMapping($mapping);
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -113,7 +113,7 @@ EOT;
         ];
 
         $actual = Configuration::parseMapping($mapping);
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -131,7 +131,7 @@ EOT;
         ];
 
         $actual = Configuration::parseMapping($mapping);
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -152,7 +152,7 @@ EOT;
         ];
 
         $actual = Configuration::parseMapping($mapping);
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -177,7 +177,7 @@ EOT;
         ];
 
         $actual = Configuration::parseMapping($mapping);
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -195,7 +195,7 @@ EOT;
         $mapping = Configuration::parseMapping($mapping);
         $result = Configuration::hasExtendedMapping($mapping);
 
-        $this->assertFalse($result);
+        self::assertFalse($result);
     }
 
     /**
@@ -211,7 +211,7 @@ EOT;
         $mapping = Configuration::parseMapping($mapping);
         $result = Configuration::hasExtendedMapping($mapping);
 
-        $this->assertTrue($result);
+        self::assertTrue($result);
     }
 
     /**
@@ -227,7 +227,7 @@ EOT;
         $mapping = Configuration::parseMapping($mapping);
         $result = Configuration::hasExtendedMapping($mapping);
 
-        $this->assertTrue($result);
+        self::assertTrue($result);
     }
 
     /**
@@ -243,7 +243,7 @@ EOT;
         $mapping = Configuration::parseMapping($mapping);
         $result = Configuration::hasExtendedMapping($mapping);
 
-        $this->assertTrue($result);
+        self::assertTrue($result);
     }
 
 }

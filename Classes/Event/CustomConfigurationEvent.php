@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -23,9 +24,7 @@ final class CustomConfigurationEvent
     public function __construct(
         private readonly int $configurationUid,
         private ?Configuration $configurationRecord
-    )
-    {
-    }
+    ) {}
 
     /**
      * @return int

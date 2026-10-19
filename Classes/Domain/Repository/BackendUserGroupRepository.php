@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -23,8 +24,6 @@ namespace Causal\IgLdapSsoAuth\Domain\Repository;
  * (no mapping nor fancy other stuff).
  *
  * @author     Xavier Perseguers <xavier@causal.ch>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 class BackendUserGroupRepository extends AbstractUserGroupRepository
 {

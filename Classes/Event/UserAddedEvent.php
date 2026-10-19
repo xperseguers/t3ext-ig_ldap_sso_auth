@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -25,9 +26,7 @@ final class UserAddedEvent implements LdapEventInterface
     public function __construct(
         protected readonly string $table,
         protected readonly array $data
-    )
-    {
-    }
+    ) {}
 
     /**
      * @return string

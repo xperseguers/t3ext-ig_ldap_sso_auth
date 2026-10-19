@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /*
@@ -30,16 +31,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author     Xavier Perseguers <xavier@causal.ch>
  * @author     Michael Gagnon <mgagnon@infoglobe.ca>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 class Configuration
 {
-    const GROUP_MEMBERSHIP_FROM_GROUP = 1;
-    const GROUP_MEMBERSHIP_FROM_MEMBER = 2;
+    public const GROUP_MEMBERSHIP_FROM_GROUP = 1;
+    public const GROUP_MEMBERSHIP_FROM_MEMBER = 2;
 
-    const SERVER_OPENLDAP = 0;
-    const SERVER_ACTIVE_DIRECTORY = 1;
+    public const SERVER_OPENLDAP = 0;
+    public const SERVER_ACTIVE_DIRECTORY = 1;
 
     /**
      * @var \Causal\IgLdapSsoAuth\Domain\Model\Configuration
@@ -61,8 +60,7 @@ class Configuration
     public static function initialize(
         string $mode,
         \Causal\IgLdapSsoAuth\Domain\Model\Configuration $configuration
-    ): void
-    {
+    ): void {
 
         $globalConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)
             ->get('ig_ldap_sso_auth');
@@ -327,7 +325,6 @@ class Configuration
      * Sets the TYPO3 mode.
      *
      * @param string $mode TYPO3 mode, either 'be' or 'fe'
-     * @return void
      * @throws \UnexpectedValueException
      */
     public static function setMode(string $mode): void

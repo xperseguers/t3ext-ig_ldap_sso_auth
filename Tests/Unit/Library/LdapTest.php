@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the TYPO3 CMS project.
  *
@@ -19,15 +20,15 @@ namespace Causal\IgLdapSsoAuth\Tests\Unit\Library;
  */
 class LdapTest extends \TYPO3\TestingFramework\Core\Unit\UnitTestCase
 {
-
     /**
      * @test
      * @dataProvider escapeProvider
      */
-    public function parentheseIsEscapedOnce($input, $expected) {
+    public function parentheseIsEscapedOnce($input, $expected)
+    {
         $ldap = new \Causal\IgLdapSsoAuth\Library\Ldap();
         $actual = $ldap->escapeDnForFilter($input);
-        $this->assertEquals($expected, $actual);
+        self::assertEquals($expected, $actual);
     }
 
     public function escapeProvider()

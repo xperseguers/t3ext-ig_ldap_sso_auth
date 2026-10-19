@@ -32,8 +32,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @author     Xavier Perseguers <xavier@causal.ch>
  * @author     Francois Suter <typo3@cobweb.ch>
- * @package    TYPO3
- * @subpackage ig_ldap_sso_auth
  */
 class ConfigurationRepository
 {
@@ -58,8 +56,7 @@ class ConfigurationRepository
      */
     public function __construct(
         protected readonly EventDispatcherInterface $eventDispatcher
-    )
-    {
+    ) {
         $this->config = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('ig_ldap_sso_auth') ?? [];
     }
 

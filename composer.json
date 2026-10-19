@@ -52,7 +52,11 @@
       "dev-3-3": "3.3.x-dev"
     },
     "typo3/cms": {
-      "extension-key": "ig_ldap_sso_auth"
+      "extension-key": "ig_ldap_sso_auth",
+      "version": "4.3.0-dev",
+      "Package": {
+        "providesPackages": {}
+      }
     }
   },
   "scripts": {

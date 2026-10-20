@@ -3,9 +3,9 @@
   <file source-language="en" datatype="plaintext" original="messages" date="2024-10-17T13:30:10Z" product-name="ig_ldap_sso_auth" target-language="it">
     <header/>
     <body>
-      <trans-unit id="mlang_tabs_tab">
+      <trans-unit id="mlang_tabs_tab" approved="yes">
         <source>LDAP / SSO</source>
-        <target state="translated">LDAP / SSO</target>
+        <target state="final">LDAP / SSO</target>
       </trans-unit>
       <trans-unit id="mlang_labels_tabdescr" approved="yes">
         <source>LDAP management and configuration module.</source>
@@ -27,13 +27,13 @@
         <source><![CDATA[This module cannot be used until you create at least one configuration record. Please refer to the <a href="%s" target="_blank">administrator manual</a> for further information.<br /><br /><a href="%s">Click here</a> to create a configuration record.]]></source>
         <target state="final"><![CDATA[Questo modulo non può essere utilizzato a meno che non venga creato un elemento di configurazione. Per ulteriori informazioni fai riferimento al &lt;a href="%s" target="_blank"&gt;manuale per l'amministratore&lt;/a&gt;.&lt;br /&gt;&lt;br /&gt;&lt;a href="%s"&gt;Fai clic qui&lt;/a&gt; per creare un elemento di configurazione.]]></target>
       </trans-unit>
-      <trans-unit id="module_docheader.configurations.switch">
+      <trans-unit id="module_docheader.configurations.switch" approved="yes">
         <source>Switch configuration</source>
-        <target state="translated">Cambia configurazione</target>
+        <target state="final">Cambia configurazione</target>
       </trans-unit>
-      <trans-unit id="module_docheader.configurations.edit">
+      <trans-unit id="module_docheader.configurations.edit" approved="yes">
         <source>Edit current configuration</source>
-        <target state="translated">Modifica la configurazione corrente</target>
+        <target state="final">Modifica la configurazione corrente</target>
       </trans-unit>
       <trans-unit id="module_overview" approved="yes">
         <source>Overview</source>
@@ -51,9 +51,9 @@
         <source>Current LDAP configuration is restricted to following domain(s):</source>
         <target state="final">La configurazione LDAP corrente è limitata ai seguenti domini:</target>
       </trans-unit>
-      <trans-unit id="module_status.title.ldap">
+      <trans-unit id="module_status.title.ldap" approved="yes">
         <source>LDAP</source>
-        <target state="translated">LDAP</target>
+        <target state="final">LDAP</target>
       </trans-unit>
       <trans-unit id="module_status.messages.ldapDisable" approved="yes">
         <source>LDAP is disabled since the host name is undefined.</source>
@@ -91,9 +91,9 @@
         <source>Character set</source>
         <target state="final">Set di caratteri</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.host">
+      <trans-unit id="module_status.configuration.host" approved="yes">
         <source>Host</source>
-        <target state="translated">Host</target>
+        <target state="final">Host</target>
       </trans-unit>
       <trans-unit id="module_status.configuration.port">
         <source>Port</source>
@@ -111,13 +111,13 @@
         <source>Use SSL</source>
         <target state="final">Usa SSL</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.binddn">
+      <trans-unit id="module_status.configuration.binddn" approved="yes">
         <source>Bind DN</source>
-        <target state="translated">Bind DN</target>
+        <target state="final">Bind DN</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.password">
+      <trans-unit id="module_status.configuration.password" approved="yes">
         <source>Password</source>
-        <target state="translated">Password</target>
+        <target state="final">Password</target>
       </trans-unit>
       <trans-unit id="module_status.configuration.connect" approved="yes">
         <source>LDAP connect</source>
@@ -131,9 +131,9 @@
         <source>LDAP authentication</source>
         <target state="final">Autenticazione LDAP</target>
       </trans-unit>
-      <trans-unit id="module_status.configuration.SSOAuthentication">
+      <trans-unit id="module_status.configuration.SSOAuthentication" approved="yes">
         <source>Single Sign On (SSO)</source>
-        <target state="translated">Single Sign On (SSO)</target>
+        <target state="final">Single Sign On (SSO)</target>
       </trans-unit>
       <trans-unit id="module_status.configuration.forceLowerCaseUsername" approved="yes">
         <source>Convert user name to lower-case</source>
@@ -227,9 +227,9 @@
         <source>Show status</source>
         <target state="final">Mostra stato</target>
       </trans-unit>
-      <trans-unit id="module_search_basedn">
+      <trans-unit id="module_search_basedn" approved="yes">
         <source>Base DN</source>
-        <target state="translated">Base DN</target>
+        <target state="final">Base DN</target>
       </trans-unit>
       <trans-unit id="module_search_filter" approved="yes">
         <source>Filter</source>

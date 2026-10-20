@@ -15,17 +15,17 @@
         <source>LDAP management</source>
         <target state="final">LDAP håndtering</target>
       </trans-unit>
-      <trans-unit id="title">
+      <trans-unit id="title" approved="yes">
         <source>LDAP / SSO service management</source>
-        <target state="translated">LDAP / SSO servicehåndtering</target>
+        <target state="final">LDAP / SSO servicehåndtering</target>
       </trans-unit>
-      <trans-unit id="configuration_missing.title">
+      <trans-unit id="configuration_missing.title" approved="yes">
         <source>No Configuration Records</source>
-        <target state="translated">Ingen konfigurationselementer</target>
+        <target state="final">Ingen konfigurationselementer</target>
       </trans-unit>
-      <trans-unit id="configuration_missing.message">
+      <trans-unit id="configuration_missing.message" approved="yes">
         <source><![CDATA[This module cannot be used until you create at least one configuration record. Please refer to the <a href="%s" target="_blank">administrator manual</a> for further information.<br /><br /><a href="%s">Click here</a> to create a configuration record.]]></source>
-        <target state="translated"><![CDATA[Dette modul kan ikke bruges før du opretter mindst et konfigurationselement. Se venligst <a href="%s" target="_blank">administratorhåndbogen</a> for yderligere oplysninger.<br /><br /><a href="%s">Klik her</a> for at oprette et konfigurationselement.]]></target>
+        <target state="final"><![CDATA[Dette modul kan ikke bruges før du opretter mindst et konfigurationselement. Se venligst <a href="%s" target="_blank">administratorhåndbogen</a> for yderligere oplysninger.<br /><br /><a href="%s">Klik her</a> for at oprette et konfigurationselement.]]></target>
       </trans-unit>
       <trans-unit id="module_docheader.configurations.switch">
         <source>Switch configuration</source>
@@ -35,53 +35,53 @@
         <source>Edit current configuration</source>
         <target state="needs-translation">Edit current configuration</target>
       </trans-unit>
-      <trans-unit id="module_overview">
+      <trans-unit id="module_overview" approved="yes">
         <source>Overview</source>
-        <target state="translated">Oversigt</target>
+        <target state="final">Oversigt</target>
       </trans-unit>
-      <trans-unit id="module_status">
+      <trans-unit id="module_status" approved="yes">
         <source>Status</source>
-        <target state="translated">Status</target>
+        <target state="final">Status</target>
       </trans-unit>
-      <trans-unit id="module_status.title.domains">
+      <trans-unit id="module_status.title.domains" approved="yes">
         <source>Domains</source>
-        <target state="translated">Domæner</target>
+        <target state="final">Domæner</target>
       </trans-unit>
-      <trans-unit id="module_status.description.domains">
+      <trans-unit id="module_status.description.domains" approved="yes">
         <source>Current LDAP configuration is restricted to following domain(s):</source>
-        <target state="translated">Den aktuelle LDAP-konfiguration er begrænset til følgende domæne(r):</target>
+        <target state="final">Den aktuelle LDAP-konfiguration er begrænset til følgende domæne(r):</target>
       </trans-unit>
-      <trans-unit id="module_status.title.ldap">
+      <trans-unit id="module_status.title.ldap" approved="yes">
         <source>LDAP</source>
-        <target state="translated">LDAP</target>
+        <target state="final">LDAP</target>
       </trans-unit>
-      <trans-unit id="module_status.messages.ldapDisable">
+      <trans-unit id="module_status.messages.ldapDisable" approved="yes">
         <source>LDAP is disabled since the host name is undefined.</source>
-        <target state="translated">LDAP er deaktiveret da værtsnavnet ikke er defineret.</target>
+        <target state="final">LDAP er deaktiveret da værtsnavnet ikke er defineret.</target>
       </trans-unit>
-      <trans-unit id="module_status.messages.enabled">
+      <trans-unit id="module_status.messages.enabled" approved="yes">
         <source>enabled</source>
-        <target state="translated">aktiveret</target>
+        <target state="final">aktiveret</target>
       </trans-unit>
-      <trans-unit id="module_status.messages.disabled">
+      <trans-unit id="module_status.messages.disabled" approved="yes">
         <source>disabled</source>
-        <target state="translated">deaktiveret</target>
+        <target state="final">deaktiveret</target>
       </trans-unit>
-      <trans-unit id="module_status.messages.empty">
+      <trans-unit id="module_status.messages.empty" approved="yes">
         <source>none</source>
-        <target state="translated">ingen</target>
+        <target state="final">ingen</target>
       </trans-unit>
-      <trans-unit id="module_status.title.connection">
+      <trans-unit id="module_status.title.connection" approved="yes">
         <source>Connection status</source>
-        <target state="translated">Forbindelsesstatus</target>
+        <target state="final">Forbindelsesstatus</target>
       </trans-unit>
-      <trans-unit id="module_status.title.frontend">
+      <trans-unit id="module_status.title.frontend" approved="yes">
         <source>Frontend authentication</source>
-        <target state="translated">Frontend godkendelse</target>
+        <target state="final">Frontend godkendelse</target>
       </trans-unit>
-      <trans-unit id="module_status.title.backend">
+      <trans-unit id="module_status.title.backend" approved="yes">
         <source>Backend authentication</source>
-        <target state="translated">Backend godkendelse</target>
+        <target state="final">Backend godkendelse</target>
       </trans-unit>
       <trans-unit id="module_status.configuration.server" approved="yes">
         <source>Server type</source>

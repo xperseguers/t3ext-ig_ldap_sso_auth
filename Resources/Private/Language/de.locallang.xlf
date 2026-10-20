@@ -39,9 +39,9 @@
         <source>Overview</source>
         <target state="final">Überblick</target>
       </trans-unit>
-      <trans-unit id="module_status">
+      <trans-unit id="module_status" approved="yes">
         <source>Status</source>
-        <target state="needs-review-translation" state-qualifier="leveraged-tm">Status</target>
+        <target state="final">Status</target>
       </trans-unit>
       <trans-unit id="module_status.title.domains">
         <source>Domains</source>
@@ -231,9 +231,9 @@
         <source>Base DN</source>
         <target state="needs-translation">Base DN</target>
       </trans-unit>
-      <trans-unit id="module_search_filter">
+      <trans-unit id="module_search_filter" approved="yes">
         <source>Filter</source>
-        <target state="needs-review-translation" state-qualifier="leveraged-tm">Filter</target>
+        <target state="final">Filter</target>
       </trans-unit>
       <trans-unit id="module_search.action.search" approved="yes">
         <source>search</source>
@@ -287,9 +287,9 @@
         <source>LDAP user has been imported but then manually deleted</source>
         <target state="final">LDAP Benutzer wurde importiert, aber anschließend händisch gelöscht</target>
       </trans-unit>
-      <trans-unit id="module_import.field.name">
+      <trans-unit id="module_import.field.name" approved="yes">
         <source>Name</source>
-        <target state="needs-review-translation" state-qualifier="leveraged-tm">Name</target>
+        <target state="final">Name</target>
       </trans-unit>
       <trans-unit id="module_import_groups_fe" approved="yes">
         <source>Import LDAP groups (Frontend)</source>

@@ -59,9 +59,9 @@
         <source>Filter to search for BE groups in the LDAP server. Example: (objectClass=posixGroup)</source>
         <target state="final">Filtro per la ricerca dei gruppi di BE nel server LDAP. Ad esempio: (objectClass=posixGroup)</target>
       </trans-unit>
-      <trans-unit id="be_groups_filter.syntax">
+      <trans-unit id="be_groups_filter.syntax" approved="yes">
         <source>Sample if option "Relation between groups and users" is set to "Group contains the list of its members": (memberuid={USERDN})</source>
-        <target state="translated">Esempio se l'opzione "Relazione tra gruppi e utenti" è impostata su "Il gruppo contiene l'elenco dei suoi membri": (memberuid={USERDN})</target>
+        <target state="final">Esempio se l'opzione "Relazione tra gruppi e utenti" è impostata su "Il gruppo contiene l'elenco dei suoi membri": (memberuid={USERDN})</target>
       </trans-unit>
       <trans-unit id="be_groups_mapping.description" approved="yes">
         <source>Assign LDAP attribute to a field of the user group.</source>
@@ -111,9 +111,9 @@
         <source>Filter to search for FE groups in the LDAP server. Example: (objectClass=posixGroup)</source>
         <target state="final">Filtro per la ricerca degli utenti di FE nel server LDAP. Esempio: (objectClass=posixGroup)</target>
       </trans-unit>
-      <trans-unit id="fe_groups_filter.syntax">
+      <trans-unit id="fe_groups_filter.syntax" approved="yes">
         <source>Sample if option "Relation between groups and users" is set to "Group contains the list of its members": (memberuid={USERDN})</source>
-        <target state="translated">Esempio se l'opzione "Relazione tra gruppi e utenti" è impostata su "Il gruppo contiene l'elenco dei suoi membri": (memberuid={USERDN})</target>
+        <target state="final">Esempio se l'opzione "Relazione tra gruppi e utenti" è impostata su "Il gruppo contiene l'elenco dei suoi membri": (memberuid={USERDN})</target>
       </trans-unit>
       <trans-unit id="fe_groups_mapping.description" approved="yes">
         <source>Assign LDAP attribute to a field of the group record.</source>

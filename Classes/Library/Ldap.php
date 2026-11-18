@@ -201,7 +201,8 @@ class Ldap
                 return false;    // Password does not match
 
                 // If enabled, SSO authentication without password
-            } elseif ($password === null && Configuration::getValue('SSOAuthentication')) {
+            }
+            if ($password === null && Configuration::getValue('SSOAuthentication')) {
 
                 return $this->ldapUtility->getDn();
 

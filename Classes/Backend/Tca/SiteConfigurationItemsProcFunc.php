@@ -17,6 +17,7 @@ declare(strict_types=1);
 
 namespace Causal\IgLdapSsoAuth\Backend\Tca;
 
+use Causal\IgLdapSsoAuth\Utility\CompatUtility;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -52,7 +53,7 @@ class SiteConfigurationItemsProcFunc
             static function (Site $site) {
                 $host = $site->getBase()->getHost();
                 if (empty($host)) {
-                    $host = GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY');
+                    $host = CompatUtility::getRequestHost();
                 }
                 return [
                     'label' => $host,

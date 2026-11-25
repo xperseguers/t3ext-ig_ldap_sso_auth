@@ -112,7 +112,7 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
                 $msg = sprintf(
                     'Configuration record #%s is not enabled for domain %s',
                     $configurationRecord->getUid(),
-                    GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY')
+                    CompatUtility::getRequestHost()
                 );
                 static::getLogger()->info($msg);
                 continue;

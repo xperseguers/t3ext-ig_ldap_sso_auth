@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace Causal\IgLdapSsoAuth\Utility;
 
 use TYPO3\CMS\Core\Http\ApplicationType;
+use TYPO3\CMS\Core\Http\NormalizedParams;
 
 final class CompatUtility
 {
@@ -40,5 +41,15 @@ final class CompatUtility
         }
 
         return 'BE';
+    }
+
+    public static function getRequestHost(): string
+    {
+        $request = $GLOBALS['TYPO3_REQUEST'] ?? null;
+        if ($request !== null) {
+            return $request->getAttribute('normalizedParams')?->getRequestHostOnly() ?? '';
+        }
+
+        return NormalizedParams::createFromServerParams($_SERVER)->getRequestHostOnly();
     }
 }

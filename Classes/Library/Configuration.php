@@ -172,7 +172,7 @@ class Configuration
         static $host = null;
 
         if ($host === null && !empty(static::$domains)) {
-            $host = GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY');
+            $host = CompatUtility::getRequestHost();
         }
 
         return empty(static::$domains) || in_array($host, static::$domains);
@@ -495,7 +495,7 @@ class Configuration
         if ($site->getBase()->getHost() !== '') {
             $hosts[] = $site->getBase()->getHost();
         } else {
-            $hosts[] = GeneralUtility::getIndpEnv('TYPO3_HOST_ONLY');
+            $hosts[] = CompatUtility::getRequestHost();
         }
 
         // Allow domains from alternative languages.
